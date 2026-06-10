@@ -1,0 +1,40 @@
+[
+  {
+    "team": "Inbound",
+    "weights": {
+      "Attend": 0.7,
+      "Booking": 0.1,
+      "Quality": 0.05,
+      "AHT": 0.05,
+      "Other": 0.1
+    }
+  },
+  {
+    "team": "Outbound",
+    "weights": {
+      "Attend": 0.7,
+      "Booking": 0.1,
+      "Quality": 0.1,
+      "AHT": 0.0,
+      "Other": 0.1
+    }
+  },
+  {
+    "team": "Inbound UAE",
+    "weights": {
+      "Attend": 0.7,
+      "Booking": 0.2,
+      "Quality": 0.0,
+      "AHT": 0.0,
+      "Other": 0.1
+    }
+  },
+  {
+    "team": "Pre-Approvals IP Offshore",
+    "weights": {
+      "Rejection": 0.5,
+      "InitialError": 0.2,
+      "Submission": 0.3
+    }
+  }
+]

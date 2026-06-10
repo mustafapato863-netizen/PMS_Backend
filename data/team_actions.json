@@ -1,0 +1,26 @@
+[
+  {
+    "id": "inbound_May",
+    "team_id": "inbound",
+    "month": "May",
+    "overall_action": "Raise Booking CR% target for next period to capitalize on team efficiency. \nEnforce mandatory Knowledge Base usage to bridge.",
+    "updated_at": "2026-06-10T15:05:33.849941",
+    "updated_by": "Admin"
+  },
+  {
+    "id": "outbound_May",
+    "team_id": "outbound",
+    "month": "May",
+    "overall_action": "*Quality Of leads Digital Reflects in reachability\n*CR_Booking% Need Reduce Target To 30%\n*Add Utilization Part And Make Weight 30% Performance 70%",
+    "updated_at": "2026-06-10T15:39:00.832681",
+    "updated_by": "Admin"
+  },
+  {
+    "id": "pre-approvals_May",
+    "team_id": "pre-approvals",
+    "month": "May",
+    "overall_action": "Policy Exclusion (57%) + Policy Limit (7%) = 64% of rejections are insurance-driven. Processing this exclusion is mandatory to reflect true\nNeed\nRejection Rate Target Need Modify To 7% Insted Of 3% \n",
+    "updated_at": "2026-06-10T15:49:27.594236",
+    "updated_by": "Admin"
+  }
+]

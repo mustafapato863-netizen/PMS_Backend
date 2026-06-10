@@ -1,0 +1,38 @@
+[
+  {
+    "team": "Inbound",
+    "targets": {
+      "Attend": 0.75,
+      "Booking": 0.45,
+      "Quality": 0.95,
+      "AHT": 150.0,
+      "Abandon": 0.01,
+      "UTZ": 0.85
+    }
+  },
+  {
+    "team": "Outbound",
+    "targets": {
+      "Attend": 0.55,
+      "Booking": 0.46,
+      "Quality": 0.95,
+      "Reachability": 0.75
+    }
+  },
+  {
+    "team": "Inbound UAE",
+    "targets": {
+      "Attend": 0.75,
+      "Booking": 0.6,
+      "Abandon": 0.01
+    }
+  },
+  {
+    "team": "Pre-Approvals IP Offshore",
+    "targets": {
+      "Rejection": 0.03,
+      "InitialError": 0.03,
+      "Submission": 0.9
+    }
+  }
+]
