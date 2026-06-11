@@ -3,8 +3,6 @@ main = "Backend/app.py"
 compatibility_date = "2026-06-11"
 compatibility_flags = ["python_workers"]
 
-[build]
-command = "pip install -r Backend/requirements.txt"
 
 [env.production]
 vars = { ENVIRONMENT = "production" }
