@@ -18,11 +18,12 @@ import io
 
 from models.schemas import (
     StandardResponse, Employee, PerformanceRecord, KPIWeight, Target, UploadRecord, ManagerNote, CorrectiveAction,
-    CallsData, GeoBreakdown, GeoData, ActualMetrics, AchievementMetrics, EvaluationData, TeamAction
+    CallsData, GeoBreakdown, GeoData, ActualMetrics, AchievementMetrics, EvaluationData, TeamAction, UserRecord, LoginPayload
 )
 from repositories.json_repos import (
     JSONEmployeeRepository, JSONPerformanceRepository, JSONKPIWeightsRepository, JSONTargetsRepository,
-    JSONUploadsRepository, JSONManagerNotesRepository, JSONCorrectiveActionsRepository, JSONTeamActionsRepository
+    JSONUploadsRepository, JSONManagerNotesRepository, JSONCorrectiveActionsRepository, JSONTeamActionsRepository,
+    JSONUserRepository
 )
 from processors.excel_processor import ExcelProcessor
 from services.kpi_service import KPIService
@@ -156,6 +157,7 @@ targets_repo = JSONTargetsRepository()
 uploads_repo = JSONUploadsRepository()
 notes_repo = JSONManagerNotesRepository()
 actions_repo = JSONCorrectiveActionsRepository()
+user_repo = JSONUserRepository()
 
 # Instantiate services
 kpi_service = KPIService(weights_repo, targets_repo)
@@ -927,3 +929,88 @@ def safe_value(val):
             return None
         return float(val)
     return str(val)
+
+# User Management routes
+@router.get("/users", response_model=StandardResponse)
+async def get_users(
+    role: str = Depends(require_role(["Admin"]))
+):
+    try:
+        users = user_repo.get_all()
+        return StandardResponse(
+            success=True,
+            message="Users retrieved successfully",
+            data=[u.model_dump() for u in users]
+        )
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to fetch users: {str(e)}")
+
+@router.post("/users", response_model=StandardResponse)
+async def create_user(
+    payload: UserRecord,
+    role: str = Depends(require_role(["Admin"]))
+):
+    try:
+        user_repo.save(payload)
+        return StandardResponse(
+            success=True,
+            message="User created successfully",
+            data=payload.model_dump()
+        )
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to create user: {str(e)}")
+
+@router.delete("/users/{user_id}", response_model=StandardResponse)
+async def delete_user_route(
+    user_id: str,
+    role: str = Depends(require_role(["Admin"]))
+):
+    try:
+        success = user_repo.delete(user_id)
+        if not success:
+            raise HTTPException(status_code=404, detail="User not found")
+        return StandardResponse(
+            success=True,
+            message="User deleted successfully"
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to delete user: {str(e)}")
+
+# Corrective Actions route (All corrective actions)
+@router.get("/corrective-actions", response_model=StandardResponse)
+async def get_all_corrective_actions(
+    role: str = Depends(require_role(["Admin", "Manager", "Executive"]))
+):
+    try:
+        actions = actions_repo.get_history()
+        return StandardResponse(
+            success=True,
+            message="Retrieved all corrective actions successfully",
+            data=[a.model_dump() for a in actions]
+        )
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to fetch corrective actions: {str(e)}")
+
+@router.post("/users/login", response_model=StandardResponse)
+async def login_user(payload: LoginPayload):
+    try:
+        users = user_repo.get_all()
+        found = None
+        for u in users:
+            if u.username.lower() == payload.username.strip().lower() and u.password == payload.password:
+                found = u
+                break
+        if not found:
+            return StandardResponse(success=False, message="Invalid username or password")
+        
+        user_data = found.model_dump()
+        user_data.pop("password", None)
+        return StandardResponse(
+            success=True,
+            message="Login successful",
+            data=user_data
+        )
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Login failed: {str(e)}")

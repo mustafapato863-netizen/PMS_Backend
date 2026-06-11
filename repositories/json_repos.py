@@ -3,7 +3,7 @@ import json
 from typing import List, Optional
 from config.settings import DATA_DIR
 from models.schemas import (
-    Employee, PerformanceRecord, KPIWeight, Target, UploadRecord, ManagerNote, CorrectiveAction, TeamAction
+    Employee, PerformanceRecord, KPIWeight, Target, UploadRecord, ManagerNote, CorrectiveAction, TeamAction, UserRecord
 )
 from repositories.base import (
     EmployeeRepository, PerformanceRepository, KPIWeightsRepository, TargetsRepository,
@@ -293,3 +293,38 @@ class JSONTeamActionsRepository:
         data.append(action.model_dump())
         _save_json(self.filename, data)
         return action
+
+class JSONUserRepository:
+    def __init__(self):
+        self.filename = "users.json"
+        # Seed default admin user if file is empty/missing
+        data = _load_json(self.filename, [])
+        if not data:
+            default_admin = {
+                "id": "admin-1",
+                "name": "Admin User",
+                "username": "admin",
+                "password": "admin123",
+                "role": "Admin"
+            }
+            data.append(default_admin)
+            _save_json(self.filename, data)
+
+    def get_all(self) -> List[UserRecord]:
+        data = _load_json(self.filename, [])
+        return [UserRecord(**item) for item in data]
+
+    def save(self, user: UserRecord) -> UserRecord:
+        data = _load_json(self.filename, [])
+        # Remove existing if exists
+        data = [item for item in data if item.get("id") != user.id and item.get("username").lower() != user.username.lower()]
+        data.append(user.model_dump())
+        _save_json(self.filename, data)
+        return user
+
+    def delete(self, user_id: str) -> bool:
+        data = _load_json(self.filename, [])
+        initial_len = len(data)
+        data = [item for item in data if item.get("id") != user_id]
+        _save_json(self.filename, data)
+        return len(data) < initial_len

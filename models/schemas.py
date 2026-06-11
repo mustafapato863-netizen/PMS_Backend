@@ -128,3 +128,14 @@ class TeamAction(BaseModel):
     overall_action: str
     updated_at: str
     updated_by: str = "Admin"
+
+class UserRecord(BaseModel):
+    id: str
+    name: str
+    username: str
+    password: str
+    role: str
+
+class LoginPayload(BaseModel):
+    username: str
+    password: str
