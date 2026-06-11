@@ -4,9 +4,18 @@ version = "1.0.0"
 dependencies = [
     "fastapi",
     "pydantic",
+    "uvicorn",
     "pandas",
     "openpyxl",
     "numpy",
-    "uvicorn",
 ]
 requires-python = ">=3.11"
+
+[tool.setuptools]
+# إيقاف الاكتشاف التلقائي للحزم
+packages = { find = { where = [".", "api", "config", "models", "services", "processors", "repositories", "exports"] } }
+# أو ببساطة: إيقاف الاكتشاف وتحديد الحزم يدوياً
+py-modules = ["app"]
+
+[tool.setuptools.packages.find]
+exclude = ["__pycache__*"]
