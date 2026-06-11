@@ -32,7 +32,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PATH="/opt/venv/bin:$PATH" \
     PMS_DATA_DIR="/app/data" \
     PMS_DEFAULT_FILE_PATH="/app/data/PMS_Trend_All.xlsx" \
-    PORT=8000
+    PORT=7860
 
 WORKDIR /app
 
@@ -53,11 +53,11 @@ RUN mkdir -p /app/data && chown -R pmsuser:pmsgroup /app/data
 USER pmsuser
 
 # Expose port
-EXPOSE 8000
+EXPOSE 7860
 
 # Health check using standard Python libraries (eliminating curl dependency)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:7860/')"
 
 # Start FastAPI application
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
