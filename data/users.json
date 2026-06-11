@@ -5,19 +5,5 @@
     "username": "admin",
     "password": "admin123",
     "role": "Admin"
-  },
-  {
-    "id": "manager-1",
-    "name": "Abdelmalek Taha",
-    "username": "abdelmalek",
-    "password": "123456",
-    "role": "Manager"
-  },
-  {
-    "id": "executive-1",
-    "name": "diaa",
-    "username": "diaa",
-    "password": "123",
-    "role": "Executive"
   }
 ]
