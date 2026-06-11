@@ -1,16 +1,9 @@
-# Cloudflare Wrangler Configuration for PMS Dashboard API
 name = "pms-dashboard-api"
-
-# Entrypoint configuration
-# Note: If Cloudflare builds directly from the 'Backend' folder/repository, set: main = "app.py"
-# If Cloudflare builds from the root folder 'PMS_Dashboard', set: main = "Backend/app.py"
 main = "Backend/app.py"
-
 compatibility_date = "2026-06-11"
 compatibility_flags = ["python_workers"]
 
 [build]
-# Dependecy installation for Python Workers
 command = "pip install -r Backend/requirements.txt"
 
 [env.production]

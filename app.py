@@ -281,18 +281,17 @@ if __name__ == "__main__":
 handler = app
 
 try:
-    from asgi import fetch
-    from cloudflare.workers import asgi
-    
-    class WorkerEntrypoint(cloudflare.workers.WorkerEntrypoint):
-        async def fetch(self, request, env, ctx):
-            # Pass Cloudflare request to ASGI and run FastAPI
-            return await asgi.fetch(app, request, env, ctx)
-    
+    from workers import WorkerEntrypoint
+    import asgi
+
+    class Default(WorkerEntrypoint):
+        async def fetch(self, request):
+            return await asgi.fetch(app, request, self.env)
+            
     # Make the entrypoint class available as default export
-    default = WorkerEntrypoint
-    
+    default = Default
 except ImportError:
     # Local execution or non-worker environment
     pass
+
 
