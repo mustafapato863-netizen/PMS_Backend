@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Compute project root (parent of the api/ directory) and insert into sys.path if not present
+project_root = str(Path(__file__).resolve().parent.parent)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query, Header
 from fastapi.responses import StreamingResponse
 from typing import List, Optional, Dict, Any
