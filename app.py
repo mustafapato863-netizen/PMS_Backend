@@ -274,3 +274,25 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+
+
+# ========== Cloudflare Workers Compatibility Layer ==========
+# Export FastAPI app for Workers compatibility
+handler = app
+
+try:
+    from asgi import fetch
+    from cloudflare.workers import asgi
+    
+    class WorkerEntrypoint(cloudflare.workers.WorkerEntrypoint):
+        async def fetch(self, request, env, ctx):
+            # Pass Cloudflare request to ASGI and run FastAPI
+            return await asgi.fetch(app, request, env, ctx)
+    
+    # Make the entrypoint class available as default export
+    default = WorkerEntrypoint
+    
+except ImportError:
+    # Local execution or non-worker environment
+    pass
+

@@ -1,0 +1,7 @@
+fastapi
+pydantic
+uvicorn
+pandas
+openpyxl
+numpy
+cloudflare-workers-asgi
