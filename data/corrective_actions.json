@@ -180,5 +180,19 @@
     "manager_notes": "(Rejection&Errors&Submmition) ↑ (main issue)",
     "timestamp": "2026-06-10T13:39:38.270476",
     "id": "70143_May_2026-06-10T13:39:38.270476"
+  },
+  {
+    "id": "70151_May_1781164088589",
+    "employee_id": "70151",
+    "employee_name": "Omar Abdelhamid Amin Elsayed konswa",
+    "team": "Pre-Approvals IP Offshore",
+    "month": "May",
+    "score": 62.37,
+    "grade": "E",
+    "root_cause": "Rejection",
+    "suggested_action": "Quality Calibration",
+    "manager_action": "Training: this is the first month for him\nWill Give Him Training",
+    "manager_notes": "Delay Due to Insurance Company Feedback",
+    "timestamp": "2026-06-11T10:48:08.647821"
   }
 ]

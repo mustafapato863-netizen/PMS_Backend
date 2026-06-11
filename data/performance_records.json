@@ -27261,129 +27261,6 @@
     }
   },
   {
-    "id": "70151_May",
-    "employee_id": "70151",
-    "employee_name": "Omar Abdelhamid Amin Elsayed konswa",
-    "team": "Pre-Approvals IP Offshore",
-    "month": "May",
-    "calls": {
-      "inbound": 0,
-      "outbound": 0,
-      "total_handled": 0,
-      "abandoned": 0,
-      "aht_raw": "00:00:00"
-    },
-    "geo": {
-      "bookings": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      },
-      "attended": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      }
-    },
-    "actual": {
-      "booking_rate": 0.0,
-      "attend_rate": 0.0,
-      "abandon_rate": 0.0,
-      "reachability_rate": 0.0,
-      "rejection_rate": 0.041666666666666664,
-      "initial_error_rate": 0.09322033898305085,
-      "submission_rate": 0.5979381443298969,
-      "quality_rate": 0.0,
-      "utz_rate": 0.0
-    },
-    "achievement": {
-      "booking_ach": 0.0,
-      "attend_ach": 0.0,
-      "quality_ach": 0.0,
-      "aht_ach": 0.0,
-      "reachability_ach": 0.0,
-      "abandon_ach": 0.0,
-      "rejection_ach": 0.72,
-      "initial_error_ach": 0.3218181818181818,
-      "submission_ach": 0.6643757159221076
-    },
-    "evaluation": {
-      "score": 62.37,
-      "grade": "E",
-      "root_cause": {
-        "kpi": "Rejection",
-        "impact_pct": 37.2,
-        "actual": 0.0417,
-        "target": 0.03
-      },
-      "suggested_action": "Quality Calibration",
-      "corrective_action": null,
-      "manager_notes": null,
-      "planning_category": [],
-      "trend_status": {
-        "score": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "attendance": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "booking": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "quality": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "aht": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        }
-      }
-    },
-    "upload_id": "800b8675-3f49-41ea-8f30-2d149d3d2a05",
-    "raw_data": {
-      "Date": "2026-05-01 00:00:00",
-      "HRID": 70151,
-      "AgentName": "Omar Abdelhamid Amin Elsayed konswa ",
-      "Status": "Active",
-      "Team": "Offshore",
-      "AssignedRequest": 120,
-      "ApprovedRequests": 97,
-      "RejectedRequests": 5,
-      "Cancelled": 3,
-      "PendingWithInsurance": 7,
-      "PendingWithDr": 8,
-      "Closed": 0,
-      "PolicyRej": 5,
-      "ApprovalWithin48HR": 58,
-      "SubmittedClaims": 118,
-      "ErrosClaims": 11,
-      "IPInitialRejection%": 0.041666666666666664,
-      "Error%": 0.09322033898305085,
-      "NumberApprovalwithin48hrs": 0.5979381443298969,
-      "T.IPInitialRejection%": 0.03,
-      "T.Error%": 0.03,
-      "T.%ofApprovalwithin48hrs": 0.9,
-      "RejectionRate": 0.72,
-      "InitialError%": 0.3218181818181818,
-      "%ofSubmissionWithinDuedate": 0.6643757159221076,
-      "PerformanceScore": 0.6236763511402686,
-      "PerformanceGrade": "Unsatisfactory",
-      "Is_Inactive": 0,
-      "Is_New": 0
-    }
-  },
-  {
     "id": "70121_May",
     "employee_id": "70121",
     "employee_name": "Hadeer Gamal Asaad Rashed",
@@ -28820,6 +28697,129 @@
       "Is_New": 0,
       "Total_Booking_Trend": 371,
       "Total_Attend_Trend": 177
+    }
+  },
+  {
+    "id": "70151_May",
+    "employee_id": "70151",
+    "employee_name": "Omar Abdelhamid Amin Elsayed konswa",
+    "team": "Pre-Approvals IP Offshore",
+    "month": "May",
+    "calls": {
+      "inbound": 0,
+      "outbound": 0,
+      "total_handled": 0,
+      "abandoned": 0,
+      "aht_raw": "00:00:00"
+    },
+    "geo": {
+      "bookings": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      },
+      "attended": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      }
+    },
+    "actual": {
+      "booking_rate": 0.0,
+      "attend_rate": 0.0,
+      "abandon_rate": 0.0,
+      "reachability_rate": 0.0,
+      "rejection_rate": 0.041666666666666664,
+      "initial_error_rate": 0.09322033898305085,
+      "submission_rate": 0.5979381443298969,
+      "quality_rate": 0.0,
+      "utz_rate": 0.0
+    },
+    "achievement": {
+      "booking_ach": 0.0,
+      "attend_ach": 0.0,
+      "quality_ach": 0.0,
+      "aht_ach": 0.0,
+      "reachability_ach": 0.0,
+      "abandon_ach": 0.0,
+      "rejection_ach": 0.72,
+      "initial_error_ach": 0.3218181818181818,
+      "submission_ach": 0.6643757159221076
+    },
+    "evaluation": {
+      "score": 62.37,
+      "grade": "E",
+      "root_cause": {
+        "kpi": "Rejection",
+        "impact_pct": 37.2,
+        "actual": 0.0417,
+        "target": 0.03
+      },
+      "suggested_action": "Quality Calibration",
+      "corrective_action": "Training: this is the first month for him\nWill Give Him Training",
+      "manager_notes": "Delay Due to Insurance Company Feedback",
+      "planning_category": [],
+      "trend_status": {
+        "score": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "attendance": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "booking": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "quality": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "aht": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        }
+      }
+    },
+    "upload_id": "800b8675-3f49-41ea-8f30-2d149d3d2a05",
+    "raw_data": {
+      "Date": "2026-05-01 00:00:00",
+      "HRID": 70151,
+      "AgentName": "Omar Abdelhamid Amin Elsayed konswa ",
+      "Status": "Active",
+      "Team": "Offshore",
+      "AssignedRequest": 120,
+      "ApprovedRequests": 97,
+      "RejectedRequests": 5,
+      "Cancelled": 3,
+      "PendingWithInsurance": 7,
+      "PendingWithDr": 8,
+      "Closed": 0,
+      "PolicyRej": 5,
+      "ApprovalWithin48HR": 58,
+      "SubmittedClaims": 118,
+      "ErrosClaims": 11,
+      "IPInitialRejection%": 0.041666666666666664,
+      "Error%": 0.09322033898305085,
+      "NumberApprovalwithin48hrs": 0.5979381443298969,
+      "T.IPInitialRejection%": 0.03,
+      "T.Error%": 0.03,
+      "T.%ofApprovalwithin48hrs": 0.9,
+      "RejectionRate": 0.72,
+      "InitialError%": 0.3218181818181818,
+      "%ofSubmissionWithinDuedate": 0.6643757159221076,
+      "PerformanceScore": 0.6236763511402686,
+      "PerformanceGrade": "Unsatisfactory",
+      "Is_Inactive": 0,
+      "Is_New": 0
     }
   }
 ]

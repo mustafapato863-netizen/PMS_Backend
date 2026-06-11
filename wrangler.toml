@@ -1,8 +1,12 @@
 name = "pms-dashboard-api"
 main = "app.py"
 compatibility_date = "2026-06-11"
-compatibility_flags = ["python_workers"]
+compatibility_flags = ["python_workers", "worker_bundle_analytics"]
 
-
+# تأكد من وجود هذا القسم
 [env.production]
 vars = { ENVIRONMENT = "production" }
+
+# هذا القسم مهم لربط الحزم
+[build]
+command = "pip install -r requirements.txt"
