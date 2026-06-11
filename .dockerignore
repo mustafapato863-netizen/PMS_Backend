@@ -10,7 +10,6 @@ env/
 
 # Application state, persistent storage and local assets
 data/*.json
-exports/
 *.xlsx
 *.xls
 *.csv
