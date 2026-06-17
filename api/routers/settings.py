@@ -1,0 +1,86 @@
+from fastapi import APIRouter, Depends
+
+from api.dependencies import weights_repo, targets_repo, performance_repo, kpi_service, require_role
+from models.schemas import StandardResponse, KPIWeight, Target
+
+router = APIRouter()
+
+@router.get("/weights", response_model=StandardResponse)
+async def get_weights():
+    try:
+        weights = weights_repo.get_all()
+        return StandardResponse(success=True, message="KPI Weights retrieved", data=[w.model_dump() for w in weights])
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+
+@router.post("/weights", response_model=StandardResponse)
+async def update_weights(
+    payload: KPIWeight,
+    role: str = Depends(require_role(["Admin"]))
+):
+    try:
+        weights_repo.save(payload)
+        return StandardResponse(success=True, message="KPI Weights updated", data=payload.model_dump())
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+
+@router.get("/targets", response_model=StandardResponse)
+async def get_targets():
+    try:
+        targets = targets_repo.get_all()
+        return StandardResponse(success=True, message="KPI Targets retrieved", data=[t.model_dump() for t in targets])
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+
+@router.post("/targets", response_model=StandardResponse)
+async def update_targets(
+    payload: Target,
+    role: str = Depends(require_role(["Admin"]))
+):
+    try:
+        targets_repo.save(payload)
+        
+        records = performance_repo.get_all()
+        updated_records = []
+        for r in records:
+            if r.team == payload.team:
+                score, grade, achievements, weights_used = kpi_service.calculate_performance(r.team, r.raw_data)
+                
+                r.achievement.booking_ach = achievements.get("Booking", 0.0)
+                r.achievement.attend_ach = achievements.get("Attend", 0.0)
+                r.achievement.quality_ach = achievements.get("Quality", 0.0)
+                r.achievement.aht_ach = achievements.get("AHT", 0.0)
+                r.achievement.reachability_ach = achievements.get("Other", 0.0) if r.team == "Outbound" else 0.0
+                r.achievement.abandon_ach = achievements.get("Other", 0.0) if r.team in ["Inbound", "Inbound UAE"] else 0.0
+                r.achievement.rejection_ach = achievements.get("Rejection", 0.0)
+                r.achievement.initial_error_ach = achievements.get("InitialError", 0.0)
+                r.achievement.submission_ach = achievements.get("Submission", 0.0)
+                
+                r.actual.booking_rate = float(r.raw_data.get("A.Booking%", 0.0))
+                r.actual.attend_rate = float(r.raw_data.get("A.Attend%", 0.0))
+                r.actual.abandon_rate = float(r.raw_data.get("A.AbandonRate%", 0.0))
+                r.actual.reachability_rate = float(r.raw_data.get("A.Reachability%", 0.0))
+                r.actual.rejection_rate = float(r.raw_data.get("IPInitialRejection%", 0.0))
+                r.actual.initial_error_rate = float(r.raw_data.get("Error%", 0.0))
+                r.actual.submission_rate = float(r.raw_data.get("NumberApprovalwithin48hrs", 0.0))
+                r.actual.quality_rate = float(r.raw_data.get("A.QualityScore", 0.0))
+                r.actual.utz_rate = float(r.raw_data.get("A.UTZ%", 0.0))
+                
+                r.evaluation.score = score
+                r.evaluation.grade = grade
+                
+                from services.analysis_service import AnalysisService
+                analysis_service = AnalysisService(targets_repo)
+                root_cause = analysis_service.run_root_cause_analysis(r.team, achievements, weights_used, r.raw_data)
+                suggested_action = analysis_service.generate_suggested_action(score, r.evaluation.suggested_action == "Probation Monitoring", root_cause)
+                r.evaluation.root_cause = root_cause
+                r.evaluation.suggested_action = suggested_action
+                
+                updated_records.append(r)
+            else:
+                updated_records.append(r)
+        performance_repo.save_all(updated_records)
+        
+        return StandardResponse(success=True, message="KPI Targets updated and all performance records recalculated", data=payload.model_dump())
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed: {str(e)}")

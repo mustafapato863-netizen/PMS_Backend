@@ -166,17 +166,17 @@ class KPIService:
             actual_aht_seconds = aht_minutes * 60.0
 
             # 3. Achievement Calculations (Capped at 1.0)
-            attend_ach = min(1.0, actual_attend_cr / t_attend) if t_attend > 0 else 0.0
-            booking_ach = min(1.0, actual_booking_cr / t_booking) if t_booking > 0 else 0.0
-            quality_ach = min(1.0, actual_quality / t_quality) if t_quality > 0 else 0.0
-            aht_ach = min(1.0, t_aht / actual_aht_seconds) if actual_aht_seconds > 0 else 0.0
-            utz_ach = min(1.0, actual_utz / t_utz) if t_utz > 0 else 0.0
+            attend_ach = actual_attend_cr / t_attend if t_attend > 0 else 0.0
+            booking_ach = actual_booking_cr / t_booking if t_booking > 0 else 0.0
+            quality_ach = actual_quality / t_quality if t_quality > 0 else 0.0
+            aht_ach = t_aht / actual_aht_seconds if actual_aht_seconds > 0 else 0.0
+            utz_ach = actual_utz / t_utz if t_utz > 0 else 0.0
             
             # Abandon achievement is Target / Actual (inverse metric)
             if actual_abandon_rate <= t_abandon:
                 abandon_ach = 1.0
             else:
-                abandon_ach = min(1.0, t_abandon / actual_abandon_rate) if actual_abandon_rate > 0 else 1.0
+                abandon_ach = t_abandon / actual_abandon_rate if actual_abandon_rate > 0 else 1.0
 
             # 4. Swappable UTZ / Abandon metric logic
             utz_raw = row.get("A.UTZ%")
@@ -235,10 +235,10 @@ class KPIService:
             t_quality = targets.get("Quality", 0.95)
             t_reachability = targets.get("Reachability", 0.95)
 
-            booking_ach = min(1.0, actual_booking_cr / t_booking) if t_booking > 0 else 0.0
-            attend_ach = min(1.0, actual_attend_cr / t_attend) if t_attend > 0 else 0.0
-            quality_ach = min(1.0, actual_quality / t_quality) if t_quality > 0 else 0.0
-            reachability_ach = min(1.0, actual_reachability / t_reachability) if t_reachability > 0 else 0.0
+            booking_ach = actual_booking_cr / t_booking if t_booking > 0 else 0.0
+            attend_ach = actual_attend_cr / t_attend if t_attend > 0 else 0.0
+            quality_ach = actual_quality / t_quality if t_quality > 0 else 0.0
+            reachability_ach = actual_reachability / t_reachability if t_reachability > 0 else 0.0
 
             achievements = {
                 "Attend": attend_ach,
@@ -288,13 +288,13 @@ class KPIService:
             t_attend = targets.get("Attend", 0.75)
             t_abandon = targets.get("Abandon", 0.01)
 
-            booking_ach = min(1.0, actual_booking_cr / t_booking) if t_booking > 0 else 0.0
-            attend_ach = min(1.0, actual_attend_cr / t_attend) if t_attend > 0 else 0.0
+            booking_ach = actual_booking_cr / t_booking if t_booking > 0 else 0.0
+            attend_ach = actual_attend_cr / t_attend if t_attend > 0 else 0.0
             
             if actual_abandon_rate <= t_abandon:
                 abandon_ach = 1.0
             else:
-                abandon_ach = min(1.0, t_abandon / actual_abandon_rate) if actual_abandon_rate > 0 else 1.0
+                abandon_ach = t_abandon / actual_abandon_rate if actual_abandon_rate > 0 else 1.0
 
             achievements = {
                 "Attend": attend_ach,
@@ -329,7 +329,7 @@ class KPIService:
             if actual_rejection <= t_rej:
                 rejection_ach = 1.0
             else:
-                rejection_ach = min(1.0, t_rej / actual_rejection) if actual_rejection > 0 else 1.0
+                rejection_ach = t_rej / actual_rejection if actual_rejection > 0 else 1.0
             
             # Error achievement is inverse, 0 if no claims
             if claims == 0:
@@ -338,7 +338,7 @@ class KPIService:
                 if actual_error <= t_err:
                     initial_error_ach = 1.0
                 else:
-                    initial_error_ach = min(1.0, t_err / actual_error) if actual_error > 0 else 1.0
+                    initial_error_ach = t_err / actual_error if actual_error > 0 else 1.0
             
             # Submission achievement (uncapped)
             submission_ach = actual_submission / t_sub if t_sub > 0 else 0.0
@@ -431,14 +431,14 @@ class KPIService:
             sum_target_activity = sum(safe_float(clean_row.get(c)) for c in t_act_cols)
             
             activity_ratio = sum_actual_activity / sum_target_activity if sum_target_activity > 0 else 0.0
-            activity_ach = min(1.0, activity_ratio)
+            activity_ach = activity_ratio
 
             achievements = {
-                "OPCensus": min(1.0, safe_float(op_census_ach)),
-                "OPRevenue": min(1.0, safe_float(op_revenue_ach)),
-                "IPCensus": min(1.0, safe_float(ip_census_ach)),
-                "IPRevenue": min(1.0, safe_float(ip_revenue_ach)),
-                "Activity": min(1.0, safe_float(activity_ach))
+                "OPCensus": safe_float(op_census_ach),
+                "OPRevenue": safe_float(op_revenue_ach),
+                "IPCensus": safe_float(ip_census_ach),
+                "IPRevenue": safe_float(ip_revenue_ach),
+                "Activity": safe_float(activity_ach)
             }
             final_weights = {
                 "OPCensus": w_op_census,
