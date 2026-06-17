@@ -30516,13 +30516,13 @@
       "submission_ach": 0.0,
       "op_census_ach": 0.9400732419760698,
       "op_revenue_ach": 0.9636089196464018,
-      "ip_census_ach": 1.6327735035647355,
-      "ip_revenue_ach": 1.6999707072706742,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 146.35,
-      "grade": "A",
+      "score": 99.04,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPCensus",
         "impact_pct": 62.22,
@@ -30599,15 +30599,15 @@
       "TotalCensusAch%": 1.044527243910993,
       "TotalRevenueAch%": 1.464334935222762,
       "SalesActivtiesAch%": 1.0,
-      "PerformanceScore": 146.35,
+      "PerformanceScore": 99.04,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 146.35484103252344,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 146.35,
-      "Performance_Score": 146.35
+      "PerformanceScore%": 99.04,
+      "Performance_Score": 99.04
     }
   },
   {
@@ -30659,14 +30659,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.5147435468232253,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.8952428162186665,
       "ip_census_ach": 0.5883381529308427,
       "ip_revenue_ach": 0.28738257233641384,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 61.74,
+      "score": 56.59,
       "grade": "E",
       "root_cause": {
         "kpi": "IPRevenue",
@@ -30674,10 +30674,12 @@
         "actual": 0.2874,
         "target": 1.0
       },
-      "suggested_action": "Sales Target Coaching",
+      "suggested_action": "PI",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [],
+      "planning_category": [
+        "PI Candidate"
+      ],
       "trend_status": {
         "score": {
           "mom": "Stable",
@@ -30744,15 +30746,15 @@
       "TotalCensusAch%": 1.3750545228049056,
       "TotalRevenueAch%": 0.4818978504053841,
       "SalesActivtiesAch%": 1.0,
-      "PerformanceScore": 61.74,
+      "PerformanceScore": 56.59,
       "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 61.74053320882861,
       "SuggestedAction": "PIP",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 61.74,
-      "Performance_Score": 61.74
+      "PerformanceScore%": 56.59,
+      "Performance_Score": 56.59
     }
   },
   {
@@ -30804,14 +30806,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 2.616534010206281,
-      "op_revenue_ach": 1.0270998889086702,
-      "ip_census_ach": 2.0570717426733895,
-      "ip_revenue_ach": 1.4372714832025597,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 162.54,
+      "score": 100.0,
       "grade": "A",
       "root_cause": null,
       "suggested_action": "Reward & Recognition",
@@ -30884,15 +30886,15 @@
       "TotalCensusAch%": 0.025321712980635732,
       "TotalRevenueAch%": 1.3060165730195328,
       "SalesActivtiesAch%": 3.0,
-      "PerformanceScore": 162.54,
+      "PerformanceScore": 100.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 162.54034930209946,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 162.54,
-      "Performance_Score": 162.54
+      "PerformanceScore%": 100.0,
+      "Performance_Score": 100.0
     }
   },
   {
@@ -30944,14 +30946,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.7417649017255057,
-      "op_revenue_ach": 1.0993387844906932,
-      "ip_census_ach": 1.4217505509230852,
-      "ip_revenue_ach": 1.1554316449251025,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 125.95,
+      "score": 100.0,
       "grade": "A",
       "root_cause": null,
       "suggested_action": "Reward & Recognition",
@@ -31024,15 +31026,15 @@
       "TotalCensusAch%": 1.6935100146884063,
       "TotalRevenueAch%": 1.137481929584559,
       "SalesActivtiesAch%": 1.6666666666666667,
-      "PerformanceScore": 125.95,
+      "PerformanceScore": 100.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 125.94922465686875,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 125.95,
-      "Performance_Score": 125.95
+      "PerformanceScore%": 100.0,
+      "Performance_Score": 100.0
     }
   },
   {
@@ -31084,14 +31086,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.0531157424099553,
-      "op_revenue_ach": 1.0538179496154059,
-      "ip_census_ach": 1.1616494834886641,
-      "ip_revenue_ach": 1.0022414485758648,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 105.21,
+      "score": 100.0,
       "grade": "A",
       "root_cause": null,
       "suggested_action": "Reward & Recognition",
@@ -31164,15 +31166,15 @@
       "TotalCensusAch%": 1.055938181016719,
       "TotalRevenueAch%": 1.0383449993035436,
       "SalesActivtiesAch%": 1.0,
-      "PerformanceScore": 105.21,
+      "PerformanceScore": 100.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 105.21143919338414,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 105.21,
-      "Performance_Score": 105.21
+      "PerformanceScore%": 100.0,
+      "Performance_Score": 100.0
     }
   },
   {
@@ -31225,14 +31227,14 @@
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
       "op_census_ach": 0.9763978563257161,
-      "op_revenue_ach": 1.0284528224819454,
-      "ip_census_ach": 2.0368460978185445,
-      "ip_revenue_ach": 1.8344467975087564,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.968503937007874
     },
     "evaluation": {
-      "score": 163.2,
-      "grade": "A",
+      "score": 99.45,
+      "grade": "B",
       "root_cause": {
         "kpi": "Activity",
         "impact_pct": 57.16,
@@ -31309,15 +31311,15 @@
       "TotalCensusAch%": 1.0028301513796853,
       "TotalRevenueAch%": 1.2702510149899886,
       "SalesActivtiesAch%": 0.968503937007874,
-      "PerformanceScore": 163.2,
+      "PerformanceScore": 99.45,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 163.204804491513,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.968503937007874,
-      "PerformanceScore%": 163.2,
-      "Performance_Score": 163.2
+      "PerformanceScore%": 99.45,
+      "Performance_Score": 99.45
     }
   },
   {
@@ -31369,15 +31371,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.5861178887118965,
-      "op_revenue_ach": 1.88312942468707,
-      "ip_census_ach": 1.7043547644973234,
-      "ip_revenue_ach": 1.6951821074226723,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9883720930232558
     },
     "evaluation": {
-      "score": 163.47,
-      "grade": "A",
+      "score": 99.88,
+      "grade": "B",
       "root_cause": {
         "kpi": "Activity",
         "impact_pct": 100.0,
@@ -31454,15 +31456,15 @@
       "TotalCensusAch%": 1.5891891432026,
       "TotalRevenueAch%": 1.8267452295077506,
       "SalesActivtiesAch%": 0.9883720930232558,
-      "PerformanceScore": 163.47,
+      "PerformanceScore": 99.88,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 163.46825801067556,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9883720930232558,
-      "PerformanceScore%": 163.47,
-      "Performance_Score": 163.47
+      "PerformanceScore%": 99.88,
+      "Performance_Score": 99.88
     }
   },
   {
@@ -31514,14 +31516,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.1454056511326334,
-      "op_revenue_ach": 1.3250462119193693,
-      "ip_census_ach": 1.569687328796506,
-      "ip_revenue_ach": 2.0094836974596126,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 164.37,
+      "score": 100.0,
       "grade": "A",
       "root_cause": null,
       "suggested_action": "Reward & Recognition",
@@ -31594,15 +31596,15 @@
       "TotalCensusAch%": 1.161578226763917,
       "TotalRevenueAch%": 1.5303774575814424,
       "SalesActivtiesAch%": 1.0310077519379846,
-      "PerformanceScore": 164.37,
+      "PerformanceScore": 100.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 164.37346823611526,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 164.37,
-      "Performance_Score": 164.37
+      "PerformanceScore%": 100.0,
+      "Performance_Score": 100.0
     }
   },
   {
@@ -31801,14 +31803,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.0243564907336709,
-      "op_revenue_ach": 1.1287613908209746,
-      "ip_census_ach": 1.6246952402965282,
-      "ip_revenue_ach": 1.6084362915523098,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 144.53,
+      "score": 100.0,
       "grade": "A",
       "root_cause": null,
       "suggested_action": "Reward & Recognition",
@@ -31881,15 +31883,15 @@
       "TotalCensusAch%": 1.0409909653491265,
       "TotalRevenueAch%": 1.2726638610403753,
       "SalesActivtiesAch%": 1.0333333333333334,
-      "PerformanceScore": 144.53,
+      "PerformanceScore": 100.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 144.52819294281363,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 144.53,
-      "Performance_Score": 144.53
+      "PerformanceScore%": 100.0,
+      "Performance_Score": 100.0
     }
   },
   {
@@ -31942,14 +31944,14 @@
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
       "op_census_ach": 0.9646464646464646,
-      "op_revenue_ach": 1.5915497653127229,
-      "ip_census_ach": 1.457142857142857,
-      "ip_revenue_ach": 1.4670405978653243,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 138.01,
-      "grade": "A",
+      "score": 99.65,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPCensus",
         "impact_pct": 100.0,
@@ -31962,9 +31964,9 @@
       "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Declining",
+          "mom": "Stable",
           "qoq": "Stable",
-          "ytd": "Declining"
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -32026,15 +32028,15 @@
       "TotalCensusAch%": 1.03862660944206,
       "TotalRevenueAch%": 1.5068835578813844,
       "SalesActivtiesAch%": 1.5,
-      "PerformanceScore": 138.01,
+      "PerformanceScore": 99.65,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 138.0073606321029,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 138.01,
-      "Performance_Score": 138.01
+      "PerformanceScore%": 99.65,
+      "Performance_Score": 99.65
     }
   },
   {
@@ -32086,14 +32088,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.0105263157894737,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.6918528803759332,
-      "ip_census_ach": 1.0294117647058822,
+      "ip_census_ach": 1.0,
       "ip_revenue_ach": 0.6793873333241227,
       "activity_ach": 0.0
     },
     "evaluation": {
-      "score": 73.33,
+      "score": 72.49,
       "grade": "D",
       "root_cause": {
         "kpi": "IPRevenue",
@@ -32173,15 +32175,15 @@
       "TotalCensusAch%": 1.0133928571428572,
       "TotalRevenueAch%": 0.6833763103096111,
       "SalesActivtiesAch%": 0.0,
-      "PerformanceScore": 73.33,
+      "PerformanceScore": 72.49,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 73.33151607888665,
       "SuggestedAction": "Monitor",
       "ActivityAch%": 0.0,
-      "PerformanceScore%": 73.33,
-      "Performance_Score": 73.33
+      "PerformanceScore%": 72.49,
+      "Performance_Score": 72.49
     }
   },
   {
@@ -32235,13 +32237,13 @@
       "submission_ach": 0.0,
       "op_census_ach": 0.5974842767295597,
       "op_revenue_ach": 0.5565639157857334,
-      "ip_census_ach": 1.75,
-      "ip_revenue_ach": 1.9985884529495659,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 155.23,
-      "grade": "A",
+      "score": 91.54,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPRevenue",
         "impact_pct": 52.42,
@@ -32318,15 +32320,15 @@
       "TotalCensusAch%": 0.7700534759358288,
       "TotalRevenueAch%": 1.537140791717901,
       "SalesActivtiesAch%": 1.5,
-      "PerformanceScore": 155.23,
+      "PerformanceScore": 91.54,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 155.2269623078834,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 155.23,
-      "Performance_Score": 155.23
+      "PerformanceScore%": 91.54,
+      "Performance_Score": 91.54
     }
   },
   {
@@ -32378,14 +32380,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.3868613138686132,
-      "op_revenue_ach": 1.3471837470803756,
-      "ip_census_ach": 1.422680412371134,
-      "ip_revenue_ach": 1.3921401393784045,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 135.55,
+      "score": 100.0,
       "grade": "A",
       "root_cause": null,
       "suggested_action": "Reward & Recognition",
@@ -32394,9 +32396,9 @@
       "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Improving",
+          "mom": "Stable",
           "qoq": "Stable",
-          "ytd": "Improving"
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -32458,15 +32460,15 @@
       "TotalCensusAch%": 1.3922480620155038,
       "TotalRevenueAch%": 1.3777540872900111,
       "SalesActivtiesAch%": 1.0,
-      "PerformanceScore": 135.55,
+      "PerformanceScore": 100.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 135.55376719079646,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 135.55,
-      "Performance_Score": 135.55
+      "PerformanceScore%": 100.0,
+      "Performance_Score": 100.0
     }
   },
   {
@@ -32518,15 +32520,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.4428473005313407,
-      "op_revenue_ach": 1.7968933865144299,
-      "ip_census_ach": 1.2964158959158139,
-      "ip_revenue_ach": 1.3063714500117007,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9883720930232558
     },
     "evaluation": {
-      "score": 133.48,
-      "grade": "A",
+      "score": 99.88,
+      "grade": "B",
       "root_cause": {
         "kpi": "Activity",
         "impact_pct": 100.0,
@@ -32536,14 +32538,12 @@
       "suggested_action": "Reward & Recognition",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Attrition Risk"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
+          "mom": "Stable",
           "qoq": "Stable",
-          "ytd": "Critical Decline"
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -32605,15 +32605,15 @@
       "TotalCensusAch%": 1.4390436808397848,
       "TotalRevenueAch%": 1.649736805563611,
       "SalesActivtiesAch%": 0.9883720930232558,
-      "PerformanceScore": 133.48,
+      "PerformanceScore": 99.88,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 133.47824044911215,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9883720930232558,
-      "PerformanceScore%": 133.48,
-      "Performance_Score": 133.48
+      "PerformanceScore%": 99.88,
+      "Performance_Score": 99.88
     }
   },
   {
@@ -32667,13 +32667,13 @@
       "submission_ach": 0.0,
       "op_census_ach": 0.8105803989758268,
       "op_revenue_ach": 0.8773390315661138,
-      "ip_census_ach": 1.8103341495692802,
-      "ip_revenue_ach": 1.8627270871573935,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.984251968503937
     },
     "evaluation": {
-      "score": 155.8,
-      "grade": "A",
+      "score": 96.72,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPCensus",
         "impact_pct": 57.78,
@@ -32750,15 +32750,15 @@
       "TotalCensusAch%": 0.8354998482077837,
       "TotalRevenueAch%": 1.1729554482434976,
       "SalesActivtiesAch%": 0.984251968503937,
-      "PerformanceScore": 155.8,
+      "PerformanceScore": 96.72,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 155.80278665177352,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.984251968503937,
-      "PerformanceScore%": 155.8,
-      "Performance_Score": 155.8
+      "PerformanceScore%": 96.72,
+      "Performance_Score": 96.72
     }
   },
   {
@@ -32810,15 +32810,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.1355640956371118,
-      "op_revenue_ach": 1.2071658983400801,
-      "ip_census_ach": 1.4327774806458982,
-      "ip_revenue_ach": 1.5269412012662111,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9844961240310077
     },
     "evaluation": {
-      "score": 137.8,
-      "grade": "A",
+      "score": 99.84,
+      "grade": "B",
       "root_cause": {
         "kpi": "Activity",
         "impact_pct": 100.0,
@@ -32828,14 +32828,12 @@
       "suggested_action": "Reward & Recognition",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Attrition Risk"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
+          "mom": "Stable",
           "qoq": "Stable",
-          "ytd": "Critical Decline"
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -32897,15 +32895,15 @@
       "TotalCensusAch%": 1.1468931399978073,
       "TotalRevenueAch%": 1.3030984892179194,
       "SalesActivtiesAch%": 0.9844961240310077,
-      "PerformanceScore": 137.8,
+      "PerformanceScore": 99.84,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 137.80405225320894,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9844961240310077,
-      "PerformanceScore%": 137.8,
-      "Performance_Score": 137.8
+      "PerformanceScore%": 99.84,
+      "Performance_Score": 99.84
     }
   },
   {
@@ -32959,13 +32957,13 @@
       "submission_ach": 0.0,
       "op_census_ach": 0.7109062543486605,
       "op_revenue_ach": 0.6751898068091173,
-      "ip_census_ach": 1.1558510037372054,
-      "ip_revenue_ach": 1.233598449205529,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9922480620155039
     },
     "evaluation": {
-      "score": 108.19,
-      "grade": "A",
+      "score": 93.78,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPRevenue",
         "impact_pct": 52.25,
@@ -32978,9 +32976,9 @@
       "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Improving",
+          "mom": "Declining",
           "qoq": "Stable",
-          "ytd": "Improving"
+          "ytd": "Declining"
         },
         "attendance": {
           "mom": "Stable",
@@ -33042,15 +33040,15 @@
       "TotalCensusAch%": 0.722338601501609,
       "TotalRevenueAch%": 0.8427123995280408,
       "SalesActivtiesAch%": 0.9922480620155039,
-      "PerformanceScore": 108.19,
+      "PerformanceScore": 93.78,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 108.19164653941176,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9922480620155039,
-      "PerformanceScore%": 108.19,
-      "Performance_Score": 108.19
+      "PerformanceScore%": 93.78,
+      "Performance_Score": 93.78
     }
   },
   {
@@ -33398,13 +33396,13 @@
       "submission_ach": 0.0,
       "op_census_ach": 0.854711931592987,
       "op_revenue_ach": 0.9462551045319134,
-      "ip_census_ach": 1.426290497291024,
-      "ip_revenue_ach": 1.4754623666955187,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 130.06,
-      "grade": "A",
+      "score": 98.01,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPCensus",
         "impact_pct": 73.0,
@@ -33417,9 +33415,9 @@
       "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
+          "mom": "Stable",
           "qoq": "Stable",
-          "ytd": "Critical Decline"
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -33481,15 +33479,15 @@
       "TotalCensusAch%": 0.8703840071707686,
       "TotalRevenueAch%": 1.105017283180995,
       "SalesActivtiesAch%": 1.0087412587412588,
-      "PerformanceScore": 130.06,
+      "PerformanceScore": 98.01,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 130.06273929482296,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 130.06,
-      "Performance_Score": 130.06
+      "PerformanceScore%": 98.01,
+      "Performance_Score": 98.01
     }
   },
   {
@@ -33542,13 +33540,13 @@
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
       "op_census_ach": 0.5707666239501616,
-      "op_revenue_ach": 1.0248482928201814,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.8105743618124444,
       "ip_revenue_ach": 0.9363570475535301,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 88.36,
+      "score": 88.11,
       "grade": "C",
       "root_cause": {
         "kpi": "IPCensus",
@@ -33559,9 +33557,7 @@
       "suggested_action": "Sales Target Coaching",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Attrition Risk"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
           "mom": "Critical Decline",
@@ -33628,15 +33624,15 @@
       "TotalCensusAch%": 0.6069278282731428,
       "TotalRevenueAch%": 0.9646742461678821,
       "SalesActivtiesAch%": 1.5,
-      "PerformanceScore": 88.36,
+      "PerformanceScore": 88.11,
       "PerformanceGrade": "Meet",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 88.35657535292339,
       "SuggestedAction": "Monitor",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 88.36,
-      "Performance_Score": 88.36
+      "PerformanceScore%": 88.11,
+      "Performance_Score": 88.11
     }
   },
   {
@@ -33711,7 +33707,7 @@
       ],
       "trend_status": {
         "score": {
-          "mom": "Stable",
+          "mom": "Improving",
           "qoq": "Stable",
           "ytd": "Improving"
         },
@@ -33837,13 +33833,13 @@
       "submission_ach": 0.0,
       "op_census_ach": 0.9905823356188049,
       "op_revenue_ach": 0.8227835976200707,
-      "ip_census_ach": 1.786511835640911,
-      "ip_revenue_ach": 2.032667991288392,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 164.27,
-      "grade": "A",
+      "score": 98.13,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPRevenue",
         "impact_pct": 94.95,
@@ -33920,15 +33916,15 @@
       "TotalCensusAch%": 1.1105248138356585,
       "TotalRevenueAch%": 1.6455067987363516,
       "SalesActivtiesAch%": 2.0,
-      "PerformanceScore": 164.27,
+      "PerformanceScore": 98.13,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 164.26651483138917,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 164.27,
-      "Performance_Score": 164.27
+      "PerformanceScore%": 98.13,
+      "Performance_Score": 98.13
     }
   },
   {
@@ -34275,15 +34271,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.3439930499431398,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.9042849762100809,
       "ip_census_ach": 0.938595659045539,
-      "ip_revenue_ach": 1.0658044405940672,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9
     },
     "evaluation": {
-      "score": 102.91,
-      "grade": "A",
+      "score": 96.51,
+      "grade": "B",
       "root_cause": {
         "kpi": "IPCensus",
         "impact_pct": 43.96,
@@ -34294,14 +34290,13 @@
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
-        "Promotion Candidate",
-        "Attrition Risk"
+        "Promotion Candidate"
       ],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
+          "mom": "Declining",
           "qoq": "Stable",
-          "ytd": "Critical Decline"
+          "ytd": "Declining"
         },
         "attendance": {
           "mom": "Stable",
@@ -34363,15 +34358,15 @@
       "TotalCensusAch%": 1.3900154022940368,
       "TotalRevenueAch%": 1.0141182058812084,
       "SalesActivtiesAch%": 0.9,
-      "PerformanceScore": 102.91,
+      "PerformanceScore": 96.51,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 102.90887156440371,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9,
-      "PerformanceScore%": 102.91,
-      "Performance_Score": 102.91
+      "PerformanceScore%": 96.51,
+      "Performance_Score": 96.51
     }
   },
   {
@@ -34423,15 +34418,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.2938010145524446,
-      "op_revenue_ach": 1.681418924726298,
-      "ip_census_ach": 2.162729171600266,
-      "ip_revenue_ach": 2.5210517275769804,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9883720930232558
     },
     "evaluation": {
-      "score": 207.15,
-      "grade": "A",
+      "score": 99.88,
+      "grade": "B",
       "root_cause": {
         "kpi": "Activity",
         "impact_pct": 100.0,
@@ -34446,9 +34441,9 @@
       ],
       "trend_status": {
         "score": {
-          "mom": "Improving",
+          "mom": "Stable",
           "qoq": "Stable",
-          "ytd": "Improving"
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -34510,15 +34505,15 @@
       "TotalCensusAch%": 1.3165141628171813,
       "TotalRevenueAch%": 1.9333087655815029,
       "SalesActivtiesAch%": 0.9883720930232558,
-      "PerformanceScore": 207.15,
+      "PerformanceScore": 99.88,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 207.15147735399077,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9883720930232558,
-      "PerformanceScore%": 207.15,
-      "Performance_Score": 207.15
+      "PerformanceScore%": 99.88,
+      "Performance_Score": 99.88
     }
   },
   {
@@ -34570,15 +34565,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.0872842062335029,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.6925053234090986,
-      "ip_census_ach": 1.0555726561625136,
-      "ip_revenue_ach": 2.168743435290391,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.984251968503937
     },
     "evaluation": {
-      "score": 151.62,
-      "grade": "A",
+      "score": 96.77,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPRevenue",
         "impact_pct": 95.13,
@@ -34589,14 +34584,13 @@
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
-        "Promotion Candidate",
-        "Attrition Risk"
+        "Promotion Candidate"
       ],
       "trend_status": {
         "score": {
-          "mom": "Declining",
+          "mom": "Stable",
           "qoq": "Stable",
-          "ytd": "Declining"
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -34658,15 +34652,15 @@
       "TotalCensusAch%": 1.0864937772287688,
       "TotalRevenueAch%": 1.1353767569734863,
       "SalesActivtiesAch%": 0.984251968503937,
-      "PerformanceScore": 151.62,
+      "PerformanceScore": 96.77,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 151.62318597359584,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.984251968503937,
-      "PerformanceScore%": 151.62,
-      "Performance_Score": 151.62
+      "PerformanceScore%": 96.77,
+      "Performance_Score": 96.77
     }
   },
   {
@@ -34718,15 +34712,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.7537646628108754,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.950623130558493,
       "ip_census_ach": 0.8402064152599179,
-      "ip_revenue_ach": 1.9430776363326858,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9844961240310077
     },
     "evaluation": {
-      "score": 145.33,
-      "grade": "A",
+      "score": 95.36,
+      "grade": "B",
       "root_cause": {
         "kpi": "IPCensus",
         "impact_pct": 86.03,
@@ -34737,11 +34731,12 @@
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
-        "Promotion Candidate"
+        "Promotion Candidate",
+        "Attrition Risk"
       ],
       "trend_status": {
         "score": {
-          "mom": "Improving",
+          "mom": "Declining",
           "qoq": "Stable",
           "ytd": "Declining"
         },
@@ -34805,15 +34800,15 @@
       "TotalCensusAch%": 1.718951719167514,
       "TotalRevenueAch%": 1.2483594822907507,
       "SalesActivtiesAch%": 0.9844961240310077,
-      "PerformanceScore": 145.33,
+      "PerformanceScore": 95.36,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 145.3324931904726,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9844961240310077,
-      "PerformanceScore%": 145.33,
-      "Performance_Score": 145.33
+      "PerformanceScore%": 95.36,
+      "Performance_Score": 95.36
     }
   },
   {
@@ -34865,32 +34860,32 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 2.6674322531718566,
-      "op_revenue_ach": 1.3482451785708982,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.3371125022158093,
-      "ip_revenue_ach": 2.3083336169962636,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9922480620155039
     },
     "evaluation": {
-      "score": 162.38,
-      "grade": "A",
+      "score": 83.35,
+      "grade": "C",
       "root_cause": {
         "kpi": "IPCensus",
         "impact_pct": 99.53,
         "actual": 0.3371,
         "target": 1.0
       },
-      "suggested_action": "Reward & Recognition",
+      "suggested_action": "Sales Target Coaching",
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
-        "Promotion Candidate"
+        "Attrition Risk"
       ],
       "trend_status": {
         "score": {
-          "mom": "Improving",
+          "mom": "Critical Decline",
           "qoq": "Stable",
-          "ytd": "Improving"
+          "ytd": "Critical Decline"
         },
         "attendance": {
           "mom": "Stable",
@@ -34952,15 +34947,15 @@
       "TotalCensusAch%": 0.026059924460707623,
       "TotalRevenueAch%": 1.6362717100985078,
       "SalesActivtiesAch%": 0.9922480620155039,
-      "PerformanceScore": 162.38,
+      "PerformanceScore": 83.35,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 162.3820802578097,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9922480620155039,
-      "PerformanceScore%": 162.38,
-      "Performance_Score": 162.38
+      "PerformanceScore%": 83.35,
+      "Performance_Score": 83.35
     }
   },
   {
@@ -35306,15 +35301,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.2572725792043975,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.8732137841918014,
-      "ip_census_ach": 1.0538065279538866,
-      "ip_revenue_ach": 2.0349821872134983,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 149.22,
-      "grade": "A",
+      "score": 98.73,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPRevenue",
         "impact_pct": 100.0,
@@ -35329,9 +35324,9 @@
       ],
       "trend_status": {
         "score": {
-          "mom": "Improving",
+          "mom": "Stable",
           "qoq": "Stable",
-          "ytd": "Improving"
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -35393,15 +35388,15 @@
       "TotalCensusAch%": 1.2516307696952207,
       "TotalRevenueAch%": 1.2217443050983103,
       "SalesActivtiesAch%": 1.0087412587412588,
-      "PerformanceScore": 149.22,
+      "PerformanceScore": 98.73,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 149.2242252574166,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 149.22,
-      "Performance_Score": 149.22
+      "PerformanceScore%": 98.73,
+      "Performance_Score": 98.73
     }
   },
   {
@@ -35749,14 +35744,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.1559896911441343,
-      "op_revenue_ach": 1.150687497521542,
-      "ip_census_ach": 1.8405534945206077,
-      "ip_revenue_ach": 1.976909877632449,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 168.04,
+      "score": 100.0,
       "grade": "A",
       "root_cause": null,
       "suggested_action": "Reward & Recognition",
@@ -35766,7 +35761,7 @@
       "trend_status": {
         "score": {
           "mom": "Improving",
-          "qoq": "Improving",
+          "qoq": "Stable",
           "ytd": "Improving"
         },
         "attendance": {
@@ -35829,15 +35824,15 @@
       "TotalCensusAch%": 1.2592167762250424,
       "TotalRevenueAch%": 1.7125187159969586,
       "SalesActivtiesAch%": 2.0,
-      "PerformanceScore": 168.04,
+      "PerformanceScore": 100.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 168.04155374313217,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 168.04,
-      "Performance_Score": 168.04
+      "PerformanceScore%": 100.0,
+      "Performance_Score": 100.0
     }
   },
   {
@@ -35889,25 +35884,26 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 7.941550190597204,
-      "op_revenue_ach": 4.069730104166665,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.35778175313059035,
       "ip_revenue_ach": 0.06282394869760838,
       "activity_ach": 0.0
     },
     "evaluation": {
-      "score": 131.88,
-      "grade": "A",
+      "score": 31.77,
+      "grade": "E",
       "root_cause": {
         "kpi": "IPRevenue",
         "impact_pct": 61.81,
         "actual": 0.0628,
         "target": 1.0
       },
-      "suggested_action": "Reward & Recognition",
+      "suggested_action": "SIP",
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
+        "SIP Candidate",
         "Attrition Risk"
       ],
       "trend_status": {
@@ -35976,15 +35972,15 @@
       "TotalCensusAch%": 0.06797949824656056,
       "TotalRevenueAch%": 0.9342582212391598,
       "SalesActivtiesAch%": 0.0,
-      "PerformanceScore": 131.88,
+      "PerformanceScore": 31.77,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 131.88442446729584,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.0,
-      "PerformanceScore%": 131.88,
-      "Performance_Score": 131.88
+      "PerformanceScore%": 31.77,
+      "Performance_Score": 31.77
     }
   },
   {
@@ -36036,14 +36032,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 3.7154121798465036,
-      "op_revenue_ach": 1.038272330960545,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.6341945373441479,
       "ip_revenue_ach": 0.054267598039215686,
       "activity_ach": 0.0
     },
     "evaluation": {
-      "score": 65.83,
+      "score": 38.3,
       "grade": "E",
       "root_cause": {
         "kpi": "IPRevenue",
@@ -36051,10 +36047,12 @@
         "actual": 0.0543,
         "target": 1.0
       },
-      "suggested_action": "Sales Target Coaching",
+      "suggested_action": "SIP",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [],
+      "planning_category": [
+        "SIP Candidate"
+      ],
       "trend_status": {
         "score": {
           "mom": "Improving",
@@ -36121,15 +36119,15 @@
       "TotalCensusAch%": 0.032508742947279866,
       "TotalRevenueAch%": 0.4906300515795519,
       "SalesActivtiesAch%": 0.0,
-      "PerformanceScore": 65.83,
+      "PerformanceScore": 38.3,
       "PerformanceGrade": "Below",
       "Is_Inactive": 1,
       "Is_New": 0,
       "Performance": 65.8337504534389,
       "SuggestedAction": "PIP",
       "ActivityAch%": 0.0,
-      "PerformanceScore%": 65.83,
-      "Performance_Score": 65.83
+      "PerformanceScore%": 38.3,
+      "Performance_Score": 38.3
     }
   },
   {
@@ -36181,15 +36179,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.359566768350318,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.8726309035102994,
       "ip_census_ach": 0.791392561784154,
       "ip_revenue_ach": 0.7589687181321904,
       "activity_ach": 0.7
     },
     "evaluation": {
-      "score": 83.26,
-      "grade": "C",
+      "score": 79.66,
+      "grade": "D",
       "root_cause": {
         "kpi": "IPRevenue",
         "impact_pct": 53.34,
@@ -36200,6 +36198,7 @@
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
+        "Training Candidate",
         "Attrition Risk"
       ],
       "trend_status": {
@@ -36268,15 +36267,15 @@
       "TotalCensusAch%": 1.273891752716758,
       "TotalRevenueAch%": 0.7953406174531852,
       "SalesActivtiesAch%": 0.7,
-      "PerformanceScore": 83.26,
+      "PerformanceScore": 79.66,
       "PerformanceGrade": "Meet",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 83.26038307915859,
       "SuggestedAction": "Monitor",
       "ActivityAch%": 0.7,
-      "PerformanceScore%": 83.26,
-      "Performance_Score": 83.26
+      "PerformanceScore%": 79.66,
+      "Performance_Score": 79.66
     }
   },
   {
@@ -36328,15 +36327,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.4249966432962256,
-      "op_revenue_ach": 1.7866313859962355,
-      "ip_census_ach": 1.342229778272086,
-      "ip_revenue_ach": 1.684819486828659,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9883720930232558
     },
     "evaluation": {
-      "score": 151.37,
-      "grade": "A",
+      "score": 99.88,
+      "grade": "B",
       "root_cause": {
         "kpi": "Activity",
         "impact_pct": 100.0,
@@ -36347,14 +36346,13 @@
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
-        "Promotion Candidate",
-        "Attrition Risk"
+        "Promotion Candidate"
       ],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
-          "qoq": "Critical Decline",
-          "ytd": "Critical Decline"
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -36416,15 +36414,15 @@
       "TotalCensusAch%": 1.422281508874485,
       "TotalRevenueAch%": 1.7560878162459626,
       "SalesActivtiesAch%": 0.9883720930232558,
-      "PerformanceScore": 151.37,
+      "PerformanceScore": 99.88,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 151.37262258724897,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9883720930232558,
-      "PerformanceScore%": 151.37,
-      "Performance_Score": 151.37
+      "PerformanceScore%": 99.88,
+      "Performance_Score": 99.88
     }
   },
   {
@@ -36479,25 +36477,22 @@
       "op_census_ach": 0.6563754736626759,
       "op_revenue_ach": 0.6448284625021089,
       "ip_census_ach": 0.657767574349129,
-      "ip_revenue_ach": 1.2104114387500162,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.984251968503937
     },
     "evaluation": {
-      "score": 93.77,
-      "grade": "B",
+      "score": 84.3,
+      "grade": "C",
       "root_cause": {
         "kpi": "IPCensus",
         "impact_pct": 54.49,
         "actual": 0.6578,
         "target": 1.0
       },
-      "suggested_action": "Reward & Recognition",
+      "suggested_action": "Sales Target Coaching",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Promotion Candidate",
-        "Attrition Risk"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
           "mom": "Critical Decline",
@@ -36564,163 +36559,15 @@
       "TotalCensusAch%": 0.6564387509666055,
       "TotalRevenueAch%": 0.8145033553764811,
       "SalesActivtiesAch%": 0.984251968503937,
-      "PerformanceScore": 93.77,
+      "PerformanceScore": 84.3,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 93.76726314916618,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.984251968503937,
-      "PerformanceScore%": 93.77,
-      "Performance_Score": 93.77
-    }
-  },
-  {
-    "id": "SGHS00485_April",
-    "employee_id": "SGHS00485",
-    "employee_name": "Mariana Nashat Thabet Kamel",
-    "team": "Sales",
-    "month": "April",
-    "region": "UAE",
-    "calls": {
-      "inbound": 0,
-      "outbound": 0,
-      "total_handled": 0,
-      "abandoned": 0,
-      "aht_raw": "00:00:00"
-    },
-    "geo": {
-      "bookings": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      },
-      "attended": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      }
-    },
-    "actual": {
-      "booking_rate": 0.0,
-      "attend_rate": 0.0,
-      "abandon_rate": 0.0,
-      "reachability_rate": 0.0,
-      "rejection_rate": 0.0,
-      "initial_error_rate": 0.0,
-      "submission_rate": 0.0,
-      "quality_rate": 0.0,
-      "utz_rate": 0.0
-    },
-    "achievement": {
-      "booking_ach": 0.0,
-      "attend_ach": 0.0,
-      "quality_ach": 0.0,
-      "aht_ach": 0.0,
-      "reachability_ach": 0.0,
-      "abandon_ach": 0.0,
-      "rejection_ach": 0.0,
-      "initial_error_ach": 0.0,
-      "submission_ach": 0.0,
-      "op_census_ach": 1.4319262682514176,
-      "op_revenue_ach": 2.1515957614376453,
-      "ip_census_ach": 0.6236371054655554,
-      "ip_revenue_ach": 1.108082125690449,
-      "activity_ach": 0.9844961240310077
-    },
-    "evaluation": {
-      "score": 111.13,
-      "grade": "A",
-      "root_cause": {
-        "kpi": "IPCensus",
-        "impact_pct": 98.38,
-        "actual": 0.6236,
-        "target": 1.0
-      },
-      "suggested_action": "Reward & Recognition",
-      "corrective_action": null,
-      "manager_notes": null,
-      "planning_category": [
-        "Promotion Candidate",
-        "Attrition Risk"
-      ],
-      "trend_status": {
-        "score": {
-          "mom": "Critical Decline",
-          "qoq": "Critical Decline",
-          "ytd": "Critical Decline"
-        },
-        "attendance": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "booking": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "quality": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "aht": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        }
-      }
-    },
-    "upload_id": null,
-    "raw_data": {
-      "Date": "2026-04-01 00:00:00",
-      "Region": "UAE",
-      "HRID": "SGHS00485",
-      "AgentName": "Mariana Nashat Thabet Kamel",
-      "Status": "Active",
-      "Team": "SHJ",
-      "T.OPCensus": 1532.2017960318453,
-      "T.OPRevenue": 695301.6304514401,
-      "T.IPCensus": 70.5538519346973,
-      "T.IPRevenue": 297986.4130506172,
-      "T.TotalCensus": 1602.7556479665427,
-      "T.TotalRevenue": 993288.0435020573,
-      "T.ClinicActivity/AgentActivity": 2.0,
-      "T.CorporateActivity(HealthCheckup)": 2.0,
-      "T.CBDTour": 5.0,
-      "T.ReqularVisits": 120.0,
-      "A.OPCensus": 2194,
-      "A.OPRevenue": 1496008.0410000025,
-      "A.IPCensus": 44,
-      "A.IPRevenue": 330193.41800000006,
-      "A.TotalCensus": 2238,
-      "A.TotalRevenue": 1826201.4590000026,
-      "A.0500Cases": null,
-      "A.0500Rev": null,
-      "A.OldCBDRev": null,
-      "A.ClinicActivity/AgentActivity": 2,
-      "A.CorporateActivity(HealthCheckup)": 7.0,
-      "A.CBDTour": 2.0,
-      "A.ReqularVisits": 116.0,
-      "OPCensusAch%": 1.4319262682514176,
-      "OPRevenueAch%": 2.1515957614376453,
-      "IPCensusAch%": 0.6236371054655554,
-      "IPRevenueAch%": 1.108082125690449,
-      "TotalCensusAch%": 1.3963451027855731,
-      "TotalRevenueAch%": 1.8385416707134863,
-      "SalesActivtiesAch%": 0.9844961240310077,
-      "PerformanceScore": 111.13,
-      "PerformanceGrade": "Exceeds",
-      "Is_Inactive": 0,
-      "Is_New": 0,
-      "Performance": 111.1348048299098,
-      "SuggestedAction": "Reward",
-      "ActivityAch%": 0.9844961240310077,
-      "PerformanceScore%": 111.13,
-      "Performance_Score": 111.13
+      "PerformanceScore%": 84.3,
+      "Performance_Score": 84.3
     }
   },
   {
@@ -36775,30 +36622,27 @@
       "op_census_ach": 0.7240974368134658,
       "op_revenue_ach": 0.8307773877648701,
       "ip_census_ach": 0.5482016539049176,
-      "ip_revenue_ach": 1.5047883889859097,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9922480620155039
     },
     "evaluation": {
-      "score": 106.89,
-      "grade": "A",
+      "score": 84.18,
+      "grade": "C",
       "root_cause": {
         "kpi": "IPCensus",
         "impact_pct": 71.38,
         "actual": 0.5482,
         "target": 1.0
       },
-      "suggested_action": "Reward & Recognition",
+      "suggested_action": "Sales Target Coaching",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Promotion Candidate",
-        "Attrition Risk"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
-          "qoq": "Stable",
-          "ytd": "Critical Decline"
+          "mom": "Stable",
+          "qoq": "Critical Decline",
+          "ytd": "Declining"
         },
         "attendance": {
           "mom": "Stable",
@@ -36860,15 +36704,15 @@
       "TotalCensusAch%": 0.7161217903495519,
       "TotalRevenueAch%": 1.0329806881311823,
       "SalesActivtiesAch%": 0.9922480620155039,
-      "PerformanceScore": 106.89,
+      "PerformanceScore": 84.18,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 106.89174771792727,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9922480620155039,
-      "PerformanceScore%": 106.89,
-      "Performance_Score": 106.89
+      "PerformanceScore%": 84.18,
+      "Performance_Score": 84.18
     }
   },
   {
@@ -37216,32 +37060,29 @@
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
       "op_census_ach": 0.8468907590440956,
-      "op_revenue_ach": 1.014568541267127,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.6469144588079627,
-      "ip_revenue_ach": 1.1616920564096926,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 97.06,
-      "grade": "B",
+      "score": 89.64,
+      "grade": "C",
       "root_cause": {
         "kpi": "IPCensus",
         "impact_pct": 85.22,
         "actual": 0.6469,
         "target": 1.0
       },
-      "suggested_action": "Reward & Recognition",
+      "suggested_action": "Sales Target Coaching",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Promotion Candidate",
-        "Attrition Risk"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
+          "mom": "Declining",
           "qoq": "Critical Decline",
-          "ytd": "Critical Decline"
+          "ytd": "Declining"
         },
         "attendance": {
           "mom": "Stable",
@@ -37303,15 +37144,15 @@
       "TotalCensusAch%": 0.8382319865996528,
       "TotalRevenueAch%": 1.0587055958098968,
       "SalesActivtiesAch%": 1.0087412587412588,
-      "PerformanceScore": 97.06,
+      "PerformanceScore": 89.64,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 97.06359701174746,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 97.06,
-      "Performance_Score": 97.06
+      "PerformanceScore%": 89.64,
+      "Performance_Score": 89.64
     }
   },
   {
@@ -37364,13 +37205,13 @@
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
       "op_census_ach": 0.5272789379403471,
-      "op_revenue_ach": 1.3874183567568446,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.4542641579986706,
       "ip_revenue_ach": 0.2818433592656237,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 53.19,
+      "score": 49.31,
       "grade": "E",
       "root_cause": {
         "kpi": "IPRevenue",
@@ -37378,11 +37219,11 @@
         "actual": 0.2818,
         "target": 1.0
       },
-      "suggested_action": "PI",
+      "suggested_action": "SIP",
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
-        "PI Candidate"
+        "SIP Candidate"
       ],
       "trend_status": {
         "score": {
@@ -37450,15 +37291,15 @@
       "TotalCensusAch%": 0.516305476229503,
       "TotalRevenueAch%": 0.6356273268943383,
       "SalesActivtiesAch%": 1.5,
-      "PerformanceScore": 53.19,
+      "PerformanceScore": 49.31,
       "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 53.18652806389175,
       "SuggestedAction": "PIP",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 53.19,
-      "Performance_Score": 53.19
+      "PerformanceScore%": 49.31,
+      "Performance_Score": 49.31
     }
   },
   {
@@ -37510,15 +37351,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.178788801822617,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.8079581332096559,
-      "ip_census_ach": 1.9513198526966753,
-      "ip_revenue_ach": 1.4461609240086615,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 143.73,
-      "grade": "A",
+      "score": 98.08,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPRevenue",
         "impact_pct": 100.0,
@@ -37528,13 +37369,11 @@
       "suggested_action": "Reward & Recognition",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Attrition Risk"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
-          "qoq": "Critical Decline",
+          "mom": "Stable",
+          "qoq": "Improving",
           "ytd": "Improving"
         },
         "attendance": {
@@ -37597,15 +37436,15 @@
       "TotalCensusAch%": 1.294894439225836,
       "TotalRevenueAch%": 1.2419360491761573,
       "SalesActivtiesAch%": 1.5,
-      "PerformanceScore": 143.73,
+      "PerformanceScore": 98.08,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 143.72770724812938,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 143.73,
-      "Performance_Score": 143.73
+      "PerformanceScore%": 98.08,
+      "Performance_Score": 98.08
     }
   },
   {
@@ -37657,14 +37496,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 2.0445256478484812,
-      "op_revenue_ach": 1.2518771849471035,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.4793131828197675,
       "ip_revenue_ach": 0.31091098673870765,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 68.94,
+      "score": 55.97,
       "grade": "E",
       "root_cause": {
         "kpi": "IPRevenue",
@@ -37672,17 +37511,17 @@
         "actual": 0.3109,
         "target": 1.0
       },
-      "suggested_action": "Sales Target Coaching",
+      "suggested_action": "PI",
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
-        "Attrition Risk"
+        "PI Candidate"
       ],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
+          "mom": "Improving",
           "qoq": "Stable",
-          "ytd": "Critical Decline"
+          "ytd": "Declining"
         },
         "attendance": {
           "mom": "Stable",
@@ -37744,15 +37583,15 @@
       "TotalCensusAch%": 1.8092995780636159,
       "TotalRevenueAch%": 0.6120201432971408,
       "SalesActivtiesAch%": 1.0,
-      "PerformanceScore": 68.94,
+      "PerformanceScore": 55.97,
       "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 68.93785230169189,
       "SuggestedAction": "PIP",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 68.94,
-      "Performance_Score": 68.94
+      "PerformanceScore%": 55.97,
+      "Performance_Score": 55.97
     }
   },
   {
@@ -37804,14 +37643,14 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.2534013605442171,
-      "op_revenue_ach": 1.1326350621828116,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.9423076923076925,
       "ip_revenue_ach": 0.7162950137231922,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 89.65,
+      "score": 85.79,
       "grade": "C",
       "root_cause": {
         "kpi": "IPRevenue",
@@ -37827,7 +37666,7 @@
         "score": {
           "mom": "Improving",
           "qoq": "Critical Decline",
-          "ytd": "Critical Decline"
+          "ytd": "Declining"
         },
         "attendance": {
           "mom": "Stable",
@@ -37889,15 +37728,15 @@
       "TotalCensusAch%": 1.2066473988439301,
       "TotalRevenueAch%": 0.8495238173421389,
       "SalesActivtiesAch%": 1.3333333333333333,
-      "PerformanceScore": 89.65,
+      "PerformanceScore": 85.79,
       "PerformanceGrade": "Meet",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 89.65133215250626,
       "SuggestedAction": "Monitor",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 89.65,
-      "Performance_Score": 89.65
+      "PerformanceScore%": 85.79,
+      "Performance_Score": 85.79
     }
   },
   {
@@ -37949,28 +37788,27 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.6114415827893098,
-      "op_revenue_ach": 1.3648780506350775,
-      "ip_census_ach": 1.5097894685596638,
-      "ip_revenue_ach": 1.1220019573856221,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 1.0
     },
     "evaluation": {
-      "score": 128.0,
+      "score": 100.0,
       "grade": "A",
       "root_cause": null,
       "suggested_action": "Reward & Recognition",
       "corrective_action": null,
       "manager_notes": null,
       "planning_category": [
-        "Promotion Candidate",
-        "Attrition Risk"
+        "Promotion Candidate"
       ],
       "trend_status": {
         "score": {
-          "mom": "Critical Decline",
-          "qoq": "Declining",
-          "ytd": "Critical Decline"
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -38032,15 +37870,15 @@
       "TotalCensusAch%": 1.6081034545434452,
       "TotalRevenueAch%": 1.2920152226602408,
       "SalesActivtiesAch%": 1.0,
-      "PerformanceScore": 128.0,
+      "PerformanceScore": 100.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 127.99802113058846,
       "SuggestedAction": "Reward",
       "ActivityAch%": 1.0,
-      "PerformanceScore%": 128.0,
-      "Performance_Score": 128.0
+      "PerformanceScore%": 100.0,
+      "Performance_Score": 100.0
     }
   },
   {
@@ -38094,13 +37932,13 @@
       "submission_ach": 0.0,
       "op_census_ach": 0.8667895422051463,
       "op_revenue_ach": 0.7465360949099876,
-      "ip_census_ach": 1.1674986640919487,
-      "ip_revenue_ach": 1.050700216503525,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.952755905511811
     },
     "evaluation": {
-      "score": 102.13,
-      "grade": "A",
+      "score": 95.66,
+      "grade": "B",
       "root_cause": {
         "kpi": "OPRevenue",
         "impact_pct": 58.41,
@@ -38110,14 +37948,12 @@
       "suggested_action": "Reward & Recognition",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Promotion Candidate"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
           "mom": "Improving",
-          "qoq": "Critical Decline",
-          "ytd": "Critical Decline"
+          "qoq": "Stable",
+          "ytd": "Stable"
         },
         "attendance": {
           "mom": "Stable",
@@ -38179,162 +38015,15 @@
       "TotalCensusAch%": 0.8763866418398315,
       "TotalRevenueAch%": 0.8377853313880488,
       "SalesActivtiesAch%": 0.952755905511811,
-      "PerformanceScore": 102.13,
+      "PerformanceScore": 95.66,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 102.12979177122679,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.952755905511811,
-      "PerformanceScore%": 102.13,
-      "Performance_Score": 102.13
-    }
-  },
-  {
-    "id": "SGHS00485_May",
-    "employee_id": "SGHS00485",
-    "employee_name": "Mariana Nashat Thabet Kamel",
-    "team": "Sales",
-    "month": "May",
-    "region": "UAE",
-    "calls": {
-      "inbound": 0,
-      "outbound": 0,
-      "total_handled": 0,
-      "abandoned": 0,
-      "aht_raw": "00:00:00"
-    },
-    "geo": {
-      "bookings": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      },
-      "attended": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      }
-    },
-    "actual": {
-      "booking_rate": 0.0,
-      "attend_rate": 0.0,
-      "abandon_rate": 0.0,
-      "reachability_rate": 0.0,
-      "rejection_rate": 0.0,
-      "initial_error_rate": 0.0,
-      "submission_rate": 0.0,
-      "quality_rate": 0.0,
-      "utz_rate": 0.0
-    },
-    "achievement": {
-      "booking_ach": 0.0,
-      "attend_ach": 0.0,
-      "quality_ach": 0.0,
-      "aht_ach": 0.0,
-      "reachability_ach": 0.0,
-      "abandon_ach": 0.0,
-      "rejection_ach": 0.0,
-      "initial_error_ach": 0.0,
-      "submission_ach": 0.0,
-      "op_census_ach": 1.4397193631886063,
-      "op_revenue_ach": 1.4812239759539634,
-      "ip_census_ach": 1.466791045032891,
-      "ip_revenue_ach": 1.8166004481325033,
-      "activity_ach": 0.984251968503937
-    },
-    "evaluation": {
-      "score": 157.47,
-      "grade": "A",
-      "root_cause": {
-        "kpi": "Activity",
-        "impact_pct": 100.0,
-        "actual": 0.9843,
-        "target": 1.0
-      },
-      "suggested_action": "Reward & Recognition",
-      "corrective_action": null,
-      "manager_notes": null,
-      "planning_category": [
-        "Promotion Candidate"
-      ],
-      "trend_status": {
-        "score": {
-          "mom": "Improving",
-          "qoq": "Improving",
-          "ytd": "Improving"
-        },
-        "attendance": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "booking": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "quality": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "aht": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        }
-      }
-    },
-    "upload_id": null,
-    "raw_data": {
-      "Date": "2026-05-01 00:00:00",
-      "Region": "UAE",
-      "HRID": "SGHS00485",
-      "AgentName": "Mariana Nashat Thabet Kamel",
-      "Status": "Active",
-      "Team": "SHJ",
-      "T.OPCensus": 1547.523813992163,
-      "T.OPRevenue": 702254.6467559541,
-      "T.IPCensus": 69.53955735236492,
-      "T.IPRevenue": 300966.2771811234,
-      "T.TotalCensus": 1617.063371344528,
-      "T.TotalRevenue": 1003220.9239370775,
-      "T.ClinicActivity/AgentActivity": 2.0,
-      "T.CorporateActivity(HealthCheckup)": 2.0,
-      "T.CBDTour": 3.0,
-      "T.ReqularVisits": 120.0,
-      "A.OPCensus": 2228,
-      "A.OPRevenue": 1040196.4200000004,
-      "A.IPCensus": 102,
-      "A.IPRevenue": 546735.4739999999,
-      "A.TotalCensus": 2330,
-      "A.TotalRevenue": 1586931.8940000003,
-      "A.0500Cases": null,
-      "A.0500Rev": null,
-      "A.OldCBDRev": null,
-      "A.ClinicActivity/AgentActivity": 3,
-      "A.CorporateActivity(HealthCheckup)": 3.0,
-      "A.CBDTour": 3.0,
-      "A.ReqularVisits": 116.0,
-      "OPCensusAch%": 1.4397193631886063,
-      "OPRevenueAch%": 1.4812239759539634,
-      "IPCensusAch%": 1.466791045032891,
-      "IPRevenueAch%": 1.8166004481325033,
-      "TotalCensusAch%": 1.4408835431493894,
-      "TotalRevenueAch%": 1.5818369176075253,
-      "SalesActivtiesAch%": 0.984251968503937,
-      "PerformanceScore": 157.47,
-      "PerformanceGrade": "Exceeds",
-      "Is_Inactive": 0,
-      "Is_New": 0,
-      "Performance": 157.46874936825,
-      "SuggestedAction": "Reward",
-      "ActivityAch%": 0.984251968503937,
-      "PerformanceScore%": 157.47,
-      "Performance_Score": 157.47
+      "PerformanceScore%": 95.66,
+      "Performance_Score": 95.66
     }
   },
   {
@@ -38534,15 +38223,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.0604663952809013,
-      "op_revenue_ach": 1.6217216495000155,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
       "ip_census_ach": 0.427821055095172,
       "ip_revenue_ach": 0.7799702070241059,
       "activity_ach": 0.9782608695652174
     },
     "evaluation": {
-      "score": 82.4,
-      "grade": "C",
+      "score": 75.58,
+      "grade": "D",
       "root_cause": {
         "kpi": "IPCensus",
         "impact_pct": 58.57,
@@ -38552,7 +38241,9 @@
       "suggested_action": "Sales Target Coaching",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [],
+      "planning_category": [
+        "Training Candidate"
+      ],
       "trend_status": {
         "score": {
           "mom": "Improving",
@@ -38619,15 +38310,15 @@
       "TotalCensusAch%": 1.0396899949885536,
       "TotalRevenueAch%": 1.3691962167572425,
       "SalesActivtiesAch%": 0.9782608695652174,
-      "PerformanceScore": 82.4,
+      "PerformanceScore": 75.58,
       "PerformanceGrade": "Meet",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 82.39867483692541,
       "SuggestedAction": "Monitor",
       "ActivityAch%": 0.9782608695652174,
-      "PerformanceScore%": 82.4,
-      "Performance_Score": 82.4
+      "PerformanceScore%": 75.58,
+      "Performance_Score": 75.58
     }
   },
   {
@@ -38679,15 +38370,15 @@
       "rejection_ach": 0.0,
       "initial_error_ach": 0.0,
       "submission_ach": 0.0,
-      "op_census_ach": 1.0756759828868072,
+      "op_census_ach": 1.0,
       "op_revenue_ach": 0.9917201534954658,
-      "ip_census_ach": 1.1482280211467135,
-      "ip_revenue_ach": 1.070838487951069,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
       "activity_ach": 0.9551656920077972
     },
     "evaluation": {
-      "score": 107.12,
-      "grade": "A",
+      "score": 99.47,
+      "grade": "B",
       "root_cause": {
         "kpi": "Activity",
         "impact_pct": 84.41,
@@ -38697,14 +38388,12 @@
       "suggested_action": "Reward & Recognition",
       "corrective_action": null,
       "manager_notes": null,
-      "planning_category": [
-        "Promotion Candidate"
-      ],
+      "planning_category": [],
       "trend_status": {
         "score": {
           "mom": "Improving",
-          "qoq": "Critical Decline",
-          "ytd": "Critical Decline"
+          "qoq": "Stable",
+          "ytd": "Improving"
         },
         "attendance": {
           "mom": "Stable",
@@ -38766,15 +38455,310 @@
       "TotalCensusAch%": 1.0781517742376299,
       "TotalRevenueAch%": 1.015455653832147,
       "SalesActivtiesAch%": 0.9551656920077972,
-      "PerformanceScore": 107.12,
+      "PerformanceScore": 99.47,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 107.11905077036666,
       "SuggestedAction": "Reward",
       "ActivityAch%": 0.9551656920077972,
-      "PerformanceScore%": 107.12,
-      "Performance_Score": 107.12
+      "PerformanceScore%": 99.47,
+      "Performance_Score": 99.47
+    }
+  },
+  {
+    "id": "SGHS00485_April",
+    "employee_id": "SGHS00485",
+    "employee_name": "Mariana Nashat Thabet Kamel",
+    "team": "Sales",
+    "month": "April",
+    "region": "UAE",
+    "calls": {
+      "inbound": 0,
+      "outbound": 0,
+      "total_handled": 0,
+      "abandoned": 0,
+      "aht_raw": "00:00:00"
+    },
+    "geo": {
+      "bookings": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      },
+      "attended": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      }
+    },
+    "actual": {
+      "booking_rate": 0.0,
+      "attend_rate": 0.0,
+      "abandon_rate": 0.0,
+      "reachability_rate": 0.0,
+      "rejection_rate": 0.0,
+      "initial_error_rate": 0.0,
+      "submission_rate": 0.0,
+      "quality_rate": 0.0,
+      "utz_rate": 0.0
+    },
+    "achievement": {
+      "booking_ach": 0.0,
+      "attend_ach": 0.0,
+      "quality_ach": 0.0,
+      "aht_ach": 0.0,
+      "reachability_ach": 0.0,
+      "abandon_ach": 0.0,
+      "rejection_ach": 0.0,
+      "initial_error_ach": 0.0,
+      "submission_ach": 0.0,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 0.6236371054655554,
+      "ip_revenue_ach": 1.0,
+      "activity_ach": 0.9844961240310077
+    },
+    "evaluation": {
+      "score": 90.44,
+      "grade": "B",
+      "root_cause": {
+        "kpi": "IPCensus",
+        "impact_pct": 98.38,
+        "actual": 0.6236,
+        "target": 1.0
+      },
+      "suggested_action": "Reward & Recognition",
+      "corrective_action": null,
+      "manager_notes": null,
+      "planning_category": [
+        "Promotion Candidate",
+        "Attrition Risk"
+      ],
+      "trend_status": {
+        "score": {
+          "mom": "Declining",
+          "qoq": "Declining",
+          "ytd": "Declining"
+        },
+        "attendance": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "booking": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "quality": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "aht": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        }
+      }
+    },
+    "upload_id": null,
+    "raw_data": {
+      "Date": "2026-04-01 00:00:00",
+      "Region": "UAE",
+      "HRID": "SGHS00485",
+      "AgentName": "Mariana Nashat Thabet Kamel",
+      "Status": "Active",
+      "Team": "SHJ",
+      "T.OPCensus": 1532.2017960318453,
+      "T.OPRevenue": 695301.6304514401,
+      "T.IPCensus": 70.5538519346973,
+      "T.IPRevenue": 297986.4130506172,
+      "T.TotalCensus": 1602.7556479665427,
+      "T.TotalRevenue": 993288.0435020573,
+      "T.ClinicActivity/AgentActivity": 2.0,
+      "T.CorporateActivity(HealthCheckup)": 2.0,
+      "T.CBDTour": 5.0,
+      "T.ReqularVisits": 120.0,
+      "A.OPCensus": 2194,
+      "A.OPRevenue": 1496008.0410000025,
+      "A.IPCensus": 44,
+      "A.IPRevenue": 330193.41800000006,
+      "A.TotalCensus": 2238,
+      "A.TotalRevenue": 1826201.4590000026,
+      "A.0500Cases": null,
+      "A.0500Rev": null,
+      "A.OldCBDRev": null,
+      "A.ClinicActivity/AgentActivity": 2,
+      "A.CorporateActivity(HealthCheckup)": 7.0,
+      "A.CBDTour": 2.0,
+      "A.ReqularVisits": 116.0,
+      "OPCensusAch%": 1.4319262682514176,
+      "OPRevenueAch%": 2.1515957614376453,
+      "IPCensusAch%": 0.6236371054655554,
+      "IPRevenueAch%": 1.108082125690449,
+      "TotalCensusAch%": 1.3963451027855731,
+      "TotalRevenueAch%": 1.8385416707134863,
+      "SalesActivtiesAch%": 0.9844961240310077,
+      "PerformanceScore": 90.44,
+      "PerformanceGrade": "Exceeds",
+      "Is_Inactive": 0,
+      "Is_New": 0,
+      "Performance": 111.1348048299098,
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9844961240310077,
+      "PerformanceScore%": 90.44,
+      "Performance_Score": 90.44
+    }
+  },
+  {
+    "id": "SGHS00485_May",
+    "employee_id": "SGHS00485",
+    "employee_name": "Mariana Nashat Thabet Kamel",
+    "team": "Sales",
+    "month": "May",
+    "region": "UAE",
+    "calls": {
+      "inbound": 0,
+      "outbound": 0,
+      "total_handled": 0,
+      "abandoned": 0,
+      "aht_raw": "00:00:00"
+    },
+    "geo": {
+      "bookings": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      },
+      "attended": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      }
+    },
+    "actual": {
+      "booking_rate": 0.0,
+      "attend_rate": 0.0,
+      "abandon_rate": 0.0,
+      "reachability_rate": 0.0,
+      "rejection_rate": 0.0,
+      "initial_error_rate": 0.0,
+      "submission_rate": 0.0,
+      "quality_rate": 0.0,
+      "utz_rate": 0.0
+    },
+    "achievement": {
+      "booking_ach": 0.0,
+      "attend_ach": 0.0,
+      "quality_ach": 0.0,
+      "aht_ach": 0.0,
+      "reachability_ach": 0.0,
+      "abandon_ach": 0.0,
+      "rejection_ach": 0.0,
+      "initial_error_ach": 0.0,
+      "submission_ach": 0.0,
+      "op_census_ach": 1.0,
+      "op_revenue_ach": 1.0,
+      "ip_census_ach": 1.0,
+      "ip_revenue_ach": 1.0,
+      "activity_ach": 0.984251968503937
+    },
+    "evaluation": {
+      "score": 99.84,
+      "grade": "B",
+      "root_cause": {
+        "kpi": "Activity",
+        "impact_pct": 100.0,
+        "actual": 0.9843,
+        "target": 1.0
+      },
+      "suggested_action": "Reward & Recognition",
+      "corrective_action": null,
+      "manager_notes": null,
+      "planning_category": [
+        "Promotion Candidate"
+      ],
+      "trend_status": {
+        "score": {
+          "mom": "Improving",
+          "qoq": "Stable",
+          "ytd": "Improving"
+        },
+        "attendance": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "booking": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "quality": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "aht": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        }
+      }
+    },
+    "upload_id": null,
+    "raw_data": {
+      "Date": "2026-05-01 00:00:00",
+      "Region": "UAE",
+      "HRID": "SGHS00485",
+      "AgentName": "Mariana Nashat Thabet Kamel",
+      "Status": "Active",
+      "Team": "SHJ",
+      "T.OPCensus": 1547.523813992163,
+      "T.OPRevenue": 702254.6467559541,
+      "T.IPCensus": 69.53955735236492,
+      "T.IPRevenue": 300966.2771811234,
+      "T.TotalCensus": 1617.063371344528,
+      "T.TotalRevenue": 1003220.9239370775,
+      "T.ClinicActivity/AgentActivity": 2.0,
+      "T.CorporateActivity(HealthCheckup)": 2.0,
+      "T.CBDTour": 3.0,
+      "T.ReqularVisits": 120.0,
+      "A.OPCensus": 2228,
+      "A.OPRevenue": 1040196.4200000004,
+      "A.IPCensus": 102,
+      "A.IPRevenue": 546735.4739999999,
+      "A.TotalCensus": 2330,
+      "A.TotalRevenue": 1586931.8940000003,
+      "A.0500Cases": null,
+      "A.0500Rev": null,
+      "A.OldCBDRev": null,
+      "A.ClinicActivity/AgentActivity": 3,
+      "A.CorporateActivity(HealthCheckup)": 3.0,
+      "A.CBDTour": 3.0,
+      "A.ReqularVisits": 116.0,
+      "OPCensusAch%": 1.4397193631886063,
+      "OPRevenueAch%": 1.4812239759539634,
+      "IPCensusAch%": 1.466791045032891,
+      "IPRevenueAch%": 1.8166004481325033,
+      "TotalCensusAch%": 1.4408835431493894,
+      "TotalRevenueAch%": 1.5818369176075253,
+      "SalesActivtiesAch%": 0.984251968503937,
+      "PerformanceScore": 99.84,
+      "PerformanceGrade": "Exceeds",
+      "Is_Inactive": 0,
+      "Is_New": 0,
+      "Performance": 157.46874936825,
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.984251968503937,
+      "PerformanceScore%": 99.84,
+      "Performance_Score": 99.84
     }
   }
 ]

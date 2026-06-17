@@ -434,11 +434,11 @@ class KPIService:
             activity_ach = min(1.0, activity_ratio)
 
             achievements = {
-                "OPCensus": safe_float(op_census_ach),
-                "OPRevenue": safe_float(op_revenue_ach),
-                "IPCensus": safe_float(ip_census_ach),
-                "IPRevenue": safe_float(ip_revenue_ach),
-                "Activity": safe_float(activity_ach)
+                "OPCensus": min(1.0, safe_float(op_census_ach)),
+                "OPRevenue": min(1.0, safe_float(op_revenue_ach)),
+                "IPCensus": min(1.0, safe_float(ip_census_ach)),
+                "IPRevenue": min(1.0, safe_float(ip_revenue_ach)),
+                "Activity": min(1.0, safe_float(activity_ach))
             }
             final_weights = {
                 "OPCensus": w_op_census,
