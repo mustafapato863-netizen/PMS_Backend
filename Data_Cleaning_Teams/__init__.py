@@ -1,0 +1,5 @@
+from Data_Cleaning_Teams.inbound import process_inbound
+from Data_Cleaning_Teams.outbound import process_outbound
+from Data_Cleaning_Teams.inbound_UAE import process_inbound_uae
+from Data_Cleaning_Teams.preapprovals_offshore import process_preapprovals_offshore
+from Data_Cleaning_Teams.sales import process_sales

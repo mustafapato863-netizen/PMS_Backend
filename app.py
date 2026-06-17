@@ -62,21 +62,27 @@ def seed_database():
     try:
         excel_file = excel_processor.load_excel(DEFAULT_FILE_PATH)
         
-        # Parse sheets
-        inbound_df = excel_processor.process_sheet_inbound(excel_file)
-        outbound_df = excel_processor.process_sheet_outbound(excel_file)
-        inbound_uae_df = excel_processor.process_sheet_inbound_uae(excel_file)
-        preapprovals_df = excel_processor.process_sheet_preapprovals(excel_file)
+        # Parse sheets conditionally based on existence in excel file
+        inbound_df = excel_processor.process_sheet_inbound(excel_file) if "Inbound" in excel_file.sheet_names else pd.DataFrame()
+        outbound_df = excel_processor.process_sheet_outbound(excel_file) if "Outbound" in excel_file.sheet_names else pd.DataFrame()
+        inbound_uae_df = excel_processor.process_sheet_inbound_uae(excel_file) if "Inbound UAE" in excel_file.sheet_names else pd.DataFrame()
+        preapprovals_df = excel_processor.process_sheet_preapprovals(excel_file) if "Pre-Approvals IP Offshore" in excel_file.sheet_names else pd.DataFrame()
+        sales_df = excel_processor.process_sheet_sales(excel_file) if "Sales" in excel_file.sheet_names else pd.DataFrame()
 
         all_new_records = []
         all_new_employees = []
 
-        sheet_mappings = [
-            ("Inbound", inbound_df, "EmployeeID", "EnglishName"),
-            ("Outbound", outbound_df, "SGHCode", "EnglishName"),
-            ("Inbound UAE", inbound_uae_df, "HRID", "AgentName"),
-            ("Pre-Approvals IP Offshore", preapprovals_df, "HRID", "AgentName")
-        ]
+        sheet_mappings = []
+        if not inbound_df.empty:
+            sheet_mappings.append(("Inbound", inbound_df, "EmployeeID", "EnglishName"))
+        if not outbound_df.empty:
+            sheet_mappings.append(("Outbound", outbound_df, "SGHCode", "EnglishName"))
+        if not inbound_uae_df.empty:
+            sheet_mappings.append(("Inbound UAE", inbound_uae_df, "HRID", "AgentName"))
+        if not preapprovals_df.empty:
+            sheet_mappings.append(("Pre-Approvals IP Offshore", preapprovals_df, "HRID", "AgentName"))
+        if not sales_df.empty:
+            sheet_mappings.append(("Sales", sales_df, "HRID", "AgentName"))
 
         for team_name, df, id_col, name_col in sheet_mappings:
             for _, row in df.iterrows():
@@ -97,13 +103,17 @@ def seed_database():
                 
                 status = str(row.get("Status", "Active"))
                 is_new = row.get("Is_New", False)
+                region_val = str(row.get("Region", "EGY")).strip().upper()
+                if not region_val or region_val == "NAN":
+                    region_val = "UAE" if team_name in ["Inbound UAE", "Sales"] else "EGY"
 
                 # Save Employee record
                 employee = Employee(
                     id=emp_id,
                     name=name,
                     team=team_name,
-                    status=status
+                    status=status,
+                    region=region_val
                 )
                 all_new_employees.append(employee)
 
@@ -168,7 +178,12 @@ def seed_database():
                     abandon_ach=achievements.get("Other", 0.0) if team_name in ["Inbound", "Inbound UAE"] else 0.0,
                     rejection_ach=achievements.get("Rejection", 0.0),
                     initial_error_ach=achievements.get("InitialError", 0.0),
-                    submission_ach=achievements.get("Submission", 0.0)
+                    submission_ach=achievements.get("Submission", 0.0),
+                    op_census_ach=achievements.get("OPCensus", 0.0),
+                    op_revenue_ach=achievements.get("OPRevenue", 0.0),
+                    ip_census_ach=achievements.get("IPCensus", 0.0),
+                    ip_revenue_ach=achievements.get("IPRevenue", 0.0),
+                    activity_ach=achievements.get("Activity", 0.0)
                 )
 
                 root_cause = analysis_service.run_root_cause_analysis(team_name, achievements, weights_used, row.to_dict())
@@ -192,6 +207,7 @@ def seed_database():
                     employee_name=name,
                     team=team_name,
                     month=month,
+                    region=region_val,
                     calls=calls,
                     geo=geo,
                     actual=actual,

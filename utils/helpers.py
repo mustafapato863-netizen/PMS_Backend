@@ -39,11 +39,11 @@ def convert_percentage(col_value) -> float:
         if isinstance(col_value, str):
             col_value = col_value.replace('%', '').strip()
             val = float(col_value)
-            if val > 1.0:
+            if val > 2.0:
                 return val / 100.0
             return val
         elif isinstance(col_value, (int, float)):
-            if col_value > 1.0:
+            if col_value > 2.0:
                 return float(col_value / 100.0)
             return float(col_value)
     except Exception:

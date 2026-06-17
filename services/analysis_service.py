@@ -116,6 +116,59 @@ class AnalysisService:
                 actual_val = safe_float(row.get("NumberApprovalwithin48hrs")) # mapping submission achievement rate
                 target_val = targets.get("Submission", 0.90)
 
+        elif team == "Sales":
+            clean_row = {str(k).replace(" ", ""): v for k, v in row.items()}
+            if root_kpi == "OPCensus":
+                if "A.OPCensus" in clean_row and "T.OPCensus" in clean_row:
+                    a_val = safe_float(clean_row.get("A.OPCensus"))
+                    t_val = safe_float(clean_row.get("T.OPCensus"))
+                    actual_val = a_val / t_val if t_val > 0 else 0.0
+                else:
+                    actual_val = safe_float(clean_row.get("OPCensusAch%"))
+                target_val = targets.get("OPCensus", 1.0)
+            elif root_kpi == "OPRevenue":
+                if "A.OPRevenue" in clean_row and "T.OPRevenue" in clean_row:
+                    a_val = safe_float(clean_row.get("A.OPRevenue"))
+                    t_val = safe_float(clean_row.get("T.OPRevenue"))
+                    actual_val = a_val / t_val if t_val > 0 else 0.0
+                else:
+                    actual_val = safe_float(clean_row.get("OPRevenueAch%"))
+                target_val = targets.get("OPRevenue", 1.0)
+            elif root_kpi == "IPCensus":
+                if "A.IPCensus" in clean_row and "T.IPCensus" in clean_row:
+                    a_val = safe_float(clean_row.get("A.IPCensus"))
+                    t_val = safe_float(clean_row.get("T.IPCensus"))
+                    actual_val = a_val / t_val if t_val > 0 else 0.0
+                else:
+                    actual_val = safe_float(clean_row.get("IPCensusAch%"))
+                target_val = targets.get("IPCensus", 1.0)
+            elif root_kpi == "IPRevenue":
+                if "A.IPRevenue" in clean_row and "T.IPRevenue" in clean_row:
+                    a_val = safe_float(clean_row.get("A.IPRevenue"))
+                    t_val = safe_float(clean_row.get("T.IPRevenue"))
+                    actual_val = a_val / t_val if t_val > 0 else 0.0
+                else:
+                    actual_val = safe_float(clean_row.get("IPRevenueAch%"))
+                target_val = targets.get("IPRevenue", 1.0)
+            elif root_kpi == "Activity":
+                # For Activity, calculate ratio of sum of actuals to sum of targets
+                activity_keywords = ['ClinicActivity', 'CorporateActivity', 'CBDTour', 'Visits']
+                all_act_cols = [c for c in clean_row.keys() if any(k in c for k in activity_keywords) and 'Ach%' not in c]
+                if any(c.startswith('T.') for c in all_act_cols) or any(c.startswith('A.') for c in all_act_cols):
+                    t_act_cols = [c for c in all_act_cols if c.startswith('T.')]
+                    a_act_cols = [c for c in all_act_cols if c.startswith('A.')]
+                else:
+                    t_act_cols = [c for c in all_act_cols if not c.endswith('.1') and not c.endswith('.2')]
+                    a_act_cols = [c for c in all_act_cols if c.endswith('.1') or c.endswith('.2')]
+                    if len(t_act_cols) != len(a_act_cols):
+                        half = len(all_act_cols) // 2
+                        t_act_cols = all_act_cols[:half]
+                        a_act_cols = all_act_cols[half:]
+                sum_actual_activity = sum(safe_float(clean_row.get(c)) for c in a_act_cols)
+                sum_target_activity = sum(safe_float(clean_row.get(c)) for c in t_act_cols)
+                actual_val = sum_actual_activity / sum_target_activity if sum_target_activity > 0 else 0.0
+                target_val = 1.0
+
         if math.isnan(actual_val):
             actual_val = 0.0
         if math.isnan(target_val):
@@ -163,6 +216,10 @@ class AnalysisService:
             return "Call Handling Coaching"
         elif "submission" in kpi_lower:
             return "Workflow Optimization"
+        elif "census" in kpi_lower or "revenue" in kpi_lower:
+            return "Sales Target Coaching"
+        elif "activity" in kpi_lower:
+            return "Activity Optimization"
 
         return "Performance Monitoring"
 

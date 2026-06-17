@@ -2,6 +2,11 @@ import pandas as pd
 import numpy as np
 import io
 from utils.helpers import convert_aht_to_minutes, convert_percentage
+from Data_Cleaning_Teams.inbound import process_inbound
+from Data_Cleaning_Teams.outbound import process_outbound
+from Data_Cleaning_Teams.inbound_UAE import process_inbound_uae
+from Data_Cleaning_Teams.preapprovals_offshore import process_preapprovals_offshore
+from Data_Cleaning_Teams.sales import process_sales
 
 class ExcelProcessor:
     @staticmethod
@@ -42,71 +47,18 @@ class ExcelProcessor:
 
         return df
 
-    def process_sheet_inbound(self, excel_file: pd.ExcelFile) -> pd.DataFrame:
-        df = pd.read_excel(excel_file, sheet_name="Inbound")
-        df = self.clean_sheet(df, "Inbound", "Performance Grade")
-        
-        # Select booking and attend columns for volume trend
-        start_booking_idx = df.columns.get_loc('Dubai_Booking') if 'Dubai_Booking' in df.columns else -1
-        start_attend_idx = df.columns.get_loc('Dubai_Attend') if 'Dubai_Attend' in df.columns else -1
-        
-        if start_booking_idx >= 0:
-            booking_cols = df.columns[start_booking_idx : start_booking_idx + 4]
-            df['Total_Booking_Trend'] = df[booking_cols].sum(axis=1)
-        else:
-            df['Total_Booking_Trend'] = 0
+    def process_sheet_inbound(self, excel_file) -> pd.DataFrame:
+        return process_inbound(excel_file)
 
-        if start_attend_idx >= 0:
-            attend_cols = df.columns[start_attend_idx : start_attend_idx + 4]
-            df['Total_Attend_Trend'] = df[attend_cols].sum(axis=1)
-        else:
-            df['Total_Attend_Trend'] = 0
+    def process_sheet_outbound(self, excel_file) -> pd.DataFrame:
+        return process_outbound(excel_file)
 
-        return df
+    def process_sheet_inbound_uae(self, excel_file) -> pd.DataFrame:
+        return process_inbound_uae(excel_file)
 
-    def process_sheet_outbound(self, excel_file: pd.ExcelFile) -> pd.DataFrame:
-        df = pd.read_excel(excel_file, sheet_name="Outbound")
-        df = self.clean_sheet(df, "Outbound", "Performance Grade")
+    def process_sheet_preapprovals(self, excel_file) -> pd.DataFrame:
+        return process_preapprovals_offshore(excel_file)
 
-        start_booking_idx = df.columns.get_loc('Dubai_Booking') if 'Dubai_Booking' in df.columns else -1
-        start_attend_idx = df.columns.get_loc('Dubai_Attend') if 'Dubai_Attend' in df.columns else -1
-        
-        if start_booking_idx >= 0:
-            booking_cols = df.columns[start_booking_idx : start_booking_idx + 4]
-            df['Total_Booking_Trend'] = df[booking_cols].sum(axis=1)
-        else:
-            df['Total_Booking_Trend'] = 0
+    def process_sheet_sales(self, excel_file) -> pd.DataFrame:
+        return process_sales(excel_file)
 
-        if start_attend_idx >= 0:
-            attend_cols = df.columns[start_attend_idx : start_attend_idx + 4]
-            df['Total_Attend_Trend'] = df[attend_cols].sum(axis=1)
-        else:
-            df['Total_Attend_Trend'] = 0
-
-        return df
-
-    def process_sheet_inbound_uae(self, excel_file: pd.ExcelFile) -> pd.DataFrame:
-        df = pd.read_excel(excel_file, sheet_name="Inbound UAE")
-        df = self.clean_sheet(df, "Inbound UAE", "Performance Grade")
-
-        start_booking_idx = df.columns.get_loc('Dubai_Booking') if 'Dubai_Booking' in df.columns else -1
-        start_attend_idx = df.columns.get_loc('Dubai_Attend') if 'Dubai_Attend' in df.columns else -1
-        
-        if start_booking_idx >= 0:
-            booking_cols = df.columns[start_booking_idx : start_booking_idx + 4]
-            df['Total_Booking_Trend'] = df[booking_cols].sum(axis=1)
-        else:
-            df['Total_Booking_Trend'] = 0
-
-        if start_attend_idx >= 0:
-            attend_cols = df.columns[start_attend_idx : start_attend_idx + 4]
-            df['Total_Attend_Trend'] = df[attend_cols].sum(axis=1)
-        else:
-            df['Total_Attend_Trend'] = 0
-
-        return df
-
-    def process_sheet_preapprovals(self, excel_file: pd.ExcelFile) -> pd.DataFrame:
-        df = pd.read_excel(excel_file, sheet_name="Pre-Approvals IP Offshore")
-        df = self.clean_sheet(df, "Pre-Approvals IP Offshore", "Performance Grade")
-        return df

@@ -4,10 +4,11 @@ import pandas as pd
 import numpy as np
 
 # Import team-specific processing functions
-from inbound import process_inbound
-from outbound import process_outbound
-from inbound_UAE import process_inbound_uae
-from preapprovals_offshore import process_preapprovals_offshore
+from Data_Cleaning_Teams.inbound import process_inbound
+from Data_Cleaning_Teams.outbound import process_outbound
+from Data_Cleaning_Teams.inbound_UAE import process_inbound_uae
+from Data_Cleaning_Teams.preapprovals_offshore import process_preapprovals_offshore
+from Data_Cleaning_Teams.sales import process_sales
 
 # Force UTF-8 encoding for console output
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -22,6 +23,7 @@ cropped_sheets["Inbound"] = process_inbound(file_path)
 cropped_sheets["Outbound"] = process_outbound(file_path)
 cropped_sheets["Inbound UAE"] = process_inbound_uae(file_path)
 cropped_sheets["Pre-Approvals IP Offshore"] = process_preapprovals_offshore(file_path)
+cropped_sheets["Sales"] = process_sales(file_path)
 
 print("\n" + "="*50)
 print("✓ All sheets processed successfully")

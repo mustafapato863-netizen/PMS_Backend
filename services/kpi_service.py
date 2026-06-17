@@ -46,6 +46,13 @@ class KPIService:
                 "Rejection": 0.50,
                 "InitialError": 0.20,
                 "Submission": 0.30
+            },
+            "Sales": {
+                "OPCensus": 0.10,
+                "OPRevenue": 0.10,
+                "IPCensus": 0.25,
+                "IPRevenue": 0.45,
+                "Activity": 0.10
             }
         }
         for team, weights in default_weights.items():
@@ -77,6 +84,13 @@ class KPIService:
                 "Rejection": 0.03,  # 3% target initial rejection rate (lower is better)
                 "InitialError": 0.03, # 3% target error rate (lower is better)
                 "Submission": 0.90 # 90% within due date
+            },
+            "Sales": {
+                "OPCensus": 1.0,
+                "OPRevenue": 1.0,
+                "IPCensus": 1.0,
+                "IPRevenue": 1.0,
+                "Activity": 1.0
             }
         }
         for team, targets in default_targets.items():
@@ -357,6 +371,90 @@ class KPIService:
             row["InitialError%"] = initial_error_ach
             row["%ofSubmissionWithinDuedate"] = submission_ach
 
+        elif team == "Sales":
+            # Extract KPI weights and targets
+            w_op_census = weights.get("OPCensus", 0.10)
+            w_op_rev = weights.get("OPRevenue", 0.10)
+            w_ip_census = weights.get("IPCensus", 0.25)
+            w_ip_rev = weights.get("IPRevenue", 0.45)
+            w_activity = weights.get("Activity", 0.10)
+
+            # Extract achievements from raw data (safely handle already parsed/cleaned columns)
+            # Remove spaces in keys just in case we are dealing with uncleaned raw row keys
+            clean_row = {str(k).replace(" ", ""): v for k, v in row.items()}
+            
+            # Dynamic achievement calculation: actual / target
+            if "A.OPCensus" in clean_row and "T.OPCensus" in clean_row:
+                a_op_census = safe_float(clean_row.get("A.OPCensus"))
+                t_op_census = safe_float(clean_row.get("T.OPCensus"))
+                op_census_ach = a_op_census / t_op_census if t_op_census > 0 else 0.0
+            else:
+                op_census_ach = convert_percentage(clean_row.get("OPCensusAch%"))
+
+            if "A.OPRevenue" in clean_row and "T.OPRevenue" in clean_row:
+                a_op_rev = safe_float(clean_row.get("A.OPRevenue"))
+                t_op_rev = safe_float(clean_row.get("T.OPRevenue"))
+                op_revenue_ach = a_op_rev / t_op_rev if t_op_rev > 0 else 0.0
+            else:
+                op_revenue_ach = convert_percentage(clean_row.get("OPRevenueAch%"))
+
+            if "A.IPCensus" in clean_row and "T.IPCensus" in clean_row:
+                a_ip_census = safe_float(clean_row.get("A.IPCensus"))
+                t_ip_census = safe_float(clean_row.get("T.IPCensus"))
+                ip_census_ach = a_ip_census / t_ip_census if t_ip_census > 0 else 0.0
+            else:
+                ip_census_ach = convert_percentage(clean_row.get("IPCensusAch%"))
+
+            if "A.IPRevenue" in clean_row and "T.IPRevenue" in clean_row:
+                a_ip_rev = safe_float(clean_row.get("A.IPRevenue"))
+                t_ip_rev = safe_float(clean_row.get("T.IPRevenue"))
+                ip_revenue_ach = a_ip_rev / t_ip_rev if t_ip_rev > 0 else 0.0
+            else:
+                ip_revenue_ach = convert_percentage(clean_row.get("IPRevenueAch%"))
+
+            # Calculate activity ratio/score (mirroring sales.py logic)
+            activity_keywords = ['ClinicActivity', 'CorporateActivity', 'CBDTour', 'Visits']
+            all_act_cols = [c for c in clean_row.keys() if any(k in c for k in activity_keywords) and 'Ach%' not in c]
+            
+            if any(c.startswith('T.') for c in all_act_cols) or any(c.startswith('A.') for c in all_act_cols):
+                t_act_cols = [c for c in all_act_cols if c.startswith('T.')]
+                a_act_cols = [c for c in all_act_cols if c.startswith('A.')]
+            else:
+                t_act_cols = [c for c in all_act_cols if not c.endswith('.1') and not c.endswith('.2')]
+                a_act_cols = [c for c in all_act_cols if c.endswith('.1') or c.endswith('.2')]
+                if len(t_act_cols) != len(a_act_cols):
+                    half = len(all_act_cols) // 2
+                    t_act_cols = all_act_cols[:half]
+                    a_act_cols = all_act_cols[half:]
+
+            sum_actual_activity = sum(safe_float(clean_row.get(c)) for c in a_act_cols)
+            sum_target_activity = sum(safe_float(clean_row.get(c)) for c in t_act_cols)
+            
+            activity_ratio = sum_actual_activity / sum_target_activity if sum_target_activity > 0 else 0.0
+            activity_ach = min(1.0, activity_ratio)
+
+            achievements = {
+                "OPCensus": safe_float(op_census_ach),
+                "OPRevenue": safe_float(op_revenue_ach),
+                "IPCensus": safe_float(ip_census_ach),
+                "IPRevenue": safe_float(ip_revenue_ach),
+                "Activity": safe_float(activity_ach)
+            }
+            final_weights = {
+                "OPCensus": w_op_census,
+                "OPRevenue": w_op_rev,
+                "IPCensus": w_ip_census,
+                "IPRevenue": w_ip_rev,
+                "Activity": w_activity
+            }
+
+            # Map back to standardized keys on the original row
+            row["OPCensusAch%"] = op_census_ach
+            row["OPRevenueAch%"] = op_revenue_ach
+            row["IPCensusAch%"] = ip_census_ach
+            row["IPRevenueAch%"] = ip_revenue_ach
+            row["ActivityAch%"] = activity_ach
+
         # Calculate score (normalized to 0-100)
         raw_score = 0.0
         for kpi, ach in achievements.items():
@@ -373,6 +471,10 @@ class KPIService:
             row["PerformanceScor%"] = score
         elif team == "Inbound UAE":
             row["PerformanceScore%"] = score
+        elif team == "Sales":
+            row["PerformanceScore%"] = score
+            row["PerformanceScore"] = score
+            row["Performance_Score"] = score
 
         return score, grade, achievements, final_weights
 

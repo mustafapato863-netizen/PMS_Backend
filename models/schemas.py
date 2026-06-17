@@ -12,6 +12,7 @@ class Employee(BaseModel):
     team: str
     status: str = "Active"
     hiring_date: Optional[str] = None
+    region: Optional[str] = "EGY"
 
 class GeoBreakdown(BaseModel):
     dubai: int = 0
@@ -51,6 +52,11 @@ class AchievementMetrics(BaseModel):
     rejection_ach: float = 0.0
     initial_error_ach: float = 0.0
     submission_ach: float = 0.0
+    op_census_ach: float = 0.0
+    op_revenue_ach: float = 0.0
+    ip_census_ach: float = 0.0
+    ip_revenue_ach: float = 0.0
+    activity_ach: float = 0.0
 
 class RootCauseInfo(BaseModel):
     kpi: str
@@ -74,6 +80,7 @@ class PerformanceRecord(BaseModel):
     employee_name: str
     team: str
     month: str
+    region: Optional[str] = "EGY"
     calls: CallsData = Field(default_factory=CallsData)
     geo: GeoData = Field(default_factory=GeoData)
     actual: ActualMetrics = Field(default_factory=ActualMetrics)

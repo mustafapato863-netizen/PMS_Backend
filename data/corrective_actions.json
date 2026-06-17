@@ -194,5 +194,19 @@
     "manager_action": "Training: this is the first month for him\nWill Give Him Training",
     "manager_notes": "Delay Due to Insurance Company Feedback",
     "timestamp": "2026-06-11T10:48:08.647821"
+  },
+  {
+    "id": "70134_May_1781617733267",
+    "employee_id": "70134",
+    "employee_name": "Salma Hussein Mohamed Ali El-Ramly",
+    "team": "Pre-Approvals IP Offshore",
+    "month": "May",
+    "score": 66.28,
+    "grade": "E",
+    "root_cause": "Rejection",
+    "suggested_action": "Quality Calibration",
+    "manager_action": "PIP: sdfdsf",
+    "manager_notes": "Rejection Rate\nType:",
+    "timestamp": "2026-06-16T16:48:53.320806"
   }
 ]

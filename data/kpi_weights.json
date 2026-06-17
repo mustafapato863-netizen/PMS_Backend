@@ -36,5 +36,15 @@
       "InitialError": 0.2,
       "Submission": 0.3
     }
+  },
+  {
+    "team": "Sales",
+    "weights": {
+      "OPCensus": 0.1,
+      "OPRevenue": 0.1,
+      "IPCensus": 0.25,
+      "IPRevenue": 0.45,
+      "Activity": 0.1
+    }
   }
 ]
