@@ -786,7 +786,8 @@ async def upload_pms_file(
                 )
 
                 # Run KPI scoring engine
-                score, grade, achievements, weights_used = kpi_service.calculate_performance(team_name, row.to_dict())
+                row_dict = row.to_dict()
+                score, grade, achievements, weights_used = kpi_service.calculate_performance(team_name, row_dict)
 
                 # Populate achievements model
                 ach = AchievementMetrics(
@@ -807,7 +808,7 @@ async def upload_pms_file(
                 )
 
                 # Run Root Cause Analysis Engine
-                root_cause = analysis_service.run_root_cause_analysis(team_name, achievements, weights_used, row.to_dict())
+                root_cause = analysis_service.run_root_cause_analysis(team_name, achievements, weights_used, row_dict)
 
                 # Run Suggested Action Engine
                 suggested_action = analysis_service.generate_suggested_action(score, is_new, root_cause)
@@ -839,7 +840,7 @@ async def upload_pms_file(
                     achievement=ach,
                     evaluation=evaluation,
                     upload_id=upload_rec.id,
-                    raw_data={str(k): safe_value(v) for k, v in row.to_dict().items()}
+                    raw_data={str(k): safe_value(v) for k, v in row_dict.items()}
                 )
                 all_new_records.append(record)
 

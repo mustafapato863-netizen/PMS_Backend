@@ -137,9 +137,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8917562724014337,
       "AHTAch%": 0.6696428571428571,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.6466666666666666,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.9947368421052631,
       "PerformanceScore": 0.8723782002048132,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.7333333333333334,
@@ -148,7 +148,8 @@
       "Total_Booking_Trend": 930,
       "Total_Attend_Trend": 622,
       "Performance": 0.8723782002048132,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 87.21
     }
   },
   {
@@ -288,10 +289,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8870339454646633,
-      "AHTAch%": 0.8108108108108107,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.8108108108108109,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.8975,
-      "QualityTargetAch%": 0.9958071278825997,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9010046587599349,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.0833333333333335,
@@ -300,7 +301,8 @@
       "Total_Booking_Trend": 1198,
       "Total_Attend_Trend": 797,
       "Performance": 0.9010046587599349,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.12
     }
   },
   {
@@ -439,11 +441,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8939286557996691,
-      "AHTAch%": 0.9803921568627452,
-      "UTZ%Ach%": null,
+      "Attend%Ach%": 0.8939286557996692,
+      "AHTAch%": 0.9803921568627451,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.6425,
-      "QualityTargetAch%": 0.9693877551020408,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8874890546580076,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.55,
@@ -452,7 +454,8 @@
       "Total_Booking_Trend": 1411,
       "Total_Attend_Trend": 946,
       "Performance": 0.8874890546580076,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.9
     }
   },
   {
@@ -591,11 +594,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.9146931499872676,
-      "AHTAch%": 0.9740259740259739,
-      "UTZ%Ach%": null,
+      "Attend%Ach%": 0.9146931499872677,
+      "AHTAch%": 0.974025974025974,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 1.0,
-      "QualityTargetAch%": 0.9854771784232365,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9382603626135478,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.5666666666666664,
@@ -604,7 +607,8 @@
       "Total_Booking_Trend": 1309,
       "Total_Attend_Trend": 898,
       "Performance": 0.9382603626135478,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 93.9
     }
   },
   {
@@ -730,7 +734,7 @@
       "Sharjah_Attend": 75,
       "Ajman_Attend": 286,
       "clinics.Attend": 29,
-      "A.Booking%": 0.4621585311240484,
+      "A.Booking%": 0.46215853112404837,
       "A.Attend%": 0.6763565891472868,
       "A.AHT": "00:03:38",
       "A.UTZ%": null,
@@ -743,11 +747,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.9018087855297159,
+      "Attend%Ach%": 0.9018087855297158,
       "AHTAch%": 0.6880733944954128,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.6771428571428572,
-      "QualityTargetAch%": 0.9634888438133874,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8815585475005268,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.6333333333333333,
@@ -756,7 +760,8 @@
       "Total_Booking_Trend": 1032,
       "Total_Attend_Trend": 698,
       "Performance": 0.8815585475005268,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.34
     }
   },
   {
@@ -897,9 +902,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9201734251466464,
       "AHTAch%": 0.8571428571428571,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 1.0,
-      "QualityTargetAch%": 0.9763617677286742,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9357966288462289,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.9166666666666665,
@@ -908,7 +913,8 @@
       "Total_Booking_Trend": 1307,
       "Total_Attend_Trend": 902,
       "Performance": 0.9357966288462289,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 93.7
     }
   },
   {
@@ -1049,9 +1055,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8159437280187573,
       "AHTAch%": 0.7653061224489796,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.788421052631579,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.9042105263157895,
       "PerformanceScore": 0.838268020998737,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.2666666666666666,
@@ -1060,7 +1066,8 @@
       "Total_Booking_Trend": 853,
       "Total_Attend_Trend": 522,
       "Performance": 0.838268020998737,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 83.35
     }
   },
   {
@@ -1186,7 +1193,7 @@
       "Sharjah_Attend": 33,
       "Ajman_Attend": 115,
       "clinics.Attend": 22,
-      "A.Booking%": 0.40946314831665154,
+      "A.Booking%": 0.4094631483166515,
       "A.Attend%": 0.6755555555555556,
       "A.AHT": "00:04:05",
       "A.UTZ%": null,
@@ -1199,9 +1206,9 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 0.9099181073703366,
-      "Attend%Ach%": 0.9007407407407408,
-      "AHTAch%": 0.6122448979591836,
-      "UTZ%Ach%": null,
+      "Attend%Ach%": 0.9007407407407407,
+      "AHTAch%": 0.6122448979591838,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 1.0,
       "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9021225741535114,
@@ -1212,7 +1219,8 @@
       "Total_Booking_Trend": 450,
       "Total_Attend_Trend": 304,
       "Performance": 0.9021225741535115,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.21
     }
   },
   {
@@ -1351,11 +1359,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8628841607565013,
+      "Attend%Ach%": 0.8628841607565012,
       "AHTAch%": 0.6637168141592921,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 1.0,
-      "QualityTargetAch%": 0.9664292980671414,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8855262181408724,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.7666666666666666,
@@ -1364,7 +1372,8 @@
       "Total_Booking_Trend": 564,
       "Total_Attend_Trend": 365,
       "Performance": 0.8855262181408725,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.72
     }
   },
   {
@@ -1490,7 +1499,7 @@
       "Sharjah_Attend": 49,
       "Ajman_Attend": 113,
       "clinics.Attend": 24,
-      "A.Booking%": 0.4244966442953021,
+      "A.Booking%": 0.42449664429530204,
       "A.Attend%": 0.6620553359683794,
       "A.AHT": "00:04:02",
       "A.UTZ%": null,
@@ -1502,12 +1511,12 @@
       "T.UTZ%": null,
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.9433258762117824,
+      "Booking%Ach%": 0.9433258762117823,
       "Attend%Ach%": 0.8827404479578392,
-      "AHTAch%": 0.6198347107438016,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.6198347107438017,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.43125,
-      "QualityTargetAch%": 0.9693877551020408,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8348370244839578,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.033333333333333,
@@ -1516,7 +1525,8 @@
       "Total_Booking_Trend": 506,
       "Total_Attend_Trend": 335,
       "Performance": 0.8348370244839577,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 83.64
     }
   },
   {
@@ -1654,12 +1664,12 @@
       "T.UTZ%": null,
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.9429429429429428,
+      "Booking%Ach%": 0.9429429429429429,
       "Attend%Ach%": 0.9030431705590941,
       "AHTAch%": 0.48231511254019294,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.601875,
-      "QualityTargetAch%": 0.9989484752891692,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8606751930771281,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 5.183333333333334,
@@ -1668,7 +1678,8 @@
       "Total_Booking_Trend": 471,
       "Total_Attend_Trend": 319,
       "Performance": 0.8606751930771281,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.07
     }
   },
   {
@@ -1798,7 +1809,7 @@
       "A.Attend%": 0.6640625,
       "A.AHT": "00:04:34",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.026170798898071623,
+      "A.AbandonRate%": 0.026170798898071626,
       "A.QualityScore": 0.961,
       "T.Booking%": 0.45,
       "T.Attend%": 0.75,
@@ -1807,11 +1818,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8854166666666665,
+      "Attend%Ach%": 0.8854166666666666,
       "AHTAch%": 0.5474452554744526,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.3821052631578947,
-      "QualityTargetAch%": 0.9885535900104058,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.834802135256699,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.566666666666666,
@@ -1820,7 +1831,8 @@
       "Total_Booking_Trend": 384,
       "Total_Attend_Trend": 255,
       "Performance": 0.8348021352566989,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 83.54
     }
   },
   {
@@ -1949,10 +1961,10 @@
       "Ajman_Attend": 0,
       "clinics.Attend": 0,
       "A.Booking%": 0.0,
-      "A.Attend%": null,
+      "A.Attend%": 0.0,
       "A.AHT": "00:03:25",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.029702970297029705,
+      "A.AbandonRate%": 0.0297029702970297,
       "A.QualityScore": null,
       "T.Booking%": 0.45,
       "T.Attend%": 0.75,
@@ -1961,9 +1973,9 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 0.0,
-      "Attend%Ach%": null,
+      "Attend%Ach%": 0.0,
       "AHTAch%": 0.7317073170731707,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.33666666666666667,
       "QualityTargetAch%": 1.0,
       "PerformanceScore": null,
@@ -1974,7 +1986,8 @@
       "Total_Booking_Trend": 0,
       "Total_Attend_Trend": 0,
       "Performance": 0.12025203252032521,
-      "SuggestedAction": "PIP"
+      "SuggestedAction": "PIP",
+      "PerformanceScore%": 12.03
     }
   },
   {
@@ -2104,7 +2117,7 @@
       "A.Attend%": 0.6607142857142857,
       "A.AHT": "00:03:42",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.015384615384615384,
+      "A.AbandonRate%": 0.015384615384615385,
       "A.QualityScore": null,
       "T.Booking%": 0.45,
       "T.Attend%": 0.75,
@@ -2115,7 +2128,7 @@
       "Booking%Ach%": 0.852359208523592,
       "Attend%Ach%": 0.8809523809523809,
       "AHTAch%": 0.6756756756756757,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.65,
       "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8506863713028096,
@@ -2126,7 +2139,8 @@
       "Total_Booking_Trend": 56,
       "Total_Attend_Trend": 37,
       "Performance": 0.8506863713028097,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 85.07
     }
   },
   {
@@ -2252,11 +2266,11 @@
       "Sharjah_Attend": 10,
       "Ajman_Attend": 35,
       "clinics.Attend": 2,
-      "A.Booking%": 0.4541484716157206,
+      "A.Booking%": 0.45414847161572053,
       "A.Attend%": 0.7019230769230769,
       "A.AHT": "00:03:53",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.019417475728155335,
+      "A.AbandonRate%": 0.019417475728155338,
       "A.QualityScore": null,
       "T.Booking%": 0.45,
       "T.Attend%": 0.75,
@@ -2266,8 +2280,8 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9358974358974358,
-      "AHTAch%": 0.6437768240343347,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.6437768240343348,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.515,
       "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8888170463299218,
@@ -2278,7 +2292,8 @@
       "Total_Booking_Trend": 104,
       "Total_Attend_Trend": 73,
       "Performance": 0.8888170463299218,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.88
     }
   },
   {
@@ -2421,7 +2436,7 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.7804878048780487,
       "AHTAch%": 0.6493506493506493,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.592,
       "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.7880089958821666,
@@ -2432,7 +2447,8 @@
       "Total_Booking_Trend": 164,
       "Total_Attend_Trend": 96,
       "Performance": 0.7880089958821666,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 78.8
     }
   },
   {
@@ -2572,10 +2588,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8929110105580693,
-      "AHTAch%": 0.6437768240343347,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.6437768240343348,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.7985714285714286,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.9273684210526316,
       "PerformanceScore": 0.887083691449508,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.8833333333333333,
@@ -2584,7 +2600,8 @@
       "Total_Booking_Trend": 663,
       "Total_Attend_Trend": 444,
       "Performance": 0.887083691449508,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.35
     }
   },
   {
@@ -2714,7 +2731,7 @@
       "A.Attend%": 0.6408566721581549,
       "A.AHT": "00:04:56",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.012679628064243447,
+      "A.AbandonRate%": 0.01267962806424345,
       "A.QualityScore": null,
       "T.Booking%": 0.45,
       "T.Attend%": 0.75,
@@ -2724,9 +2741,9 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 0.9634920634920634,
       "Attend%Ach%": 0.8544755628775399,
-      "AHTAch%": 0.5067567567567567,
-      "UTZ%Ach%": null,
-      "AbandonRate%Ach%": 0.7886666666666665,
+      "AHTAch%": 0.5067567567567568,
+      "UTZ%Ach%": 1.0,
+      "AbandonRate%Ach%": 0.7886666666666666,
       "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8486866048679887,
       "PerformanceGrade": "Meet",
@@ -2736,7 +2753,8 @@
       "Total_Booking_Trend": 607,
       "Total_Attend_Trend": 389,
       "Performance": 0.8486866048679887,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 84.87
     }
   },
   {
@@ -2877,9 +2895,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8517566409597258,
       "AHTAch%": 0.6147540983606558,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.800625,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.9168421052631579,
       "PerformanceScore": 0.8570298535898409,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.066666666666666,
@@ -2888,7 +2906,8 @@
       "Total_Booking_Trend": 778,
       "Total_Attend_Trend": 497,
       "Performance": 0.8570298535898409,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 85.29
     }
   },
   {
@@ -3027,11 +3046,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.9175285070273136,
+      "Attend%Ach%": 0.9175285070273137,
       "AHTAch%": 0.819672131147541,
-      "UTZ%Ach%": null,
-      "AbandonRate%Ach%": 0.9154166666666668,
-      "QualityTargetAch%": 0.9566968781470291,
+      "UTZ%Ach%": 1.0,
+      "AbandonRate%Ach%": 0.9154166666666667,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9226300720505147,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.05,
@@ -3040,7 +3059,8 @@
       "Total_Booking_Trend": 1257,
       "Total_Attend_Trend": 865,
       "Performance": 0.9226300720505147,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.48
     }
   },
   {
@@ -3170,7 +3190,7 @@
       "A.Attend%": 0.6450584484590861,
       "A.AHT": "00:03:35",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.01442622950819672,
+      "A.AbandonRate%": 0.014426229508196721,
       "A.QualityScore": 0.98,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -3179,11 +3199,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8600779312787814,
-      "AHTAch%": 0.6976744186046511,
-      "UTZ%Ach%": null,
+      "Attend%Ach%": 0.8600779312787815,
+      "AHTAch%": 0.6976744186046512,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.6931818181818182,
-      "QualityTargetAch%": 0.9693877551020408,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8547258423986633,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.5833333333333335,
@@ -3192,7 +3212,8 @@
       "Total_Booking_Trend": 941,
       "Total_Attend_Trend": 607,
       "Performance": 0.8547258423986632,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 85.63
     }
   },
   {
@@ -3331,11 +3352,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.9156939040207523,
-      "AHTAch%": 0.920245398773006,
-      "UTZ%Ach%": null,
-      "AbandonRate%Ach%": 0.9189473684210528,
-      "QualityTargetAch%": 0.9895833333333335,
+      "Attend%Ach%": 0.9156939040207522,
+      "AHTAch%": 0.9202453987730062,
+      "UTZ%Ach%": 1.0,
+      "AbandonRate%Ach%": 0.9189473684210527,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9283719062619487,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.716666666666667,
@@ -3344,7 +3365,8 @@
       "Total_Booking_Trend": 1028,
       "Total_Attend_Trend": 706,
       "Performance": 0.9283719062619488,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.89
     }
   },
   {
@@ -3470,11 +3492,11 @@
       "Sharjah_Attend": 94,
       "Ajman_Attend": 305,
       "clinics.Attend": 37,
-      "A.Booking%": 0.4912207357859531,
+      "A.Booking%": 0.49122073578595316,
       "A.Attend%": 0.6365957446808511,
       "A.AHT": "00:02:18",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.01161170459823502,
+      "A.AbandonRate%": 0.011611704598235021,
       "A.QualityScore": 0.99,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -3483,11 +3505,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8487943262411349,
+      "Attend%Ach%": 0.8487943262411348,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.8612,
-      "QualityTargetAch%": 0.9595959595959596,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8782558263485923,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.3,
@@ -3496,7 +3518,8 @@
       "Total_Booking_Trend": 1175,
       "Total_Attend_Trend": 748,
       "Performance": 0.8782558263485924,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.03
     }
   },
   {
@@ -3637,9 +3660,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8802379021357124,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.9677272727272727,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.9894736842105263,
       "PerformanceScore": 0.912939258767726,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.3666666666666667,
@@ -3648,7 +3671,8 @@
       "Total_Booking_Trend": 1233,
       "Total_Attend_Trend": 814,
       "Performance": 0.912939258767726,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 91.24
     }
   },
   {
@@ -3789,9 +3813,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8846560846560846,
       "AHTAch%": 0.7653061224489796,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.5335483870967742,
-      "QualityTargetAch%": 0.95,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8583794040913855,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.2666666666666666,
@@ -3800,7 +3824,8 @@
       "Total_Booking_Trend": 945,
       "Total_Attend_Trend": 627,
       "Performance": 0.8583794040913855,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.09
     }
   },
   {
@@ -3926,7 +3951,7 @@
       "Sharjah_Attend": 107,
       "Ajman_Attend": 315,
       "clinics.Attend": 53,
-      "A.Booking%": 0.4943410003650968,
+      "A.Booking%": 0.49434100036509676,
       "A.Attend%": 0.6735598227474151,
       "A.AHT": "00:02:39",
       "A.UTZ%": null,
@@ -3941,9 +3966,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8980797636632202,
       "AHTAch%": 0.9433962264150944,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.8141379310344827,
-      "QualityTargetAch%": 0.95,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9047394389884572,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.65,
@@ -3952,7 +3977,8 @@
       "Total_Booking_Trend": 1354,
       "Total_Attend_Trend": 912,
       "Performance": 0.9047394389884571,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.72
     }
   },
   {
@@ -4091,11 +4117,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.7861557478368357,
-      "AHTAch%": 0.7936507936507935,
-      "UTZ%Ach%": null,
-      "AbandonRate%Ach%": 0.786470588235294,
-      "QualityTargetAch%": 1.0,
+      "Attend%Ach%": 0.7861557478368356,
+      "AHTAch%": 0.7936507936507936,
+      "UTZ%Ach%": 1.0,
+      "AbandonRate%Ach%": 0.7864705882352941,
+      "QualityTargetAch%": 0.9368421052631579,
       "PerformanceScore": 0.818638621991854,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.15,
@@ -4104,7 +4130,8 @@
       "Total_Booking_Trend": 809,
       "Total_Attend_Trend": 477,
       "Performance": 0.818638621991854,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 81.55
     }
   },
   {
@@ -4245,9 +4272,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8823721081785597,
       "AHTAch%": 0.684931506849315,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 1.0,
-      "QualityTargetAch%": 0.9595959595959596,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8998868490472555,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.65,
@@ -4256,7 +4283,8 @@
       "Total_Booking_Trend": 1023,
       "Total_Attend_Trend": 677,
       "Performance": 0.8998868490472555,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 90.19
     }
   },
   {
@@ -4395,11 +4423,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.9061193462561765,
+      "Attend%Ach%": 0.9061193462561764,
       "AHTAch%": 0.7317073170731707,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.7768421052631579,
-      "QualityTargetAch%": 0.9895833333333335,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8980322854259645,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.4166666666666665,
@@ -4408,7 +4436,8 @@
       "Total_Booking_Trend": 877,
       "Total_Attend_Trend": 596,
       "Performance": 0.8980322854259645,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.86
     }
   },
   {
@@ -4534,7 +4563,7 @@
       "Sharjah_Attend": 79,
       "Ajman_Attend": 207,
       "clinics.Attend": 37,
-      "A.Booking%": 0.4532782653588022,
+      "A.Booking%": 0.4532782653588023,
       "A.Attend%": 0.6605922551252847,
       "A.AHT": "00:03:54",
       "A.UTZ%": null,
@@ -4546,12 +4575,12 @@
       "T.UTZ%": null,
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.9853875333887004,
-      "Attend%Ach%": 0.8807896735003797,
-      "AHTAch%": 0.641025641025641,
-      "UTZ%Ach%": null,
+      "Booking%Ach%": 1.0,
+      "Attend%Ach%": 0.8807896735003796,
+      "AHTAch%": 0.6410256410256411,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.7095833333333333,
-      "QualityTargetAch%": 0.9693877551020408,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8665705279288531,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.9,
@@ -4560,7 +4589,8 @@
       "Total_Booking_Trend": 878,
       "Total_Attend_Trend": 580,
       "Performance": 0.8665705279288533,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.96
     }
   },
   {
@@ -4700,10 +4730,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9002961500493584,
-      "AHTAch%": 0.5617977528089887,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.5617977528089888,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.6325000000000001,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.9894736842105263,
       "PerformanceScore": 0.8715471926750004,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.45,
@@ -4712,7 +4742,8 @@
       "Total_Booking_Trend": 1013,
       "Total_Attend_Trend": 684,
       "Performance": 0.8715471926750002,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 87.1
     }
   },
   {
@@ -4852,8 +4883,8 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8683473389355743,
-      "AHTAch%": 0.5836575875486381,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.5836575875486382,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 1.0,
       "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8870260166323337,
@@ -4864,7 +4895,8 @@
       "Total_Booking_Trend": 714,
       "Total_Attend_Trend": 465,
       "Performance": 0.8870260166323338,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.7
     }
   },
   {
@@ -5002,12 +5034,12 @@
       "T.UTZ%": null,
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.6714945821060879,
+      "Booking%Ach%": 0.6864166839306677,
       "Attend%Ach%": 0.863849765258216,
-      "AHTAch%": 0.8670520231213872,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.8670520231213873,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.5228571428571429,
-      "QualityTargetAch%": 0.9895833333333335,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8169617759998101,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.8833333333333333,
@@ -5016,7 +5048,8 @@
       "Total_Booking_Trend": 497,
       "Total_Attend_Trend": 322,
       "Performance": 0.8169617759998101,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 81.9
     }
   },
   {
@@ -5156,10 +5189,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8659611992945325,
-      "AHTAch%": 0.7425742574257423,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.7425742574257426,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.6457142857142857,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.9684210526315791,
       "PerformanceScore": 0.8578729809488885,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.3666666666666667,
@@ -5168,7 +5201,8 @@
       "Total_Booking_Trend": 756,
       "Total_Attend_Trend": 491,
       "Performance": 0.8578729809488885,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 85.63
     }
   },
   {
@@ -5307,11 +5341,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.862646566164154,
+      "Attend%Ach%": 0.8626465661641541,
       "AHTAch%": 0.6818181818181818,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.831764705882353,
-      "QualityTargetAch%": 0.95,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8686199759940522,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.6666666666666665,
@@ -5320,7 +5354,8 @@
       "Total_Booking_Trend": 796,
       "Total_Attend_Trend": 515,
       "Performance": 0.868619975994052,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 87.11
     }
   },
   {
@@ -5452,7 +5487,7 @@
       "A.Attend%": 0.5821428571428572,
       "A.AHT": "00:04:15",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.01408450704225352,
+      "A.AbandonRate%": 0.014084507042253521,
       "A.QualityScore": 0.94,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -5460,12 +5495,12 @@
       "T.UTZ%": null,
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.986540765273765,
+      "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.7761904761904762,
-      "AHTAch%": 1.0,
-      "UTZ%Ach%": null,
+      "AHTAch%": 0.5882352941176471,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.71,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.9894736842105263,
       "PerformanceScore": 0.8129874098607099,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.25,
@@ -5474,7 +5509,8 @@
       "Total_Booking_Trend": 280,
       "Total_Attend_Trend": 163,
       "Performance": 0.8129874098607099,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 79.32
     }
   },
   {
@@ -5604,7 +5640,7 @@
       "A.Attend%": 0.6270096463022508,
       "A.AHT": "00:04:25",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.01066098081023454,
+      "A.AbandonRate%": 0.010660980810234541,
       "A.QualityScore": 0.98,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -5615,9 +5651,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8360128617363344,
       "AHTAch%": 0.5660377358490566,
-      "UTZ%Ach%": null,
-      "AbandonRate%Ach%": 0.938,
-      "QualityTargetAch%": 0.9693877551020408,
+      "UTZ%Ach%": 1.0,
+      "AbandonRate%Ach%": 0.9380000000000001,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8557802777629888,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.416666666666667,
@@ -5626,7 +5662,8 @@
       "Total_Booking_Trend": 311,
       "Total_Attend_Trend": 195,
       "Performance": 0.8557802777629888,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 85.73
     }
   },
   {
@@ -5770,9 +5807,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.7076923076923077,
       "AHTAch%": 0.7281553398058253,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.48833333333333334,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.768421052631579,
       "PerformanceScore": 0.73062571570824,
       "PerformanceGrade": "Average",
       "AHT_Minutes": 3.4333333333333336,
@@ -5781,7 +5818,8 @@
       "Total_Booking_Trend": 260,
       "Total_Attend_Trend": 138,
       "Performance": 0.7306257157082401,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 71.9
     }
   },
   {
@@ -5911,7 +5949,7 @@
       "A.Attend%": 0.6442307692307693,
       "A.AHT": "00:04:39",
       "A.UTZ%": null,
-      "A.AbandonRate%": 0.02205882352941177,
+      "A.AbandonRate%": 0.022058823529411766,
       "A.QualityScore": 0.81,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -5922,9 +5960,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.858974358974359,
       "AHTAch%": 0.5376344086021505,
-      "UTZ%Ach%": null,
-      "AbandonRate%Ach%": 0.45333333333333325,
-      "QualityTargetAch%": 1.0,
+      "UTZ%Ach%": 1.0,
+      "AbandonRate%Ach%": 0.4533333333333333,
+      "QualityTargetAch%": 0.8526315789473685,
       "PerformanceScore": 0.8234971050454921,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.65,
@@ -5933,7 +5971,8 @@
       "Total_Booking_Trend": 520,
       "Total_Attend_Trend": 335,
       "Performance": 0.8234971050454921,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 81.61
     }
   },
   {
@@ -6072,11 +6111,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.843010752688172,
-      "AHTAch%": 0.6249999999999999,
-      "UTZ%Ach%": null,
+      "Attend%Ach%": 0.8430107526881719,
+      "AHTAch%": 0.625,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.7566666666666667,
-      "QualityTargetAch%": 1.0,
+      "QualityTargetAch%": 0.7894736842105263,
       "PerformanceScore": 0.8470241935483871,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.0,
@@ -6085,7 +6124,8 @@
       "Total_Booking_Trend": 465,
       "Total_Attend_Trend": 294,
       "Performance": 0.8470241935483871,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 83.65
     }
   },
   {
@@ -6224,11 +6264,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.9743589743589745,
-      "AHTAch%": 0.493421052631579,
-      "UTZ%Ach%": null,
+      "Attend%Ach%": 0.9743589743589743,
+      "AHTAch%": 0.4934210526315789,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 1.0,
-      "QualityTargetAch%": 0.95,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9542223346828608,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 5.066666666666666,
@@ -6237,7 +6277,8 @@
       "Total_Booking_Trend": 104,
       "Total_Attend_Trend": 76,
       "Performance": 0.954222334682861,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 95.67
     }
   },
   {
@@ -6376,11 +6417,11 @@
       "T.AbandonRate%": 0.01,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8780487804878048,
+      "Attend%Ach%": 0.8780487804878049,
       "AHTAch%": 0.8426966292134831,
-      "UTZ%Ach%": null,
+      "UTZ%Ach%": 1.0,
       "AbandonRate%Ach%": 0.7378947368421053,
-      "QualityTargetAch%": 0.9693877551020408,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8790278392414501,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.966666666666667,
@@ -6389,7 +6430,8 @@
       "Total_Booking_Trend": 861,
       "Total_Attend_Trend": 567,
       "Performance": 0.87902783924145,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.06
     }
   },
   {
@@ -6521,7 +6563,7 @@
       "A.Attend%": 0.593065693430657,
       "A.AHT": 0.0019776157407407347,
       "A.UTZ%": 0.8302532679738561,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.98,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -6531,10 +6573,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.7907542579075426,
-      "AHTAch%": 0.8778807416736867,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9693877551020408,
+      "AHTAch%": 0.8778809125279485,
+      "UTZ%Ach%": 0.9767685505574778,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.845891405374066,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.847766666666658,
@@ -6543,7 +6585,8 @@
       "Total_Booking_Trend": 1096,
       "Total_Attend_Trend": 650,
       "Performance": 0.845891405374066,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 84.51
     }
   },
   {
@@ -6673,7 +6716,7 @@
       "A.Attend%": 0.6459893048128342,
       "A.AHT": 0.0018636458333334271,
       "A.UTZ%": 0.8766972693032015,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.98,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -6682,11 +6725,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8613190730837791,
-      "AHTAch%": 0.9315687031918605,
+      "Attend%Ach%": 0.861319073083779,
+      "AHTAch%": 0.9315670821455384,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9693877551020408,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8979711740733404,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.683650000000135,
@@ -6695,7 +6738,8 @@
       "Total_Booking_Trend": 935,
       "Total_Attend_Trend": 604,
       "Performance": 0.8979711740733404,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.95
     }
   },
   {
@@ -6825,7 +6869,7 @@
       "A.Attend%": 0.6395061728395062,
       "A.AHT": 0.001438217592592661,
       "A.UTZ%": 0.8584526051475205,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -6834,11 +6878,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8526748971193414,
+      "Attend%Ach%": 0.8526748971193415,
       "AHTAch%": 1.0,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.894372427983539,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.071033333333432,
@@ -6847,7 +6891,8 @@
       "Total_Booking_Trend": 1620,
       "Total_Attend_Trend": 1036,
       "Performance": 0.8943724279835389,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.69
     }
   },
   {
@@ -6979,7 +7024,7 @@
       "A.Attend%": 0.6466458658346333,
       "A.AHT": 0.0013998148148148815,
       "A.UTZ%": 0.7926453488372094,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.98,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -6988,11 +7033,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8621944877795112,
+      "Attend%Ach%": 0.8621944877795111,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 0.7926453488372094,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9693877551020408,
+      "UTZ%Ach%": 0.9325239398084817,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8812700640844806,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.0157333333334293,
@@ -7001,7 +7046,8 @@
       "Total_Booking_Trend": 1282,
       "Total_Attend_Trend": 829,
       "Performance": 0.8812700640844808,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.68
     }
   },
   {
@@ -7131,7 +7177,7 @@
       "A.Attend%": 0.6188925081433225,
       "A.AHT": 0.0019554745370369275,
       "A.UTZ%": 0.7967757327880027,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.99,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -7141,10 +7187,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8251900108577633,
-      "AHTAch%": 0.8878211823689158,
-      "UTZ%Ach%": 0.7967757327880027,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9595959595959596,
+      "AHTAch%": 0.8878208732606606,
+      "UTZ%Ach%": 0.9373832150447091,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8496814379774784,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.8158833333331756,
@@ -7153,7 +7199,8 @@
       "Total_Booking_Trend": 921,
       "Total_Attend_Trend": 570,
       "Performance": 0.8496814379774784,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.58
     }
   },
   {
@@ -7285,7 +7332,7 @@
       "A.Attend%": 0.6660482374768089,
       "A.AHT": 0.001570763888888882,
       "A.UTZ%": 0.8124795751633987,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.99,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -7296,9 +7343,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8880643166357451,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9595959595959596,
+      "UTZ%Ach%": 0.9558583237216456,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9196248196248196,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.26189999999999,
@@ -7307,7 +7354,8 @@
       "Total_Booking_Trend": 1078,
       "Total_Attend_Trend": 718,
       "Performance": 0.9196248196248196,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 91.72
     }
   },
   {
@@ -7437,7 +7485,7 @@
       "A.Attend%": 0.5921205098493627,
       "A.AHT": 0.0020346180555554927,
       "A.UTZ%": 0.7512003968253969,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.94,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -7447,10 +7495,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.7894940131324836,
-      "AHTAch%": 0.8532866901458387,
-      "UTZ%Ach%": 0.7512003968253969,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 1.0,
+      "AHTAch%": 0.8532860044029822,
+      "UTZ%Ach%": 0.883765172735761,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 0.9894736842105263,
       "PerformanceScore": 0.8204301833825701,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.9298499999999095,
@@ -7459,7 +7507,8 @@
       "Total_Booking_Trend": 863,
       "Total_Attend_Trend": 511,
       "Performance": 0.82043018338257,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 83.32
     }
   },
   {
@@ -7591,7 +7640,7 @@
       "A.Attend%": 0.6153846153846154,
       "A.AHT": 0.0019845833333334006,
       "A.UTZ%": 0.8431206896551724,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -7601,10 +7650,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8205128205128206,
-      "AHTAch%": 0.8747990946960998,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.8747987962768267,
+      "UTZ%Ach%": 0.9919066937119676,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8655989290937793,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.857800000000097,
@@ -7613,7 +7662,8 @@
       "Total_Booking_Trend": 962,
       "Total_Attend_Trend": 592,
       "Performance": 0.8655989290937793,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.73
     }
   },
   {
@@ -7743,7 +7793,7 @@
       "A.Attend%": 0.6467505241090147,
       "A.AHT": 0.0019100115740739998,
       "A.UTZ%": 0.790878427128427,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -7752,11 +7802,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8623340321453528,
-      "AHTAch%": 0.9089549651813659,
-      "UTZ%Ach%": 0.790878427128427,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "Attend%Ach%": 0.8623340321453529,
+      "AHTAch%": 0.9089531889108065,
+      "UTZ%Ach%": 0.9304452083863848,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8756694134736581,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.7504166666665597,
@@ -7765,7 +7815,8 @@
       "Total_Booking_Trend": 954,
       "Total_Attend_Trend": 617,
       "Performance": 0.8756694134736579,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.21
     }
   },
   {
@@ -7895,7 +7946,7 @@
       "A.Attend%": 0.6306504961411246,
       "A.AHT": 0.0022550810185184567,
       "A.UTZ%": 0.831550505050505,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.98,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -7905,10 +7956,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8408673281881661,
-      "AHTAch%": 0.7698660331325914,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9693877551020408,
+      "AHTAch%": 0.769866402516971,
+      "UTZ%Ach%": 0.9782947118241235,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8755698191434479,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.2473166666665776,
@@ -7917,7 +7968,8 @@
       "Total_Booking_Trend": 907,
       "Total_Attend_Trend": 572,
       "Performance": 0.8755698191434478,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 87.49
     }
   },
   {
@@ -8047,7 +8099,7 @@
       "A.Attend%": 0.6492471213463242,
       "A.AHT": 0.002215775462963032,
       "A.UTZ%": 0.8331718346253228,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.97,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -8056,11 +8108,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8656628284617658,
-      "AHTAch%": 0.7835211879076974,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9793814432989689,
+      "Attend%Ach%": 0.8656628284617657,
+      "AHTAch%": 0.7835230329654013,
+      "UTZ%Ach%": 0.9802021583827328,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8941091114835693,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.1907166666667663,
@@ -8069,7 +8121,8 @@
       "Total_Booking_Trend": 1129,
       "Total_Attend_Trend": 733,
       "Performance": 0.8941091114835694,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.32
     }
   },
   {
@@ -8195,11 +8248,11 @@
       "Sharjah_Attend": 77,
       "Ajman_Attend": 228,
       "clinics.Attend": 31,
-      "A.Booking%": 0.4735152487961477,
+      "A.Booking%": 0.47351524879614765,
       "A.Attend%": 0.6700564971751413,
       "A.AHT": 0.0021798379629629494,
       "A.UTZ%": 0.7939432029795158,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.99,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -8208,11 +8261,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8934086629001883,
-      "AHTAch%": 0.7964398131839411,
-      "UTZ%Ach%": 0.7939432029795158,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9595959595959596,
+      "Attend%Ach%": 0.8934086629001884,
+      "AHTAch%": 0.7964404421837384,
+      "UTZ%Ach%": 0.9340508270347245,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8925821729670784,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.138966666666647,
@@ -8221,7 +8274,8 @@
       "Total_Booking_Trend": 885,
       "Total_Attend_Trend": 593,
       "Performance": 0.8925821729670783,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 90.86
     }
   },
   {
@@ -8351,7 +8405,7 @@
       "A.Attend%": 0.6477987421383647,
       "A.AHT": 0.001568912037037018,
       "A.UTZ%": 0.7728337813620071,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.96,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -8360,11 +8414,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8637316561844864,
+      "Attend%Ach%": 0.8637316561844863,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 0.7728337813620071,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9895833333333335,
+      "UTZ%Ach%": 0.9092162133670671,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8813747041320077,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.259233333333306,
@@ -8373,7 +8427,8 @@
       "Total_Booking_Trend": 954,
       "Total_Attend_Trend": 618,
       "Performance": 0.8813747041320078,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.55
     }
   },
   {
@@ -8503,7 +8558,7 @@
       "A.Attend%": 0.6172248803827751,
       "A.AHT": 0.001954756944444469,
       "A.UTZ%": 0.8127645502645503,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.95,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -8513,9 +8568,9 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8229665071770335,
-      "AHTAch%": 0.8881449179558807,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
+      "AHTAch%": 0.8881467929019197,
+      "UTZ%Ach%": 0.9561935885465298,
+      "AbandonRate%Ach%": 1.0,
       "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8704838009217174,
       "PerformanceGrade": "Meet",
@@ -8525,7 +8580,8 @@
       "Total_Booking_Trend": 836,
       "Total_Attend_Trend": 516,
       "Performance": 0.8704838009217174,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.61
     }
   },
   {
@@ -8657,7 +8713,7 @@
       "A.Attend%": 0.6236236236236237,
       "A.AHT": 0.0020672685185185724,
       "A.UTZ%": 0.8133455625436756,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.98,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -8667,10 +8723,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8314981648314982,
-      "AHTAch%": 0.8398101786114639,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9693877551020408,
+      "AHTAch%": 0.8398091953507945,
+      "UTZ%Ach%": 0.9568771324043243,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8725086120677239,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.9768666666667443,
@@ -8679,7 +8735,8 @@
       "Total_Booking_Trend": 999,
       "Total_Attend_Trend": 623,
       "Performance": 0.8725086120677239,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.97
     }
   },
   {
@@ -8809,7 +8866,7 @@
       "A.Attend%": 0.6446199407699901,
       "A.AHT": 0.0022408796296295996,
       "A.UTZ%": 0.8699503968253968,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.99,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -8819,10 +8876,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8594932543599868,
-      "AHTAch%": 0.7747456683937264,
+      "AHTAch%": 0.7747453670227156,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9595959595959596,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.888362359451475,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.2268666666666235,
@@ -8831,7 +8888,8 @@
       "Total_Booking_Trend": 1013,
       "Total_Attend_Trend": 653,
       "Performance": 0.888362359451475,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.04
     }
   },
   {
@@ -8961,7 +9019,7 @@
       "A.Attend%": 0.623062015503876,
       "A.AHT": 0.0021468749999999925,
       "A.UTZ%": 0.8107878217200252,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.98,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -8970,11 +9028,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.830749354005168,
-      "AHTAch%": 0.8086670158585102,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9693877551020408,
+      "Attend%Ach%": 0.8307493540051679,
+      "AHTAch%": 0.8086689309396761,
+      "UTZ%Ach%": 0.9538680255529708,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.870427286351645,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.0914999999999893,
@@ -8983,7 +9041,8 @@
       "Total_Booking_Trend": 1032,
       "Total_Attend_Trend": 643,
       "Performance": 0.8704272863516451,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.73
     }
   },
   {
@@ -9113,7 +9172,7 @@
       "A.Attend%": 0.6465827338129496,
       "A.AHT": 0.0017599768518519188,
       "A.UTZ%": 0.8368098688750862,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.99,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -9123,10 +9182,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8621103117505995,
-      "AHTAch%": 0.9864416604940259,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9595959595959596,
+      "AHTAch%": 0.9864397416842755,
+      "UTZ%Ach%": 0.984482198676572,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9007790992299188,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.534366666666763,
@@ -9135,7 +9194,8 @@
       "Total_Booking_Trend": 1112,
       "Total_Attend_Trend": 719,
       "Performance": 0.9007790992299188,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.12
     }
   },
   {
@@ -9265,7 +9325,7 @@
       "A.Attend%": 0.6445830085736555,
       "A.AHT": 0.0018634259259260322,
       "A.UTZ%": 0.8308024691358027,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.006054490413723511,
       "A.QualityScore": 0.981,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -9275,10 +9335,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8594440114315406,
-      "AHTAch%": 0.9316770186335404,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9683995922528033,
+      "AHTAch%": 0.9316770186334873,
+      "UTZ%Ach%": 0.9774146695715326,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8966146385463956,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.6833333333334863,
@@ -9287,7 +9347,8 @@
       "Total_Booking_Trend": 1283,
       "Total_Attend_Trend": 827,
       "Performance": 0.8966146385463956,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.59
     }
   },
   {
@@ -9417,7 +9478,7 @@
       "A.Attend%": 0.6976365118174409,
       "A.AHT": 0.0016435185185186274,
       "A.UTZ%": 0.8658921222810112,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0066166740185266875,
       "A.QualityScore": 0.994,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -9429,8 +9490,8 @@
       "Attend%Ach%": 0.9301820157565879,
       "AHTAch%": 1.0,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9557344064386317,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.948914131351543,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.3666666666668235,
@@ -9439,7 +9500,8 @@
       "Total_Booking_Trend": 1227,
       "Total_Attend_Trend": 856,
       "Performance": 0.948914131351543,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 95.11
     }
   },
   {
@@ -9569,7 +9631,7 @@
       "A.Attend%": 0.7109634551495017,
       "A.AHT": 0.001377314814814845,
       "A.UTZ%": 0.7775555555555556,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0044204322200392925,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -9580,9 +9642,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9479512735326688,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 0.7775555555555556,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "UTZ%Ach%": 0.9147712418300654,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9388214470284236,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 1.983333333333377,
@@ -9591,7 +9653,8 @@
       "Total_Booking_Trend": 1204,
       "Total_Attend_Trend": 856,
       "Performance": 0.9388214470284237,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 95.5
     }
   },
   {
@@ -9721,7 +9784,7 @@
       "A.Attend%": 0.6766743648960739,
       "A.AHT": 0.0016203703703703276,
       "A.UTZ%": 0.6832952069716776,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.008602150537634409,
       "A.QualityScore": 0.968,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -9732,9 +9795,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9022324865280985,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 0.6832952069716776,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.981404958677686,
+      "UTZ%Ach%": 0.8038767140843266,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.898962509200721,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.3333333333332718,
@@ -9743,7 +9806,8 @@
       "Total_Booking_Trend": 866,
       "Total_Attend_Trend": 586,
       "Performance": 0.898962509200721,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 91.2
     }
   },
   {
@@ -9873,7 +9937,7 @@
       "A.Attend%": 0.6727467811158798,
       "A.AHT": 0.0020138888888889817,
       "A.UTZ%": 0.7357083333333334,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.010962241169305725,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -9882,11 +9946,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8969957081545064,
-      "AHTAch%": 0.8620689655172413,
-      "UTZ%Ach%": 0.7357083333333334,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "Attend%Ach%": 0.8969957081545065,
+      "AHTAch%": 0.8620689655172017,
+      "UTZ%Ach%": 0.8655392156862746,
+      "AbandonRate%Ach%": 0.9122222222222223,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8920712773173499,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.9000000000001336,
@@ -9895,7 +9959,8 @@
       "Total_Booking_Trend": 932,
       "Total_Attend_Trend": 627,
       "Performance": 0.8920712773173498,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 90.76
     }
   },
   {
@@ -10027,7 +10092,7 @@
       "A.Attend%": 0.663197729422895,
       "A.AHT": 0.0016666666666667052,
       "A.UTZ%": 0.7805910493827162,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.004675324675324675,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -10036,11 +10101,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8842636392305268,
+      "Attend%Ach%": 0.8842636392305266,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 0.7805910493827162,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "UTZ%Ach%": 0.9183424110384897,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8945436523996403,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.4000000000000554,
@@ -10049,7 +10114,8 @@
       "Total_Booking_Trend": 1057,
       "Total_Attend_Trend": 701,
       "Performance": 0.8945436523996403,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 91.08
     }
   },
   {
@@ -10179,7 +10245,7 @@
       "A.Attend%": 0.6336014298480787,
       "A.AHT": 0.0016087962962962887,
       "A.UTZ%": 0.7669931773879143,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.00443213296398892,
       "A.QualityScore": 0.994,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -10190,9 +10256,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8448019064641049,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 0.7669931773879143,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9557344064386317,
+      "UTZ%Ach%": 0.9023449145740168,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8658473725855965,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.3166666666666558,
@@ -10201,7 +10267,8 @@
       "Total_Booking_Trend": 1119,
       "Total_Attend_Trend": 709,
       "Performance": 0.8658473725855964,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.16
     }
   },
   {
@@ -10331,7 +10398,7 @@
       "A.Attend%": 0.634881825590872,
       "A.AHT": 0.001967592592592604,
       "A.UTZ%": 0.9314491475602588,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.007146260123868509,
       "A.QualityScore": 0.964,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -10340,11 +10407,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.8465091007878295,
-      "AHTAch%": 0.8823529411764707,
+      "Attend%Ach%": 0.8465091007878294,
+      "AHTAch%": 0.8823529411764655,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9854771784232365,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8859478765314659,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.83333333333335,
@@ -10353,7 +10420,8 @@
       "Total_Booking_Trend": 1227,
       "Total_Attend_Trend": 779,
       "Performance": 0.885947876531466,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.67
     }
   },
   {
@@ -10483,7 +10551,7 @@
       "A.Attend%": 0.6784015223596574,
       "A.AHT": 0.0018634259259260322,
       "A.UTZ%": 0.7799845679012346,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.007484168105929764,
       "A.QualityScore": 0.958,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -10493,10 +10561,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.90453536314621,
-      "AHTAch%": 0.9316770186335404,
-      "UTZ%Ach%": 0.7799845679012346,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9916492693110647,
+      "AHTAch%": 0.9316770186334873,
+      "UTZ%Ach%": 0.9176289034132172,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9073395253897006,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.6833333333334863,
@@ -10505,7 +10573,8 @@
       "Total_Booking_Trend": 1051,
       "Total_Attend_Trend": 713,
       "Performance": 0.9073395253897008,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.15
     }
   },
   {
@@ -10635,7 +10704,7 @@
       "A.Attend%": 0.65875,
       "A.AHT": 0.0021412037037036313,
       "A.UTZ%": 0.8220507544581619,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.007513661202185792,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -10645,10 +10714,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8783333333333333,
-      "AHTAch%": 0.8108108108108107,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.8108108108108382,
+      "UTZ%Ach%": 0.9671185346566611,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9028738738738737,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.083333333333229,
@@ -10657,7 +10726,8 @@
       "Total_Booking_Trend": 800,
       "Total_Attend_Trend": 527,
       "Performance": 0.9028738738738737,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.21
     }
   },
   {
@@ -10787,7 +10857,7 @@
       "A.Attend%": 0.7037037037037037,
       "A.AHT": 0.001967592592592604,
       "A.UTZ%": 0.7830847953216374,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.003107520198881293,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -10797,10 +10867,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9382716049382717,
-      "AHTAch%": 0.8823529411764707,
-      "UTZ%Ach%": 0.7830847953216374,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.8823529411764655,
+      "UTZ%Ach%": 0.9212762297901618,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9267162500477772,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.83333333333335,
@@ -10809,7 +10879,8 @@
       "Total_Booking_Trend": 1026,
       "Total_Attend_Trend": 722,
       "Performance": 0.9267162500477775,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 94.3
     }
   },
   {
@@ -10939,7 +11010,7 @@
       "A.Attend%": 0.6777456647398844,
       "A.AHT": 0.002164351851851931,
       "A.UTZ%": 0.7800127087872185,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0007867820613690008,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -10949,10 +11020,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9036608863198459,
-      "AHTAch%": 0.8021390374331551,
-      "UTZ%Ach%": 0.7800127087872185,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.8021390374331256,
+      "UTZ%Ach%": 0.9176620103379042,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8981708431742716,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.116666666666781,
@@ -10961,7 +11032,8 @@
       "Total_Booking_Trend": 692,
       "Total_Attend_Trend": 469,
       "Performance": 0.8981708431742718,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 91.44
     }
   },
   {
@@ -11091,7 +11163,7 @@
       "A.Attend%": 0.681766704416761,
       "A.AHT": 0.0014120370370369617,
       "A.UTZ%": 0.7209895833333333,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.003978779840848806,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -11100,11 +11172,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.9090222725556812,
+      "Attend%Ach%": 0.9090222725556814,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 0.7209895833333333,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "UTZ%Ach%": 0.8482230392156862,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9059145491223103,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.033333333333225,
@@ -11113,7 +11185,8 @@
       "Total_Booking_Trend": 883,
       "Total_Attend_Trend": 602,
       "Performance": 0.9059145491223102,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.11
     }
   },
   {
@@ -11243,7 +11316,7 @@
       "A.Attend%": 0.6663306451612904,
       "A.AHT": 0.0017129629629628607,
       "A.UTZ%": 0.807300194931774,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.001729106628242075,
       "A.QualityScore": 0.952,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -11252,11 +11325,11 @@
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
-      "Attend%Ach%": 0.888440860215054,
+      "Attend%Ach%": 0.8884408602150539,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9978991596638656,
+      "UTZ%Ach%": 0.9497649352138517,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.921803560133731,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.4666666666665193,
@@ -11265,7 +11338,8 @@
       "Total_Booking_Trend": 992,
       "Total_Attend_Trend": 661,
       "Performance": 0.9218035601337311,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 91.69
     }
   },
   {
@@ -11395,7 +11469,7 @@
       "A.Attend%": 0.6666666666666666,
       "A.AHT": 0.001979166666666643,
       "A.UTZ%": 0.7834832451499119,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.00625,
       "A.QualityScore": 0.951,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -11405,10 +11479,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8888888888888888,
-      "AHTAch%": 0.8771929824561402,
-      "UTZ%Ach%": 0.7834832451499119,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9989484752891692,
+      "AHTAch%": 0.8771929824561508,
+      "UTZ%Ach%": 0.921744994294014,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8943776196244789,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.849999999999966,
@@ -11417,7 +11491,8 @@
       "Total_Booking_Trend": 1023,
       "Total_Attend_Trend": 682,
       "Performance": 0.8943776196244788,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 90.83
     }
   },
   {
@@ -11547,7 +11622,7 @@
       "A.Attend%": 0.6783103168155971,
       "A.AHT": 0.001967592592592604,
       "A.UTZ%": 0.7935241301907968,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0015764582238570678,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -11557,10 +11632,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9044137557541294,
-      "AHTAch%": 0.8823529411764707,
-      "UTZ%Ach%": 0.7935241301907968,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.8823529411764655,
+      "UTZ%Ach%": 0.9335578002244669,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9040596891057937,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.83333333333335,
@@ -11569,7 +11644,8 @@
       "Total_Booking_Trend": 1231,
       "Total_Attend_Trend": 835,
       "Performance": 0.9040596891057937,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.06
     }
   },
   {
@@ -11699,7 +11775,7 @@
       "A.Attend%": 0.6793823796548593,
       "A.AHT": 0.001770833333333277,
       "A.UTZ%": 0.7674158249158249,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.005277044854881266,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -11709,10 +11785,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9058431728731456,
-      "AHTAch%": 0.9803921568627452,
-      "UTZ%Ach%": 0.7674158249158249,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.9803921568627763,
+      "UTZ%Ach%": 0.902842146959794,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9073514113459216,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.549999999999919,
@@ -11721,7 +11797,8 @@
       "Total_Booking_Trend": 1101,
       "Total_Attend_Trend": 748,
       "Performance": 0.9073514113459217,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.34
     }
   },
   {
@@ -11851,7 +11928,7 @@
       "A.Attend%": 0.6666666666666666,
       "A.AHT": 0.0026157407407407796,
       "A.UTZ%": 0.5863888888888888,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -11859,12 +11936,12 @@
       "T.UTZ%": 0.8,
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.9181089067116927,
+      "Booking%Ach%": 0.9385113268608414,
       "Attend%Ach%": 0.8888888888888888,
-      "AHTAch%": 0.6637168141592921,
-      "UTZ%Ach%": 0.5863888888888888,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.6637168141592822,
+      "UTZ%Ach%": 0.6898692810457516,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8533578424902449,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.7666666666667226,
@@ -11873,7 +11950,8 @@
       "Total_Booking_Trend": 87,
       "Total_Attend_Trend": 58,
       "Performance": 0.8533578424902449,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 86.82
     }
   },
   {
@@ -11999,11 +12077,11 @@
       "Sharjah_Attend": 21,
       "Ajman_Attend": 59,
       "clinics.Attend": 5,
-      "A.Booking%": 0.45472440944881887,
+      "A.Booking%": 0.4547244094488189,
       "A.Attend%": 0.670995670995671,
       "A.AHT": 0.0029398148148147563,
       "A.UTZ%": 0.7295447530864196,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -12011,12 +12089,12 @@
       "T.UTZ%": 0.8,
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.9885313248887369,
+      "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8946608946608947,
-      "AHTAch%": 0.5905511811023622,
-      "UTZ%Ach%": 0.7295447530864196,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.5905511811023739,
+      "UTZ%Ach%": 0.8582879448075525,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.87509779311526,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.233333333333249,
@@ -12025,7 +12103,8 @@
       "Total_Booking_Trend": 231,
       "Total_Attend_Trend": 155,
       "Performance": 0.87509779311526,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.16
     }
   },
   {
@@ -12155,7 +12234,7 @@
       "A.Attend%": 0.6811594202898551,
       "A.AHT": 0.003645833333333348,
       "A.UTZ%": 0.7126118827160491,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.00516795865633075,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -12165,10 +12244,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9082125603864735,
-      "AHTAch%": 0.47619047619047616,
-      "UTZ%Ach%": 0.7126118827160491,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.4761904761904743,
+      "UTZ%Ach%": 0.8383669208424108,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.87831950435166,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 5.250000000000021,
@@ -12177,7 +12256,8 @@
       "Total_Booking_Trend": 207,
       "Total_Attend_Trend": 141,
       "Performance": 0.8783195043516601,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.34
     }
   },
   {
@@ -12303,11 +12383,11 @@
       "Sharjah_Attend": 19,
       "Ajman_Attend": 96,
       "clinics.Attend": 6,
-      "A.Booking%": 0.48051948051948046,
+      "A.Booking%": 0.4805194805194805,
       "A.Attend%": 0.6621621621621622,
       "A.AHT": 0.0027199074074073515,
       "A.UTZ%": 0.7499588477366256,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.007155635062611807,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -12317,10 +12397,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8828828828828829,
-      "AHTAch%": 0.6382978723404255,
-      "UTZ%Ach%": 0.7499588477366256,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.6382978723404387,
+      "UTZ%Ach%": 0.8823045267489713,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8724287964087017,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.916666666666586,
@@ -12329,7 +12409,8 @@
       "Total_Booking_Trend": 296,
       "Total_Attend_Trend": 196,
       "Performance": 0.8724287964087017,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.82
     }
   },
   {
@@ -12459,7 +12540,7 @@
       "A.Attend%": 0.6859504132231405,
       "A.AHT": 0.00215277777777767,
       "A.UTZ%": 0.7635462962962963,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.005555555555555556,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -12467,12 +12548,12 @@
       "T.UTZ%": 0.8,
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.9938670463257036,
+      "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9146005509641874,
-      "AHTAch%": 0.8064516129032258,
-      "UTZ%Ach%": 0.7635462962962963,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.8064516129032661,
+      "UTZ%Ach%": 0.898289760348584,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9037843005822925,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.099999999999845,
@@ -12481,7 +12562,8 @@
       "Total_Booking_Trend": 363,
       "Total_Attend_Trend": 249,
       "Performance": 0.9037843005822923,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.04
     }
   },
   {
@@ -12611,7 +12693,7 @@
       "A.Attend%": 0.6456692913385826,
       "A.AHT": 0.003553240740740815,
       "A.UTZ%": 0.5495987654320987,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -12619,12 +12701,12 @@
       "T.UTZ%": 0.8,
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.8764665286404417,
+      "Booking%Ach%": 0.8959435626102292,
       "Attend%Ach%": 0.8608923884514436,
-      "AHTAch%": 0.4885993485342019,
-      "UTZ%Ach%": 0.5495987654320987,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.48859934853419174,
+      "UTZ%Ach%": 0.6465867828612927,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8171611687499746,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 5.116666666666774,
@@ -12633,7 +12715,8 @@
       "Total_Booking_Trend": 127,
       "Total_Attend_Trend": 82,
       "Performance": 0.8171611687499746,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 83.13
     }
   },
   {
@@ -12763,7 +12846,7 @@
       "A.Attend%": 0.7063492063492064,
       "A.AHT": 0.0023958333333333748,
       "A.UTZ%": 0.71875,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -12771,12 +12854,12 @@
       "T.UTZ%": 0.8,
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.9316770186335401,
-      "Attend%Ach%": 0.941798941798942,
-      "AHTAch%": 0.7246376811594203,
-      "UTZ%Ach%": 0.71875,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "Booking%Ach%": 0.9523809523809523,
+      "Attend%Ach%": 0.9417989417989419,
+      "AHTAch%": 0.7246376811594077,
+      "UTZ%Ach%": 0.8455882352941176,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9080338451805843,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.4500000000000597,
@@ -12785,7 +12868,8 @@
       "Total_Booking_Trend": 252,
       "Total_Attend_Trend": 178,
       "Performance": 0.9080338451805844,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.53
     }
   },
   {
@@ -12915,7 +12999,7 @@
       "A.Attend%": 0.6925566343042071,
       "A.AHT": 0.0028356481481481843,
       "A.UTZ%": 0.7384043209876543,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.006993006993006993,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -12925,10 +13009,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9234088457389428,
-      "AHTAch%": 0.6122448979591836,
-      "UTZ%Ach%": 0.7384043209876543,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.6122448979591759,
+      "UTZ%Ach%": 0.8687109658678286,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8983388690139845,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 4.083333333333385,
@@ -12937,7 +13021,8 @@
       "Total_Booking_Trend": 309,
       "Total_Attend_Trend": 214,
       "Performance": 0.8983388690139845,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 91.39
     }
   },
   {
@@ -13067,7 +13152,7 @@
       "A.Attend%": 0.6776315789473685,
       "A.AHT": 0.002777777777777768,
       "A.UTZ%": 0.6906574074074074,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0018587360594795538,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -13077,10 +13162,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9035087719298246,
-      "AHTAch%": 0.6249999999999999,
-      "UTZ%Ach%": 0.6906574074074074,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.6250000000000022,
+      "UTZ%Ach%": 0.8125381263616558,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8802718810916179,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.999999999999986,
@@ -13089,7 +13174,8 @@
       "Total_Booking_Trend": 304,
       "Total_Attend_Trend": 206,
       "Performance": 0.8802718810916179,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.5
     }
   },
   {
@@ -13219,7 +13305,7 @@
       "A.Attend%": 0.6918918918918919,
       "A.AHT": 0.001574074074074172,
       "A.UTZ%": 0.8299273783587509,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.004568817818389492,
       "A.QualityScore": 0.979,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -13230,9 +13316,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9225225225225225,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9703779366700713,
+      "UTZ%Ach%": 0.9763851510102951,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9442846625992692,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.266666666666808,
@@ -13241,7 +13327,8 @@
       "Total_Booking_Trend": 1110,
       "Total_Attend_Trend": 768,
       "Performance": 0.9442846625992692,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 94.34
     }
   },
   {
@@ -13367,11 +13454,11 @@
       "Sharjah_Attend": 107,
       "Ajman_Attend": 373,
       "clinics.Attend": 42,
-      "A.Booking%": 0.5115070527097253,
+      "A.Booking%": 0.4903914590747331,
       "A.Attend%": 0.6676342525399129,
       "A.AHT": 0.0014814814814814814,
       "A.UTZ%": 0.8646014492753623,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.998,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -13383,8 +13470,8 @@
       "Attend%Ach%": 0.8901790033865505,
       "AHTAch%": 1.0,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9519038076152304,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9207204927513469,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.1333333333333333,
@@ -13393,7 +13480,8 @@
       "Total_Booking_Trend": 1378,
       "Total_Attend_Trend": 920,
       "Performance": 0.9207204927513469,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.31
     }
   },
   {
@@ -13519,11 +13607,11 @@
       "Sharjah_Attend": 91,
       "Ajman_Attend": 330,
       "clinics.Attend": 33,
-      "A.Booking%": 0.5868320610687023,
+      "A.Booking%": 0.5624142661179699,
       "A.Attend%": 0.6398373983739838,
       "A.AHT": 0.0017939814814814815,
       "A.UTZ%": 0.7994177890011224,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.983,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -13533,10 +13621,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8531165311653117,
-      "AHTAch%": 0.9677419354838709,
-      "UTZ%Ach%": 0.7994177890011224,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9664292980671414,
+      "AHTAch%": 0.967741935483871,
+      "UTZ%Ach%": 0.9404915164719087,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.873831912393381,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.5833333333333335,
@@ -13545,7 +13633,8 @@
       "Total_Booking_Trend": 1230,
       "Total_Attend_Trend": 787,
       "Performance": 0.873831912393381,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 88.96
     }
   },
   {
@@ -13671,11 +13760,11 @@
       "Sharjah_Attend": 108,
       "Ajman_Attend": 362,
       "clinics.Attend": 48,
-      "A.Booking%": 0.572512647554806,
+      "A.Booking%": 0.5522570150467669,
       "A.Attend%": 0.6833578792341679,
       "A.AHT": 0.0013657407407407407,
       "A.UTZ%": 0.8375617283950617,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.971,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -13686,9 +13775,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9111438389788905,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9783728115345005,
+      "UTZ%Ach%": 0.9853667392883079,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9367193278619483,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 1.9666666666666668,
@@ -13697,7 +13786,8 @@
       "Total_Booking_Trend": 1358,
       "Total_Attend_Trend": 928,
       "Performance": 0.9367193278619483,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 93.63
     }
   },
   {
@@ -13823,11 +13913,11 @@
       "Sharjah_Attend": 107,
       "Ajman_Attend": 303,
       "clinics.Attend": 51,
-      "A.Booking%": 0.672886937431394,
+      "A.Booking%": 0.6136136136136137,
       "A.Attend%": 0.6835236541598695,
       "A.AHT": 0.0015046296296296296,
       "A.UTZ%": 0.8134041394335512,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.981,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -13838,9 +13928,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9113648722131593,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9683995922528033,
+      "UTZ%Ach%": 0.9569460463924132,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9363753901618517,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.1666666666666665,
@@ -13849,7 +13939,8 @@
       "Total_Booking_Trend": 1226,
       "Total_Attend_Trend": 838,
       "Performance": 0.9363753901618516,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 93.37
     }
   },
   {
@@ -13975,11 +14066,11 @@
       "Sharjah_Attend": 95,
       "Ajman_Attend": 278,
       "clinics.Attend": 40,
-      "A.Booking%": 0.5897824987354577,
+      "A.Booking%": 0.5693359375,
       "A.Attend%": 0.6715265866209262,
       "A.AHT": 0.0013425925925925925,
       "A.UTZ%": 0.8002400548696845,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.961,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -13990,9 +14081,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8953687821612349,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9885535900104058,
+      "UTZ%Ach%": 0.9414588880819819,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9261858270133847,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 1.9333333333333333,
@@ -14001,7 +14092,8 @@
       "Total_Booking_Trend": 1166,
       "Total_Attend_Trend": 783,
       "Performance": 0.9261858270133847,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.09
     }
   },
   {
@@ -14130,11 +14222,11 @@
       "Sharjah_Attend": 84,
       "Ajman_Attend": 242,
       "clinics.Attend": 37,
-      "A.Booking%": 0.6,
+      "A.Booking%": 0.5467741935483871,
       "A.Attend%": 0.6460176991150443,
       "A.AHT": 0.001724537037037037,
       "A.UTZ%": 0.8325816993464052,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.962,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -14145,9 +14237,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8613569321533924,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9875259875259875,
+      "UTZ%Ach%": 0.9795078815840061,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.902326151883674,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.4833333333333334,
@@ -14156,7 +14248,8 @@
       "Total_Booking_Trend": 1017,
       "Total_Attend_Trend": 657,
       "Performance": 0.902326151883674,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.09
     }
   },
   {
@@ -14282,11 +14375,11 @@
       "Sharjah_Attend": 69,
       "Ajman_Attend": 274,
       "clinics.Attend": 31,
-      "A.Booking%": 0.5250147145379636,
+      "A.Booking%": 0.48903508771929827,
       "A.Attend%": 0.6603139013452914,
       "A.AHT": 0.002013888888888889,
       "A.UTZ%": 0.8336697530864198,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.998,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -14297,9 +14390,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8804185351270553,
       "AHTAch%": 0.8620689655172413,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9519038076152304,
+      "UTZ%Ach%": 0.9807879448075527,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9069916132455622,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.9,
@@ -14308,7 +14401,8 @@
       "Total_Booking_Trend": 892,
       "Total_Attend_Trend": 589,
       "Performance": 0.9069916132455622,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.75
     }
   },
   {
@@ -14434,11 +14528,11 @@
       "Sharjah_Attend": 89,
       "Ajman_Attend": 297,
       "clinics.Attend": 31,
-      "A.Booking%": 0.6054083885209713,
+      "A.Booking%": 0.5725469728601252,
       "A.Attend%": 0.6700091157702825,
       "A.AHT": 0.0016435185185185185,
       "A.UTZ%": 0.8046247563352826,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -14449,9 +14543,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.89334548769371,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "UTZ%Ach%": 0.9466173603944502,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.922841841385597,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.366666666666667,
@@ -14460,7 +14554,8 @@
       "Total_Booking_Trend": 1097,
       "Total_Attend_Trend": 735,
       "Performance": 0.922841841385597,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.0
     }
   },
   {
@@ -14586,11 +14681,11 @@
       "Sharjah_Attend": 62,
       "Ajman_Attend": 214,
       "clinics.Attend": 37,
-      "A.Booking%": 0.6390675241157556,
+      "A.Booking%": 0.612952968388589,
       "A.Attend%": 0.6628930817610063,
       "A.AHT": 0.001574074074074074,
       "A.UTZ%": 0.8212422839506173,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.979,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -14601,9 +14696,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8838574423480083,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9703779366700714,
+      "UTZ%Ach%": 0.9661673928830792,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9172191064771094,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.2666666666666666,
@@ -14612,7 +14707,8 @@
       "Total_Booking_Trend": 795,
       "Total_Attend_Trend": 527,
       "Performance": 0.9172191064771095,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 91.53
     }
   },
   {
@@ -14738,11 +14834,11 @@
       "Sharjah_Attend": 71,
       "Ajman_Attend": 281,
       "clinics.Attend": 35,
-      "A.Booking%": 0.6414970453053185,
+      "A.Booking%": 0.5723491505565319,
       "A.Attend%": 0.6908904810644831,
       "A.AHT": 0.0020486111111111113,
       "A.UTZ%": 0.7852040466392318,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.979,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -14752,10 +14848,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9211873080859775,
-      "AHTAch%": 0.8474576271186439,
-      "UTZ%Ach%": 0.7852040466392318,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9703779366700714,
+      "AHTAch%": 0.847457627118644,
+      "UTZ%Ach%": 0.9237694666343904,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9142432985135432,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.95,
@@ -14764,7 +14860,8 @@
       "Total_Booking_Trend": 977,
       "Total_Attend_Trend": 675,
       "Performance": 0.9142432985135432,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.96
     }
   },
   {
@@ -14890,11 +14987,11 @@
       "Sharjah_Attend": 114,
       "Ajman_Attend": 316,
       "clinics.Attend": 56,
-      "A.Booking%": 0.6452615225271879,
+      "A.Booking%": 0.615916955017301,
       "A.Attend%": 0.6773675762439807,
       "A.AHT": 0.0017013888888888888,
       "A.UTZ%": 0.8038873456790123,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.983,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -14905,9 +15002,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9031567683253076,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9664292980671414,
+      "UTZ%Ach%": 0.9457498184458969,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9305312027310724,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.45,
@@ -14916,7 +15013,8 @@
       "Total_Booking_Trend": 1246,
       "Total_Attend_Trend": 844,
       "Performance": 0.9305312027310724,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.68
     }
   },
   {
@@ -15044,11 +15142,11 @@
       "Sharjah_Attend": 61,
       "Ajman_Attend": 229,
       "clinics.Attend": 21,
-      "A.Booking%": 0.5024096385542168,
+      "A.Booking%": 0.47305728871242203,
       "A.Attend%": 0.684652278177458,
       "A.AHT": 0.0024652777777777776,
       "A.UTZ%": 0.8485308641975309,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.996,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -15059,9 +15157,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9128697042366106,
       "AHTAch%": 0.7042253521126761,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9538152610441767,
+      "UTZ%Ach%": 0.9982716049382716,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.92191082362347,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.5499999999999994,
@@ -15070,7 +15168,8 @@
       "Total_Booking_Trend": 834,
       "Total_Attend_Trend": 571,
       "Performance": 0.92191082362347,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.4
     }
   },
   {
@@ -15196,11 +15295,11 @@
       "Sharjah_Attend": 76,
       "Ajman_Attend": 267,
       "clinics.Attend": 32,
-      "A.Booking%": 0.5725288831835686,
+      "A.Booking%": 0.5714285714285714,
       "A.Attend%": 0.7096412556053812,
       "A.AHT": 0.0011805555555555556,
       "A.UTZ%": 0.7903300094966763,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.9,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -15211,9 +15310,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9461883408071748,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 0.7903300094966763,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 1.0,
+      "UTZ%Ach%": 0.9298000111725604,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 0.9473684210526316,
       "PerformanceScore": 0.9413648395146901,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 1.7000000000000002,
@@ -15222,7 +15321,8 @@
       "Total_Booking_Trend": 892,
       "Total_Attend_Trend": 633,
       "Performance": 0.9413648395146901,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 95.27
     }
   },
   {
@@ -15348,11 +15448,11 @@
       "Sharjah_Attend": 85,
       "Ajman_Attend": 259,
       "clinics.Attend": 34,
-      "A.Booking%": 0.625075346594334,
+      "A.Booking%": 0.5959770114942529,
       "A.Attend%": 0.6759884281581485,
       "A.AHT": 0.0013657407407407407,
       "A.UTZ%": 0.8121440329218108,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.972,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -15363,9 +15463,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9013179042108647,
       "AHTAch%": 1.0,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9773662551440329,
+      "UTZ%Ach%": 0.9554635681433069,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9297908457048069,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 1.9666666666666668,
@@ -15374,7 +15474,8 @@
       "Total_Booking_Trend": 1037,
       "Total_Attend_Trend": 701,
       "Performance": 0.9297908457048069,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.65
     }
   },
   {
@@ -15500,11 +15601,11 @@
       "Sharjah_Attend": 86,
       "Ajman_Attend": 246,
       "clinics.Attend": 45,
-      "A.Booking%": 0.5782556750298686,
+      "A.Booking%": 0.5410844046953606,
       "A.Attend%": 0.6580578512396694,
       "A.AHT": 0.0019444444444444444,
       "A.UTZ%": 0.7906910150891633,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.991,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -15514,10 +15615,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8774104683195593,
-      "AHTAch%": 0.8928571428571428,
-      "UTZ%Ach%": 0.7906910150891633,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.958627648839556,
+      "AHTAch%": 0.8928571428571429,
+      "UTZ%Ach%": 0.9302247236343097,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8858306689174427,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.8,
@@ -15526,7 +15627,8 @@
       "Total_Booking_Trend": 968,
       "Total_Attend_Trend": 637,
       "Performance": 0.8858306689174427,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 90.19
     }
   },
   {
@@ -15652,11 +15754,11 @@
       "Sharjah_Attend": 102,
       "Ajman_Attend": 265,
       "clinics.Attend": 46,
-      "A.Booking%": 0.5798847564169722,
+      "A.Booking%": 0.5548872180451128,
       "A.Attend%": 0.6784101174345076,
       "A.AHT": 0.001875,
       "A.UTZ%": 0.8101120857699806,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.981,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -15666,10 +15768,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9045468232460102,
-      "AHTAch%": 0.9259259259259259,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9683995922528033,
+      "AHTAch%": 0.925925925925926,
+      "UTZ%Ach%": 0.9530730420823301,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9278990521811434,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.6999999999999997,
@@ -15678,7 +15780,8 @@
       "Total_Booking_Trend": 1107,
       "Total_Attend_Trend": 751,
       "Performance": 0.9278990521811435,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.48
     }
   },
   {
@@ -15804,11 +15907,11 @@
       "Sharjah_Attend": 74,
       "Ajman_Attend": 309,
       "clinics.Attend": 48,
-      "A.Booking%": 0.5700575815738963,
+      "A.Booking%": 0.5226572811262649,
       "A.Attend%": 0.6456228956228957,
       "A.AHT": 0.0018402777777777777,
       "A.UTZ%": 0.8154845679012346,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -15819,9 +15922,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8608305274971942,
       "AHTAch%": 0.9433962264150944,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "UTZ%Ach%": 0.9593936092955702,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.8972511805687906,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.65,
@@ -15830,7 +15933,8 @@
       "Total_Booking_Trend": 1188,
       "Total_Attend_Trend": 767,
       "Performance": 0.8972511805687906,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.57
     }
   },
   {
@@ -15956,11 +16060,11 @@
       "Sharjah_Attend": 85,
       "Ajman_Attend": 249,
       "clinics.Attend": 24,
-      "A.Booking%": 0.6169799092676604,
+      "A.Booking%": 0.56,
       "A.Attend%": 0.6911764705882353,
       "A.AHT": 0.002673611111111111,
       "A.UTZ%": 0.8413521457965902,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.999,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -15970,10 +16074,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9215686274509803,
-      "AHTAch%": 0.6493506493506493,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.950950950950951,
+      "AHTAch%": 0.6493506493506495,
+      "UTZ%Ach%": 0.9898260538783414,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9251131192307661,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.8499999999999996,
@@ -15982,7 +16086,8 @@
       "Total_Booking_Trend": 952,
       "Total_Attend_Trend": 658,
       "Performance": 0.9251131192307661,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.65
     }
   },
   {
@@ -16108,11 +16213,11 @@
       "Sharjah_Attend": 73,
       "Ajman_Attend": 280,
       "clinics.Attend": 43,
-      "A.Booking%": 0.5728777362520021,
+      "A.Booking%": 0.5333001988071571,
       "A.Attend%": 0.6430568499534017,
       "A.AHT": 0.0018981481481481482,
       "A.UTZ%": 0.8619493177387915,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.981,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -16122,10 +16227,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8574091332712023,
-      "AHTAch%": 0.9146341463414633,
+      "AHTAch%": 0.9146341463414634,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9683995922528033,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.894338080219555,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 2.7333333333333334,
@@ -16134,7 +16239,8 @@
       "Total_Booking_Trend": 1073,
       "Total_Attend_Trend": 690,
       "Performance": 0.8943380802195549,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.59
     }
   },
   {
@@ -16260,11 +16366,11 @@
       "Sharjah_Attend": 104,
       "Ajman_Attend": 346,
       "clinics.Attend": 33,
-      "A.Booking%": 0.5637459434399629,
+      "A.Booking%": 0.5300784655623365,
       "A.Attend%": 0.6759868421052632,
       "A.AHT": 0.0018981481481481482,
       "A.UTZ%": 0.8601866549088771,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.999,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -16274,10 +16380,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9013157894736842,
-      "AHTAch%": 0.9146341463414633,
+      "AHTAch%": 0.9146341463414634,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.950950950950951,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9242003074961996,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 2.7333333333333334,
@@ -16286,7 +16392,8 @@
       "Total_Booking_Trend": 1216,
       "Total_Attend_Trend": 822,
       "Performance": 0.9242003074961996,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.67
     }
   },
   {
@@ -16412,11 +16519,11 @@
       "Sharjah_Attend": 94,
       "Ajman_Attend": 296,
       "clinics.Attend": 39,
-      "A.Booking%": 0.6464471403812825,
+      "A.Booking%": 0.6196013289036545,
       "A.Attend%": 0.6702412868632708,
       "A.AHT": 0.0023148148148148147,
       "A.UTZ%": 0.8119320987654322,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.992,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -16426,10 +16533,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8936550491510277,
-      "AHTAch%": 0.75,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9576612903225806,
+      "AHTAch%": 0.7500000000000001,
+      "UTZ%Ach%": 0.9552142338416849,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9109415989218482,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.333333333333333,
@@ -16438,7 +16545,8 @@
       "Total_Booking_Trend": 1119,
       "Total_Attend_Trend": 750,
       "Performance": 0.9109415989218482,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.86
     }
   },
   {
@@ -16564,11 +16672,11 @@
       "Sharjah_Attend": 90,
       "Ajman_Attend": 200,
       "clinics.Attend": 22,
-      "A.Booking%": 0.5644216691068814,
+      "A.Booking%": 0.5298969072164949,
       "A.Attend%": 0.669260700389105,
       "A.AHT": 0.002673611111111111,
       "A.UTZ%": 0.7704645061728395,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.988,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -16578,10 +16686,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8923476005188067,
-      "AHTAch%": 0.6493506493506493,
-      "UTZ%Ach%": 0.7704645061728395,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9615384615384615,
+      "AHTAch%": 0.6493506493506495,
+      "UTZ%Ach%": 0.9064288307915759,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.882234226524904,
       "PerformanceGrade": "Meet",
       "AHT_Minutes": 3.8499999999999996,
@@ -16590,7 +16698,8 @@
       "Total_Booking_Trend": 771,
       "Total_Attend_Trend": 516,
       "Performance": 0.8822342265249041,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScore%": 89.78
     }
   },
   {
@@ -16716,11 +16825,11 @@
       "Sharjah_Attend": 82,
       "Ajman_Attend": 245,
       "clinics.Attend": 36,
-      "A.Booking%": 0.5920427553444181,
+      "A.Booking%": 0.5585434173669468,
       "A.Attend%": 0.6870611835506519,
       "A.AHT": 0.0024189814814814816,
       "A.UTZ%": 0.8350617283950618,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.969,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -16731,9 +16840,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9160815780675359,
       "AHTAch%": 0.7177033492822966,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9803921568627451,
+      "UTZ%Ach%": 0.9824255628177198,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9261618799545271,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.4833333333333334,
@@ -16742,7 +16851,8 @@
       "Total_Booking_Trend": 997,
       "Total_Attend_Trend": 685,
       "Performance": 0.9261618799545271,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.54
     }
   },
   {
@@ -16868,11 +16978,11 @@
       "Sharjah_Attend": 74,
       "Ajman_Attend": 307,
       "clinics.Attend": 34,
-      "A.Booking%": 0.572347266881029,
+      "A.Booking%": 0.5164410058027079,
       "A.Attend%": 0.6657303370786517,
       "A.AHT": 0.0022569444444444442,
       "A.UTZ%": 0.85422278338945,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -16882,10 +16992,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8876404494382023,
-      "AHTAch%": 0.7692307692307693,
+      "AHTAch%": 0.7692307692307694,
       "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9073098530682799,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.2499999999999996,
@@ -16894,7 +17004,8 @@
       "Total_Booking_Trend": 1068,
       "Total_Attend_Trend": 711,
       "Performance": 0.9073098530682799,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.98
     }
   },
   {
@@ -17020,11 +17131,11 @@
       "Sharjah_Attend": 22,
       "Ajman_Attend": 93,
       "clinics.Attend": 9,
-      "A.Booking%": 0.5345699831365935,
+      "A.Booking%": 0.4953125,
       "A.Attend%": 0.6845425867507886,
       "A.AHT": 0.0022685185185185187,
       "A.UTZ%": 0.8185185185185185,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.889,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -17034,10 +17145,10 @@
       "T.QualityTarget": 0.95,
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9127234490010515,
-      "AHTAch%": 0.7653061224489796,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 1.0,
+      "AHTAch%": 0.7653061224489794,
+      "UTZ%Ach%": 0.962962962962963,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 0.9357894736842106,
       "PerformanceScore": 0.927171720423185,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.266666666666667,
@@ -17046,7 +17157,8 @@
       "Total_Booking_Trend": 317,
       "Total_Attend_Trend": 217,
       "Performance": 0.927171720423185,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.03
     }
   },
   {
@@ -17172,11 +17284,11 @@
       "Sharjah_Attend": 83,
       "Ajman_Attend": 286,
       "clinics.Attend": 44,
-      "A.Booking%": 0.5896780786918753,
+      "A.Booking%": 0.5629268292682926,
       "A.Attend%": 0.6611785095320624,
       "A.AHT": 0.0021643518518518518,
       "A.UTZ%": 0.8305314009661836,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.965,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -17187,9 +17299,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.8815713460427498,
       "AHTAch%": 0.8021390374331551,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.9844559585492227,
+      "UTZ%Ach%": 0.977095765842569,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9064296920290437,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.1166666666666667,
@@ -17198,7 +17310,8 @@
       "Total_Booking_Trend": 1154,
       "Total_Attend_Trend": 763,
       "Performance": 0.9064296920290437,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 90.49
     }
   },
   {
@@ -17324,11 +17437,11 @@
       "Sharjah_Attend": 28,
       "Ajman_Attend": 99,
       "clinics.Attend": 14,
-      "A.Booking%": 0.5689102564102564,
+      "A.Booking%": 0.5220588235294118,
       "A.Attend%": 0.6816901408450704,
       "A.AHT": 0.0021875,
       "A.UTZ%": 0.8025848765432099,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -17339,9 +17452,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9089201877934272,
       "AHTAch%": 0.7936507936507935,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "UTZ%Ach%": 0.9442175018155411,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9234266711379386,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.1500000000000004,
@@ -17350,7 +17463,8 @@
       "Total_Booking_Trend": 355,
       "Total_Attend_Trend": 242,
       "Performance": 0.9234266711379386,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.03
     }
   },
   {
@@ -17476,11 +17590,11 @@
       "Sharjah_Attend": 13,
       "Ajman_Attend": 63,
       "clinics.Attend": 6,
-      "A.Booking%": 0.44356435643564357,
+      "A.Booking%": 0.4163568773234201,
       "A.Attend%": 0.7098214285714286,
       "A.AHT": 0.0024652777777777776,
       "A.UTZ%": 0.7989021164021164,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -17488,12 +17602,12 @@
       "T.UTZ%": 0.8,
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 0.964270340077486,
+      "Booking%Ach%": 0.9252375051631557,
       "Attend%Ach%": 0.9464285714285715,
       "AHTAch%": 0.7042253521126761,
-      "UTZ%Ach%": 0.7989021164021164,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "UTZ%Ach%": 0.9398848428260194,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9215285132535939,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.5499999999999994,
@@ -17502,7 +17616,8 @@
       "Total_Booking_Trend": 224,
       "Total_Attend_Trend": 159,
       "Performance": 0.921528513253594,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 93.42
     }
   },
   {
@@ -17628,11 +17743,11 @@
       "Sharjah_Attend": 20,
       "Ajman_Attend": 65,
       "clinics.Attend": 5,
-      "A.Booking%": 0.5373831775700935,
+      "A.Booking%": 0.5032822757111597,
       "A.Attend%": 0.691304347826087,
       "A.AHT": 0.002685185185185185,
       "A.UTZ%": 0.8062242798353909,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -17643,9 +17758,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9217391304347826,
       "AHTAch%": 0.646551724137931,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "UTZ%Ach%": 0.9484991527475187,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9250449775112443,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.8666666666666667,
@@ -17654,7 +17769,8 @@
       "Total_Booking_Trend": 230,
       "Total_Attend_Trend": 159,
       "Performance": 0.9250449775112443,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.24
     }
   },
   {
@@ -17780,11 +17896,11 @@
       "Sharjah_Attend": 11,
       "Ajman_Attend": 74,
       "clinics.Attend": 10,
-      "A.Booking%": 0.47601476014760147,
+      "A.Booking%": 0.4380305602716469,
       "A.Attend%": 0.7015503875968992,
       "A.AHT": 0.0022569444444444442,
       "A.UTZ%": 0.8096472663139331,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 1.0,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -17792,12 +17908,12 @@
       "T.UTZ%": 0.8,
       "T.AbandonRate%": null,
       "T.QualityTarget": 0.95,
-      "Booking%Ach%": 1.0,
+      "Booking%Ach%": 0.9734012450481042,
       "Attend%Ach%": 0.9354005167958657,
-      "AHTAch%": 0.7692307692307693,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 0.95,
+      "AHTAch%": 0.7692307692307694,
+      "UTZ%Ach%": 0.9525261956634508,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 1.0,
       "PerformanceScore": 0.9407419002186443,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.2499999999999996,
@@ -17806,7 +17922,8 @@
       "Total_Booking_Trend": 258,
       "Total_Attend_Trend": 181,
       "Performance": 0.9407419002186443,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 93.58
     }
   },
   {
@@ -17932,11 +18049,11 @@
       "Sharjah_Attend": 19,
       "Ajman_Attend": 53,
       "clinics.Attend": 5,
-      "A.Booking%": 0.5807962529274004,
+      "A.Booking%": 0.5523385300668151,
       "A.Attend%": 0.6975806451612904,
       "A.AHT": 0.002627314814814815,
       "A.UTZ%": 0.8357921810699589,
-      "A.AbandonRate%": null,
+      "A.AbandonRate%": 0.0,
       "A.QualityScore": 0.875,
       "T.Booking%": 0.46,
       "T.Attend%": 0.75,
@@ -17947,9 +18064,9 @@
       "Booking%Ach%": 1.0,
       "Attend%Ach%": 0.9301075268817205,
       "AHTAch%": 0.6607929515418501,
-      "UTZ%Ach%": 1.0,
-      "AbandonRate%Ach%": null,
-      "QualityTargetAch%": 1.0,
+      "UTZ%Ach%": 0.983284918905834,
+      "AbandonRate%Ach%": 1.0,
+      "QualityTargetAch%": 0.9210526315789475,
       "PerformanceScore": 0.9341149163942969,
       "PerformanceGrade": "Exceeds",
       "AHT_Minutes": 3.7833333333333337,
@@ -17958,7 +18075,8 @@
       "Total_Booking_Trend": 248,
       "Total_Attend_Trend": 173,
       "Performance": 0.9341149163942969,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 92.85
     }
   },
   {
@@ -18090,7 +18208,7 @@
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
       "BookingC.RAch%": 0.516242448251956,
-      "AttendC.RAch%": 0.9156311314584696,
+      "AttendC.RAch%": 0.9156311314584695,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.889564336372847,
       "QualityAch%": 1.0,
@@ -18101,7 +18219,8 @@
       "Total_Booking_Trend": 417,
       "Total_Attend_Trend": 210,
       "Performance": 0.8815224704834089,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 88.15
     }
   },
   {
@@ -18244,7 +18363,8 @@
       "Total_Booking_Trend": 400,
       "Total_Attend_Trend": 201,
       "Performance": 0.886143576900113,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 88.61
     }
   },
   {
@@ -18387,7 +18507,8 @@
       "Total_Booking_Trend": 289,
       "Total_Attend_Trend": 141,
       "Performance": 0.870643684578997,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 87.06
     }
   },
   {
@@ -18530,7 +18651,8 @@
       "Total_Booking_Trend": 333,
       "Total_Attend_Trend": 165,
       "Performance": 0.8691622229957765,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 86.92
     }
   },
   {
@@ -18673,7 +18795,8 @@
       "Total_Booking_Trend": 461,
       "Total_Attend_Trend": 268,
       "Performance": 0.9466242712321014,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 94.66
     }
   },
   {
@@ -18816,7 +18939,8 @@
       "Total_Booking_Trend": 439,
       "Total_Attend_Trend": 227,
       "Performance": 0.9021536650480976,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 90.22
     }
   },
   {
@@ -18947,7 +19071,7 @@
       "T.AHT": 0.001736111111111111,
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
-      "BookingC.RAch%": 0.45149464945146767,
+      "BookingC.RAch%": 0.4514946494514677,
       "AttendC.RAch%": 1.0,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.885777045579352,
@@ -18959,7 +19083,8 @@
       "Total_Booking_Trend": 335,
       "Total_Attend_Trend": 191,
       "Performance": 0.9337271695030819,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 93.37
     }
   },
   {
@@ -19091,7 +19216,7 @@
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
       "BookingC.RAch%": 0.5150195619018146,
-      "AttendC.RAch%": 0.9910261412407334,
+      "AttendC.RAch%": 0.9910261412407335,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.8430301082181506,
       "QualityAch%": 1.0,
@@ -19102,7 +19227,8 @@
       "Total_Booking_Trend": 466,
       "Total_Attend_Trend": 254,
       "Performance": 0.9295232658805099,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 92.95
     }
   },
   {
@@ -19234,7 +19360,7 @@
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
       "BookingC.RAch%": 0.4551390382547242,
-      "AttendC.RAch%": 0.8362102032988107,
+      "AttendC.RAch%": 0.8362102032988108,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.7877522616562284,
       "QualityAch%": 1.0,
@@ -19245,7 +19371,8 @@
       "Total_Booking_Trend": 237,
       "Total_Attend_Trend": 109,
       "Performance": 0.8096362723002626,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 80.96
     }
   },
   {
@@ -19390,7 +19517,8 @@
       "Total_Booking_Trend": 227,
       "Total_Attend_Trend": 102,
       "Performance": 0.7874976106493056,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 78.75
     }
   },
   {
@@ -19533,7 +19661,8 @@
       "Total_Booking_Trend": 230,
       "Total_Attend_Trend": 119,
       "Performance": 0.874928629778849,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 87.49
     }
   },
   {
@@ -19676,7 +19805,8 @@
       "Total_Booking_Trend": 273,
       "Total_Attend_Trend": 136,
       "Performance": 0.8629879254630157,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 86.3
     }
   },
   {
@@ -19819,7 +19949,8 @@
       "Total_Booking_Trend": 343,
       "Total_Attend_Trend": 190,
       "Performance": 0.9363900362920183,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 93.64
     }
   },
   {
@@ -19962,7 +20093,8 @@
       "Total_Booking_Trend": 305,
       "Total_Attend_Trend": 155,
       "Performance": 0.8689777695720207,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 86.9
     }
   },
   {
@@ -20093,7 +20225,7 @@
       "T.AHT": 0.001736111111111111,
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
-      "BookingC.RAch%": 0.461883669425341,
+      "BookingC.RAch%": 0.4618836694253409,
       "AttendC.RAch%": 1.0,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.749278091650973,
@@ -20105,7 +20237,8 @@
       "Total_Booking_Trend": 317,
       "Total_Attend_Trend": 184,
       "Performance": 0.9211161761076314,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 92.11
     }
   },
   {
@@ -20248,7 +20381,8 @@
       "Total_Booking_Trend": 308,
       "Total_Attend_Trend": 152,
       "Performance": 0.8588072844105712,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 85.88
     }
   },
   {
@@ -20379,7 +20513,7 @@
       "T.AHT": 0.001736111111111111,
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
-      "BookingC.RAch%": 0.441424736390557,
+      "BookingC.RAch%": 0.44142473639055707,
       "AttendC.RAch%": 0.8321459105158164,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.850798808556729,
@@ -20391,7 +20525,8 @@
       "Total_Booking_Trend": 319,
       "Total_Attend_Trend": 146,
       "Performance": 0.8117244918558,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 81.17
     }
   },
   {
@@ -20534,7 +20669,8 @@
       "Total_Booking_Trend": 283,
       "Total_Attend_Trend": 139,
       "Performance": 0.858110731742239,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 85.81
     }
   },
   {
@@ -20677,7 +20813,8 @@
       "Total_Booking_Trend": 352,
       "Total_Attend_Trend": 165,
       "Performance": 0.8350576708886162,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 83.51
     }
   },
   {
@@ -20823,7 +20960,8 @@
       "Total_Booking_Trend": 234,
       "Total_Attend_Trend": 95,
       "Performance": 0.7453313143452116,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 74.53
     }
   },
   {
@@ -20968,7 +21106,8 @@
       "Total_Booking_Trend": 282,
       "Total_Attend_Trend": 164,
       "Performance": 0.9364303955013972,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 93.64
     }
   },
   {
@@ -21111,7 +21250,8 @@
       "Total_Booking_Trend": 299,
       "Total_Attend_Trend": 149,
       "Performance": 0.8705807970723869,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 87.06
     }
   },
   {
@@ -21257,7 +21397,8 @@
       "Total_Booking_Trend": 197,
       "Total_Attend_Trend": 106,
       "Performance": 0.9134115569385781,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 91.34
     }
   },
   {
@@ -21400,7 +21541,8 @@
       "Total_Booking_Trend": 325,
       "Total_Attend_Trend": 191,
       "Performance": 0.9239686323205671,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 92.4
     }
   },
   {
@@ -21531,7 +21673,7 @@
       "T.AHT": 0.001736111111111111,
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
-      "BookingC.RAch%": 0.37127959585303005,
+      "BookingC.RAch%": 0.3712795958530301,
       "AttendC.RAch%": 0.9587680079483358,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.8640258038504184,
@@ -21543,7 +21685,8 @@
       "Total_Booking_Trend": 366,
       "Total_Attend_Trend": 193,
       "Performance": 0.8946681455341798,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 89.47
     }
   },
   {
@@ -21686,7 +21829,8 @@
       "Total_Booking_Trend": 414,
       "Total_Attend_Trend": 212,
       "Performance": 0.8891145573474186,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 88.91
     }
   },
   {
@@ -21829,7 +21973,8 @@
       "Total_Booking_Trend": 460,
       "Total_Attend_Trend": 228,
       "Performance": 0.8733146858909351,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 87.33
     }
   },
   {
@@ -21960,7 +22105,7 @@
       "T.AHT": 0.001736111111111111,
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
-      "BookingC.RAch%": 0.4356778371281071,
+      "BookingC.RAch%": 0.43567783712810715,
       "AttendC.RAch%": 1.0,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.8786371174430876,
@@ -21972,7 +22117,8 @@
       "Total_Booking_Trend": 292,
       "Total_Attend_Trend": 166,
       "Performance": 0.9314314954571193,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 93.14
     }
   },
   {
@@ -22106,7 +22252,7 @@
       "T.Reachability%": 0.75,
       "T.QualityTarget": 0.95,
       "BookingC.RAch%": 0.5737531450607849,
-      "AttendC.RAch%": 0.9463487332339788,
+      "AttendC.RAch%": 0.946348733233979,
       "AHTAch%": 1.0,
       "Reachability%Ach%": 0.8445814776750029,
       "QualityAch%": 1.0,
@@ -22117,7 +22263,8 @@
       "Total_Booking_Trend": 488,
       "Total_Attend_Trend": 254,
       "Performance": 0.9042775755373639,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 90.43
     }
   },
   {
@@ -22260,7 +22407,8 @@
       "Total_Booking_Trend": 434,
       "Total_Attend_Trend": 231,
       "Performance": 0.9176938173199027,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 91.77
     }
   },
   {
@@ -22403,7 +22551,8 @@
       "Total_Booking_Trend": 503,
       "Total_Attend_Trend": 272,
       "Performance": 0.9366977454613981,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 93.67
     }
   },
   {
@@ -22546,7 +22695,8 @@
       "Total_Booking_Trend": 468,
       "Total_Attend_Trend": 237,
       "Performance": 0.8764345647862843,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 87.64
     }
   },
   {
@@ -22689,7 +22839,8 @@
       "Total_Booking_Trend": 450,
       "Total_Attend_Trend": 247,
       "Performance": 0.9413119550400908,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 94.13
     }
   },
   {
@@ -22832,7 +22983,8 @@
       "Total_Booking_Trend": 396,
       "Total_Attend_Trend": 203,
       "Performance": 0.8910302801582634,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 89.1
     }
   },
   {
@@ -22975,7 +23127,8 @@
       "Total_Booking_Trend": 371,
       "Total_Attend_Trend": 177,
       "Performance": 0.8450048757492847,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 84.5
     }
   },
   {
@@ -23120,7 +23273,8 @@
       "Total_Booking_Trend": 423,
       "Total_Attend_Trend": 213,
       "Performance": 0.8849873898560191,
-      "SuggestedAction": "Monitor"
+      "SuggestedAction": "Monitor",
+      "PerformanceScor%": 88.5
     }
   },
   {
@@ -23263,7 +23417,8 @@
       "Total_Booking_Trend": 371,
       "Total_Attend_Trend": 217,
       "Performance": 0.9232100856871446,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "PerformanceScor%": 92.32
     }
   },
   {
@@ -23398,7 +23553,7 @@
       "AttendC.RAch%": 0.9223057644110275,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 0.8854545454545454,
-      "PerformanceScore%": 0.8591594896331738,
+      "PerformanceScore%": 85.92,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -23539,7 +23694,7 @@
       "AttendC.RAch%": 0.8389803162310422,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 0.7658823529411765,
-      "PerformanceScore%": 0.8638744566558472,
+      "PerformanceScore%": 86.39,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -23680,7 +23835,7 @@
       "AttendC.RAch%": 0.7961165048543689,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 0.7692307692307693,
-      "PerformanceScore%": 0.834204630321135,
+      "PerformanceScore%": 83.42,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -23821,7 +23976,7 @@
       "AttendC.RAch%": 0.8740595354923127,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8913695113491996,
+      "PerformanceScore%": 89.14,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -23962,7 +24117,7 @@
       "AttendC.RAch%": 0.7620806401969836,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 0.8622222222222222,
-      "PerformanceScore%": 0.8196786703601107,
+      "PerformanceScore%": 81.97,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -24103,7 +24258,7 @@
       "AttendC.RAch%": 0.9142857142857143,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8311458333333333,
+      "PerformanceScore%": 83.11,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -24244,7 +24399,7 @@
       "AttendC.RAch%": 0.9251997095134351,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 0.9870588235294117,
-      "PerformanceScore%": 0.9152198511977763,
+      "PerformanceScore%": 91.52,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -24385,7 +24540,7 @@
       "AttendC.RAch%": 0.8644536652835408,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8754957912198641,
+      "PerformanceScore%": 87.55,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -24526,7 +24681,7 @@
       "AttendC.RAch%": 0.8253241800152554,
       "AHTAch%": 0.9941189237259874,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8777269260106787,
+      "PerformanceScore%": 87.77,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -24667,7 +24822,7 @@
       "AttendC.RAch%": 0.7575757575757577,
       "AHTAch%": 0.930749195648843,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8303030303030304,
+      "PerformanceScore%": 83.03,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -24808,7 +24963,7 @@
       "AttendC.RAch%": 0.8994535519125684,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8734684473103813,
+      "PerformanceScore%": 87.35,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -24949,7 +25104,7 @@
       "AttendC.RAch%": 0.8821656050955414,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9013835856954108,
+      "PerformanceScore%": 90.14,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -25090,7 +25245,7 @@
       "AttendC.RAch%": 0.8754769337495665,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9000538029720567,
+      "PerformanceScore%": 90.01,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -25231,7 +25386,7 @@
       "AttendC.RAch%": 0.9011799410029498,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9213021491782553,
+      "PerformanceScore%": 92.13,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -25372,7 +25527,7 @@
       "AttendC.RAch%": 0.8647717484926787,
       "AHTAch%": 0.9421375864252067,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8522650531020505,
+      "PerformanceScore%": 85.23,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -25513,7 +25668,7 @@
       "AttendC.RAch%": 0.8728575083141469,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8904027065978183,
+      "PerformanceScore%": 89.04,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -25654,7 +25809,7 @@
       "AttendC.RAch%": 0.809144072301967,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8664008506113768,
+      "PerformanceScore%": 86.64,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -25795,7 +25950,7 @@
       "AttendC.RAch%": 0.9736379613356766,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9815465729349736,
+      "PerformanceScore%": 98.15,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -25936,7 +26091,7 @@
       "AttendC.RAch%": 0.8178112260896833,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.8724678582627782,
+      "PerformanceScore%": 87.25,
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -26077,7 +26232,7 @@
       "AttendC.RAch%": 0.9542627149652397,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9679839004756677,
+      "PerformanceScore%": 96.8,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -26218,7 +26373,7 @@
       "AttendC.RAch%": 0.9071680376028203,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9177925404113212,
+      "PerformanceScore%": 91.78,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -26359,7 +26514,7 @@
       "AttendC.RAch%": 0.9767211490837048,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9469156689154018,
+      "PerformanceScore%": 94.69,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -26500,7 +26655,7 @@
       "AttendC.RAch%": 0.9076452599388379,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9190389081115512,
+      "PerformanceScore%": 91.9,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -26643,7 +26798,7 @@
       "AttendC.RAch%": 0.7896440129449838,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.7431016862544709,
+      "PerformanceScore%": 74.31,
       "PerformanceGrade": "Below average",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -26784,7 +26939,7 @@
       "AttendC.RAch%": 0.8660351826792964,
       "AHTAch%": 0.8519822787686016,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9062246278755074,
+      "PerformanceScore%": 90.62,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -26925,7 +27080,7 @@
       "AttendC.RAch%": 0.9809906291834003,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.933752263957792,
+      "PerformanceScore%": 93.38,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -27066,7 +27221,7 @@
       "AttendC.RAch%": 0.9566517189835575,
       "AHTAch%": 0.8789560346191484,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9619804809943979,
+      "PerformanceScore%": 96.2,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -27207,7 +27362,7 @@
       "AttendC.RAch%": 0.957787481804949,
       "AHTAch%": 0.990674451166354,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9704512372634643,
+      "PerformanceScore%": 97.05,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -27348,7 +27503,7 @@
       "AttendC.RAch%": 0.9237569060773482,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 0.8476923076923076,
-      "PerformanceScore%": 0.9313990650233743,
+      "PerformanceScore%": 93.14,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -27489,7 +27644,7 @@
       "AttendC.RAch%": 0.9406727828746178,
       "AHTAch%": 0.955968108903887,
       "AbandonRateAch%": 0.9621739130434782,
-      "PerformanceScore%": 0.9143952990235399,
+      "PerformanceScore%": 91.44,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -27630,7 +27785,7 @@
       "AttendC.RAch%": 0.9387564282374942,
       "AHTAch%": 1.0,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9307989675533608,
+      "PerformanceScore%": 93.08,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -27771,7 +27926,7 @@
       "AttendC.RAch%": 0.8880888088808881,
       "AHTAch%": 0.9930289368632201,
       "AbandonRateAch%": 1.0,
-      "PerformanceScore%": 0.9171919092648441,
+      "PerformanceScore%": 91.72,
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
@@ -27908,7 +28063,8 @@
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.8888888888888888
+      "Performance": 0.8888888888888888,
+      "PerformanceScor%": 88.89
     }
   },
   {
@@ -28041,7 +28197,8 @@
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.5603117623117623
+      "Performance": 0.5603117623117623,
+      "PerformanceScor%": 56.03
     }
   },
   {
@@ -28172,7 +28329,8 @@
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.9346666666666668
+      "Performance": 0.9346666666666668,
+      "PerformanceScor%": 93.47
     }
   },
   {
@@ -28303,7 +28461,8 @@
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.8828282828282827
+      "Performance": 0.8828282828282827,
+      "PerformanceScor%": 88.28
     }
   },
   {
@@ -28436,7 +28595,8 @@
       "PerformanceGrade": "Below average",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.7569696969696971
+      "Performance": 0.7569696969696971,
+      "PerformanceScor%": 75.7
     }
   },
   {
@@ -28569,7 +28729,8 @@
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.4088282828282828
+      "Performance": 0.4088282828282828,
+      "PerformanceScor%": 40.88
     }
   },
   {
@@ -28700,7 +28861,8 @@
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.6002222222222222
+      "Performance": 0.6002222222222222,
+      "PerformanceScor%": 60.02
     }
   },
   {
@@ -28833,7 +28995,8 @@
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.5455925925925925
+      "Performance": 0.5455925925925925,
+      "PerformanceScor%": 54.56
     }
   },
   {
@@ -28966,7 +29129,8 @@
       "PerformanceGrade": "Below average",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.7644569757727653
+      "Performance": 0.7644569757727653,
+      "PerformanceScor%": 76.45
     }
   },
   {
@@ -29097,7 +29261,8 @@
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.8622498274672188
+      "Performance": 0.8622498274672188,
+      "PerformanceScor%": 86.22
     }
   },
   {
@@ -29228,7 +29393,8 @@
       "PerformanceGrade": "Meet Expectations",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.9888888888888889
+      "Performance": 0.9888888888888889,
+      "PerformanceScor%": 98.89
     }
   },
   {
@@ -29359,7 +29525,8 @@
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.8238692810457516
+      "Performance": 0.8238692810457516,
+      "PerformanceScor%": 82.39
     }
   },
   {
@@ -29490,7 +29657,8 @@
       "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.8012380952380952
+      "Performance": 0.8012380952380952,
+      "PerformanceScor%": 80.12
     }
   },
   {
@@ -29621,7 +29789,8 @@
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.6628064516129032
+      "Performance": 0.6628064516129032,
+      "PerformanceScor%": 66.28
     }
   },
   {
@@ -29747,14 +29916,15 @@
       "T.IPInitialRejection%": 0.03,
       "T.Error%": 0.03,
       "T.%ofApprovalwithin48hrs": 0.9,
-      "RejectionRate": 0.324,
-      "InitialError%": 0.735,
-      "%ofSubmissionWithinDuedate": 0.4558404558404558,
+      "RejectionRate": 1.0,
+      "InitialError%": 0.5549999999999999,
+      "%ofSubmissionWithinDuedate": 0.08547008547008547,
       "PerformanceScore": 0.44575213675213676,
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.44575213675213676
+      "Performance": 0.44575213675213676,
+      "PerformanceScor%": 63.66
     }
   },
   {
@@ -29880,14 +30050,15 @@
       "T.IPInitialRejection%": 0.03,
       "T.Error%": 0.03,
       "T.%ofApprovalwithin48hrs": 0.9,
-      "RejectionRate": 0.72,
-      "InitialError%": 0.3218181818181818,
-      "%ofSubmissionWithinDuedate": 0.6643757159221076,
+      "RejectionRate": 0.324,
+      "InitialError%": 0.735,
+      "%ofSubmissionWithinDuedate": 0.4558404558404558,
       "PerformanceScore": 0.6236763511402686,
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.6236763511402686
+      "Performance": 0.6236763511402686,
+      "PerformanceScor%": 44.58
     }
   },
   {
@@ -30013,14 +30184,15 @@
       "T.IPInitialRejection%": 0.03,
       "T.Error%": 0.03,
       "T.%ofApprovalwithin48hrs": 0.9,
-      "RejectionRate": 0.4176923076923077,
-      "InitialError%": null,
-      "%ofSubmissionWithinDuedate": 0.5815972222222222,
+      "RejectionRate": 0.72,
+      "InitialError%": 0.3218181818181818,
+      "%ofSubmissionWithinDuedate": 0.6643757159221076,
       "PerformanceScore": 0.4832542735042735,
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.38332532051282053
+      "Performance": 0.38332532051282053,
+      "PerformanceScor%": 62.37
     }
   },
   {
@@ -30147,14 +30319,15 @@
       "T.IPInitialRejection%": 0.03,
       "T.Error%": 0.03,
       "T.%ofApprovalwithin48hrs": 0.9,
-      "RejectionRate": 0.23500000000000001,
-      "InitialError%": null,
-      "%ofSubmissionWithinDuedate": 0.9876543209876543,
+      "RejectionRate": 0.4176923076923077,
+      "InitialError%": 0.0,
+      "%ofSubmissionWithinDuedate": 0.5815972222222222,
       "PerformanceScore": 0.5360617283950617,
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.5360617283950617
+      "Performance": 0.5360617283950617,
+      "PerformanceScor%": 48.33
     }
   },
   {
@@ -30281,14 +30454,15 @@
       "T.IPInitialRejection%": 0.03,
       "T.Error%": 0.03,
       "T.%ofApprovalwithin48hrs": 0.9,
-      "RejectionRate": 0.44322580645161286,
-      "InitialError%": 0.6458823529411764,
-      "%ofSubmissionWithinDuedate": 0.6298449612403101,
+      "RejectionRate": 0.23500000000000001,
+      "InitialError%": 0.0,
+      "%ofSubmissionWithinDuedate": 0.9876543209876543,
       "PerformanceScore": 0.5178734683670918,
       "PerformanceGrade": "Unsatisfactory",
       "Is_Inactive": 0,
       "Is_New": 0,
-      "Performance": 0.5178734683670918
+      "Performance": 0.5178734683670918,
+      "PerformanceScor%": 53.61
     }
   },
   {
@@ -30424,13 +30598,16 @@
       "IPRevenueAch%": 1.6999707072706742,
       "TotalCensusAch%": 1.044527243910993,
       "TotalRevenueAch%": 1.464334935222762,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 146.35484103252344,
+      "SalesActivtiesAch%": 1.0,
+      "PerformanceScore": 146.35,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 146.35484103252344,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 146.35,
+      "Performance_Score": 146.35
     }
   },
   {
@@ -30566,13 +30743,16 @@
       "IPRevenueAch%": 0.28738257233641384,
       "TotalCensusAch%": 1.3750545228049056,
       "TotalRevenueAch%": 0.4818978504053841,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 61.74053320882861,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.0,
+      "PerformanceScore": 61.74,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 61.74053320882861,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 61.74,
+      "Performance_Score": 61.74
     }
   },
   {
@@ -30703,13 +30883,16 @@
       "IPRevenueAch%": 1.4372714832025597,
       "TotalCensusAch%": 0.025321712980635732,
       "TotalRevenueAch%": 1.3060165730195328,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 162.54034930209946,
+      "SalesActivtiesAch%": 3.0,
+      "PerformanceScore": 162.54,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 162.54034930209946,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 162.54,
+      "Performance_Score": 162.54
     }
   },
   {
@@ -30840,13 +31023,16 @@
       "IPRevenueAch%": 1.1554316449251025,
       "TotalCensusAch%": 1.6935100146884063,
       "TotalRevenueAch%": 1.137481929584559,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 125.94922465686875,
+      "SalesActivtiesAch%": 1.6666666666666667,
+      "PerformanceScore": 125.95,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 125.94922465686875,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 125.95,
+      "Performance_Score": 125.95
     }
   },
   {
@@ -30977,13 +31163,16 @@
       "IPRevenueAch%": 1.0022414485758648,
       "TotalCensusAch%": 1.055938181016719,
       "TotalRevenueAch%": 1.0383449993035436,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 105.21143919338414,
+      "SalesActivtiesAch%": 1.0,
+      "PerformanceScore": 105.21,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 105.21143919338414,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 105.21,
+      "Performance_Score": 105.21
     }
   },
   {
@@ -31119,13 +31308,16 @@
       "IPRevenueAch%": 1.8344467975087564,
       "TotalCensusAch%": 1.0028301513796853,
       "TotalRevenueAch%": 1.2702510149899886,
-      "SalesActivtiesAch%": 0.09685039370078741,
-      "PerformanceScore": 163.204804491513,
+      "SalesActivtiesAch%": 0.968503937007874,
+      "PerformanceScore": 163.2,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 163.204804491513,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.968503937007874,
+      "PerformanceScore%": 163.2,
+      "Performance_Score": 163.2
     }
   },
   {
@@ -31261,13 +31453,16 @@
       "IPRevenueAch%": 1.6951821074226723,
       "TotalCensusAch%": 1.5891891432026,
       "TotalRevenueAch%": 1.8267452295077506,
-      "SalesActivtiesAch%": 0.09883720930232559,
-      "PerformanceScore": 163.46825801067556,
+      "SalesActivtiesAch%": 0.9883720930232558,
+      "PerformanceScore": 163.47,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 163.46825801067556,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9883720930232558,
+      "PerformanceScore%": 163.47,
+      "Performance_Score": 163.47
     }
   },
   {
@@ -31398,13 +31593,16 @@
       "IPRevenueAch%": 2.0094836974596126,
       "TotalCensusAch%": 1.161578226763917,
       "TotalRevenueAch%": 1.5303774575814424,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 164.37346823611526,
+      "SalesActivtiesAch%": 1.0310077519379846,
+      "PerformanceScore": 164.37,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 164.37346823611526,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 164.37,
+      "Performance_Score": 164.37
     }
   },
   {
@@ -31542,13 +31740,16 @@
       "IPRevenueAch%": 0.12403955828007185,
       "TotalCensusAch%": 0.02933863377997004,
       "TotalRevenueAch%": 0.0504705377547313,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 18.572030216712758,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.2753623188405796,
+      "PerformanceScore": 18.57,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 18.572030216712758,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 18.57,
+      "Performance_Score": 18.57
     }
   },
   {
@@ -31679,13 +31880,16 @@
       "IPRevenueAch%": 1.6084362915523098,
       "TotalCensusAch%": 1.0409909653491265,
       "TotalRevenueAch%": 1.2726638610403753,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 144.52819294281363,
+      "SalesActivtiesAch%": 1.0333333333333334,
+      "PerformanceScore": 144.53,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 144.52819294281363,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 144.53,
+      "Performance_Score": 144.53
     }
   },
   {
@@ -31821,13 +32025,16 @@
       "IPRevenueAch%": 1.4670405978653243,
       "TotalCensusAch%": 1.03862660944206,
       "TotalRevenueAch%": 1.5068835578813844,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 138.0073606321029,
+      "SalesActivtiesAch%": 1.5,
+      "PerformanceScore": 138.01,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 138.0073606321029,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 138.01,
+      "Performance_Score": 138.01
     }
   },
   {
@@ -31966,12 +32173,15 @@
       "TotalCensusAch%": 1.0133928571428572,
       "TotalRevenueAch%": 0.6833763103096111,
       "SalesActivtiesAch%": 0.0,
-      "PerformanceScore": 73.33151607888665,
-      "PerformanceGrade": "Exceeds",
+      "PerformanceScore": 73.33,
+      "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 73.33151607888665,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Monitor",
+      "ActivityAch%": 0.0,
+      "PerformanceScore%": 73.33,
+      "Performance_Score": 73.33
     }
   },
   {
@@ -32107,13 +32317,16 @@
       "IPRevenueAch%": 1.9985884529495659,
       "TotalCensusAch%": 0.7700534759358288,
       "TotalRevenueAch%": 1.537140791717901,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 155.2269623078834,
+      "SalesActivtiesAch%": 1.5,
+      "PerformanceScore": 155.23,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 155.2269623078834,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 155.23,
+      "Performance_Score": 155.23
     }
   },
   {
@@ -32244,13 +32457,16 @@
       "IPRevenueAch%": 1.3921401393784045,
       "TotalCensusAch%": 1.3922480620155038,
       "TotalRevenueAch%": 1.3777540872900111,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 135.55376719079646,
+      "SalesActivtiesAch%": 1.0,
+      "PerformanceScore": 135.55,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 135.55376719079646,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 135.55,
+      "Performance_Score": 135.55
     }
   },
   {
@@ -32388,13 +32604,16 @@
       "IPRevenueAch%": 1.3063714500117007,
       "TotalCensusAch%": 1.4390436808397848,
       "TotalRevenueAch%": 1.649736805563611,
-      "SalesActivtiesAch%": 0.09883720930232559,
-      "PerformanceScore": 133.47824044911215,
+      "SalesActivtiesAch%": 0.9883720930232558,
+      "PerformanceScore": 133.48,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 133.47824044911215,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9883720930232558,
+      "PerformanceScore%": 133.48,
+      "Performance_Score": 133.48
     }
   },
   {
@@ -32530,13 +32749,16 @@
       "IPRevenueAch%": 1.8627270871573935,
       "TotalCensusAch%": 0.8354998482077837,
       "TotalRevenueAch%": 1.1729554482434976,
-      "SalesActivtiesAch%": 0.0984251968503937,
-      "PerformanceScore": 155.80278665177352,
+      "SalesActivtiesAch%": 0.984251968503937,
+      "PerformanceScore": 155.8,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 155.80278665177352,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.984251968503937,
+      "PerformanceScore%": 155.8,
+      "Performance_Score": 155.8
     }
   },
   {
@@ -32674,13 +32896,16 @@
       "IPRevenueAch%": 1.5269412012662111,
       "TotalCensusAch%": 1.1468931399978073,
       "TotalRevenueAch%": 1.3030984892179194,
-      "SalesActivtiesAch%": 0.09844961240310078,
-      "PerformanceScore": 137.80405225320894,
+      "SalesActivtiesAch%": 0.9844961240310077,
+      "PerformanceScore": 137.8,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 137.80405225320894,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9844961240310077,
+      "PerformanceScore%": 137.8,
+      "Performance_Score": 137.8
     }
   },
   {
@@ -32816,13 +33041,16 @@
       "IPRevenueAch%": 1.233598449205529,
       "TotalCensusAch%": 0.722338601501609,
       "TotalRevenueAch%": 0.8427123995280408,
-      "SalesActivtiesAch%": 0.09922480620155039,
-      "PerformanceScore": 108.19164653941176,
+      "SalesActivtiesAch%": 0.9922480620155039,
+      "PerformanceScore": 108.19,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 108.19164653941176,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9922480620155039,
+      "PerformanceScore%": 108.19,
+      "Performance_Score": 108.19
     }
   },
   {
@@ -32960,13 +33188,16 @@
       "IPRevenueAch%": 0.3027488718089835,
       "TotalCensusAch%": 0.04249817350660495,
       "TotalRevenueAch%": 0.11597161018219071,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 33.90429331147265,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.2753623188405796,
+      "PerformanceScore": 33.9,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 33.90429331147265,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 33.9,
+      "Performance_Score": 33.9
     }
   },
   {
@@ -33104,13 +33335,16 @@
       "IPRevenueAch%": 0.0,
       "TotalCensusAch%": 0.0,
       "TotalRevenueAch%": 0.0,
-      "SalesActivtiesAch%": 0.07500000000000001,
+      "SalesActivtiesAch%": 0.75,
       "PerformanceScore": 7.5,
-      "PerformanceGrade": "Exceeds",
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 7.5,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 0.75,
+      "PerformanceScore%": 7.5,
+      "Performance_Score": 7.5
     }
   },
   {
@@ -33246,13 +33480,16 @@
       "IPRevenueAch%": 1.4754623666955187,
       "TotalCensusAch%": 0.8703840071707686,
       "TotalRevenueAch%": 1.105017283180995,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 130.06273929482296,
+      "SalesActivtiesAch%": 1.0087412587412588,
+      "PerformanceScore": 130.06,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 130.06273929482296,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 130.06,
+      "Performance_Score": 130.06
     }
   },
   {
@@ -33390,13 +33627,16 @@
       "IPRevenueAch%": 0.9363570475535301,
       "TotalCensusAch%": 0.6069278282731428,
       "TotalRevenueAch%": 0.9646742461678821,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 88.35657535292339,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.5,
+      "PerformanceScore": 88.36,
+      "PerformanceGrade": "Meet",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 88.35657535292339,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Monitor",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 88.36,
+      "Performance_Score": 88.36
     }
   },
   {
@@ -33535,12 +33775,15 @@
       "TotalCensusAch%": 0.7303743079258082,
       "TotalRevenueAch%": 0.8230498085174853,
       "SalesActivtiesAch%": 0.0,
-      "PerformanceScore": 74.68182641094211,
-      "PerformanceGrade": "Exceeds",
+      "PerformanceScore": 74.68,
+      "PerformanceGrade": "Average",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 74.68182641094211,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Monitor",
+      "ActivityAch%": 0.0,
+      "PerformanceScore%": 74.68,
+      "Performance_Score": 74.68
     }
   },
   {
@@ -33676,13 +33919,16 @@
       "IPRevenueAch%": 2.032667991288392,
       "TotalCensusAch%": 1.1105248138356585,
       "TotalRevenueAch%": 1.6455067987363516,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 164.26651483138917,
+      "SalesActivtiesAch%": 2.0,
+      "PerformanceScore": 164.27,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 164.26651483138917,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 164.27,
+      "Performance_Score": 164.27
     }
   },
   {
@@ -33821,13 +34067,16 @@
       "IPRevenueAch%": 0.0,
       "TotalCensusAch%": 0.0,
       "TotalRevenueAch%": 0.006674390243902439,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 10.441039848595446,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.0,
+      "PerformanceScore": 10.44,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 10.441039848595446,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 10.44,
+      "Performance_Score": 10.44
     }
   },
   {
@@ -33971,7 +34220,10 @@
       "Is_Inactive": 0,
       "Is_New": 1,
       "Performance": 0.0,
-      "SuggestedAction": "PIP"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 0.0,
+      "PerformanceScore%": 0.0,
+      "Performance_Score": 0.0
     }
   },
   {
@@ -34110,13 +34362,16 @@
       "IPRevenueAch%": 1.0658044405940672,
       "TotalCensusAch%": 1.3900154022940368,
       "TotalRevenueAch%": 1.0141182058812084,
-      "SalesActivtiesAch%": 0.09000000000000001,
-      "PerformanceScore": 102.90887156440371,
+      "SalesActivtiesAch%": 0.9,
+      "PerformanceScore": 102.91,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 102.90887156440371,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9,
+      "PerformanceScore%": 102.91,
+      "Performance_Score": 102.91
     }
   },
   {
@@ -34254,13 +34509,16 @@
       "IPRevenueAch%": 2.5210517275769804,
       "TotalCensusAch%": 1.3165141628171813,
       "TotalRevenueAch%": 1.9333087655815029,
-      "SalesActivtiesAch%": 0.09883720930232559,
-      "PerformanceScore": 207.15147735399077,
+      "SalesActivtiesAch%": 0.9883720930232558,
+      "PerformanceScore": 207.15,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 207.15147735399077,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9883720930232558,
+      "PerformanceScore%": 207.15,
+      "Performance_Score": 207.15
     }
   },
   {
@@ -34399,13 +34657,16 @@
       "IPRevenueAch%": 2.168743435290391,
       "TotalCensusAch%": 1.0864937772287688,
       "TotalRevenueAch%": 1.1353767569734863,
-      "SalesActivtiesAch%": 0.0984251968503937,
-      "PerformanceScore": 151.62318597359584,
+      "SalesActivtiesAch%": 0.984251968503937,
+      "PerformanceScore": 151.62,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 151.62318597359584,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.984251968503937,
+      "PerformanceScore%": 151.62,
+      "Performance_Score": 151.62
     }
   },
   {
@@ -34543,13 +34804,16 @@
       "IPRevenueAch%": 1.9430776363326858,
       "TotalCensusAch%": 1.718951719167514,
       "TotalRevenueAch%": 1.2483594822907507,
-      "SalesActivtiesAch%": 0.09844961240310078,
-      "PerformanceScore": 145.3324931904726,
+      "SalesActivtiesAch%": 0.9844961240310077,
+      "PerformanceScore": 145.33,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 145.3324931904726,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9844961240310077,
+      "PerformanceScore%": 145.33,
+      "Performance_Score": 145.33
     }
   },
   {
@@ -34687,13 +34951,16 @@
       "IPRevenueAch%": 2.3083336169962636,
       "TotalCensusAch%": 0.026059924460707623,
       "TotalRevenueAch%": 1.6362717100985078,
-      "SalesActivtiesAch%": 0.09922480620155039,
-      "PerformanceScore": 162.3820802578097,
+      "SalesActivtiesAch%": 0.9922480620155039,
+      "PerformanceScore": 162.38,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 162.3820802578097,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9922480620155039,
+      "PerformanceScore%": 162.38,
+      "Performance_Score": 162.38
     }
   },
   {
@@ -34831,13 +35098,16 @@
       "IPRevenueAch%": 0.5177773290187355,
       "TotalCensusAch%": 0.08140417809723076,
       "TotalRevenueAch%": 0.19591894769142626,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 47.01048661540382,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.2753623188405796,
+      "PerformanceScore": 47.01,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 1,
       "Is_New": 0,
       "Performance": 47.01048661540382,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 47.01,
+      "Performance_Score": 47.01
     }
   },
   {
@@ -34975,13 +35245,16 @@
       "IPRevenueAch%": 0.0,
       "TotalCensusAch%": 0.0,
       "TotalRevenueAch%": 0.0,
-      "SalesActivtiesAch%": 0.07500000000000001,
+      "SalesActivtiesAch%": 0.75,
       "PerformanceScore": 7.5,
-      "PerformanceGrade": "Exceeds",
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 1,
       "Performance": 7.5,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 0.75,
+      "PerformanceScore%": 7.5,
+      "Performance_Score": 7.5
     }
   },
   {
@@ -35119,13 +35392,16 @@
       "IPRevenueAch%": 2.0349821872134983,
       "TotalCensusAch%": 1.2516307696952207,
       "TotalRevenueAch%": 1.2217443050983103,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 149.2242252574166,
+      "SalesActivtiesAch%": 1.0087412587412588,
+      "PerformanceScore": 149.22,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 149.2242252574166,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 149.22,
+      "Performance_Score": 149.22
     }
   },
   {
@@ -35264,13 +35540,16 @@
       "IPRevenueAch%": 0.4087124111804603,
       "TotalCensusAch%": 0.3483957835297808,
       "TotalRevenueAch%": 0.3942140665382454,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 44.966528950542134,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.5,
+      "PerformanceScore": 44.97,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 44.966528950542134,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 44.97,
+      "Performance_Score": 44.97
     }
   },
   {
@@ -35410,12 +35689,15 @@
       "TotalCensusAch%": 0.5150598362436603,
       "TotalRevenueAch%": 0.23208570819295302,
       "SalesActivtiesAch%": 0.0,
-      "PerformanceScore": 21.31112039756978,
-      "PerformanceGrade": "Exceeds",
+      "PerformanceScore": 21.31,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 1,
       "Is_New": 0,
       "Performance": 21.31112039756978,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 0.0,
+      "PerformanceScore%": 21.31,
+      "Performance_Score": 21.31
     }
   },
   {
@@ -35546,13 +35828,16 @@
       "IPRevenueAch%": 1.976909877632449,
       "TotalCensusAch%": 1.2592167762250424,
       "TotalRevenueAch%": 1.7125187159969586,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 168.04155374313217,
+      "SalesActivtiesAch%": 2.0,
+      "PerformanceScore": 168.04,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 168.04155374313217,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 168.04,
+      "Performance_Score": 168.04
     }
   },
   {
@@ -35691,12 +35976,15 @@
       "TotalCensusAch%": 0.06797949824656056,
       "TotalRevenueAch%": 0.9342582212391598,
       "SalesActivtiesAch%": 0.0,
-      "PerformanceScore": 131.88442446729584,
+      "PerformanceScore": 131.88,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 131.88442446729584,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.0,
+      "PerformanceScore%": 131.88,
+      "Performance_Score": 131.88
     }
   },
   {
@@ -35833,12 +36121,15 @@
       "TotalCensusAch%": 0.032508742947279866,
       "TotalRevenueAch%": 0.4906300515795519,
       "SalesActivtiesAch%": 0.0,
-      "PerformanceScore": 65.8337504534389,
-      "PerformanceGrade": "Exceeds",
+      "PerformanceScore": 65.83,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 1,
       "Is_New": 0,
       "Performance": 65.8337504534389,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 0.0,
+      "PerformanceScore%": 65.83,
+      "Performance_Score": 65.83
     }
   },
   {
@@ -35976,13 +36267,16 @@
       "IPRevenueAch%": 0.7589687181321904,
       "TotalCensusAch%": 1.273891752716758,
       "TotalRevenueAch%": 0.7953406174531852,
-      "SalesActivtiesAch%": 0.06999999999999999,
-      "PerformanceScore": 83.26038307915859,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 0.7,
+      "PerformanceScore": 83.26,
+      "PerformanceGrade": "Meet",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 83.26038307915859,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Monitor",
+      "ActivityAch%": 0.7,
+      "PerformanceScore%": 83.26,
+      "Performance_Score": 83.26
     }
   },
   {
@@ -36121,13 +36415,16 @@
       "IPRevenueAch%": 1.684819486828659,
       "TotalCensusAch%": 1.422281508874485,
       "TotalRevenueAch%": 1.7560878162459626,
-      "SalesActivtiesAch%": 0.09883720930232559,
-      "PerformanceScore": 151.37262258724897,
+      "SalesActivtiesAch%": 0.9883720930232558,
+      "PerformanceScore": 151.37,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 151.37262258724897,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9883720930232558,
+      "PerformanceScore%": 151.37,
+      "Performance_Score": 151.37
     }
   },
   {
@@ -36266,13 +36563,16 @@
       "IPRevenueAch%": 1.2104114387500162,
       "TotalCensusAch%": 0.6564387509666055,
       "TotalRevenueAch%": 0.8145033553764811,
-      "SalesActivtiesAch%": 0.0984251968503937,
-      "PerformanceScore": 93.76726314916618,
+      "SalesActivtiesAch%": 0.984251968503937,
+      "PerformanceScore": 93.77,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 93.76726314916618,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.984251968503937,
+      "PerformanceScore%": 93.77,
+      "Performance_Score": 93.77
     }
   },
   {
@@ -36411,13 +36711,16 @@
       "IPRevenueAch%": 1.108082125690449,
       "TotalCensusAch%": 1.3963451027855731,
       "TotalRevenueAch%": 1.8385416707134863,
-      "SalesActivtiesAch%": 0.09844961240310078,
-      "PerformanceScore": 111.1348048299098,
+      "SalesActivtiesAch%": 0.9844961240310077,
+      "PerformanceScore": 111.13,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 111.1348048299098,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9844961240310077,
+      "PerformanceScore%": 111.13,
+      "Performance_Score": 111.13
     }
   },
   {
@@ -36556,13 +36859,16 @@
       "IPRevenueAch%": 1.5047883889859097,
       "TotalCensusAch%": 0.7161217903495519,
       "TotalRevenueAch%": 1.0329806881311823,
-      "SalesActivtiesAch%": 0.09922480620155039,
-      "PerformanceScore": 106.89174771792727,
+      "SalesActivtiesAch%": 0.9922480620155039,
+      "PerformanceScore": 106.89,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 106.89174771792727,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9922480620155039,
+      "PerformanceScore%": 106.89,
+      "Performance_Score": 106.89
     }
   },
   {
@@ -36701,13 +37007,16 @@
       "IPRevenueAch%": 0.03302147097694555,
       "TotalCensusAch%": 0.0170343159605925,
       "TotalRevenueAch%": 0.01855169221153706,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 12.248581611849929,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.2753623188405796,
+      "PerformanceScore": 12.25,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 12.248581611849929,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 12.25,
+      "Performance_Score": 12.25
     }
   },
   {
@@ -36845,13 +37154,16 @@
       "IPRevenueAch%": 0.0,
       "TotalCensusAch%": 0.0,
       "TotalRevenueAch%": 0.0,
-      "SalesActivtiesAch%": 0.07500000000000001,
+      "SalesActivtiesAch%": 0.75,
       "PerformanceScore": 7.5,
-      "PerformanceGrade": "Exceeds",
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 7.5,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 0.75,
+      "PerformanceScore%": 7.5,
+      "Performance_Score": 7.5
     }
   },
   {
@@ -36990,13 +37302,16 @@
       "IPRevenueAch%": 1.1616920564096926,
       "TotalCensusAch%": 0.8382319865996528,
       "TotalRevenueAch%": 1.0587055958098968,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 97.06359701174746,
+      "SalesActivtiesAch%": 1.0087412587412588,
+      "PerformanceScore": 97.06,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 97.06359701174746,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 97.06,
+      "Performance_Score": 97.06
     }
   },
   {
@@ -37134,13 +37449,16 @@
       "IPRevenueAch%": 0.2818433592656237,
       "TotalCensusAch%": 0.516305476229503,
       "TotalRevenueAch%": 0.6356273268943383,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 53.18652806389175,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.5,
+      "PerformanceScore": 53.19,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 53.18652806389175,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 53.19,
+      "Performance_Score": 53.19
     }
   },
   {
@@ -37278,13 +37596,16 @@
       "IPRevenueAch%": 1.4461609240086615,
       "TotalCensusAch%": 1.294894439225836,
       "TotalRevenueAch%": 1.2419360491761573,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 143.72770724812938,
+      "SalesActivtiesAch%": 1.5,
+      "PerformanceScore": 143.73,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 143.72770724812938,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 143.73,
+      "Performance_Score": 143.73
     }
   },
   {
@@ -37422,13 +37743,16 @@
       "IPRevenueAch%": 0.31091098673870765,
       "TotalCensusAch%": 1.8092995780636159,
       "TotalRevenueAch%": 0.6120201432971408,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 68.93785230169189,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.0,
+      "PerformanceScore": 68.94,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 68.93785230169189,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 68.94,
+      "Performance_Score": 68.94
     }
   },
   {
@@ -37564,13 +37888,16 @@
       "IPRevenueAch%": 0.7162950137231922,
       "TotalCensusAch%": 1.2066473988439301,
       "TotalRevenueAch%": 0.8495238173421389,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 89.65133215250626,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 1.3333333333333333,
+      "PerformanceScore": 89.65,
+      "PerformanceGrade": "Meet",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 89.65133215250626,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Monitor",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 89.65,
+      "Performance_Score": 89.65
     }
   },
   {
@@ -37704,13 +38031,16 @@
       "IPRevenueAch%": 1.1220019573856221,
       "TotalCensusAch%": 1.6081034545434452,
       "TotalRevenueAch%": 1.2920152226602408,
-      "SalesActivtiesAch%": 0.1,
-      "PerformanceScore": 127.99802113058846,
+      "SalesActivtiesAch%": 1.0,
+      "PerformanceScore": 128.0,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 127.99802113058846,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 1.0,
+      "PerformanceScore%": 128.0,
+      "Performance_Score": 128.0
     }
   },
   {
@@ -37848,13 +38178,16 @@
       "IPRevenueAch%": 1.050700216503525,
       "TotalCensusAch%": 0.8763866418398315,
       "TotalRevenueAch%": 0.8377853313880488,
-      "SalesActivtiesAch%": 0.09527559055118111,
-      "PerformanceScore": 102.12979177122679,
+      "SalesActivtiesAch%": 0.952755905511811,
+      "PerformanceScore": 102.13,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 102.12979177122679,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.952755905511811,
+      "PerformanceScore%": 102.13,
+      "Performance_Score": 102.13
     }
   },
   {
@@ -37992,13 +38325,16 @@
       "IPRevenueAch%": 1.8166004481325033,
       "TotalCensusAch%": 1.4408835431493894,
       "TotalRevenueAch%": 1.5818369176075253,
-      "SalesActivtiesAch%": 0.0984251968503937,
-      "PerformanceScore": 157.46874936825,
+      "SalesActivtiesAch%": 0.984251968503937,
+      "PerformanceScore": 157.47,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 157.46874936825,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.984251968503937,
+      "PerformanceScore%": 157.47,
+      "Performance_Score": 157.47
     }
   },
   {
@@ -38137,13 +38473,16 @@
       "IPRevenueAch%": 0.40946697633204415,
       "TotalCensusAch%": 0.7862714186243019,
       "TotalRevenueAch%": 0.6064571492742339,
-      "SalesActivtiesAch%": 0.08897637795275591,
-      "PerformanceScore": 53.642960473558624,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 0.889763779527559,
+      "PerformanceScore": 53.64,
+      "PerformanceGrade": "Below",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 53.642960473558624,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "PIP",
+      "ActivityAch%": 0.889763779527559,
+      "PerformanceScore%": 53.64,
+      "Performance_Score": 53.64
     }
   },
   {
@@ -38279,13 +38618,16 @@
       "IPRevenueAch%": 0.7799702070241059,
       "TotalCensusAch%": 1.0396899949885536,
       "TotalRevenueAch%": 1.3691962167572425,
-      "SalesActivtiesAch%": 0.09782608695652174,
-      "PerformanceScore": 82.39867483692541,
-      "PerformanceGrade": "Exceeds",
+      "SalesActivtiesAch%": 0.9782608695652174,
+      "PerformanceScore": 82.4,
+      "PerformanceGrade": "Meet",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 82.39867483692541,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Monitor",
+      "ActivityAch%": 0.9782608695652174,
+      "PerformanceScore%": 82.4,
+      "Performance_Score": 82.4
     }
   },
   {
@@ -38423,13 +38765,16 @@
       "IPRevenueAch%": 1.070838487951069,
       "TotalCensusAch%": 1.0781517742376299,
       "TotalRevenueAch%": 1.015455653832147,
-      "SalesActivtiesAch%": 0.09551656920077972,
-      "PerformanceScore": 107.11905077036666,
+      "SalesActivtiesAch%": 0.9551656920077972,
+      "PerformanceScore": 107.12,
       "PerformanceGrade": "Exceeds",
       "Is_Inactive": 0,
       "Is_New": 0,
       "Performance": 107.11905077036666,
-      "SuggestedAction": "Reward"
+      "SuggestedAction": "Reward",
+      "ActivityAch%": 0.9551656920077972,
+      "PerformanceScore%": 107.12,
+      "Performance_Score": 107.12
     }
   }
 ]

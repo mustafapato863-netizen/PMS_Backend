@@ -99,24 +99,28 @@ def format_minutes_to_hhmmss(minutes: float) -> str:
 def add_computed_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
     Add computed columns:
-    - Performance Grade (based on score: >0.9 = "Exceeds", >0.8 = "Meet", >0.7 = "Average", else "Below")
-    - Suggested Action (simple logic: score>0.9="Reward", score<0.7="PIP", else="Monitor")
+    - Performance Grade (based on score: >=0.9 = "Exceeds", >=0.8 = "Meet", >=0.7 = "Average", else "Below")
+    - Suggested Action (simple logic: score>=0.9="Reward", score<0.7="PIP", else="Monitor")
     """
     if 'Performance' in df.columns:
-        scores = df['Performance']
+        scores = df['Performance'].copy()
         
+        # If scores are on a 0-100 scale (values > 2.0), scale down to 0-1 for grading
+        if scores.max() > 2.0:
+            scores = scores / 100.0
+            
         # Calculate Performance Grade
         conditions_grade = [
-            scores > 0.9,
-            scores > 0.8,
-            scores > 0.7
+            scores >= 0.9,
+            scores >= 0.8,
+            scores >= 0.7
         ]
         choices_grade = ["Exceeds", "Meet", "Average"]
         df['PerformanceGrade'] = np.select(conditions_grade, choices_grade, default="Below")
         
         # Calculate Suggested Action
         conditions_action = [
-            scores > 0.9,
+            scores >= 0.9,
             scores < 0.7
         ]
         choices_action = ["Reward", "PIP"]

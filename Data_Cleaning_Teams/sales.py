@@ -74,6 +74,14 @@ def process_sales(file_path):
     # Apply formula: MIN(10 points, ratio * 10 points) which matches MIN(0.1, ratio * 0.1) on a 100 scale
     activity_score = np.minimum(10.0, activity_ratio * 10.0)
 
+    # Standardize column names by removing ALL hidden whitespaces
+    df.columns = df.columns.str.replace(r'\s+', '', regex=True)
+
+    # Update activities achievement columns with the calculated ratio
+    for col in ['SalesActivtiesAch%', 'SalesActivitiesAch%']:
+        if col in df.columns:
+            df[col] = activity_ratio
+
     # --- 4. Performance Calculation (Using Defined Weights and Dynamic Ratios) ---
     W_OP_Cencus = 0.10    # 10%
     W_OP_Revenue = 0.10   # 10%

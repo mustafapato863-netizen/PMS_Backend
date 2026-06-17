@@ -166,7 +166,8 @@ def seed_database():
                 )
 
                 # Run KPI scoring engine
-                score, grade, achievements, weights_used = kpi_service.calculate_performance(team_name, row.to_dict())
+                row_dict = row.to_dict()
+                score, grade, achievements, weights_used = kpi_service.calculate_performance(team_name, row_dict)
 
                 # Populate achievements model
                 ach = AchievementMetrics(
@@ -186,7 +187,7 @@ def seed_database():
                     activity_ach=achievements.get("Activity", 0.0)
                 )
 
-                root_cause = analysis_service.run_root_cause_analysis(team_name, achievements, weights_used, row.to_dict())
+                root_cause = analysis_service.run_root_cause_analysis(team_name, achievements, weights_used, row_dict)
                 suggested_action = analysis_service.generate_suggested_action(score, is_new, root_cause)
 
                 note_rec = notes_repo.get_note(emp_id, month)
@@ -213,7 +214,7 @@ def seed_database():
                     actual=actual,
                     achievement=ach,
                     evaluation=evaluation,
-                    raw_data={str(k): safe_value(v) for k, v in row.to_dict().items()}
+                    raw_data={str(k): safe_value(v) for k, v in row_dict.items()}
                 )
                 all_new_records.append(record)
 
