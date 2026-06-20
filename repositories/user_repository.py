@@ -39,7 +39,7 @@ class UserRepository(BaseRepository[User]):
     
     def disable_user(self, user_id) -> bool:
         """Disable user (soft delete)"""
-        user = self.get_by_id(user_id)
+        user = self.get_by_id(user_id, include_deleted=True)
         if user:
             user.is_active = False
             self.db.commit()
@@ -49,7 +49,7 @@ class UserRepository(BaseRepository[User]):
     
     def enable_user(self, user_id) -> bool:
         """Enable user"""
-        user = self.get_by_id(user_id)
+        user = self.get_by_id(user_id, include_deleted=True)
         if user:
             user.is_active = True
             self.db.commit()

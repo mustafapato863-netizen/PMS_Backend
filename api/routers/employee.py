@@ -1,5 +1,5 @@
 import datetime
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query, HTTPException, Request
 from typing import Dict, List
 from uuid import UUID
 
@@ -14,7 +14,7 @@ from services.performance_service import PerformanceService
 router = APIRouter(prefix="/api/employees", tags=["Employees"])
 
 @router.get("", response_model=StandardResponse)
-async def get_all_employees():
+async def get_all_employees(include_deleted: bool = Query(False)):
     """
     Get all employees from database.
     
@@ -22,7 +22,7 @@ async def get_all_employees():
         List of all employees
     """
     try:
-        employees = EmployeeService.get_all_employees()
+        employees = EmployeeService.get_all_employees(include_deleted=include_deleted)
         return StandardResponse(
             success=True,
             message=f"Retrieved {len(employees)} employees",
@@ -36,7 +36,7 @@ async def get_all_employees():
 
 
 @router.get("/search", response_model=StandardResponse)
-async def search_employees(name: str = Query(...)):
+async def search_employees(name: str = Query(...), include_deleted: bool = Query(False)):
     """
     Search employees by name.
     
@@ -47,7 +47,7 @@ async def search_employees(name: str = Query(...)):
         List of matching employees
     """
     try:
-        employees = EmployeeService.search_employees(name)
+        employees = EmployeeService.search_employees(name, include_deleted=include_deleted)
         return StandardResponse(
             success=True,
             message=f"Found {len(employees)} employees matching '{name}'",
@@ -61,7 +61,7 @@ async def search_employees(name: str = Query(...)):
 
 
 @router.get("/team/{team_id}", response_model=StandardResponse)
-async def get_employees_by_team(team_id: str):
+async def get_employees_by_team(team_id: str, include_deleted: bool = Query(False)):
     """
     Get all employees in a team.
     
@@ -72,7 +72,7 @@ async def get_employees_by_team(team_id: str):
         List of employees in team
     """
     try:
-        employees = EmployeeService.get_employees_by_team(team_id)
+        employees = EmployeeService.get_employees_by_team(team_id, include_deleted=include_deleted)
         return StandardResponse(
             success=True,
             message=f"Retrieved {len(employees)} employees for team",
@@ -156,7 +156,7 @@ async def create_employee(
 
 
 @router.get("/{employee_id}", response_model=StandardResponse)
-async def get_employee_profile(employee_id: str):
+async def get_employee_profile(employee_id: str, include_deleted: bool = Query(False)):
     """
     Get employee profile including performance history.
     
@@ -167,7 +167,7 @@ async def get_employee_profile(employee_id: str):
         Employee profile with performance history
     """
     try:
-        emp = EmployeeService.get_employee(employee_id)
+        emp = EmployeeService.get_employee(employee_id, include_deleted=include_deleted)
         if not emp:
             raise HTTPException(status_code=404, detail="Employee not found")
 
@@ -260,6 +260,7 @@ async def update_employee(
 @router.delete("/{employee_id}", response_model=StandardResponse)
 async def delete_employee(
     employee_id: str,
+    request: Request,
     role: str = Depends(require_role(["Admin"]))
 ):
     """
@@ -272,7 +273,8 @@ async def delete_employee(
         Deletion confirmation
     """
     try:
-        success, errors = EmployeeService.delete_employee(employee_id)
+        performed_by_user_id = request.state.user.get("user_id") if hasattr(request.state, "user") and request.state.user else None
+        success, errors = EmployeeService.delete_employee(employee_id, performed_by_user_id)
         
         if not success:
             raise HTTPException(status_code=400, detail="; ".join(errors))
@@ -287,6 +289,41 @@ async def delete_employee(
         return StandardResponse(
             success=False,
             message=f"Failed to delete employee: {str(e)}"
+        )
+
+
+@router.post("/{employee_id}/restore", response_model=StandardResponse)
+async def restore_employee(
+    employee_id: str,
+    request: Request,
+    role: str = Depends(require_role(["Admin", "Manager"]))
+):
+    """
+    Restore a soft-deleted employee.
+    
+    Args:
+        employee_id: Employee UUID
+        
+    Returns:
+        Restoration confirmation
+    """
+    try:
+        performed_by_user_id = request.state.user.get("user_id") if hasattr(request.state, "user") and request.state.user else None
+        success, errors = EmployeeService.restore_employee(employee_id, performed_by_user_id)
+        
+        if not success:
+            raise HTTPException(status_code=400, detail="; ".join(errors))
+        
+        return StandardResponse(
+            success=True,
+            message="Employee restored successfully"
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        return StandardResponse(
+            success=False,
+            message=f"Failed to restore employee: {str(e)}"
         )
 
 

@@ -141,7 +141,7 @@ class TestTeamRepository:
         
         repo.soft_delete(team.id)
         
-        deleted = repo.get_by_id(team.id)
+        deleted = repo.get_by_id(team.id, include_deleted=True)
         assert deleted.is_active == False
     
     def test_restore_team(self, db, team_data):

@@ -300,6 +300,7 @@ class AuditLog(Base):
     performed_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     performed_at = Column(DateTime(timezone=True), server_default=func.now())
     ip_address = Column(INET, nullable=True)
+    request_id = Column(String(100), nullable=True)
 
     # Relationships
     performed_by_user = relationship("User", back_populates="audit_logs")
@@ -324,3 +325,43 @@ class OnboardingState(Base):
 
     # Relationships
     team = relationship("Team")
+
+
+class PerformanceRecordVersion(Base):
+    __tablename__ = "performance_record_versions"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    original_record_id = Column(UUID(as_uuid=True), nullable=False)
+    original_record_year = Column(SmallInteger, nullable=False)
+    version_number = Column(Integer, nullable=False)
+    score = Column(Numeric(6, 2), nullable=False)
+    grade = Column(String(5), nullable=False)
+    status = Column(String(20), nullable=False)
+    changed_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    changed_at = Column(DateTime(timezone=True), server_default=func.now())
+    change_reason = Column(Text, nullable=True)
+
+    # Relationships
+    changed_by_user = relationship("User")
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ['original_record_id', 'original_record_year'],
+            ['performance_records.id', 'performance_records.year'],
+            ondelete="CASCADE"
+        ),
+        UniqueConstraint('original_record_id', 'version_number', name='uq_record_version'),
+    )
+
+
+class ErrorLog(Base):
+    __tablename__ = "error_logs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    request_id = Column(String(100), nullable=True)
+    endpoint = Column(String(255), nullable=False)
+    method = Column(String(10), nullable=False)
+    error_class = Column(String(100), nullable=False)
+    error_message = Column(Text, nullable=False)
+    stack_trace = Column(Text, nullable=True)
+    occurred_at = Column(DateTime(timezone=True), server_default=func.now())

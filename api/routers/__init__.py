@@ -9,6 +9,8 @@ from .users_and_actions import users_router, actions_router
 from .config import router as config_router
 from .team_management import router as team_management_router
 from .auth import router as auth_router
+from .bulk_operations import router as bulk_operations_router
+from .health import router as health_router
 
 router = APIRouter()
 
@@ -22,4 +24,6 @@ router.include_router(actions_router, prefix="/corrective-actions", tags=["Corre
 router.include_router(config_router, tags=["Configuration"])
 router.include_router(team_management_router, tags=["Team Management"])
 router.include_router(auth_router, tags=["Authentication"])
+router.include_router(bulk_operations_router, tags=["Bulk Operations"])
+router.include_router(health_router, tags=["Health Check"])
 

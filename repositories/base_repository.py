@@ -29,18 +29,30 @@ class BaseRepository(Generic[T]):
             logger.error(f"Failed to create {self.model.__name__}: {str(e)}")
             raise Exception(f"Failed to create {self.model.__name__}: {str(e)}")
     
-    def get_by_id(self, id: any) -> Optional[T]:
+    def get_by_id(self, id: any, include_deleted: bool = False) -> Optional[T]:
         """Get record by ID"""
         try:
-            return self.db.query(self.model).filter(self.model.id == id).first()
+            if isinstance(id, str):
+                import uuid
+                try:
+                    id = uuid.UUID(id)
+                except ValueError:
+                    pass
+            query = self.db.query(self.model).filter(self.model.id == id)
+            if not include_deleted and hasattr(self.model, 'is_active'):
+                query = query.filter(self.model.is_active == True)
+            return query.first()
         except Exception as e:
             logger.error(f"Failed to fetch {self.model.__name__} by ID: {str(e)}")
             raise
     
-    def get_all(self, skip: int = 0, limit: int = 100) -> List[T]:
+    def get_all(self, skip: int = 0, limit: int = 100, include_deleted: bool = False) -> List[T]:
         """Get all records with pagination"""
         try:
-            return self.db.query(self.model).offset(skip).limit(limit).all()
+            query = self.db.query(self.model)
+            if not include_deleted and hasattr(self.model, 'is_active'):
+                query = query.filter(self.model.is_active == True)
+            return query.offset(skip).limit(limit).all()
         except Exception as e:
             logger.error(f"Failed to fetch all {self.model.__name__}: {str(e)}")
             raise
@@ -48,7 +60,7 @@ class BaseRepository(Generic[T]):
     def update(self, id: any, obj_in: dict) -> Optional[T]:
         """Update record"""
         try:
-            db_obj = self.get_by_id(id)
+            db_obj = self.get_by_id(id, include_deleted=True)
             if db_obj:
                 for key, value in obj_in.items():
                     setattr(db_obj, key, value)
@@ -64,7 +76,7 @@ class BaseRepository(Generic[T]):
     def delete(self, id: any) -> bool:
         """Hard delete record"""
         try:
-            db_obj = self.get_by_id(id)
+            db_obj = self.get_by_id(id, include_deleted=True)
             if db_obj:
                 self.db.delete(db_obj)
                 self.db.commit()
@@ -76,10 +88,13 @@ class BaseRepository(Generic[T]):
             logger.error(f"Failed to delete {self.model.__name__}: {str(e)}")
             raise
     
-    def count(self) -> int:
+    def count(self, include_deleted: bool = False) -> int:
         """Count all records"""
         try:
-            return self.db.query(self.model).count()
+            query = self.db.query(self.model)
+            if not include_deleted and hasattr(self.model, 'is_active'):
+                query = query.filter(self.model.is_active == True)
+            return query.count()
         except Exception as e:
             logger.error(f"Failed to count {self.model.__name__}: {str(e)}")
             raise

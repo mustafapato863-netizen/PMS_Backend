@@ -24,8 +24,13 @@ from api.routers import router as api_router
 from services.seeding_service import DatabaseSeeder
 from config.socket_config import sio
 from api.middleware.auth_middleware import AuthMiddleware
+from api.middleware.error_handling_middleware import ErrorHandlingMiddleware
 from config.database import SessionLocal
 from services.permission_seed import seed_role_permissions
+from config.logging_config import setup_logging
+
+# Initialize structured logging
+setup_logging()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -60,6 +65,8 @@ app.add_middleware(
 
 # Register AuthMiddleware
 app.add_middleware(AuthMiddleware)
+# Register ErrorHandlingMiddleware (outermost to catch middleware exceptions)
+app.add_middleware(ErrorHandlingMiddleware)
 
 
 # Mount Routers

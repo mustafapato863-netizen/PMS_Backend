@@ -21,7 +21,7 @@ class EmployeeService:
     """Service for managing employees - Database-backed version."""
 
     @staticmethod
-    def get_all_employees() -> List[Dict[str, Any]]:
+    def get_all_employees(include_deleted: bool = False) -> List[Dict[str, Any]]:
         """
         Get all employees from database.
         
@@ -31,7 +31,7 @@ class EmployeeService:
         db = SessionLocal()
         try:
             repo = EmployeeRepository(db, Employee)
-            employees = repo.get_all()
+            employees = repo.get_all(include_deleted=include_deleted)
             
             result = []
             for emp in employees:
@@ -62,7 +62,7 @@ class EmployeeService:
             db.close()
 
     @staticmethod
-    def get_employee(employee_id_or_uuid: str) -> Optional[Dict[str, Any]]:
+    def get_employee(employee_id_or_uuid: str, include_deleted: bool = False) -> Optional[Dict[str, Any]]:
         """
         Get single employee by UUID or employee_id.
         
@@ -78,13 +78,13 @@ class EmployeeService:
             
             # Try as UUID first
             try:
-                emp = repo.get_by_id(employee_id_or_uuid)
+                emp = repo.get_by_id(employee_id_or_uuid, include_deleted=include_deleted)
             except:
                 emp = None
             
             # Try as employee_id
             if not emp:
-                emp = repo.get_by_employee_id(employee_id_or_uuid)
+                emp = repo.get_by_employee_id(employee_id_or_uuid, include_deleted=include_deleted)
             
             if not emp:
                 return None
@@ -114,7 +114,7 @@ class EmployeeService:
             db.close()
 
     @staticmethod
-    def get_employees_by_team(team_id: any) -> List[Dict[str, Any]]:
+    def get_employees_by_team(team_id: any, include_deleted: bool = False) -> List[Dict[str, Any]]:
         """
         Get all employees in a team.
         
@@ -127,7 +127,7 @@ class EmployeeService:
         db = SessionLocal()
         try:
             repo = EmployeeRepository(db, Employee)
-            employees = repo.get_by_team(team_id)
+            employees = repo.get_by_team(team_id, include_deleted=include_deleted)
             
             result = []
             for emp in employees:
@@ -200,7 +200,7 @@ class EmployeeService:
             db.close()
 
     @staticmethod
-    def search_employees(name: str) -> List[Dict[str, Any]]:
+    def search_employees(name: str, include_deleted: bool = False) -> List[Dict[str, Any]]:
         """
         Search employees by name (case insensitive).
         
@@ -213,7 +213,7 @@ class EmployeeService:
         db = SessionLocal()
         try:
             repo = EmployeeRepository(db, Employee)
-            employees = repo.search_by_name(name)
+            employees = repo.search_by_name(name, include_deleted=include_deleted)
             
             result = []
             for emp in employees:
@@ -392,41 +392,58 @@ class EmployeeService:
             db.close()
 
     @staticmethod
-    def delete_employee(employee_uuid: any) -> Tuple[bool, List[str]]:
+    def delete_employee(employee_uuid: any, performed_by_user_id: str = None) -> Tuple[bool, List[str]]:
         """
         Delete an employee (soft delete - mark as inactive).
         
         Args:
             employee_uuid: Employee UUID
+            performed_by_user_id: ID of the user performing the action
             
         Returns:
             Tuple (success, errors)
         """
         errors = []
-        
         db = SessionLocal()
         try:
-            repo = EmployeeRepository(db, Employee)
-            emp = repo.get_by_id(employee_uuid)
-            
-            if not emp:
-                errors.append(f"Employee not found")
+            from services.soft_delete_service import SoftDeleteService
+            success = SoftDeleteService.soft_delete_employee(db, employee_uuid, performed_by_user_id)
+            if not success:
+                errors.append("Employee not found or already inactive")
                 return False, errors
-            
-            # Soft delete
-            update_data = {'is_active': False}
-            repo.update(employee_uuid, update_data)
-            db.commit()
-            
-            logger.info(f"Deleted employee: {employee_uuid}")
             return True, errors
-        
         except Exception as e:
             errors.append(f"Failed to delete employee: {str(e)}")
             logger.error(f"Delete employee error: {e}")
-            db.rollback()
             return False, errors
+        finally:
+            db.close()
+
+    @staticmethod
+    def restore_employee(employee_uuid: any, performed_by_user_id: str = None) -> Tuple[bool, List[str]]:
+        """
+        Restore a soft-deleted employee.
         
+        Args:
+            employee_uuid: Employee UUID
+            performed_by_user_id: ID of the user performing the action
+            
+        Returns:
+            Tuple (success, errors)
+        """
+        errors = []
+        db = SessionLocal()
+        try:
+            from services.soft_delete_service import SoftDeleteService
+            success = SoftDeleteService.restore_employee(db, employee_uuid, performed_by_user_id)
+            if not success:
+                errors.append("Employee not found or already active")
+                return False, errors
+            return True, errors
+        except Exception as e:
+            errors.append(f"Failed to restore employee: {str(e)}")
+            logger.error(f"Restore employee error: {e}")
+            return False, errors
         finally:
             db.close()
 

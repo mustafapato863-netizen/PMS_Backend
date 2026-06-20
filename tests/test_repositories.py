@@ -341,7 +341,7 @@ class TestTeamRepository:
         result = repo.soft_delete(sample_team.id)
         
         assert result is True
-        team = repo.get_by_id(sample_team.id)
+        team = repo.get_by_id(sample_team.id, include_deleted=True)
         assert team.is_active is False
     
     def test_restore(self, db: Session, sample_team):
@@ -617,7 +617,7 @@ class TestUserRepository:
         result = repo.disable_user(sample_user.id)
         
         assert result is True
-        user = repo.get_by_id(sample_user.id)
+        user = repo.get_by_id(sample_user.id, include_deleted=True)
         assert user.is_active is False
     
     def test_enable_user(self, db: Session, sample_user):

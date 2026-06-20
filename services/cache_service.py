@@ -12,7 +12,12 @@ logger = logging.getLogger(__name__)
 
 # Initialize central Redis client
 try:
-    redis_client = redis.Redis.from_url(settings.REDIS_URL, decode_responses=True)
+    redis_client = redis.Redis.from_url(
+        settings.REDIS_URL, 
+        decode_responses=True,
+        socket_timeout=1.0,
+        socket_connect_timeout=1.0
+    )
 except Exception as e:
     logger.warning(f"Could not connect to Redis at {settings.REDIS_URL}: {e}. Fallback to DB only.")
     redis_client = None

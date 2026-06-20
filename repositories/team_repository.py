@@ -10,21 +10,30 @@ logger = logging.getLogger(__name__)
 class TeamRepository(BaseRepository[Team]):
     """Repository for Team model"""
     
-    def get_by_name(self, name: str) -> Team:
+    def get_by_name(self, name: str, include_deleted: bool = False) -> Team:
         """Get team by name"""
-        return self.db.query(Team).filter(Team.name == name).first()
+        query = self.db.query(Team).filter(Team.name == name)
+        if not include_deleted:
+            query = query.filter(Team.is_active == True)
+        return query.first()
     
-    def get_by_db_name(self, db_name: str) -> Team:
+    def get_by_db_name(self, db_name: str, include_deleted: bool = False) -> Team:
         """Get team by database name"""
-        return self.db.query(Team).filter(Team.db_name == db_name).first()
+        query = self.db.query(Team).filter(Team.db_name == db_name)
+        if not include_deleted:
+            query = query.filter(Team.is_active == True)
+        return query.first()
     
     def get_active_teams(self) -> list:
         """Get all active teams"""
         return self.db.query(Team).filter(Team.is_active == True).all()
     
-    def get_by_region(self, region: str) -> list:
+    def get_by_region(self, region: str, include_deleted: bool = False) -> list:
         """Get teams by region"""
-        return self.db.query(Team).filter(Team.region == region).all()
+        query = self.db.query(Team).filter(Team.region == region)
+        if not include_deleted:
+            query = query.filter(Team.is_active == True)
+        return query.all()
     
     def count_active(self) -> int:
         """Count active teams"""
@@ -32,7 +41,7 @@ class TeamRepository(BaseRepository[Team]):
     
     def soft_delete(self, id: any) -> bool:
         """Soft delete (mark as inactive)"""
-        team = self.get_by_id(id)
+        team = self.get_by_id(id, include_deleted=True)
         if team:
             team.is_active = False
             team.updated_at = datetime.now()
@@ -43,7 +52,7 @@ class TeamRepository(BaseRepository[Team]):
     
     def restore(self, id: any) -> bool:
         """Restore soft-deleted team"""
-        team = self.get_by_id(id)
+        team = self.get_by_id(id, include_deleted=True)
         if team:
             team.is_active = True
             team.updated_at = datetime.now()
