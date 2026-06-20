@@ -1,0 +1,48 @@
+{
+  "team": "Coding",
+  "db_name": "Coding",
+  "region": "UAE",
+  "employee_id_col": "EmployeeID",
+  "employee_name_col": "EmployeeName",
+  "grade_thresholds": {
+    "A": 95,
+    "B": 85,
+    "C": 75,
+    "D": 65
+  },
+  "kpis": [
+    {
+      "key": "QualityErrors",
+      "label": "Quality Errors",
+      "weight": 0.20,
+      "direction": "lower_better",
+      "unit": "count",
+      "color": "#EF4444",
+      "actual_col": "A.QualityErrors",
+      "target_col": "T.QualityErrors",
+      "capping": "capped_at_100"
+    },
+    {
+      "key": "Rejection",
+      "label": "Rejection",
+      "weight": 0.50,
+      "direction": "lower_better",
+      "unit": "count",
+      "color": "#F97316",
+      "actual_col": "A.Rejection",
+      "target_col": "T.Rejection",
+      "capping": "capped_at_100"
+    },
+    {
+      "key": "TAT",
+      "label": "Turnaround Time",
+      "weight": 0.30,
+      "direction": "lower_better",
+      "unit": "hours",
+      "color": "#3B82F6",
+      "actual_col": "A.TAT_Hours",
+      "target_col": "T.TAT_Hours",
+      "capping": "capped_at_100"
+    }
+  ]
+}

@@ -1,8 +1,12 @@
 import pandas as pd
 import numpy as np
-from typing import Dict, Any, Tuple
+import logging
+from typing import Dict, Any, Tuple, Optional, List
 from models.schemas import PerformanceRecord, KPIWeight, Target
 from repositories.base import KPIWeightsRepository, TargetsRepository
+from config.loader import load_team_config, ConfigurationError
+
+logger = logging.getLogger(__name__)
 
 def safe_float(val, default=0.0) -> float:
     if val is None or (isinstance(val, float) and np.isnan(val)) or pd.isna(val):
@@ -502,3 +506,248 @@ class KPIService:
             return "D"
         else:
             return "E"
+
+    def calculate_performance_multi_team(
+        self,
+        team_id: str,
+        row: Dict[str, Any]
+    ) -> Tuple[float, str, List[Dict[str, Any]]]:
+        """
+        Calculate performance score and grade for multi-team support (Pharmacy, Coding, CSR).
+        
+        Args:
+            team_id: Team identifier (e.g., "Pharmacy", "Coding", "CSR")
+            row: Data row from Excel with actual/target values
+            
+        Returns:
+            Tuple of (score, grade, kpi_values_list)
+            
+            where kpi_values_list contains dicts with:
+                - kpi_key: KPI identifier
+                - actual_value: Parsed actual value
+                - target_value: Parsed target value
+                - achievement_ratio: Calculated achievement (as decimal 0-N)
+                - weight_applied: Weight for this KPI
+                - contribution: achievement × weight
+        """
+        try:
+            config = load_team_config(team_id)
+        except ConfigurationError as e:
+            logger.error(f"Failed to load config for team {team_id}: {e}")
+            raise
+        
+        # Extract team metadata
+        team_name = config.get('team')
+        grade_thresholds = config.get('grade_thresholds', {})
+        kpis = config.get('kpis', [])
+        
+        logger.info(f"Calculating performance for {team_name} with {len(kpis)} KPIs")
+        
+        kpi_values_list = []
+        achievements = {}
+        
+        # Calculate achievement for each KPI
+        for kpi_def in kpis:
+            kpi_key = kpi_def.get('key')
+            actual_col = kpi_def.get('actual_col')
+            target_col = kpi_def.get('target_col')
+            direction = kpi_def.get('direction')  # 'higher_better' or 'lower_better'
+            weight = float(kpi_def.get('weight', 0.0))
+            capping = kpi_def.get('capping', 'uncapped')
+            
+            # Parse actual and target from row
+            actual_value = self._parse_kpi_value(row, actual_col)
+            target_value = self._parse_kpi_value(row, target_col)
+            
+            # Calculate achievement
+            is_inverse = direction == 'lower_better'
+            cap_at_100 = capping == 'capped_at_100'
+            achievement = self._calculate_achievement(
+                actual_value,
+                target_value,
+                is_inverse=is_inverse,
+                cap_at_100=cap_at_100
+            )
+            
+            # Convert to decimal (0-1 scale) for storage
+            achievement_ratio = achievement / 100.0
+            
+            # Calculate contribution to final score
+            contribution = achievement_ratio * weight
+            
+            kpi_value = {
+                'kpi_key': kpi_key,
+                'actual_value': float(actual_value),
+                'target_value': float(target_value),
+                'achievement_ratio': float(round(achievement_ratio, 4)),
+                'weight_applied': float(weight),
+                'contribution': float(round(contribution, 4))
+            }
+            kpi_values_list.append(kpi_value)
+            achievements[kpi_key] = achievement_ratio
+            
+            logger.debug(
+                f"{team_name}/{kpi_key}: actual={actual_value}, target={target_value}, "
+                f"achievement={achievement:.2f}%, weight={weight}, contribution={contribution:.4f}"
+            )
+        
+        # Calculate final performance score
+        score_decimal = self._calculate_weighted_score(
+            achievements,
+            {kpi_def.get('key'): float(kpi_def.get('weight', 0.0)) for kpi_def in kpis},
+            cap_final_at_100=(config.get('capping') == 'capped_at_100' if 'capping' in config else True)
+        )
+        
+        # Convert to 0-100 scale
+        score = score_decimal * 100.0
+        
+        # Assign grade using team-specific thresholds
+        grade = self._assign_grade_with_thresholds(score, grade_thresholds)
+        
+        logger.info(f"{team_name} final score: {score:.2f}, grade: {grade}")
+        
+        return score, grade, kpi_values_list
+
+    def _parse_kpi_value(self, row: Dict[str, Any], col_name: str) -> float:
+        """
+        Parse and normalize KPI value from row.
+        
+        Handles:
+        - Percentage strings: "95%", "0.95"
+        - Numeric values: 95, 0.95, etc.
+        - NaN/None values: returns 0.0
+        
+        Args:
+            row: Data row dict
+            col_name: Column name to extract
+            
+        Returns:
+            Normalized float value
+        """
+        value = row.get(col_name)
+        
+        if value is None or pd.isna(value):
+            return 0.0
+        
+        # Handle string percentages
+        if isinstance(value, str):
+            value = value.rstrip('%').replace(',', '').strip()
+            try:
+                numeric = float(value)
+            except (ValueError, AttributeError):
+                logger.warning(f"Could not parse value from column {col_name}: {value}")
+                return 0.0
+        else:
+            try:
+                numeric = float(value)
+            except (ValueError, TypeError):
+                logger.warning(f"Could not parse value from column {col_name}: {value}")
+                return 0.0
+        
+        # Normalize fractional values to raw scale (don't multiply by 100)
+        # The formulas (actual/target) will naturally produce the right ratio
+        return numeric
+
+    def _calculate_achievement(
+        self,
+        actual: float,
+        target: float,
+        is_inverse: bool = False,
+        cap_at_100: bool = False,
+        zero_actual_value: float = 100.0
+    ) -> float:
+        """
+        Calculate KPI achievement ratio (0-100 scale).
+        
+        Args:
+            actual: Actual performance value
+            target: Target performance value
+            is_inverse: If True, calculate as target/actual (lower is better)
+            cap_at_100: If True, cap result at 100
+            zero_actual_value: Value to return when actual=0 for inverse KPIs
+            
+        Returns:
+            Achievement ratio on 0-100 scale (may exceed 100 if uncapped)
+        """
+        actual = safe_float(actual)
+        target = safe_float(target)
+        
+        if is_inverse:
+            # Lower is better: target/actual
+            if actual == 0:
+                # No division by zero - assume perfect performance
+                achievement = zero_actual_value
+            else:
+                achievement = (target / actual) * 100.0
+        else:
+            # Higher is better: actual/target
+            if target == 0:
+                # Cannot measure achievement if target is zero
+                achievement = 0.0 if actual == 0 else 0.0
+            else:
+                achievement = (actual / target) * 100.0
+        
+        # Apply capping if needed (individual KPI achievement)
+        if cap_at_100:
+            achievement = min(achievement, 100.0)
+        
+        return achievement
+
+    def _calculate_weighted_score(
+        self,
+        achievements: Dict[str, float],
+        weights: Dict[str, float],
+        cap_final_at_100: bool = False
+    ) -> float:
+        """
+        Calculate weighted performance score.
+        
+        Args:
+            achievements: Dict of KPI -> achievement ratio (0-N decimal scale)
+            weights: Dict of KPI -> weight (sum should equal 1.0)
+            cap_final_at_100: If True, cap final score at 1.0 (100%)
+            
+        Returns:
+            Weighted score as decimal (0-1 scale or higher if uncapped)
+        """
+        score = 0.0
+        for kpi, achievement in achievements.items():
+            weight = weights.get(kpi, 0.0)
+            score += achievement * weight
+        
+        if cap_final_at_100:
+            score = min(score, 1.0)
+        
+        return score
+
+    def _assign_grade_with_thresholds(
+        self,
+        score: float,
+        thresholds: Dict[str, int]
+    ) -> str:
+        """
+        Assign grade based on team-specific thresholds.
+        
+        Args:
+            score: Performance score (0-100 scale)
+            thresholds: Grade thresholds dict with keys: A, B, C, D
+                       Expected format: {"A": 95, "B": 85, "C": 75, "D": 65}
+            
+        Returns:
+            Grade letter: A, B, C, D, or E
+        """
+        threshold_a = float(thresholds.get('A', 95))
+        threshold_b = float(thresholds.get('B', 85))
+        threshold_c = float(thresholds.get('C', 75))
+        threshold_d = float(thresholds.get('D', 65))
+        
+        if score >= threshold_a:
+            return 'A'
+        elif score >= threshold_b:
+            return 'B'
+        elif score >= threshold_c:
+            return 'C'
+        elif score >= threshold_d:
+            return 'D'
+        else:
+            return 'E'

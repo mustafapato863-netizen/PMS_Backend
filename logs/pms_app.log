@@ -1,2 +1,70 @@
 {"timestamp": "2026-06-20T18:33:48Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
 {"timestamp": "2026-06-20T18:33:49Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:28:51Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:28:51Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:29:13Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:29:14Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:29:30Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:29:30Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:29:46Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:29:46Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:30:06Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:30:07Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:30:27Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:30:27Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:31:20Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:31:20Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:39:46Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:39:47Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:46:49Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:46:49Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:47:11Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:47:11Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:47:40Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:47:40Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:52:31Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:52:31Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:55:12Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:55:12Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:55:17Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:55:17Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:55:24Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:55:24Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:55:30Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:55:30Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:55:35Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:55:36Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:55:39Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:55:39Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:55:42Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:55:42Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:55:46Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:55:46Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:57:46Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:57:46Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:58:07Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:58:07Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T19:58:15Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T19:58:15Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:02:21Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:02:21Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:02:33Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:02:33Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:02:38Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:02:38Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:02:39Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:02:39Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:03:14Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:03:14Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:05:55Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:05:55Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:06:02Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:06:02Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:10:17Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:10:17Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:13:10Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:13:11Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:15:40Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:15:40Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T20:15:58Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T20:15:58Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
