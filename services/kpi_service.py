@@ -480,14 +480,25 @@ class KPIService:
 
     @staticmethod
     def assign_grade(score: float) -> str:
-        """Assign performance grade based on picture ranges."""
-        if score >= 100.0:
+        """Assign performance grade based on unified thresholds.
+        
+        Thresholds:
+        - A: score >= 95
+        - B: score >= 85
+        - C: score >= 75
+        - D: score >= 65
+        - E: score < 65
+        
+        These thresholds are unified with Frontend (constants/grades.ts)
+        to ensure consistent grading across the system.
+        """
+        if score >= 95.0:
             return "A"
-        elif score >= 90.0:
+        elif score >= 85.0:
             return "B"
-        elif score >= 80.0:
+        elif score >= 75.0:
             return "C"
-        elif score >= 70.0:
+        elif score >= 65.0:
             return "D"
         else:
             return "E"

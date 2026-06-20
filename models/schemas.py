@@ -146,3 +146,10 @@ class UserRecord(BaseModel):
 class LoginPayload(BaseModel):
     username: str
     password: str
+
+class JWTToken(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    role: str
+    username: str
+

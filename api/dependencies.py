@@ -1,10 +1,14 @@
 import pandas as pd
-from fastapi import Header, HTTPException
+from fastapi import Header, HTTPException, Request
 from typing import List, Dict, Any
 
+from config.database import SessionLocal
+from models.models import Employee, PerformanceRecord
+from repositories.employee_repository import EmployeeRepository
+from repositories.performance_repository import PerformanceRepository
 from repositories.json_repos import (
-    JSONEmployeeRepository, JSONPerformanceRepository, JSONKPIWeightsRepository, JSONTargetsRepository,
-    JSONUploadsRepository, JSONManagerNotesRepository, JSONCorrectiveActionsRepository, JSONTeamActionsRepository,
+    JSONKPIWeightsRepository, JSONTargetsRepository, JSONUploadsRepository,
+    JSONManagerNotesRepository, JSONCorrectiveActionsRepository,
     JSONUserRepository
 )
 from processors.excel_processor import ExcelProcessor
@@ -15,9 +19,14 @@ from services.planning_service import PlanningService
 from services.trend_service import TrendService
 from services.insights_service import InsightsService
 
-# Instantiate repositories
-employee_repo = JSONEmployeeRepository()
-performance_repo = JSONPerformanceRepository()
+# Initialize database session for repositories
+_db = SessionLocal()
+
+# Instantiate database repositories
+employee_repo = EmployeeRepository(_db, Employee)
+performance_repo = PerformanceRepository(_db, PerformanceRecord)
+
+# Instantiate JSON-based repositories (for backward compatibility - being phased out)
 weights_repo = JSONKPIWeightsRepository()
 targets_repo = JSONTargetsRepository()
 uploads_repo = JSONUploadsRepository()
@@ -147,11 +156,19 @@ def serialize_performance_record(r) -> Dict[str, Any]:
     }
 
 def require_role(allowed_roles: List[str]):
-    def dependency(x_user_role: str = Header(default="Viewer", alias="X-User-Role")):
-        if x_user_role not in allowed_roles:
+    def dependency(
+        request: Request,
+        x_user_role: str = Header(default="Viewer", alias="X-User-Role")
+    ):
+        # Check if JWT session is attached to request state
+        role = x_user_role
+        if hasattr(request.state, "user") and request.state.user:
+            role = request.state.user.get("role", x_user_role)
+
+        if role not in allowed_roles:
             raise HTTPException(
                 status_code=403,
-                detail=f"Access denied for role '{x_user_role}'. Required: {allowed_roles}"
+                detail=f"Access denied for role '{role}'. Required: {allowed_roles}"
             )
-        return x_user_role
+        return role
     return dependency

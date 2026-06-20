@@ -1,0 +1,75 @@
+{
+  "team": "Sales",
+  "db_name": "Sales",
+  "region": "EGY",
+  "employee_id_col": "EmployeeID",
+  "employee_name_col": "EmployeeName",
+  "grade_thresholds": {
+    "A": 95,
+    "B": 85,
+    "C": 75,
+    "D": 65
+  },
+  "kpis": [
+    {
+      "key": "OPCensus",
+      "label": "OP Census Ach",
+      "weight": 0.10,
+      "direction": "higher_better",
+      "unit": "%",
+      "color": "#3B82F6",
+      "actual_col": "A.OPCensus",
+      "target_col": "T.OPCensus",
+      "achievement_col": "OPCensusAch%",
+      "volume_unit": "Census"
+    },
+    {
+      "key": "OPRevenue",
+      "label": "OP Revenue Ach",
+      "weight": 0.10,
+      "direction": "higher_better",
+      "unit": "%",
+      "color": "#10B981",
+      "actual_col": "A.OPRevenue",
+      "target_col": "T.OPRevenue",
+      "achievement_col": "OPRevenueAch%",
+      "volume_unit": "Rev"
+    },
+    {
+      "key": "IPCensus",
+      "label": "IP Census Ach",
+      "weight": 0.25,
+      "direction": "higher_better",
+      "unit": "%",
+      "color": "#8B5CF6",
+      "actual_col": "A.IPCensus",
+      "target_col": "T.IPCensus",
+      "achievement_col": "IPCensusAch%",
+      "volume_unit": "Census"
+    },
+    {
+      "key": "IPRevenue",
+      "label": "IP Revenue Ach",
+      "weight": 0.45,
+      "direction": "higher_better",
+      "unit": "%",
+      "color": "#F59E0B",
+      "actual_col": "A.IPRevenue",
+      "target_col": "T.IPRevenue",
+      "achievement_col": "IPRevenueAch%",
+      "volume_unit": "Rev"
+    },
+    {
+      "key": "Activity",
+      "label": "Activity Score",
+      "weight": 0.10,
+      "direction": "higher_better",
+      "unit": "%",
+      "color": "#6366F1",
+      "actual_col": "A.Activity",
+      "target_col": "T.Activity",
+      "achievement_col": "ActivityAch%",
+      "volume_unit": "Activities"
+    }
+  ]
+}

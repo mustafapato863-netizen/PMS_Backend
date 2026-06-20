@@ -14,3 +14,12 @@ ROLE_EXECUTIVE = "Executive"
 ROLE_VIEWER = "Viewer"
 
 ROLES = [ROLE_ADMIN, ROLE_MANAGER, ROLE_EXECUTIVE, ROLE_VIEWER]
+
+# JWT & Security settings
+JWT_SECRET = os.environ.get("JWT_SECRET", "super_secret_pms_dashboard_key_12345!@#")
+JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "HS256")
+JWT_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRE_MINUTES", "60"))
+
+# Redis settings
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+
