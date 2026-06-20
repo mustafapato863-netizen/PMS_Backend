@@ -9,7 +9,19 @@ from models.schemas import StandardResponse
 from exports.report_exporter import ReportExporter
 from services.performance_service import PerformanceService
 
-router = APIRouter(prefix="/api/performance", tags=["Performance"])
+router = APIRouter(prefix="/performance", tags=["Performance"])
+
+@router.get("", response_model=StandardResponse)
+async def get_monthly_records_root(
+    team_id: str = Query(None),
+    month: str = Query(None),
+    year: int = Query(None)
+):
+    """
+    Alias endpoint for get_monthly_records matching the frontend root query path.
+    """
+    return await get_monthly_records(team_id, month, year)
+
 
 @router.get("/records", response_model=StandardResponse)
 async def get_monthly_records(

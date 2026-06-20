@@ -68,3 +68,153 @@
 {"timestamp": "2026-06-20T20:15:40Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
 {"timestamp": "2026-06-20T20:15:58Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
 {"timestamp": "2026-06-20T20:15:58Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T22:55:24Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:55:42Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:56:07Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:56:13Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:56:20Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:56:28Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:56:36Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:56:41Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:58:38Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T22:58:44Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:03:27Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:03:27Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:03:28Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:03:29Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:03:29Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:03:29Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T23:04:20Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:04:21Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:04:22Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:04:38Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:04:53Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:04:57Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:05:07Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:05:18Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:05:27Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:05:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:05:43Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:05:50Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:05:51Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:05:51Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:05:51Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:05:51Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T23:12:13Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:12:13Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:12:14Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:12:14Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:12:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:12:14Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T23:13:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:13:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:13:03Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:13:10Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:14:38Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "0aabfcce-2069-4cff-ab17-e4e9e6a857b8"}
+{"timestamp": "2026-06-20T23:14:40Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "2eb7c06f-0b38-4559-914a-cabdc4cb7d0c"}
+{"timestamp": "2026-06-20T23:14:54Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "9cb5bade-bdb5-48aa-b4be-c506ab1523a8"}
+{"timestamp": "2026-06-20T23:14:56Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "d5c245ef-c434-4c62-8417-f897c5a00505"}
+{"timestamp": "2026-06-20T23:15:40Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "1493f93c-7b82-40ee-89a6-de9428bdcf74"}
+{"timestamp": "2026-06-20T23:16:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:16:03Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:16:21Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "60e2da53-3686-49b6-b036-4cbd6801b9aa"}
+{"timestamp": "2026-06-20T23:16:21Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:18:38Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "5c73b501-31ca-48e3-979c-1063fa8e49d0"}
+{"timestamp": "2026-06-20T23:19:03Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:19:04Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:19:16Z", "level": "WARNING", "logger": "services.health_check_service", "message": "Health check Redis error: Timeout connecting to server", "request_id": "14b448e9-6338-4dc5-a2fa-6a92bfdddbed"}
+{"timestamp": "2026-06-20T23:19:52Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:19:59Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:20:06Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:20:08Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:22:12Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:22:13Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:22:13Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T23:22:42Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "1e47f90e-e193-4333-a224-6878d94435d2"}
+{"timestamp": "2026-06-20T23:22:44Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "7b4c0a23-55cd-4ee7-88ac-587813f45a60"}
+{"timestamp": "2026-06-20T23:23:28Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:23:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:23:33Z", "level": "INFO", "logger": "watchfiles.main", "message": "6 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:25:19Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:26:33Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:26:33Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:29:34Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:29:34Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:29:40Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:29:43Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:30:00Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:30:09Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:30:13Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:30:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "6 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:30:15Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:30:15Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T23:31:10Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "053bd380-2e58-4835-8e11-76161342fec0"}
+{"timestamp": "2026-06-20T23:31:12Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "77774a78-7b9b-4a98-9640-68afd1d23199"}
+{"timestamp": "2026-06-20T23:32:27Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "2ff52b21-67b7-409f-af9d-ec5fa9c041e8"}
+{"timestamp": "2026-06-20T23:32:34Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:32:35Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:33:12Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:33:27Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:34:03Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:34:04Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:34:05Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:34:05Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T23:34:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:34:44Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:34:45Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:34:46Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:34:46Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-20T23:35:03Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "3bc0b37f-dd9d-46f5-8175-46e9939e66c7"}
+{"timestamp": "2026-06-20T23:35:05Z", "level": "WARNING", "logger": "services.auth_service", "message": "Failed to cache session in Redis: Timeout connecting to server", "request_id": "3bc0b37f-dd9d-46f5-8175-46e9939e66c7"}
+{"timestamp": "2026-06-20T23:35:08Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "1ce5a8b3-a320-426e-9bf1-2db5a6d00cf6"}
+{"timestamp": "2026-06-20T23:35:10Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "80dbe9de-fefb-4d11-a286-8e322cd2ea1f"}
+{"timestamp": "2026-06-20T23:35:12Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "474bb9b9-178a-4411-aabf-cf2dc0231fce"}
+{"timestamp": "2026-06-20T23:35:14Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "f393b8f9-e67d-4376-b274-b65154c737ad"}
+{"timestamp": "2026-06-20T23:35:16Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "6126bd6e-4eab-46e0-a746-a738d1de07dd"}
+{"timestamp": "2026-06-20T23:35:18Z", "level": "WARNING", "logger": "services.auth_service", "message": "Redis session lookup error: Timeout connecting to server. Falling back to JWT trust.", "request_id": "6126bd6e-4eab-46e0-a746-a738d1de07dd"}
+{"timestamp": "2026-06-20T23:35:20Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "e3889228-6a27-442f-84b6-87bd9a3568a8"}
+{"timestamp": "2026-06-20T23:35:22Z", "level": "WARNING", "logger": "services.auth_service", "message": "Redis session lookup error: Timeout connecting to server. Falling back to JWT trust.", "request_id": "e3889228-6a27-442f-84b6-87bd9a3568a8"}
+{"timestamp": "2026-06-20T23:35:24Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "339aeb91-9813-4f26-bd7c-7067d85c2d78"}
+{"timestamp": "2026-06-20T23:35:26Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "8a784bc7-12aa-4dce-9f71-5693a0a3caee"}
+{"timestamp": "2026-06-20T23:35:28Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "ca2fe8f2-6ca9-47f6-a584-58c94f03f56b"}
+{"timestamp": "2026-06-20T23:35:30Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "5849eb1b-e0b6-46a8-bedb-66802888feea"}
+{"timestamp": "2026-06-20T23:35:32Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "838b266f-dc90-48cf-a9ee-372434f25c15"}
+{"timestamp": "2026-06-20T23:35:34Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "cd86b71c-cf60-4d12-af5a-4903b0d1db5c"}
+{"timestamp": "2026-06-20T23:35:35Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:35:36Z", "level": "WARNING", "logger": "services.auth_service", "message": "Redis session lookup error: Timeout connecting to server. Falling back to JWT trust.", "request_id": "838b266f-dc90-48cf-a9ee-372434f25c15"}
+{"timestamp": "2026-06-20T23:35:36Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:35:38Z", "level": "WARNING", "logger": "services.auth_service", "message": "Redis session lookup error: Timeout connecting to server. Falling back to JWT trust.", "request_id": "cd86b71c-cf60-4d12-af5a-4903b0d1db5c"}
+{"timestamp": "2026-06-20T23:35:40Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "31912d17-ccff-427e-97a7-59261f817495"}
+{"timestamp": "2026-06-20T23:35:42Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "098a8e69-bae2-4fcb-982e-2e5e186d3e02"}
+{"timestamp": "2026-06-20T23:35:44Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "eca8fd90-5ccb-407a-9d26-ed87ce879999"}
+{"timestamp": "2026-06-20T23:35:46Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "595578d2-3837-4b0d-9b89-a2f2aaab6671"}
+{"timestamp": "2026-06-20T23:35:53Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "7c322da6-e22f-40f3-9eab-16ba2a24c94e"}
+{"timestamp": "2026-06-20T23:35:55Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "a0e7f86c-203d-441d-a33c-c099096215dd"}
+{"timestamp": "2026-06-20T23:35:57Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "495014df-cf55-4075-99a6-2dd742fa3efb"}
+{"timestamp": "2026-06-20T23:35:59Z", "level": "WARNING", "logger": "services.auth_service", "message": "Redis session lookup error: Timeout connecting to server. Falling back to JWT trust.", "request_id": "495014df-cf55-4075-99a6-2dd742fa3efb"}
+{"timestamp": "2026-06-20T23:36:01Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "af18705a-99fc-4139-9a3c-2f99c49a34e6"}
+{"timestamp": "2026-06-20T23:36:03Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "f575f99e-3416-4d3d-9ec0-3a18088ffd22"}
+{"timestamp": "2026-06-20T23:36:05Z", "level": "WARNING", "logger": "services.auth_service", "message": "Redis session lookup error: Timeout connecting to server. Falling back to JWT trust.", "request_id": "f575f99e-3416-4d3d-9ec0-3a18088ffd22"}
+{"timestamp": "2026-06-20T23:36:16Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "920bc866-89ee-4851-998c-820724cf1563"}
+{"timestamp": "2026-06-20T23:36:18Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "0d7efe3b-9f25-4f4b-b6c9-a7061262e223"}
+{"timestamp": "2026-06-20T23:36:20Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "f9c4dfb8-c8c0-4995-a8bc-7adeafc66333"}
+{"timestamp": "2026-06-20T23:36:22Z", "level": "WARNING", "logger": "services.auth_service", "message": "Redis session lookup error: Timeout connecting to server. Falling back to JWT trust.", "request_id": "0d7efe3b-9f25-4f4b-b6c9-a7061262e223"}
+{"timestamp": "2026-06-20T23:36:24Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "9b36d270-421b-47b3-9198-cae844fdcfb8"}
+{"timestamp": "2026-06-20T23:36:26Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "3cc585f6-9f98-49c7-8e03-1bc4b968d952"}
+{"timestamp": "2026-06-20T23:36:28Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "741b8e12-8ab1-414b-ad5d-59586026a69f"}
+{"timestamp": "2026-06-20T23:36:30Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "c286145f-0d3d-45c4-b258-a7959ee9af85"}
+{"timestamp": "2026-06-20T23:36:32Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "bbda7814-7157-4741-a142-c9e5027ab142"}
+{"timestamp": "2026-06-20T23:36:34Z", "level": "WARNING", "logger": "services.auth_service", "message": "Redis session lookup error: Timeout connecting to server. Falling back to JWT trust.", "request_id": "bbda7814-7157-4741-a142-c9e5027ab142"}
+{"timestamp": "2026-06-20T23:36:36Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "2d528bce-af5d-4b71-833e-c26bcbfc8590"}
+{"timestamp": "2026-06-20T23:36:38Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "c166c243-2e7c-4d9b-bca2-7851eec581bc"}
+{"timestamp": "2026-06-20T23:36:41Z", "level": "WARNING", "logger": "services.error_tracker", "message": "Redis error registering request: Timeout connecting to server", "request_id": "927f739b-ee00-47d4-ae74-412caf08180a"}
+{"timestamp": "2026-06-20T23:38:13Z", "level": "INFO", "logger": "watchfiles.main", "message": "3 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:38:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:38:16Z", "level": "INFO", "logger": "watchfiles.main", "message": "3 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:38:17Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:38:23Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:38:26Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-20T23:38:31Z", "level": "INFO", "logger": "watchfiles.main", "message": "24 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:38:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-20T23:38:33Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-20T23:38:33Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}

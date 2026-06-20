@@ -81,16 +81,16 @@ async def root():
         "version": "2.0.0",
     }
 
-# Wrap FastAPI app with Socket.io ASGI app for production
-app_with_sio = ASGIApp(sio, app)
+# Wrap FastAPI app with Socket.io ASGI app for production/dev
+app = ASGIApp(sio, app)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app:app_with_sio", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
 
 # ========== Cloudflare Workers Compatibility Layer ==========
 # Export FastAPI app for Workers compatibility
-handler = app_with_sio
+handler = app
 
 try:
     from workers import WorkerEntrypoint
@@ -98,7 +98,7 @@ try:
 
     class Default(WorkerEntrypoint):
         async def fetch(self, request):
-            return await asgi.fetch(app_with_sio, request, self.env)
+            return await asgi.fetch(app, request, self.env)
             
     # Make the entrypoint class available as default export
     default = Default

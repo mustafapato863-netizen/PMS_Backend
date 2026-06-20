@@ -11,7 +11,7 @@ from models.schemas import StandardResponse, ManagerNote, CorrectiveAction
 from services.employee_service import EmployeeService
 from services.performance_service import PerformanceService
 
-router = APIRouter(prefix="/api/employees", tags=["Employees"])
+router = APIRouter(prefix="", tags=["Employees"])
 
 @router.get("", response_model=StandardResponse)
 async def get_all_employees(include_deleted: bool = Query(False)):

@@ -16,28 +16,22 @@ from repositories.performance_repository import PerformanceRepository
 from repositories.onboarding_repository import OnboardingRepository
 
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 @pytest.fixture
 def db():
-    """Database session for tests with cleanup"""
-    db = SessionLocal()
+    """Database session using in-memory SQLite for tests"""
+    engine = create_engine("sqlite:///:memory:")
     
-    # Cleanup before test
-    db.query(OnboardingState).delete()
-    db.query(PerformanceRecord).delete()
-    db.query(Employee).delete()
-    db.query(TeamKPIConfig).delete()
-    db.query(Team).delete()
-    db.commit()
+    from models.models import Base
+    Base.metadata.create_all(bind=engine)
+    
+    TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    db = TestSessionLocal()
     
     yield db
     
-    # Cleanup after test
-    db.query(OnboardingState).delete()
-    db.query(PerformanceRecord).delete()
-    db.query(Employee).delete()
-    db.query(TeamKPIConfig).delete()
-    db.query(Team).delete()
-    db.commit()
     db.close()
 
 

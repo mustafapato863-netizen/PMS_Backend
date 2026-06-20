@@ -15,7 +15,7 @@ from config.loader import load_team_config, load_all_team_configs, get_team_name
 router = APIRouter()
 
 
-@router.get("/api/config/teams")
+@router.get("/config/teams")
 async def get_all_team_configs() -> Dict[str, Any]:
     """
     Get all team configurations.
@@ -45,7 +45,7 @@ async def get_all_team_configs() -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/api/config/teams/{team_name}")
+@router.get("/config/teams/{team_name}")
 async def get_team_config(team_name: str) -> Dict[str, Any]:
     """
     Get configuration for a specific team.
@@ -80,7 +80,7 @@ async def get_team_config(team_name: str) -> Dict[str, Any]:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/api/config/teams/names/list")
+@router.get("/config/teams/names/list")
 async def get_team_names_list() -> Dict[str, Any]:
     """
     Get list of all available team names.

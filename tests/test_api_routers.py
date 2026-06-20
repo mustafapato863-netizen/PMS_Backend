@@ -1,4 +1,4 @@
-"""
+﻿"""
 Integration Tests for API Routers
 Tests all API endpoints with database backend.
 """
@@ -12,15 +12,11 @@ from datetime import datetime
 from uuid import uuid4
 
 # Import routers
-from api.routers.team_management import router as team_management_router
-from api.routers.employee import router as employee_router
-from api.routers.performance import router as performance_router
+from api.routers import router as api_router
 
 # Create test app
 app = FastAPI()
-app.include_router(team_management_router)
-app.include_router(employee_router)
-app.include_router(performance_router)
+app.include_router(api_router, prefix="/api")
 
 client = TestClient(app)
 
@@ -54,7 +50,7 @@ class TestTeamManagementRouter:
                 }
             ]
             
-            response = client.get("/team-management/teams")
+            response = client.get("/api/team-management/teams")
             
             assert response.status_code == 200
             data = response.json()
@@ -81,7 +77,7 @@ class TestTeamManagementRouter:
                 'updated_at': datetime.now().isoformat(),
             }
             
-            response = client.get("/team-management/teams/inbound")
+            response = client.get("/api/team-management/teams/inbound")
             
             assert response.status_code == 200
             data = response.json()
@@ -92,7 +88,7 @@ class TestTeamManagementRouter:
         with patch('api.routers.team_management.TeamService.get_team') as mock_get:
             mock_get.return_value = None
             
-            response = client.get("/team-management/teams/nonexistent")
+            response = client.get("/api/team-management/teams/nonexistent")
             
             assert response.status_code == 404
     
@@ -122,7 +118,7 @@ class TestTeamManagementRouter:
             )
             
             response = client.post(
-                "/team-management/teams",
+                "/api/team-management/teams",
                 json={
                     "name": "test_team",
                     "display_name": "Test Team",
@@ -160,7 +156,7 @@ class TestTeamManagementRouter:
             )
             
             response = client.put(
-                "/team-management/teams/inbound",
+                "/api/team-management/teams/inbound",
                 json={"display_name": "Updated Inbound"}
             )
             
@@ -173,7 +169,7 @@ class TestTeamManagementRouter:
         with patch('api.routers.team_management.TeamService.delete_team') as mock_delete:
             mock_delete.return_value = (True, [])
             
-            response = client.delete("/team-management/teams/test_team")
+            response = client.delete("/api/team-management/teams/test_team")
             
             assert response.status_code == 200
             data = response.json()
@@ -201,7 +197,7 @@ class TestEmployeeRouter:
                 }
             ]
             
-            response = client.get("/api/employees")
+            response = client.get("/api/employee")
             
             assert response.status_code == 200
             data = response.json()
@@ -227,7 +223,7 @@ class TestEmployeeRouter:
             with patch('api.routers.employee.actions_repo.get_history') as mock_hist:
                 mock_hist.return_value = []
                 
-                response = client.get(f"/api/employees/{emp_id}")
+                response = client.get(f"/api/employee/{emp_id}")
                 
                 assert response.status_code == 200
                 data = response.json()
@@ -239,7 +235,7 @@ class TestEmployeeRouter:
         with patch('api.routers.employee.EmployeeService.get_employee') as mock_get:
             mock_get.return_value = None
             
-            response = client.get(f"/api/employees/nonexistent")
+            response = client.get(f"/api/employee/nonexistent")
             
             assert response.status_code == 404
     
@@ -259,7 +255,7 @@ class TestEmployeeRouter:
                 }
             ]
             
-            response = client.get(f"/api/employees/team/{team_id}")
+            response = client.get(f"/api/employee/team/{team_id}")
             
             assert response.status_code == 200
             data = response.json()
@@ -281,7 +277,7 @@ class TestEmployeeRouter:
                 }
             ]
             
-            response = client.get(f"/api/employees/team/{team_id}/active")
+            response = client.get(f"/api/employee/team/{team_id}/active")
             
             assert response.status_code == 200
             data = response.json()
@@ -301,7 +297,7 @@ class TestEmployeeRouter:
                 }
             ]
             
-            response = client.get("/api/employees/search?name=John")
+            response = client.get("/api/employee/search?name=John")
             
             assert response.status_code == 200
             data = response.json()
@@ -325,7 +321,7 @@ class TestEmployeeRouter:
             )
             
             response = client.post(
-                "/api/employees",
+                "/api/employee",
                 params={
                     "employee_id": "EMP001",
                     "name": "John Doe",
@@ -358,7 +354,7 @@ class TestEmployeeRouter:
             )
             
             response = client.put(
-                f"/api/employees/{emp_id}",
+                f"/api/employee/{emp_id}",
                 params={"name": "Jane Doe"},
                 headers={"X-User-Role": "Admin"}
             )
@@ -375,7 +371,7 @@ class TestEmployeeRouter:
             mock_delete.return_value = (True, [])
             
             response = client.delete(
-                f"/api/employees/{emp_id}",
+                f"/api/employee/{emp_id}",
                 headers={"X-User-Role": "Admin"}
             )
             
@@ -620,7 +616,7 @@ class TestErrorHandling:
         with patch('api.routers.employee.EmployeeService.get_employee') as mock_get:
             mock_get.return_value = None
             
-            response = client.get("/api/employees/nonexistent")
+            response = client.get("/api/employee/nonexistent")
             assert response.status_code == 404
     
     def test_400_error_handling(self):
@@ -637,7 +633,7 @@ class TestErrorHandling:
         with patch('api.routers.employee.EmployeeService.get_all_employees') as mock_get:
             mock_get.side_effect = Exception("Database connection error")
             
-            response = client.get("/api/employees")
+            response = client.get("/api/employee")
             
             assert response.status_code == 200  # Still 200 because we catch and return StandardResponse
             data = response.json()
@@ -673,7 +669,7 @@ class TestResponseSchemas:
                 }
             ]
             
-            response = client.get("/team-management/teams")
+            response = client.get("/api/team-management/teams")
             data = response.json()
             
             # Check response structure
@@ -696,7 +692,7 @@ class TestResponseSchemas:
                 }
             ]
             
-            response = client.get("/api/employees")
+            response = client.get("/api/employee")
             data = response.json()
             
             # Check response structure
@@ -741,3 +737,4 @@ class TestResponseSchemas:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
