@@ -1,5 +1,7 @@
 import os
 import json
+import time
+import threading
 from typing import List, Optional
 from config.settings import DATA_DIR
 from models.schemas import (
@@ -10,22 +12,46 @@ from repositories.base import (
     UploadsRepository, ManagerNotesRepository, CorrectiveActionsRepository
 )
 
+# ── in-memory cache for JSON file data ──
+_cache: dict[str, tuple[list | dict, float]] = {}
+_cache_lock = threading.Lock()
+_CACHE_TTL = 300  # 5 minutes — invalidated early on writes
+
 def _load_json(filename: str, default_val: list | dict) -> list | dict:
+    now = time.time()
+    cache_key = f"json:{filename}"
+
+    with _cache_lock:
+        entry = _cache.get(cache_key)
+        if entry is not None and now < entry[1]:
+            return entry[0]
+
     path = os.path.join(DATA_DIR, filename)
     if not os.path.exists(path):
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(default_val, f, indent=2)
+        with _cache_lock:
+            _cache[cache_key] = (default_val, now + _CACHE_TTL)
         return default_val
+
     try:
         with open(path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            data = json.load(f)
+        with _cache_lock:
+            _cache[cache_key] = (data, now + _CACHE_TTL)
+        return data
     except Exception:
+        with _cache_lock:
+            _cache[cache_key] = (default_val, now + _CACHE_TTL)
         return default_val
 
 def _save_json(filename: str, data: list | dict):
     path = os.path.join(DATA_DIR, filename)
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+    # Invalidate cache so next read picks up the new data
+    with _cache_lock:
+        _cache.pop(f"json:{filename}", None)
 
 
 class JSONEmployeeRepository(EmployeeRepository):

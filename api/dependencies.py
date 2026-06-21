@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 from fastapi import Header, HTTPException, Request
 from typing import List, Dict, Any
@@ -15,6 +16,10 @@ from services.learning_service import LearningService
 from services.planning_service import PlanningService
 from services.trend_service import TrendService
 from services.insights_service import InsightsService
+
+# ── cache for serialized performance records ──
+_serialize_cache: dict[str, tuple[dict, float]] = {}
+_SERIALIZE_CACHE_TTL = 300
 
 # Instantiate JSON-based repositories (single source of truth)
 performance_repo = JSONPerformanceRepository()
@@ -49,6 +54,12 @@ def get_overall_trend_label(trend_status) -> str:
     return trend_status or "Stable"
 
 def serialize_performance_record(r) -> Dict[str, Any]:
+    now = time.time()
+    cache_key = f"ser:{r.id}"
+    entry = _serialize_cache.get(cache_key)
+    if entry is not None and now < entry[1]:
+        return entry[0]
+
     # Reconstruct GeoBreakdown totals
     geo_bookings = {
         "dubai": r.geo.bookings.dubai,
@@ -83,7 +94,7 @@ def serialize_performance_record(r) -> Dict[str, Any]:
             from utils.helpers import format_minutes_to_hhmmss
             aht_raw = format_minutes_to_hhmmss(aht_mins)
 
-    return {
+    result = {
         "id": r.id,
         "employee_id": r.employee_id,
         "employee_name": r.employee_name,
@@ -146,6 +157,9 @@ def serialize_performance_record(r) -> Dict[str, Any]:
         },
         "raw_data": r.raw_data
     }
+
+    _serialize_cache[cache_key] = (result, now + _SERIALIZE_CACHE_TTL)
+    return result
 
 def require_role(allowed_roles: List[str]):
     def dependency(

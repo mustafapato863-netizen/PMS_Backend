@@ -13,14 +13,17 @@ from services.password_service import validate_password_strength, hash_password,
 
 logger = logging.getLogger(__name__)
 
-# Initialize redis client
+# Initialize redis client (connect immediately to avoid 1s lazy-connect timeout on every call)
+redis_client = None
 try:
-    redis_client = redis.Redis.from_url(
+    _client = redis.Redis.from_url(
         settings.REDIS_URL, 
         decode_responses=True,
         socket_timeout=1.0,
         socket_connect_timeout=1.0
     )
+    _client.ping()
+    redis_client = _client
 except Exception as e:
     logger.warning(f"Could not connect to Redis: {e}. Fallback to DB only.")
     redis_client = None

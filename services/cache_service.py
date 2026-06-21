@@ -11,16 +11,19 @@ from services.session_cache import SessionCache
 
 logger = logging.getLogger(__name__)
 
-# Initialize central Redis client
+# Initialize central Redis client (connect immediately to avoid 1s lazy-connect timeout on every call)
+redis_client = None
 try:
-    redis_client = redis.Redis.from_url(
+    _client = redis.Redis.from_url(
         settings.REDIS_URL, 
         decode_responses=True,
         socket_timeout=1.0,
         socket_connect_timeout=1.0
     )
+    _client.ping()
+    redis_client = _client
 except Exception as e:
-    logger.warning(f"Could not connect to Redis at {settings.REDIS_URL}: {e}. Fallback to DB only.")
+    logger.warning(f"Could not connect to Redis at {settings.REDIS_URL}: {e}. Fallback to in-memory cache.")
     redis_client = None
 
 # Process-level in-memory cache fallback (128 MB limit)

@@ -11,6 +11,7 @@ from .team_management import router as team_management_router
 from .auth import router as auth_router
 from .bulk_operations import router as bulk_operations_router
 from .health import router as health_router
+from .vitals import router as vitals_router
 
 router = APIRouter()
 
@@ -26,4 +27,5 @@ router.include_router(team_management_router, tags=["Team Management"])
 router.include_router(auth_router, tags=["Authentication"])
 router.include_router(bulk_operations_router, tags=["Bulk Operations"])
 router.include_router(health_router, tags=["Health Check"])
+router.include_router(vitals_router, tags=["Web Vitals"])
 
