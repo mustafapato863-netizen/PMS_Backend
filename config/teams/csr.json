@@ -26,7 +26,7 @@
       "key": "Queries",
       "label": "Queries Handled",
       "weight": 0.30,
-      "direction": "lower_better",
+      "direction": "higher_better",
       "unit": "count",
       "color": "#10B981",
       "actual_col": "A.CSRQueries",

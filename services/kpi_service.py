@@ -481,7 +481,7 @@ class KPIService:
             wt = final_weights.get(kpi, 0.0)
             raw_score += ach * wt
 
-        score = float(round(raw_score * 100.0, 2))
+        score = float(round(min(raw_score, 1.0) * 100.0, 2))
         grade = self.assign_grade(score)
 
         # Write score back to row
@@ -570,8 +570,8 @@ class KPIService:
             direction = kpi_def.get('direction')  # 'higher_better' or 'lower_better'
             weight = float(kpi_def.get('weight', 0.0))
             # Parse actual and target from row
-            actual_value = self._parse_kpi_value(row, actual_col)
-            target_value = self._parse_kpi_value(row, target_col)
+            actual_value = self._resolve_row_value(row, actual_col)
+            target_value = self._resolve_row_value(row, target_col)
             
             # Calculate achievement
             is_inverse = direction == 'lower_better'
@@ -683,6 +683,51 @@ class KPIService:
         # Normalize fractional values to raw scale (don't multiply by 100)
         # The formulas (actual/target) will naturally produce the right ratio
         return numeric
+
+    @staticmethod
+    def _normalize_key(key: str) -> str:
+        return ''.join(ch.lower() for ch in str(key) if ch.isalnum())
+
+    def _resolve_row_value(self, row: Dict[str, Any], col_name: str) -> float:
+        value = self._parse_kpi_value(row, col_name)
+        if value != 0.0 or col_name in row:
+            return value
+
+        prefix = None
+        if isinstance(col_name, str) and len(col_name) >= 2 and col_name[1] == '.':
+            prefix = col_name[0].lower()
+
+        candidates = [col_name]
+        for suffix in ('Rate', 'Hours', 'Target'):
+            if suffix in col_name:
+                candidates.append(col_name.replace(suffix, ''))
+        if 'CPTConversion' in col_name:
+            candidates.append(col_name.replace('CPTConversion', 'AttendedCR'))
+        if 'AttendedCR' in col_name:
+            candidates.append(col_name.replace('AttendedCR', 'CPTConversion'))
+
+        norm_candidates = {self._normalize_key(c) for c in candidates}
+        preferred_keys = []
+        fallback_keys = []
+        for key in row.keys():
+            key_prefix = key[0].lower() if isinstance(key, str) and len(key) >= 2 and key[1] == '.' else None
+            if prefix and key_prefix == prefix:
+                preferred_keys.append(key)
+            else:
+                fallback_keys.append(key)
+
+        for key in preferred_keys + fallback_keys:
+            norm_key = self._normalize_key(key)
+            if norm_key in norm_candidates:
+                return self._parse_kpi_value(row, key)
+            for candidate in norm_candidates:
+                if not candidate:
+                    continue
+                stripped_key = norm_key[1:] if len(norm_key) > 1 else norm_key
+                stripped_candidate = candidate[1:] if len(candidate) > 1 else candidate
+                if candidate in norm_key or norm_key in candidate or stripped_candidate in stripped_key or stripped_key in stripped_candidate:
+                    return self._parse_kpi_value(row, key)
+        return value
 
     def _calculate_achievement(
         self,
