@@ -2,7 +2,7 @@ import os
 import json
 import time
 import threading
-from typing import List, Optional
+from typing import Any, List, Optional
 from config.settings import DATA_DIR
 from models.schemas import (
     Employee, PerformanceRecord, KPIWeight, Target, UploadRecord, ManagerNote, CorrectiveAction, TeamAction, UserRecord
@@ -16,6 +16,63 @@ from repositories.base import (
 _cache: dict[str, tuple[list | dict, float]] = {}
 _cache_lock = threading.Lock()
 _CACHE_TTL = 300  # 5 minutes — invalidated early on writes
+
+_PERFORMANCE_SCORE_KEYS = ("PerformanceScore", "PerformanceScore%", "Performance_Score")
+
+
+def _coerce_float(value: Any) -> float | None:
+    try:
+        if value is None or value == "":
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _normalize_percentage_score(value: Any) -> float | None:
+    score = _coerce_float(value)
+    if score is None:
+        return None
+    if 0.0 < score <= 1.0:
+        score *= 100.0
+    return max(0.0, min(score, 100.0))
+
+
+def _sanitize_performance_record_item(item: dict[str, Any]) -> dict[str, Any]:
+    sanitized = dict(item)
+    evaluation = sanitized.get("evaluation")
+    if isinstance(evaluation, dict):
+        normalized_score = _normalize_percentage_score(evaluation.get("score"))
+        if normalized_score is not None:
+            evaluation = dict(evaluation)
+            evaluation["score"] = round(normalized_score, 2)
+            sanitized["evaluation"] = evaluation
+    raw_data = sanitized.get("raw_data")
+    if isinstance(raw_data, dict):
+        raw_data = dict(raw_data)
+        for key in _PERFORMANCE_SCORE_KEYS:
+            normalized_raw_score = _normalize_percentage_score(raw_data.get(key))
+            if normalized_raw_score is not None:
+                raw_data[key] = round(normalized_raw_score, 2)
+        sanitized["raw_data"] = raw_data
+    return sanitized
+
+
+def _sanitize_loaded_json(filename: str, data: list | dict) -> list | dict:
+    if filename != "performance_records.json" or not isinstance(data, list):
+        return data
+    return [_sanitize_performance_record_item(item) if isinstance(item, dict) else item for item in data]
+
+
+def _prepare_json_for_save(filename: str, data: list | dict) -> list | dict:
+    if filename != "performance_records.json":
+        return data
+    if isinstance(data, list):
+        return [_sanitize_performance_record_item(item) if isinstance(item, dict) else item for item in data]
+    if isinstance(data, dict):
+        return _sanitize_performance_record_item(data)
+    return data
+
 
 def _load_json(filename: str, default_val: list | dict) -> list | dict:
     now = time.time()
@@ -36,7 +93,7 @@ def _load_json(filename: str, default_val: list | dict) -> list | dict:
 
     try:
         with open(path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
+            data = _sanitize_loaded_json(filename, json.load(f))
         with _cache_lock:
             _cache[cache_key] = (data, now + _CACHE_TTL)
         return data
@@ -47,6 +104,7 @@ def _load_json(filename: str, default_val: list | dict) -> list | dict:
 
 def _save_json(filename: str, data: list | dict):
     path = os.path.join(DATA_DIR, filename)
+    data = _prepare_json_for_save(filename, data)
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     # Invalidate cache so next read picks up the new data

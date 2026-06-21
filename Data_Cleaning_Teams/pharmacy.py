@@ -2,8 +2,10 @@
 Pharmacy Team Data Cleaner
 
 Handles Pharmacy team data standardization and KPI calculation.
-All 5 KPIs are calculated with uncapped achievements.
-Performance score = Σ(achievement_i × weight_i) without upper bound
+All 5 KPIs preserve uncapped achievements.
+Each KPI contribution is capped by its configured weight.
+Final performance score is capped at 100%.
+Performance score = min(sum(min(achievement_i, 100) * weight_i), 100)
 """
 
 import pandas as pd
@@ -98,7 +100,7 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
     1. Data standardization (column names, data types)
     2. Percentage parsing
     3. KPI achievement calculations (all 5 KPIs)
-    4. Performance score calculation (uncapped)
+    4. Performance score calculation (capped contribution model)
     5. Grade assignment
     
     Args:
@@ -121,7 +123,7 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
     
     logger.info(f"Loaded Pharmacy data with {len(df)} rows and columns: {list(df.columns)}")
     
-    # KPI Definitions and Weights (Pharmacy: all uncapped)
+    # KPI Definitions and Weights (Pharmacy achievements are uncapped)
     kpis = {
         'WaitingTime': {
             'actual_col': 'A.TotalAvgWaitingTime',
@@ -214,8 +216,9 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
     
     for kpi_key, achievement in achievement_cols.items():
         weight = kpis[kpi_key]['weight']
-        performance_scores += achievement * weight
+        performance_scores += np.minimum(achievement, 100.0) * weight
     
+    performance_scores = np.minimum(performance_scores, 100.0)
     df['Performance'] = performance_scores
     
     # Assign grades

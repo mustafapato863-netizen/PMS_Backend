@@ -1,9 +1,13 @@
 import uuid
-from sqlalchemy import Column, String, Integer, SmallInteger, Numeric, Boolean, DateTime, ForeignKey, Text, ForeignKeyConstraint, UniqueConstraint, Enum as SQLEnum
+from sqlalchemy import Column, String, Integer, SmallInteger, Numeric, Boolean, DateTime, ForeignKey, Text, ForeignKeyConstraint, UniqueConstraint, Enum as SQLEnum, JSON
 from sqlalchemy.dialects.postgresql import UUID, JSONB, INET
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from config.database import Base
+
+
+JSON_COMPAT_TYPE = JSON().with_variant(JSONB, "postgresql")
+INET_COMPAT_TYPE = String(45).with_variant(INET, "postgresql")
 
 # ============================================================
 # 1. CONFIGURATION MODELS
@@ -262,7 +266,7 @@ class Notification(Base):
     title = Column(String(255), nullable=False)
     message = Column(Text, nullable=False)
     room = Column(String(100), nullable=False)  # Socket.io room
-    payload = Column(JSONB, nullable=True)
+    payload = Column(JSON_COMPAT_TYPE, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
@@ -295,11 +299,11 @@ class AuditLog(Base):
     table_name = Column(String(100), nullable=False)
     operation = Column(String(50), nullable=False)  # INSERT, UPDATE, DELETE, SOFT_DELETE
     record_id = Column(UUID(as_uuid=True), nullable=True)
-    old_values = Column(JSONB, nullable=True)
-    new_values = Column(JSONB, nullable=True)
+    old_values = Column(JSON_COMPAT_TYPE, nullable=True)
+    new_values = Column(JSON_COMPAT_TYPE, nullable=True)
     performed_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     performed_at = Column(DateTime(timezone=True), server_default=func.now())
-    ip_address = Column(INET, nullable=True)
+    ip_address = Column(INET_COMPAT_TYPE, nullable=True)
     request_id = Column(String(100), nullable=True)
 
     # Relationships

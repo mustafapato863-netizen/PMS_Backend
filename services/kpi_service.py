@@ -553,27 +553,25 @@ class KPIService:
             target_col = kpi_def.get('target_col')
             direction = kpi_def.get('direction')  # 'higher_better' or 'lower_better'
             weight = float(kpi_def.get('weight', 0.0))
-            capping = kpi_def.get('capping', 'uncapped')
-            
             # Parse actual and target from row
             actual_value = self._parse_kpi_value(row, actual_col)
             target_value = self._parse_kpi_value(row, target_col)
             
             # Calculate achievement
             is_inverse = direction == 'lower_better'
-            cap_at_100 = capping == 'capped_at_100'
             achievement = self._calculate_achievement(
                 actual_value,
                 target_value,
                 is_inverse=is_inverse,
-                cap_at_100=cap_at_100
+                cap_at_100=False
             )
             
             # Convert to decimal (0-1 scale) for storage
             achievement_ratio = achievement / 100.0
-            
-            # Calculate contribution to final score
-            contribution = achievement_ratio * weight
+            effective_ratio = min(achievement_ratio, 1.0)
+
+            # Store the uncapped achievement, but cap the weighted contribution.
+            contribution = effective_ratio * weight
             
             kpi_value = {
                 'kpi_key': kpi_key,
@@ -584,11 +582,12 @@ class KPIService:
                 'contribution': float(round(contribution, 4))
             }
             kpi_values_list.append(kpi_value)
-            achievements[kpi_key] = achievement_ratio
+            achievements[kpi_key] = effective_ratio
             
             logger.debug(
                 f"{team_name}/{kpi_key}: actual={actual_value}, target={target_value}, "
-                f"achievement={achievement:.2f}%, weight={weight}, contribution={contribution:.4f}"
+                f"achievement={achievement:.2f}%, effective={effective_ratio * 100.0:.2f}%, "
+                f"weight={weight}, contribution={contribution:.4f}"
             )
         
         # Calculate final performance score
