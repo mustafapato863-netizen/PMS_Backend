@@ -116,22 +116,22 @@ def process_coding(file_path: str, team_config: Dict[str, Any] = None) -> pd.Dat
     # KPI Definitions and Weights (Coding: all inverse, all capped at 100%)
     kpis = {
         'QualityErrors': {
-            'actual_col': 'A.QualityErrors',
-            'target_col': 'T.QualityErrors',
+            'actual_col': 'A.QualityErrorsRate',
+            'target_col': 'T.QualityErrorsRate',
             'is_inverse': True,
             'weight': 0.20,
             'cap': True,
         },
         'Rejection': {
-            'actual_col': 'A.Rejection',
-            'target_col': 'T.Rejection',
+            'actual_col': 'A.RejectionRate',
+            'target_col': 'T.RejectionRate',
             'is_inverse': True,
             'weight': 0.50,
             'cap': True,
         },
         'TAT': {
-            'actual_col': 'A.TAT_Hours',
-            'target_col': 'T.TAT_Hours',
+            'actual_col': 'A.TAT',
+            'target_col': 'T.TAT',
             'is_inverse': True,
             'weight': 0.30,
             'cap': True,

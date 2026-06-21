@@ -2,8 +2,8 @@
   "team": "Pharmacy",
   "db_name": "Pharmacy",
   "region": "UAE",
-  "employee_id_col": "EmployeeID",
-  "employee_name_col": "EmployeeName",
+  "employee_id_col": "HRID",
+  "employee_name_col": "AgentName",
   "grade_thresholds": {
     "A": 95,
     "B": 85,

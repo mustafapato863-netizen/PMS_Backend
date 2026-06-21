@@ -202,14 +202,31 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
                 )
                 for i in range(len(df))
             ])
-            
-            achievement_cols[kpi_key] = achievements
-            df[f'{kpi_key}_Achievement'] = achievements
-            logger.info(f"Calculated {kpi_key} achievement (inverse={kpi_def['is_inverse']})")
         else:
-            logger.warning(f"Could not find columns for {kpi_key}: actual={actual_col}, target={target_col}")
-            achievement_cols[kpi_key] = np.zeros(len(df))
-            df[f'{kpi_key}_Achievement'] = 0.0
+            # Try to find a pre-calculated achievement column in the Excel sheet
+            ach_col_found = None
+            possible_keys = [f"{kpi_key}Ach%", f"{kpi_key}Ach", f"Noof{kpi_key}Ach%", f"{kpi_key}_Achievement", f"{kpi_key}RateAch%"]
+            for possible_key in possible_keys:
+                for col in df.columns:
+                    if col.lower() == possible_key.lower():
+                        ach_col_found = col
+                        break
+                if ach_col_found:
+                    break
+            
+            if ach_col_found:
+                # Read achievement directly from sheet
+                ach_vals = df[ach_col_found].apply(lambda x: float(x) if not pd.isna(x) else 0.0)
+                # If values are <= 2.0 (decimal scale), convert to 0-100 scale
+                ach_vals = ach_vals.apply(lambda x: x if x > 2.0 else x * 100.0)
+                achievements = ach_vals.to_numpy()
+            else:
+                logger.warning(f"Could not find columns for {kpi_key}: actual={actual_col}, target={target_col}")
+                achievements = np.zeros(len(df))
+            
+        achievement_cols[kpi_key] = achievements
+        df[f'{kpi_key}_Achievement'] = achievements
+        logger.info(f"Calculated or resolved {kpi_key} achievement (inverse={kpi_def['is_inverse']})")
     
     # Calculate performance score: Σ(achievement_i × weight_i) - UNCAPPED
     performance_scores = np.zeros(len(df))

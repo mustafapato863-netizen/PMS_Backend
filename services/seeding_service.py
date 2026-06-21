@@ -104,6 +104,9 @@ class DatabaseSeeder:
         inbound_uae_df = self.excel_processor.process_sheet_inbound_uae(excel_file) if "Inbound UAE" in excel_file.sheet_names else pd.DataFrame()
         preapprovals_df = self.excel_processor.process_sheet_preapprovals(excel_file) if "Pre-Approvals IP Offshore" in excel_file.sheet_names else pd.DataFrame()
         sales_df = self.excel_processor.process_sheet_sales(excel_file) if "Sales" in excel_file.sheet_names else pd.DataFrame()
+        coding_df = self.excel_processor.process_sheet_coding(excel_file) if "Coding" in excel_file.sheet_names else pd.DataFrame()
+        csr_df = self.excel_processor.process_sheet_csr(excel_file) if "CSR" in excel_file.sheet_names else pd.DataFrame()
+        pharmacy_df = self.excel_processor.process_sheet_pharmacy(excel_file) if "Pharmacy" in excel_file.sheet_names else pd.DataFrame()
 
         all_new_records = []
         all_new_employees = []
@@ -119,6 +122,12 @@ class DatabaseSeeder:
             sheet_mappings.append(("Pre-Approvals IP Offshore", preapprovals_df, "HRID", "AgentName"))
         if not sales_df.empty:
             sheet_mappings.append(("Sales", sales_df, "HRID", "AgentName"))
+        if not coding_df.empty:
+            sheet_mappings.append(("Coding", coding_df, "HRID", "AgentName"))
+        if not csr_df.empty:
+            sheet_mappings.append(("CSR", csr_df, "HRID", "AgentName"))
+        if not pharmacy_df.empty:
+            sheet_mappings.append(("Pharmacy", pharmacy_df, "HRID", "AgentName"))
 
         for team_name, df, id_col, name_col in sheet_mappings:
             for _, row in df.iterrows():
@@ -140,7 +149,7 @@ class DatabaseSeeder:
                 is_new = row.get("Is_New", False)
                 region_val = str(row.get("Region", "EGY")).strip().upper()
                 if not region_val or region_val == "NAN":
-                    region_val = "UAE" if team_name in ["Inbound UAE", "Sales"] else "EGY"
+                    region_val = "UAE" if team_name in ["Inbound UAE", "Sales", "Coding", "CSR", "Pharmacy"] else "EGY"
 
                 employee = Employee(
                     id=emp_id,

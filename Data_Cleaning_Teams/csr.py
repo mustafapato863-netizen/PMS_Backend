@@ -116,22 +116,22 @@ def process_csr(file_path: str, team_config: Dict[str, Any] = None) -> pd.DataFr
     # KPI Definitions and Weights (CSR: mixed types, all capped at 100%)
     kpis = {
         'Rejection': {
-            'actual_col': 'A.Rejection',
-            'target_col': 'T.Rejection',
+            'actual_col': 'A.CSRRejection%',
+            'target_col': 'T.CSRRejection%',
             'is_inverse': True,
             'weight': 0.40,
             'cap': True,
         },
         'Queries': {
-            'actual_col': 'A.Queries',
-            'target_col': 'T.Queries',
-            'is_inverse': False,
+            'actual_col': 'A.CSRQueries',
+            'target_col': 'T.QueriesTarget',
+            'is_inverse': True,
             'weight': 0.30,
             'cap': True,
         },
         'AttendedCR': {
-            'actual_col': 'A.AttendedCR',
-            'target_col': 'T.AttendedCR',
+            'actual_col': 'A.CPTConversion%',
+            'target_col': 'T.AttendedC.R',
             'is_inverse': False,
             'weight': 0.30,
             'cap': True,

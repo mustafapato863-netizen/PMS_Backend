@@ -67,3 +67,15 @@ class ExcelProcessor:
     def process_sheet_sales(self, excel_file) -> pd.DataFrame:
         return process_sales(excel_file)
 
+    def process_sheet_coding(self, excel_file) -> pd.DataFrame:
+        from Data_Cleaning_Teams.coding import process_coding
+        return process_coding(excel_file)
+
+    def process_sheet_csr(self, excel_file) -> pd.DataFrame:
+        from Data_Cleaning_Teams.csr import process_csr
+        return process_csr(excel_file)
+
+    def process_sheet_pharmacy(self, excel_file) -> pd.DataFrame:
+        from Data_Cleaning_Teams.pharmacy import process_pharmacy
+        return process_pharmacy(excel_file)
+

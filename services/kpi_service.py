@@ -123,6 +123,22 @@ class KPIService:
         # Import helper functions
         from utils.helpers import convert_aht_to_minutes, convert_percentage
 
+        if team not in ["Inbound", "Outbound", "Inbound UAE", "Pre-Approvals IP Offshore", "Sales"]:
+            try:
+                score, grade, kpi_values_list = self.calculate_performance_multi_team(team, row)
+                achievements = {kv['kpi_key']: kv['achievement_ratio'] for kv in kpi_values_list}
+                final_weights = {kv['kpi_key']: kv['weight_applied'] for kv in kpi_values_list}
+                
+                # Write back for backward compatibility
+                row["PerformanceScore%"] = score
+                row["PerformanceScor%"] = score
+                row["PerformanceScore"] = score
+                row["Performance_Score"] = score
+                
+                return score, grade, achievements, final_weights
+            except Exception as e:
+                logger.error(f"Error calculating performance for multi-team {team}: {e}")
+
         if team == "Inbound":
             # 1. Raw Inbound Volumes
             total_handled = safe_float(row.get("TotalHandledCalls"))
@@ -559,12 +575,33 @@ class KPIService:
             
             # Calculate achievement
             is_inverse = direction == 'lower_better'
-            achievement = self._calculate_achievement(
-                actual_value,
-                target_value,
-                is_inverse=is_inverse,
-                cap_at_100=False
-            )
+            if target_value == 0.0:
+                # Try to search for precalculated achievement in row
+                found_ach_val = None
+                possible_keys = [
+                    f"{kpi_key}Ach%", f"{kpi_key}Ach", f"Noof{kpi_key}Ach%",
+                    f"{kpi_key}_Achievement", f"{kpi_key}RateAch%"
+                ]
+                for possible_key in possible_keys:
+                    for r_key in row.keys():
+                        if r_key.replace(" ", "").replace("_", "").lower() == possible_key.replace(" ", "").replace("_", "").lower():
+                            found_ach_val = self._parse_kpi_value(row, r_key)
+                            break
+                    if found_ach_val is not None:
+                        break
+                
+                if found_ach_val is not None:
+                    # Scale decimal achievement (e.g. 1.04) to percentage scale (104.4)
+                    achievement = found_ach_val if found_ach_val > 2.0 else found_ach_val * 100.0
+                else:
+                    achievement = 0.0
+            else:
+                achievement = self._calculate_achievement(
+                    actual_value,
+                    target_value,
+                    is_inverse=is_inverse,
+                    cap_at_100=False
+                )
             
             # Convert to decimal (0-1 scale) for storage
             achievement_ratio = achievement / 100.0
