@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from repositories.base_repository import BaseRepository
 from models.models import PerformanceRecord
 import logging
@@ -19,7 +19,9 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
     
     def get_monthly_records(self, team_id, month: str, year: int) -> list:
         """Get all records for team in specific month"""
-        return self.db.query(PerformanceRecord).filter(
+        return self.db.query(PerformanceRecord).options(
+            joinedload(PerformanceRecord.kpi_values)
+        ).filter(
             (PerformanceRecord.team_id == team_id) &
             (PerformanceRecord.month == month) &
             (PerformanceRecord.year == year)
@@ -27,7 +29,9 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
     
     def get_employee_history(self, employee_id, year: int) -> list:
         """Get all records for employee in year"""
-        return self.db.query(PerformanceRecord).filter(
+        return self.db.query(PerformanceRecord).options(
+            joinedload(PerformanceRecord.kpi_values)
+        ).filter(
             (PerformanceRecord.employee_id == employee_id) &
             (PerformanceRecord.year == year)
         ).order_by(PerformanceRecord.month).all()

@@ -251,11 +251,12 @@ class DatabaseSeeder:
         self.employee_repo.save_all(all_new_employees)
         self.performance_repo.save_all(all_new_records)
 
+        # Read all history once (not inside the loop) to avoid O(n²) file reads
+        all_history = self.performance_repo.get_all()
         updated_records = []
+        from services.planning_service import MONTH_ORDER
         for r in all_new_records:
-            history = self.performance_repo.get_all()
-            emp_history = [h for h in history if h.employee_id == r.employee_id]
-            from services.planning_service import MONTH_ORDER
+            emp_history = [h for h in all_history if h.employee_id == r.employee_id]
             emp_history.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
             
             curr_idx = -1

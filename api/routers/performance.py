@@ -7,52 +7,25 @@ from datetime import datetime
 from api.dependencies import performance_repo, planning_service, insights_service, serialize_performance_record, require_role
 from models.schemas import StandardResponse
 from exports.report_exporter import ReportExporter
-from services.performance_service import PerformanceService
 
 router = APIRouter(prefix="/performance", tags=["Performance"])
 
 @router.get("", response_model=StandardResponse)
-async def get_monthly_records_root(
-    team_id: str = Query(None),
+def get_all_records(
+    team: str = Query(None, alias="team"),
     month: str = Query(None),
-    year: int = Query(None)
 ):
-    """
-    Alias endpoint for get_monthly_records matching the frontend root query path.
-    """
-    return await get_monthly_records(team_id, month, year)
-
-
-@router.get("/records", response_model=StandardResponse)
-async def get_monthly_records(
-    team_id: str = Query(None),
-    month: str = Query(None),
-    year: int = Query(None)
-):
-    """
-    Get monthly performance records for a team.
-    
-    Args:
-        team_id: Team ID (optional)
-        month: Month name (optional)
-        year: Year (optional, defaults to current year)
-        
-    Returns:
-        List of performance records
-    """
     try:
-        if year is None:
-            year = datetime.now().year
-        
-        if not team_id or not month:
-            raise HTTPException(status_code=400, detail="team_id and month are required")
-        
-        records = PerformanceService.get_monthly_records(team_id, month, year)
-        
+        records = performance_repo.get_all()
+        if team:
+            records = [r for r in records if r.team == team]
+        if month:
+            records = [r for r in records if r.month == month]
+
         return StandardResponse(
             success=True,
             message=f"Retrieved {len(records)} performance records",
-            data=records
+            data=[serialize_performance_record(r) for r in records]
         )
     except HTTPException as he:
         raise he
@@ -63,25 +36,44 @@ async def get_monthly_records(
         )
 
 
-@router.get("/employee/{emp_id}/{year}", response_model=StandardResponse)
-async def get_employee_history(emp_id: str, year: int):
-    """
-    Get performance history for an employee in a specific year.
-    
-    Args:
-        emp_id: Employee ID
-        year: Year
-        
-    Returns:
-        List of performance records for employee
-    """
+@router.get("/records", response_model=StandardResponse)
+def get_monthly_records(
+    team: str = Query(None, alias="team"),
+    month: str = Query(None),
+):
     try:
-        records = PerformanceService.get_employee_history(emp_id, year)
-        
+        records = performance_repo.get_all()
+        if team:
+            records = [r for r in records if r.team == team]
+        if month:
+            records = [r for r in records if r.month == month]
+
         return StandardResponse(
             success=True,
-            message=f"Retrieved {len(records)} performance records for employee",
-            data=records
+            message=f"Retrieved {len(records)} performance records",
+            data=[serialize_performance_record(r) for r in records]
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        return StandardResponse(
+            success=False,
+            message=f"Failed to fetch performance records: {str(e)}"
+        )
+
+
+@router.get("/employee/{emp_id}", response_model=StandardResponse)
+def get_employee_history(emp_id: str):
+    try:
+        records = performance_repo.get_all()
+        emp_records = [r for r in records if str(r.employee_id) == emp_id]
+        from services.planning_service import MONTH_ORDER
+        emp_records.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
+
+        return StandardResponse(
+            success=True,
+            message=f"Retrieved {len(emp_records)} performance records for employee",
+            data=[serialize_performance_record(r) for r in emp_records]
         )
     except Exception as e:
         return StandardResponse(
@@ -90,25 +82,16 @@ async def get_employee_history(emp_id: str, year: int):
         )
 
 
-@router.get("/team/{team_id}/{year}", response_model=StandardResponse)
-async def get_team_yearly_records(team_id: str, year: int):
-    """
-    Get yearly performance records for a team.
-    
-    Args:
-        team_id: Team ID
-        year: Year
-        
-    Returns:
-        List of performance records for team
-    """
+@router.get("/team/{team_name}", response_model=StandardResponse)
+def get_team_yearly_records(team_name: str):
     try:
-        records = PerformanceService.get_team_yearly_records(team_id, year)
-        
+        records = performance_repo.get_all()
+        team_records = [r for r in records if r.team == team_name]
+
         return StandardResponse(
             success=True,
-            message=f"Retrieved {len(records)} performance records for team",
-            data=records
+            message=f"Retrieved {len(team_records)} performance records for team",
+            data=[serialize_performance_record(r) for r in team_records]
         )
     except Exception as e:
         return StandardResponse(
@@ -117,38 +100,23 @@ async def get_team_yearly_records(team_id: str, year: int):
         )
 
 
-@router.get("/grade/{team_id}", response_model=StandardResponse)
-async def get_by_grade(
-    team_id: str,
+@router.get("/grade/{team_name}", response_model=StandardResponse)
+def get_by_grade(
+    team_name: str,
     grade: str = Query(...),
-    month: str = Query(None),
-    year: int = Query(None)
+    month: str = Query(...),
 ):
-    """
-    Get performance records filtered by grade.
-    
-    Args:
-        team_id: Team ID
-        grade: Grade (A, B, C, D, E)
-        month: Month name (optional)
-        year: Year (optional, defaults to current year)
-        
-    Returns:
-        List of performance records
-    """
     try:
-        if year is None:
-            year = datetime.now().year
-        
         if not month:
             raise HTTPException(status_code=400, detail="month is required")
-        
-        records = PerformanceService.get_by_grade(team_id, grade, month, year)
-        
+
+        records = performance_repo.get_all()
+        filtered = [r for r in records if r.team == team_name and r.evaluation.grade == grade and r.month == month]
+
         return StandardResponse(
             success=True,
-            message=f"Retrieved {len(records)} records with grade {grade}",
-            data=records
+            message=f"Retrieved {len(filtered)} records with grade {grade}",
+            data=[serialize_performance_record(r) for r in filtered]
         )
     except HTTPException as he:
         raise he
@@ -159,38 +127,30 @@ async def get_by_grade(
         )
 
 
-@router.get("/status/{team_id}", response_model=StandardResponse)
-async def get_by_status(
-    team_id: str,
+@router.get("/status/{team_name}", response_model=StandardResponse)
+def get_by_status(
+    team_name: str,
     status: str = Query(...),
-    month: str = Query(None),
-    year: int = Query(None)
+    month: str = Query(...),
 ):
-    """
-    Get performance records filtered by status.
-    
-    Args:
-        team_id: Team ID
-        status: Status (Exceeds, Meets, Below)
-        month: Month name (optional)
-        year: Year (optional, defaults to current year)
-        
-    Returns:
-        List of performance records
-    """
     try:
-        if year is None:
-            year = datetime.now().year
-        
         if not month:
             raise HTTPException(status_code=400, detail="month is required")
-        
-        records = PerformanceService.get_by_status(team_id, status, month, year)
-        
+
+        records = performance_repo.get_all()
+        status_val = status.lower()
+        filtered = [r for r in records if r.team == team_name and r.month == month]
+        if status_val == "exceeds":
+            filtered = [r for r in filtered if r.evaluation.score >= 90]
+        elif status_val == "meets":
+            filtered = [r for r in filtered if 70 <= r.evaluation.score < 90]
+        elif status_val == "below":
+            filtered = [r for r in filtered if r.evaluation.score < 70]
+
         return StandardResponse(
             success=True,
-            message=f"Retrieved {len(records)} records with status {status}",
-            data=records
+            message=f"Retrieved {len(filtered)} records with status {status}",
+            data=[serialize_performance_record(r) for r in filtered]
         )
     except HTTPException as he:
         raise he
@@ -201,165 +161,11 @@ async def get_by_status(
         )
 
 
-@router.post("/records", response_model=StandardResponse, status_code=201)
-async def create_performance_record(
-    employee_id: str = Query(...),
-    team_id: str = Query(...),
-    month: str = Query(...),
-    year: int = Query(...),
-    score: float = Query(...),
-    grade: str = Query(...),
-    status: str = Query(...),
-    role: str = Depends(require_role(["Admin", "Manager"]))
-):
-    """
-    Create a new performance record.
-    
-    Args:
-        employee_id: Employee ID
-        team_id: Team ID
-        month: Month name
-        year: Year
-        score: Performance score
-        grade: Grade (A, B, C, D, E)
-        status: Status (Exceeds, Meets, Below)
-        
-    Returns:
-        Created performance record
-    """
-    try:
-        success, record_dict, errors = PerformanceService.create_performance_record(
-            employee_id=employee_id,
-            team_id=team_id,
-            month=month,
-            year=year,
-            score=score,
-            grade=grade,
-            status=status
-        )
-        
-        if not success:
-            raise HTTPException(status_code=400, detail="; ".join(errors))
-        
-        return StandardResponse(
-            success=True,
-            message="Performance record created successfully",
-            data=record_dict
-        )
-    except HTTPException as he:
-        raise he
-    except Exception as e:
-        return StandardResponse(
-            success=False,
-            message=f"Failed to create performance record: {str(e)}"
-        )
-
-
-@router.put("/records/{record_id}", response_model=StandardResponse)
-async def update_performance_record(
-    record_id: str,
-    year: int = Query(...),
-    score: float = Query(None),
-    grade: str = Query(None),
-    status: str = Query(None),
-    role: str = Depends(require_role(["Admin", "Manager"]))
-):
-    """
-    Update a performance record.
-    
-    Args:
-        record_id: Record ID
-        year: Year (for composite key)
-        score: Updated score (optional)
-        grade: Updated grade (optional)
-        status: Updated status (optional)
-        
-    Returns:
-        Updated performance record
-    """
-    try:
-        updates = {}
-        if score is not None:
-            updates['score'] = score
-        if grade is not None:
-            updates['grade'] = grade
-        if status is not None:
-            updates['status'] = status
-        
-        success, record_dict, errors = PerformanceService.update_performance_record(
-            record_id=record_id,
-            year=year,
-            **updates
-        )
-        
-        if not success:
-            raise HTTPException(status_code=400, detail="; ".join(errors))
-        
-        return StandardResponse(
-            success=True,
-            message="Performance record updated successfully",
-            data=record_dict
-        )
-    except HTTPException as he:
-        raise he
-    except Exception as e:
-        return StandardResponse(
-            success=False,
-            message=f"Failed to update performance record: {str(e)}"
-        )
-
-
-@router.delete("/records/{record_id}", response_model=StandardResponse)
-async def delete_performance_record(
-    record_id: str,
-    year: int = Query(...),
-    role: str = Depends(require_role(["Admin"]))
-):
-    """
-    Delete a performance record.
-    
-    Args:
-        record_id: Record ID
-        year: Year (for composite key)
-        
-    Returns:
-        Deletion confirmation
-    """
-    try:
-        success, errors = PerformanceService.delete_performance_record(record_id, year)
-        
-        if not success:
-            raise HTTPException(status_code=400, detail="; ".join(errors))
-        
-        return StandardResponse(
-            success=True,
-            message="Performance record deleted successfully"
-        )
-    except HTTPException as he:
-        raise he
-    except Exception as e:
-        return StandardResponse(
-            success=False,
-            message=f"Failed to delete performance record: {str(e)}"
-        )
-
-
-
-
 @router.get("/planning", response_model=StandardResponse)
-async def get_planning_categories(
+def get_planning_categories(
     month: str = Query(...),
     role: str = Depends(require_role(["Admin", "Manager", "Executive"]))
 ):
-    """
-    Get planning categories for a month.
-    
-    Args:
-        month: Month name
-        
-    Returns:
-        Performance records classified by planning category
-    """
     try:
         categories = planning_service.classify_all(month)
         flat_categories = {}
@@ -376,19 +182,10 @@ async def get_planning_categories(
 
 
 @router.get("/insights", response_model=StandardResponse)
-async def get_insights(
+def get_insights(
     month: str = Query(...),
     role: str = Depends(require_role(["Admin", "Manager", "Executive"]))
 ):
-    """
-    Get executive insights for a month.
-    
-    Args:
-        month: Month name
-        
-    Returns:
-        Insights and analytics for the month
-    """
     try:
         insights = insights_service.generate_insights(month)
         return StandardResponse(
@@ -398,7 +195,10 @@ async def get_insights(
         )
     except Exception as e:
         return StandardResponse(success=False, message=f"Failed to compile executive insights: {str(e)}")
-async def export_report(
+
+
+@router.get("/export", response_class=StreamingResponse)
+def export_report(
     month: str = Query("All"),
     team: str = Query("All"),
     format: str = Query("excel"),

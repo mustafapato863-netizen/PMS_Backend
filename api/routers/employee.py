@@ -14,7 +14,7 @@ from services.performance_service import PerformanceService
 router = APIRouter(prefix="", tags=["Employees"])
 
 @router.get("", response_model=StandardResponse)
-async def get_all_employees(include_deleted: bool = Query(False)):
+def get_all_employees(include_deleted: bool = Query(False)):
     """
     Get all employees from database.
     
@@ -22,11 +22,14 @@ async def get_all_employees(include_deleted: bool = Query(False)):
         List of all employees
     """
     try:
-        employees = EmployeeService.get_all_employees(include_deleted=include_deleted)
+        employees = employee_repo.get_all()
+        data = [e.model_dump() for e in employees]
+        if not include_deleted:
+            data = [e for e in data if e.get("status", "Active") != "Inactive"]
         return StandardResponse(
             success=True,
-            message=f"Retrieved {len(employees)} employees",
-            data=employees
+            message=f"Retrieved {len(data)} employees",
+            data=data
         )
     except Exception as e:
         return StandardResponse(
@@ -36,7 +39,7 @@ async def get_all_employees(include_deleted: bool = Query(False)):
 
 
 @router.get("/search", response_model=StandardResponse)
-async def search_employees(name: str = Query(...), include_deleted: bool = Query(False)):
+def  search_employees(name: str = Query(...), include_deleted: bool = Query(False)):
     """
     Search employees by name.
     
@@ -47,11 +50,16 @@ async def search_employees(name: str = Query(...), include_deleted: bool = Query
         List of matching employees
     """
     try:
-        employees = EmployeeService.search_employees(name, include_deleted=include_deleted)
+        employees = employee_repo.get_all()
+        name_lower = name.lower()
+        matched = [e for e in employees if name_lower in e.name.lower()]
+        data = [e.model_dump() for e in matched]
+        if not include_deleted:
+            data = [e for e in data if e.get("status", "Active") != "Inactive"]
         return StandardResponse(
             success=True,
-            message=f"Found {len(employees)} employees matching '{name}'",
-            data=employees
+            message=f"Found {len(data)} employees matching '{name}'",
+            data=data
         )
     except Exception as e:
         return StandardResponse(
@@ -60,23 +68,27 @@ async def search_employees(name: str = Query(...), include_deleted: bool = Query
         )
 
 
-@router.get("/team/{team_id}", response_model=StandardResponse)
-async def get_employees_by_team(team_id: str, include_deleted: bool = Query(False)):
+@router.get("/team/{team_name}", response_model=StandardResponse)
+def get_employees_by_team(team_name: str, include_deleted: bool = Query(False)):
     """
     Get all employees in a team.
     
     Args:
-        team_id: Team ID
+        team_name: Team name
         
     Returns:
         List of employees in team
     """
     try:
-        employees = EmployeeService.get_employees_by_team(team_id, include_deleted=include_deleted)
+        employees = employee_repo.get_all()
+        matched = [e for e in employees if e.team == team_name]
+        data = [e.model_dump() for e in matched]
+        if not include_deleted:
+            data = [e for e in data if e.get("status", "Active") != "Inactive"]
         return StandardResponse(
             success=True,
-            message=f"Retrieved {len(employees)} employees for team",
-            data=employees
+            message=f"Retrieved {len(data)} employees for team",
+            data=data
         )
     except Exception as e:
         return StandardResponse(
@@ -85,23 +97,25 @@ async def get_employees_by_team(team_id: str, include_deleted: bool = Query(Fals
         )
 
 
-@router.get("/team/{team_id}/active", response_model=StandardResponse)
-async def get_active_employees_by_team(team_id: str):
+@router.get("/team/{team_name}/active", response_model=StandardResponse)
+def get_active_employees_by_team(team_name: str):
     """
     Get all active employees in a team.
     
     Args:
-        team_id: Team ID
+        team_name: Team name
         
     Returns:
         List of active employees in team
     """
     try:
-        employees = EmployeeService.get_active_employees_by_team(team_id)
+        employees = employee_repo.get_all()
+        matched = [e for e in employees if e.team == team_name and e.status == "Active"]
+        data = [e.model_dump() for e in matched]
         return StandardResponse(
             success=True,
-            message=f"Retrieved {len(employees)} active employees for team",
-            data=employees
+            message=f"Retrieved {len(data)} active employees for team",
+            data=data
         )
     except Exception as e:
         return StandardResponse(
@@ -111,10 +125,10 @@ async def get_active_employees_by_team(team_id: str):
 
 
 @router.post("", response_model=StandardResponse, status_code=201)
-async def create_employee(
+def  create_employee(
     employee_id: str = Query(...),
     name: str = Query(...),
-    team_id: str = Query(...),
+    team: str = Query(...),
     region: str = Query("UAE"),
     role: str = Depends(require_role(["Admin", "Manager"]))
 ):
@@ -124,27 +138,20 @@ async def create_employee(
     Args:
         employee_id: External employee ID
         name: Employee name
-        team_id: Team ID
+        team: Team name
         region: Region (default: UAE)
         
     Returns:
         Created employee
     """
     try:
-        success, emp_dict, errors = EmployeeService.create_employee(
-            employee_id=employee_id,
-            name=name,
-            team_id=team_id,
-            region=region
-        )
-        
-        if not success:
-            raise HTTPException(status_code=400, detail="; ".join(errors))
-        
+        from models.schemas import Employee as EmployeeSchema
+        emp = EmployeeSchema(id=employee_id, name=name, team=team, region=region)
+        employee_repo.save(emp)
         return StandardResponse(
             success=True,
             message="Employee created successfully",
-            data=emp_dict
+            data=emp.model_dump()
         )
     except HTTPException as he:
         raise he
@@ -156,37 +163,34 @@ async def create_employee(
 
 
 @router.get("/{employee_id}", response_model=StandardResponse)
-async def get_employee_profile(employee_id: str, include_deleted: bool = Query(False)):
+def get_employee_profile(employee_id: str, include_deleted: bool = Query(False)):
     """
     Get employee profile including performance history.
     
     Args:
-        employee_id: Employee UUID or employee ID
+        employee_id: Employee ID from Excel
         
     Returns:
         Employee profile with performance history
     """
     try:
-        emp = EmployeeService.get_employee(employee_id, include_deleted=include_deleted)
+        # Look up employee from JSON repo
+        employees = employee_repo.get_all()
+        emp = next((e for e in employees if str(e.id) == employee_id or e.name == employee_id), None)
         if not emp:
             raise HTTPException(status_code=404, detail="Employee not found")
 
-        # Get performance history for current year
-        from datetime import datetime
-        current_year = datetime.now().year
-        
-        # For now, get from existing performance_repo since full data might not be migrated
         records = performance_repo.get_all()
-        emp_records = [r for r in records if str(r.employee_id) == employee_id or r.employee_id == emp.get('id')]
+        emp_records = [r for r in records if str(r.employee_id) == emp.id]
         
         from services.planning_service import MONTH_ORDER
         emp_records.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
 
-        history = actions_repo.get_history(employee_id)
+        history = actions_repo.get_history(emp.id)
         history.sort(key=lambda x: x.timestamp, reverse=True)
 
         profile_data = {
-            "employee": emp,
+            "employee": emp.model_dump(),
             "performance_history": [serialize_performance_record(r) for r in emp_records],
             "corrective_action_history": [h.model_dump() for h in history]
         }
@@ -203,50 +207,45 @@ async def get_employee_profile(employee_id: str, include_deleted: bool = Query(F
 
 
 @router.put("/{employee_id}", response_model=StandardResponse)
-async def update_employee(
+def  update_employee(
     employee_id: str,
     name: str = Query(None),
-    team_id: str = Query(None),
+    team: str = Query(None),
     region: str = Query(None),
-    is_active: bool = Query(None),
     role: str = Depends(require_role(["Admin", "Manager"]))
 ):
     """
     Update an employee.
     
     Args:
-        employee_id: Employee UUID
+        employee_id: Employee ID
         name: Updated name (optional)
-        team_id: Updated team ID (optional)
+        team: Updated team name (optional)
         region: Updated region (optional)
-        is_active: Active status (optional)
         
     Returns:
         Updated employee
     """
     try:
-        updates = {}
+        emp = employee_repo.get_by_id(employee_id)
+        if not emp:
+            raise HTTPException(status_code=404, detail="Employee not found")
+        
+        data = emp.model_dump()
         if name is not None:
-            updates['name'] = name
-        if team_id is not None:
-            updates['team_id'] = team_id
+            data['name'] = name
+        if team is not None:
+            data['team'] = team
         if region is not None:
-            updates['region'] = region
-        if is_active is not None:
-            updates['is_active'] = is_active
+            data['region'] = region
         
-        success, emp_dict, errors = EmployeeService.update_employee(
-            employee_uuid=employee_id,
-            **updates
-        )
-        
-        if not success:
-            raise HTTPException(status_code=400, detail="; ".join(errors))
-        
+        from models.schemas import Employee as EmployeeSchema
+        updated = EmployeeSchema(**data)
+        employee_repo.save(updated)
         return StandardResponse(
             success=True,
             message="Employee updated successfully",
-            data=emp_dict
+            data=updated.model_dump()
         )
     except HTTPException as he:
         raise he
@@ -258,7 +257,7 @@ async def update_employee(
 
 
 @router.delete("/{employee_id}", response_model=StandardResponse)
-async def delete_employee(
+def  delete_employee(
     employee_id: str,
     request: Request,
     role: str = Depends(require_role(["Admin"]))
@@ -293,7 +292,7 @@ async def delete_employee(
 
 
 @router.post("/{employee_id}/restore", response_model=StandardResponse)
-async def restore_employee(
+def  restore_employee(
     employee_id: str,
     request: Request,
     role: str = Depends(require_role(["Admin", "Manager"]))
@@ -328,7 +327,7 @@ async def restore_employee(
 
 
 @router.post("/{employee_id}/notes", response_model=StandardResponse)
-async def save_notes(
+def  save_notes(
     employee_id: str,
     payload: Dict[str, str],
     role: str = Depends(require_role(["Admin", "Manager"]))
@@ -361,7 +360,7 @@ async def save_notes(
         return StandardResponse(success=False, message=f"Failed to save manager notes: {str(e)}")
 
 @router.post("/{employee_id}/corrective-actions", response_model=StandardResponse)
-async def save_corrective_action(
+def  save_corrective_action(
     employee_id: str,
     payload: Dict[str, str],
     role: str = Depends(require_role(["Admin", "Manager"]))
@@ -434,7 +433,7 @@ async def save_corrective_action(
         return StandardResponse(success=False, message=f"Failed to save corrective action: {str(e)}")
 
 @router.delete("/{employee_id}/corrective-actions/{action_id}", response_model=StandardResponse)
-async def delete_corrective_action(
+def  delete_corrective_action(
     employee_id: str,
     action_id: str,
     role: str = Depends(require_role(["Admin", "Manager"]))
@@ -475,7 +474,7 @@ async def delete_corrective_action(
         return StandardResponse(success=False, message=f"Failed to delete corrective action: {str(e)}")
 
 @router.get("/{employee_id}/recommendations", response_model=StandardResponse)
-async def get_action_recommendations(employee_id: str, month: str = Query(...)):
+def get_action_recommendations(employee_id: str, month: str = Query(...)):
     try:
         perf = performance_repo.get_by_employee_and_month(employee_id, month)
         if not perf:

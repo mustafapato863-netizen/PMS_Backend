@@ -48,6 +48,7 @@ def db():
         Team.__table__,
         Employee.__table__,
         PerformanceRecord.__table__,
+        KPIValue.__table__,
         User.__table__,
         Action.__table__,
         OnboardingState.__table__,

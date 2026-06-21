@@ -2,11 +2,8 @@ import pandas as pd
 from fastapi import Header, HTTPException, Request
 from typing import List, Dict, Any
 
-from config.database import SessionLocal
-from models.models import Employee, PerformanceRecord
-from repositories.employee_repository import EmployeeRepository
-from repositories.performance_repository import PerformanceRepository
 from repositories.json_repos import (
+    JSONPerformanceRepository, JSONEmployeeRepository,
     JSONKPIWeightsRepository, JSONTargetsRepository, JSONUploadsRepository,
     JSONManagerNotesRepository, JSONCorrectiveActionsRepository,
     JSONUserRepository
@@ -19,14 +16,9 @@ from services.planning_service import PlanningService
 from services.trend_service import TrendService
 from services.insights_service import InsightsService
 
-# Initialize database session for repositories
-_db = SessionLocal()
-
-# Instantiate database repositories
-employee_repo = EmployeeRepository(_db, Employee)
-performance_repo = PerformanceRepository(_db, PerformanceRecord)
-
-# Instantiate JSON-based repositories (for backward compatibility - being phased out)
+# Instantiate JSON-based repositories (single source of truth)
+performance_repo = JSONPerformanceRepository()
+employee_repo = JSONEmployeeRepository()
 weights_repo = JSONKPIWeightsRepository()
 targets_repo = JSONTargetsRepository()
 uploads_repo = JSONUploadsRepository()

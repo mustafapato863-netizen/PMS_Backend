@@ -21,12 +21,10 @@ from socketio import ASGIApp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from api.routers import router as api_router
-from services.seeding_service import DatabaseSeeder
 from config.socket_config import sio
 from api.middleware.auth_middleware import AuthMiddleware
 from api.middleware.error_handling_middleware import ErrorHandlingMiddleware
 from config.database import SessionLocal
-from services.permission_seed import seed_role_permissions
 from config.logging_config import setup_logging
 
 # Initialize structured logging
@@ -34,6 +32,10 @@ setup_logging()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Lazy imports for startup performance
+    from services.seeding_service import DatabaseSeeder
+    from services.permission_seed import seed_role_permissions
+
     # Run database seeder on startup
     seeder = DatabaseSeeder()
     seeder.seed_database()
@@ -54,7 +56,13 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS Middleware — allow frontend dev servers
+# Register AuthMiddleware
+app.add_middleware(AuthMiddleware)
+
+# Register ErrorHandlingMiddleware (to catch database/internal exceptions)
+app.add_middleware(ErrorHandlingMiddleware)
+
+# CORS Middleware — allow frontend dev servers (outermost to wrap errors and auth responses)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Open to all origins for easier dashboard connections
@@ -62,11 +70,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Register AuthMiddleware
-app.add_middleware(AuthMiddleware)
-# Register ErrorHandlingMiddleware (outermost to catch middleware exceptions)
-app.add_middleware(ErrorHandlingMiddleware)
 
 
 # Mount Routers

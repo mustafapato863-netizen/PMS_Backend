@@ -3,7 +3,39 @@ import datetime
 
 from api.dependencies import uploads_repo, performance_repo, trend_service, planning_service, require_role
 from services.seeding_service import DatabaseSeeder
+from services.cache_invalidation_service import CacheInvalidationService
 from models.schemas import StandardResponse
+
+def _warm_team_caches() -> None:
+    """Pre-compute and cache team performance aggregates after data changes."""
+    try:
+        from services.cache_service import CacheService
+        all_records = performance_repo.get_all()
+
+        teams_months = set()
+        for r in all_records:
+            month = getattr(r, "month", None)
+            team = getattr(r, "team", None)
+            if month and team:
+                teams_months.add((team, month))
+
+        if not teams_months:
+            return
+
+        for team_name, month in teams_months:
+            team_records = [r for r in all_records if r.team == team_name and r.month == month]
+            scores = [r.evaluation.score for r in team_records if r.evaluation and r.evaluation.score]
+            aggregated = {
+                "total_records": len(scores),
+                "average_score": sum(scores) / len(scores) if scores else 0.0,
+                "max_score": max(scores) if scores else 0.0,
+                "min_score": min(scores) if scores else 0.0
+            }
+            CacheService.set_team_performance_cache(team_name, month, 2026, aggregated)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"Cache warming failed (non-critical): {e}")
+
 
 router = APIRouter()
 
@@ -34,6 +66,10 @@ async def upload_pms_file(
         contents = await file.read()
         seeder = DatabaseSeeder()
         result = seeder.process_uploaded_file(file.filename, contents)
+
+        # Invalidate all caches and warm team aggregates
+        CacheInvalidationService.flush_all()
+        _warm_team_caches()
 
         return StandardResponse(
             success=True,
@@ -79,6 +115,8 @@ async def delete_upload(
         success = uploads_repo.delete_by_id(upload_id)
         if not success:
             raise HTTPException(status_code=500, detail="Failed to delete upload log from repository")
+
+        CacheInvalidationService.flush_all()
 
         return StandardResponse(
             success=True,

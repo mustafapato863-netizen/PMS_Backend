@@ -51,12 +51,7 @@ class PerformanceService:
                     'uploaded_at': record.uploaded_at.isoformat() if record.uploaded_at else None,
                 }
                 
-                # Add KPI values
-                kpi_values = db.query(KPIValue).filter(
-                    (KPIValue.record_id == record.id) &
-                    (KPIValue.record_year == record.year)
-                ).all()
-                
+                # Read from preloaded kpi_values relationship
                 record_dict['kpi_values'] = [
                     {
                         'kpi_key': kpi.kpi_key,
@@ -65,7 +60,7 @@ class PerformanceService:
                         'achievement_ratio': float(kpi.achievement_ratio),
                         'contribution': float(kpi.contribution),
                     }
-                    for kpi in kpi_values
+                    for kpi in record.kpi_values
                 ]
                 
                 result.append(record_dict)
@@ -110,12 +105,7 @@ class PerformanceService:
                     'uploaded_at': record.uploaded_at.isoformat() if record.uploaded_at else None,
                 }
                 
-                # Add KPI values
-                kpi_values = db.query(KPIValue).filter(
-                    (KPIValue.record_id == record.id) &
-                    (KPIValue.record_year == record.year)
-                ).all()
-                
+                # Read from preloaded kpi_values relationship
                 record_dict['kpi_values'] = [
                     {
                         'kpi_key': kpi.kpi_key,
@@ -124,7 +114,7 @@ class PerformanceService:
                         'achievement_ratio': float(kpi.achievement_ratio),
                         'contribution': float(kpi.contribution),
                     }
-                    for kpi in kpi_values
+                    for kpi in record.kpi_values
                 ]
                 
                 result.append(record_dict)

@@ -81,6 +81,13 @@ class SessionCache:
             if key in self.cache:
                 self._delete_entry(key)
 
+    def invalidate_by_prefix(self, prefix: str) -> None:
+        """Invalidate all keys starting with the given prefix"""
+        with self.lock:
+            keys_to_delete = [k for k in self.cache if k.startswith(prefix)]
+            for k in keys_to_delete:
+                self._delete_entry(k)
+
     def _delete_entry(self, key) -> None:
         """Helper to delete entry and update current size (must be called with lock)"""
         _, _, size = self.cache.pop(key)

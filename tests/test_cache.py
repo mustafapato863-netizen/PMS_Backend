@@ -47,21 +47,22 @@ class TestRedisCacheService:
 
     @patch("services.cache_service.redis_client")
     def test_redis_connection_fallback_on_get(self, mock_redis):
-        """Verify transparent fallback (no crash) when Redis get raises ConnectionError"""
+        """Verify transparent fallback to in-memory cache when Redis get raises ConnectionError"""
+        # First set via in-memory (simulate earlier cache write)
+        from services.cache_service import in_memory_cache
+        in_memory_cache.set_session("performance:fallback_get:January:2026", {"score": 95.0}, 3600)
         mock_redis.get.side_effect = redis.ConnectionError("Connection refused")
         
-        # Should not raise exception
-        result = CacheService.get_performance_cache("test_emp", "January", 2026)
-        assert result is None
+        result = CacheService.get_performance_cache("fallback_get", "January", 2026)
+        assert result == {"score": 95.0}
 
     @patch("services.cache_service.redis_client")
     def test_redis_connection_fallback_on_set(self, mock_redis):
-        """Verify transparent fallback (no crash) when Redis set raises ConnectionError"""
+        """Verify transparent fallback to in-memory cache when Redis set raises ConnectionError"""
         mock_redis.set.side_effect = redis.ConnectionError("Connection refused")
         
-        # Should not raise exception, returns False
-        success = CacheService.set_performance_cache("test_emp", "January", 2026, {"score": 95.0})
-        assert success is False
+        success = CacheService.set_performance_cache("fallback_set", "January", 2026, {"score": 95.0})
+        assert success is True
 
 
 class TestCacheInvalidationService:
