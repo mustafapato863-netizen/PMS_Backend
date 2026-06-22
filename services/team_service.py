@@ -9,6 +9,7 @@ from typing import List, Dict, Any, Optional, Tuple
 from datetime import datetime
 from sqlalchemy.orm import Session
 from config.database import SessionLocal
+from config.loader import ConfigurationError, find_team_config_by_db_name, load_team_config
 from repositories.team_repository import TeamRepository
 from models.models import Team, TeamKPIConfig
 from models.team_models import TeamCreateRequest, TeamUpdateRequest
@@ -20,6 +21,49 @@ logger = logging.getLogger(__name__)
 
 class TeamService:
     """Service for managing teams - Database-backed version."""
+
+    @staticmethod
+    def _load_team_config(team_name: str, db_name: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """Resolve a team config by team name first, then db_name."""
+        try:
+            return load_team_config(team_name)
+        except ConfigurationError:
+            if db_name:
+                return find_team_config_by_db_name(db_name)
+        return None
+
+    @staticmethod
+    def _build_team_payload(team: Team, db: Session) -> Dict[str, Any]:
+        """Build a response payload using config JSON as the source of truth when available."""
+        config = TeamService._load_team_config(team.name, team.db_name)
+
+        kpi_configs = db.query(TeamKPIConfig).filter(TeamKPIConfig.team_id == team.id).all()
+        if kpi_configs:
+            kpi_keys = [kpi.kpi_key for kpi in kpi_configs]
+            kpi_weights = {kpi.kpi_key: float(kpi.weight) for kpi in kpi_configs}
+        elif config:
+            kpi_keys = [kpi["key"] for kpi in config.get("kpis", [])]
+            kpi_weights = {kpi["key"]: float(kpi["weight"]) for kpi in config.get("kpis", [])}
+        else:
+            kpi_keys = []
+            kpi_weights = {}
+
+        return {
+            "id": str(team.id),
+            "name": team.name,
+            "display_name": config.get("team", team.name) if config else team.name,
+            "db_name": team.db_name,
+            "region": config.get("region", team.region) if config else team.region,
+            "description": None,
+            "kpi_keys": kpi_keys,
+            "kpi_weights": kpi_weights,
+            "data_source": "Excel" if config else "Database",
+            "team_lead": None,
+            "team_lead_email": None,
+            "is_active": team.is_active,
+            "created_at": team.created_at.isoformat() if team.created_at else None,
+            "updated_at": team.updated_at.isoformat() if team.updated_at else None,
+        }
 
     @staticmethod
     def get_all_teams() -> List[Dict[str, Any]]:
@@ -36,25 +80,12 @@ class TeamService:
             
             result = []
             for team in teams:
-                team_dict = {
-                    'id': str(team.id),
-                    'name': team.name,
-                    'db_name': team.db_name,
-                    'region': team.region,
-                    'is_active': team.is_active,
-                    'created_at': team.created_at.isoformat() if team.created_at else None,
-                    'updated_at': team.updated_at.isoformat() if team.updated_at else None,
-                }
-                
-                # Add KPI info
-                kpi_configs = db.query(TeamKPIConfig).filter(TeamKPIConfig.team_id == team.id).all()
-                team_dict['kpi_keys'] = [kpi.kpi_key for kpi in kpi_configs]
-                team_dict['kpi_weights'] = {kpi.kpi_key: float(kpi.weight) for kpi in kpi_configs}
-                
+                team_dict = TeamService._build_team_payload(team, db)
+
                 # Add cleaner availability
                 try:
                     available_cleaners = CleanerFactory.get_available_teams()
-                    team_dict['has_cleaner'] = team.name in available_cleaners
+                    team_dict['has_cleaner'] = team.name in available_cleaners or team.db_name in available_cleaners
                 except Exception as e:
                     logger.warning(f"Could not load cleaner info: {e}")
                     team_dict['has_cleaner'] = False
@@ -88,23 +119,8 @@ class TeamService:
             
             if not team:
                 return None
-            
-            team_dict = {
-                'id': str(team.id),
-                'name': team.name,
-                'db_name': team.db_name,
-                'region': team.region,
-                'is_active': team.is_active,
-                'created_at': team.created_at.isoformat() if team.created_at else None,
-                'updated_at': team.updated_at.isoformat() if team.updated_at else None,
-            }
-            
-            # Add KPI info
-            kpi_configs = db.query(TeamKPIConfig).filter(TeamKPIConfig.team_id == team.id).all()
-            team_dict['kpi_keys'] = [kpi.kpi_key for kpi in kpi_configs]
-            team_dict['kpi_weights'] = {kpi.kpi_key: float(kpi.weight) for kpi in kpi_configs}
-            
-            return team_dict
+
+            return TeamService._build_team_payload(team, db)
         
         except Exception as e:
             logger.error(f"Failed to get team {team_name}: {e}")
@@ -142,12 +158,18 @@ class TeamService:
                 errors.append("Team name must contain only letters, numbers, and underscores")
                 return False, {}, errors
             
+            config = TeamService._load_team_config(request.name, request.db_name)
+
             # Create team
+            team_name_value = config.get('team', request.name) if config else team_name
+            db_name_value = config.get('db_name', request.db_name or team_name) if config else (request.db_name or team_name)
+            region_value = config.get('region', request.region or 'UAE') if config else (request.region or 'UAE')
+
             team_data = {
                 'id': uuid.uuid4(),
-                'name': team_name,
-                'db_name': request.db_name or team_name,
-                'region': request.region or 'UAE',
+                'name': team_name_value,
+                'db_name': db_name_value,
+                'region': region_value,
                 'is_active': True,
             }
             
@@ -155,35 +177,42 @@ class TeamService:
             logger.info(f"Created team: {team_name}")
             
             # Add KPI configs
-            kpi_weights = request.kpi_weights or {'attendance': 0.3, 'productivity': 0.4, 'quality': 0.3}
-            for kpi_key, weight in kpi_weights.items():
-                kpi_config = TeamKPIConfig(
-                    team_id=team.id,
-                    kpi_key=kpi_key,
-                    kpi_label=kpi_key.title(),
-                    weight=float(weight),
-                    direction='higher_better',
-                    unit='%',
-                    color='#10B981',
-                    actual_col=f'{kpi_key}_actual',
-                    target_col=f'{kpi_key}_target',
-                    display_order=0,
-                )
-                db.add(kpi_config)
+            if config and config.get('kpis'):
+                for idx, kpi in enumerate(config['kpis']):
+                    db.add(TeamKPIConfig(
+                        team_id=team.id,
+                        kpi_key=kpi['key'],
+                        kpi_label=kpi['label'],
+                        weight=float(kpi['weight']),
+                        direction=kpi['direction'],
+                        unit=kpi['unit'],
+                        color=kpi['color'],
+                        actual_col=kpi['actual_col'],
+                        target_col=kpi['target_col'],
+                        achievement_col=kpi.get('achievement_col'),
+                        volume_unit=kpi.get('volume_unit'),
+                        display_order=idx,
+                    ))
+            else:
+                kpi_weights = request.kpi_weights or {'attendance': 0.3, 'productivity': 0.4, 'quality': 0.3}
+                for kpi_key, weight in kpi_weights.items():
+                    kpi_config = TeamKPIConfig(
+                        team_id=team.id,
+                        kpi_key=kpi_key,
+                        kpi_label=kpi_key.title(),
+                        weight=float(weight),
+                        direction='higher_better',
+                        unit='%',
+                        color='#10B981',
+                        actual_col=f'{kpi_key}_actual',
+                        target_col=f'{kpi_key}_target',
+                        display_order=0,
+                    )
+                    db.add(kpi_config)
             
             db.commit()
-            
-            team_dict = {
-                'id': str(team.id),
-                'name': team.name,
-                'db_name': team.db_name,
-                'region': team.region,
-                'is_active': team.is_active,
-                'kpi_keys': list(kpi_weights.keys()),
-                'kpi_weights': kpi_weights,
-            }
-            
-            return True, team_dict, errors
+
+            return True, TeamService._build_team_payload(team, db), errors
         
         except Exception as e:
             errors.append(f"Failed to create team: {str(e)}")
@@ -257,17 +286,7 @@ class TeamService:
             # Return updated team
             kpi_configs = db.query(TeamKPIConfig).filter(TeamKPIConfig.team_id == team.id).all()
             
-            team_dict = {
-                'id': str(updated_team.id),
-                'name': updated_team.name,
-                'db_name': updated_team.db_name,
-                'region': updated_team.region,
-                'is_active': updated_team.is_active,
-                'kpi_keys': [kpi.kpi_key for kpi in kpi_configs],
-                'kpi_weights': {kpi.kpi_key: float(kpi.weight) for kpi in kpi_configs},
-            }
-            
-            return True, team_dict, errors
+            return True, TeamService._build_team_payload(updated_team, db), errors
         
         except Exception as e:
             errors.append(f"Failed to update team: {str(e)}")
@@ -351,6 +370,13 @@ class TeamService:
                 total_weight = sum(float(kpi.weight) for kpi in kpi_configs)
                 if abs(total_weight - 1.0) > 0.01:
                     errors.append(f"KPI weights don't sum to 1.0 (got {total_weight})")
+            
+            try:
+                config = TeamService._load_team_config(team.name, team.db_name)
+                if not config:
+                    warnings.append("No JSON team config found; new-team onboarding still needs a config file")
+            except Exception as e:
+                warnings.append(f"Could not load team config: {e}")
             
             # Warnings
             if not team.is_active:

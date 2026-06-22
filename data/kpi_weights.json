@@ -46,5 +46,31 @@
       "IPRevenue": 0.45,
       "Activity": 0.1
     }
+  },
+  {
+    "team": "Coding",
+    "weights": {
+      "QualityErrors": 0.2,
+      "Rejection": 0.5,
+      "TAT": 0.3
+    }
+  },
+  {
+    "team": "CSR",
+    "weights": {
+      "Rejection": 0.4,
+      "Queries": 0.3,
+      "AttendedCR": 0.3
+    }
+  },
+  {
+    "team": "Pharmacy",
+    "weights": {
+      "WaitingTime": 0.2,
+      "Leakage": 0.2,
+      "TenderCompliance": 0.2,
+      "ATV": 0.2,
+      "Prescription": 0.2
+    }
   }
 ]

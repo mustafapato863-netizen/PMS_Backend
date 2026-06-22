@@ -29030,140 +29030,6 @@
     }
   },
   {
-    "id": "70134_March",
-    "employee_id": "70134",
-    "employee_name": "Salma Hussein Mohamed Ali El-Ramly",
-    "team": "Pre-Approvals IP Offshore",
-    "month": "March",
-    "region": "EGY",
-    "calls": {
-      "inbound": 0,
-      "outbound": 0,
-      "total_handled": 0,
-      "abandoned": 0,
-      "aht_raw": "00:00:00"
-    },
-    "geo": {
-      "bookings": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      },
-      "attended": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      }
-    },
-    "actual": {
-      "booking_rate": 0.0,
-      "attend_rate": 0.0,
-      "abandon_rate": 0.0,
-      "reachability_rate": 0.0,
-      "rejection_rate": 0.014084507042253521,
-      "initial_error_rate": 0.059574468085106386,
-      "submission_rate": 0.49122807017543857,
-      "quality_rate": 0.0,
-      "utz_rate": 0.0
-    },
-    "achievement": {
-      "booking_ach": 0.0,
-      "attend_ach": 0.0,
-      "quality_ach": 0.0,
-      "aht_ach": 0.0,
-      "reachability_ach": 0.0,
-      "abandon_ach": 0.0,
-      "rejection_ach": 1.0,
-      "initial_error_ach": 0.5035714285714286,
-      "submission_ach": 0.5458089668615984,
-      "op_census_ach": 0.0,
-      "op_revenue_ach": 0.0,
-      "ip_census_ach": 0.0,
-      "ip_revenue_ach": 0.0,
-      "activity_ach": 0.0
-    },
-    "evaluation": {
-      "score": 76.45,
-      "grade": "C",
-      "root_cause": {
-        "kpi": "Submission",
-        "impact_pct": 57.85,
-        "actual": 0.4912,
-        "target": 0.9
-      },
-      "suggested_action": "Workflow Optimization",
-      "corrective_action": null,
-      "manager_notes": null,
-      "planning_category": [
-        "Training Candidate"
-      ],
-      "trend_status": {
-        "score": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "attendance": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "booking": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "quality": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "aht": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        }
-      }
-    },
-    "upload_id": "4a6abbcf-392b-4724-91e0-64b47363e63a",
-    "raw_data": {
-      "Date": "2026-03-01 00:00:00",
-      "Region": "EGY",
-      "HRID": 70134,
-      "AgentName": "Salma Hussein Mohamed Ali El-Ramly",
-      "Status": "Active",
-      "Team": "Offshore",
-      "AssignedRequest": 71,
-      "ApprovedRequests": 57,
-      "RejectedRequests": 7,
-      "Cancelled": 1,
-      "PendingWithInsurance": 0,
-      "PendingWithDr": 0,
-      "Closed": 6,
-      "PolicyRej": 6,
-      "ApprovalWithin48HR": 28,
-      "SubmittedClaims": 235,
-      "ErrosClaims": 14,
-      "IPInitialRejection%": 0.014084507042253521,
-      "Error%": 0.059574468085106386,
-      "NumberApprovalwithin48hrs": 0.49122807017543857,
-      "T.IPInitialRejection%": 0.03,
-      "T.Error%": 0.03,
-      "T.%ofApprovalwithin48hrs": 0.9,
-      "RejectionRate": 1.0,
-      "InitialError%": 0.5035714285714286,
-      "%ofSubmissionWithinDuedate": 0.5458089668615984,
-      "PerformanceScore": 76.45,
-      "PerformanceGrade": "Below average",
-      "Is_Inactive": 0,
-      "Is_New": 0,
-      "Performance": 0.7644569757727653,
-      "PerformanceScor%": 76.45
-    }
-  },
-  {
     "id": "70121_April",
     "employee_id": "70121",
     "employee_name": "Hadeer Gamal Asaad Rashed",
@@ -29689,138 +29555,6 @@
       "Is_New": 0,
       "Performance": 0.8012380952380952,
       "PerformanceScor%": 80.12
-    }
-  },
-  {
-    "id": "70134_May",
-    "employee_id": "70134",
-    "employee_name": "Salma Hussein Mohamed Ali El-Ramly",
-    "team": "Pre-Approvals IP Offshore",
-    "month": "May",
-    "region": "EGY",
-    "calls": {
-      "inbound": 0,
-      "outbound": 0,
-      "total_handled": 0,
-      "abandoned": 0,
-      "aht_raw": "00:00:00"
-    },
-    "geo": {
-      "bookings": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      },
-      "attended": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      }
-    },
-    "actual": {
-      "booking_rate": 0.0,
-      "attend_rate": 0.0,
-      "abandon_rate": 0.0,
-      "reachability_rate": 0.0,
-      "rejection_rate": 0.05128205128205128,
-      "initial_error_rate": 0.04152249134948097,
-      "submission_rate": 0.6774193548387096,
-      "quality_rate": 0.0,
-      "utz_rate": 0.0
-    },
-    "achievement": {
-      "booking_ach": 0.0,
-      "attend_ach": 0.0,
-      "quality_ach": 0.0,
-      "aht_ach": 0.0,
-      "reachability_ach": 0.0,
-      "abandon_ach": 0.0,
-      "rejection_ach": 0.585,
-      "initial_error_ach": 0.7225,
-      "submission_ach": 0.7526881720430106,
-      "op_census_ach": 0.0,
-      "op_revenue_ach": 0.0,
-      "ip_census_ach": 0.0,
-      "ip_revenue_ach": 0.0,
-      "activity_ach": 0.0
-    },
-    "evaluation": {
-      "score": 66.28,
-      "grade": "D",
-      "root_cause": {
-        "kpi": "Rejection",
-        "impact_pct": 61.54,
-        "actual": 0.0513,
-        "target": 0.03
-      },
-      "suggested_action": "Quality Calibration",
-      "corrective_action": "PIP: sdfdsf",
-      "manager_notes": null,
-      "planning_category": [],
-      "trend_status": {
-        "score": {
-          "mom": "Critical Decline",
-          "qoq": "Stable",
-          "ytd": "Critical Decline"
-        },
-        "attendance": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "booking": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "quality": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "aht": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        }
-      }
-    },
-    "upload_id": "4a6abbcf-392b-4724-91e0-64b47363e63a",
-    "raw_data": {
-      "Date": "2026-05-01 00:00:00",
-      "Region": "EGY",
-      "HRID": 70134,
-      "AgentName": "Salma Hussein Mohamed Ali El-Ramly",
-      "Status": "Active",
-      "Team": "Offshore",
-      "AssignedRequest": 39,
-      "ApprovedRequests": 31,
-      "RejectedRequests": 2,
-      "Cancelled": 3,
-      "PendingWithInsurance": 0,
-      "PendingWithDr": 3,
-      "Closed": 0,
-      "PolicyRej": 2,
-      "ApprovalWithin48HR": 21,
-      "SubmittedClaims": 578,
-      "ErrosClaims": 24,
-      "IPInitialRejection%": 0.05128205128205128,
-      "Error%": 0.04152249134948097,
-      "NumberApprovalwithin48hrs": 0.6774193548387096,
-      "T.IPInitialRejection%": 0.03,
-      "T.Error%": 0.03,
-      "T.%ofApprovalwithin48hrs": 0.9,
-      "RejectionRate": 0.585,
-      "InitialError%": 0.7225,
-      "%ofSubmissionWithinDuedate": 0.7526881720430106,
-      "PerformanceScore": 66.28,
-      "PerformanceGrade": "Unsatisfactory",
-      "Is_Inactive": 0,
-      "Is_New": 0,
-      "Performance": 0.6628064516129032,
-      "PerformanceScor%": 66.28
     }
   },
   {
@@ -98579,6 +98313,272 @@
       "PerformanceScore%": 82.24,
       "PerformanceScor%": 82.24106992999697,
       "Performance_Score": 82.24
+    }
+  },
+  {
+    "id": "70134_May",
+    "employee_id": "70134",
+    "employee_name": "Salma Hussein Mohamed Ali El-Ramly",
+    "team": "Pre-Approvals IP Offshore",
+    "month": "May",
+    "region": "EGY",
+    "calls": {
+      "inbound": 0,
+      "outbound": 0,
+      "total_handled": 0,
+      "abandoned": 0,
+      "aht_raw": "00:00:00"
+    },
+    "geo": {
+      "bookings": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      },
+      "attended": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      }
+    },
+    "actual": {
+      "booking_rate": 0.0,
+      "attend_rate": 0.0,
+      "abandon_rate": 0.0,
+      "reachability_rate": 0.0,
+      "rejection_rate": 0.05128205128205128,
+      "initial_error_rate": 0.04152249134948097,
+      "submission_rate": 0.6774193548387096,
+      "quality_rate": 0.0,
+      "utz_rate": 0.0
+    },
+    "achievement": {
+      "booking_ach": 0.0,
+      "attend_ach": 0.0,
+      "quality_ach": 0.0,
+      "aht_ach": 0.0,
+      "reachability_ach": 0.0,
+      "abandon_ach": 0.0,
+      "rejection_ach": 0.585,
+      "initial_error_ach": 0.7225,
+      "submission_ach": 0.7526881720430106,
+      "op_census_ach": 0.0,
+      "op_revenue_ach": 0.0,
+      "ip_census_ach": 0.0,
+      "ip_revenue_ach": 0.0,
+      "activity_ach": 0.0
+    },
+    "evaluation": {
+      "score": 66.28,
+      "grade": "D",
+      "root_cause": {
+        "kpi": "Rejection",
+        "impact_pct": 61.54,
+        "actual": 0.0513,
+        "target": 0.03
+      },
+      "suggested_action": "Quality Calibration",
+      "corrective_action": "PIP: She declined compared to the previous month, decreasing from 80% to 66.3%. Dr. Hossam will conduct additional follow-up to help improve performance and accelerate the process.",
+      "manager_notes": "Rejection ↑ (main issue)",
+      "planning_category": [],
+      "trend_status": {
+        "score": {
+          "mom": "Critical Decline",
+          "qoq": "Stable",
+          "ytd": "Critical Decline"
+        },
+        "attendance": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "booking": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "quality": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "aht": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        }
+      }
+    },
+    "upload_id": "4a6abbcf-392b-4724-91e0-64b47363e63a",
+    "raw_data": {
+      "Date": "2026-05-01 00:00:00",
+      "Region": "EGY",
+      "HRID": 70134,
+      "AgentName": "Salma Hussein Mohamed Ali El-Ramly",
+      "Status": "Active",
+      "Team": "Offshore",
+      "AssignedRequest": 39,
+      "ApprovedRequests": 31,
+      "RejectedRequests": 2,
+      "Cancelled": 3,
+      "PendingWithInsurance": 0,
+      "PendingWithDr": 3,
+      "Closed": 0,
+      "PolicyRej": 2,
+      "ApprovalWithin48HR": 21,
+      "SubmittedClaims": 578,
+      "ErrosClaims": 24,
+      "IPInitialRejection%": 0.05128205128205128,
+      "Error%": 0.04152249134948097,
+      "NumberApprovalwithin48hrs": 0.6774193548387096,
+      "T.IPInitialRejection%": 0.03,
+      "T.Error%": 0.03,
+      "T.%ofApprovalwithin48hrs": 0.9,
+      "RejectionRate": 0.585,
+      "InitialError%": 0.7225,
+      "%ofSubmissionWithinDuedate": 0.7526881720430106,
+      "PerformanceScore": 66.28,
+      "PerformanceGrade": "Unsatisfactory",
+      "Is_Inactive": 0,
+      "Is_New": 0,
+      "Performance": 0.6628064516129032,
+      "PerformanceScor%": 66.28
+    }
+  },
+  {
+    "id": "70134_March",
+    "employee_id": "70134",
+    "employee_name": "Salma Hussein Mohamed Ali El-Ramly",
+    "team": "Pre-Approvals IP Offshore",
+    "month": "March",
+    "region": "EGY",
+    "calls": {
+      "inbound": 0,
+      "outbound": 0,
+      "total_handled": 0,
+      "abandoned": 0,
+      "aht_raw": "00:00:00"
+    },
+    "geo": {
+      "bookings": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      },
+      "attended": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      }
+    },
+    "actual": {
+      "booking_rate": 0.0,
+      "attend_rate": 0.0,
+      "abandon_rate": 0.0,
+      "reachability_rate": 0.0,
+      "rejection_rate": 0.014084507042253521,
+      "initial_error_rate": 0.059574468085106386,
+      "submission_rate": 0.49122807017543857,
+      "quality_rate": 0.0,
+      "utz_rate": 0.0
+    },
+    "achievement": {
+      "booking_ach": 0.0,
+      "attend_ach": 0.0,
+      "quality_ach": 0.0,
+      "aht_ach": 0.0,
+      "reachability_ach": 0.0,
+      "abandon_ach": 0.0,
+      "rejection_ach": 1.0,
+      "initial_error_ach": 0.5035714285714286,
+      "submission_ach": 0.5458089668615984,
+      "op_census_ach": 0.0,
+      "op_revenue_ach": 0.0,
+      "ip_census_ach": 0.0,
+      "ip_revenue_ach": 0.0,
+      "activity_ach": 0.0
+    },
+    "evaluation": {
+      "score": 76.45,
+      "grade": "C",
+      "root_cause": {
+        "kpi": "Submission",
+        "impact_pct": 57.85,
+        "actual": 0.4912,
+        "target": 0.9
+      },
+      "suggested_action": "Workflow Optimization",
+      "corrective_action": null,
+      "manager_notes": null,
+      "planning_category": [
+        "Training Candidate"
+      ],
+      "trend_status": {
+        "score": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "attendance": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "booking": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "quality": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "aht": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        }
+      }
+    },
+    "upload_id": "4a6abbcf-392b-4724-91e0-64b47363e63a",
+    "raw_data": {
+      "Date": "2026-03-01 00:00:00",
+      "Region": "EGY",
+      "HRID": 70134,
+      "AgentName": "Salma Hussein Mohamed Ali El-Ramly",
+      "Status": "Active",
+      "Team": "Offshore",
+      "AssignedRequest": 71,
+      "ApprovedRequests": 57,
+      "RejectedRequests": 7,
+      "Cancelled": 1,
+      "PendingWithInsurance": 0,
+      "PendingWithDr": 0,
+      "Closed": 6,
+      "PolicyRej": 6,
+      "ApprovalWithin48HR": 28,
+      "SubmittedClaims": 235,
+      "ErrosClaims": 14,
+      "IPInitialRejection%": 0.014084507042253521,
+      "Error%": 0.059574468085106386,
+      "NumberApprovalwithin48hrs": 0.49122807017543857,
+      "T.IPInitialRejection%": 0.03,
+      "T.Error%": 0.03,
+      "T.%ofApprovalwithin48hrs": 0.9,
+      "RejectionRate": 1.0,
+      "InitialError%": 0.5035714285714286,
+      "%ofSubmissionWithinDuedate": 0.5458089668615984,
+      "PerformanceScore": 76.45,
+      "PerformanceGrade": "Below average",
+      "Is_Inactive": 0,
+      "Is_New": 0,
+      "Performance": 0.7644569757727653,
+      "PerformanceScor%": 76.45
     }
   }
 ]

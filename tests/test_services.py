@@ -52,6 +52,54 @@ class TestTeamService:
         assert teams[0]['name'] == 'test_team'
         mock_session.close.assert_called_once()
 
+    @patch('services.team_service.find_team_config_by_db_name')
+    @patch('services.team_service.load_team_config')
+    @patch('services.team_service.TeamRepository')
+    @patch('services.team_service.SessionLocal')
+    def test_get_all_teams_uses_team_config_when_available(
+        self,
+        mock_session_local,
+        mock_team_repo,
+        mock_load_team_config,
+        mock_find_config,
+    ):
+        mock_session = MagicMock()
+        mock_session_local.return_value = mock_session
+
+        mock_repo_instance = MagicMock()
+        mock_team_repo.return_value = mock_repo_instance
+
+        mock_team = MagicMock()
+        mock_team.id = uuid.uuid4()
+        mock_team.name = 'new_team'
+        mock_team.db_name = 'new_team_db'
+        mock_team.region = 'UAE'
+        mock_team.is_active = True
+        mock_team.created_at = datetime.now()
+        mock_team.updated_at = datetime.now()
+
+        mock_repo_instance.get_all.return_value = [mock_team]
+        mock_session.query.return_value.filter.return_value.all.return_value = []
+        mock_load_team_config.return_value = {
+            'team': 'New Team',
+            'db_name': 'New Team DB',
+            'region': 'EGY',
+            'kpis': [
+                {'key': 'A', 'label': 'Alpha', 'weight': 0.6},
+                {'key': 'B', 'label': 'Beta', 'weight': 0.4},
+            ],
+        }
+        mock_find_config.return_value = None
+
+        teams = TeamService.get_all_teams()
+
+        assert teams[0]['display_name'] == 'New Team'
+        assert teams[0]['db_name'] == 'new_team_db'
+        assert teams[0]['kpi_keys'] == ['A', 'B']
+        assert teams[0]['kpi_weights'] == {'A': 0.6, 'B': 0.4}
+        assert teams[0]['data_source'] == 'Excel'
+        mock_session.close.assert_called_once()
+
     @patch('services.team_service.TeamRepository')
     @patch('services.team_service.SessionLocal')
     def test_get_team(self, mock_session_local, mock_team_repo):
