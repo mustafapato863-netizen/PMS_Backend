@@ -11,6 +11,7 @@ import pandas as pd
 import numpy as np
 import logging
 from typing import Dict, Any, Optional
+from data_cleaning.standard_mappings import calculate_achievement, calculate_grade
 
 logger = logging.getLogger(__name__)
 
@@ -42,44 +43,6 @@ def parse_numeric(value: Any) -> float:
         except (ValueError, TypeError):
             logger.warning(f"Could not parse numeric value: {value}")
             return 0.0
-
-
-def calculate_achievement(actual: float, target: float, is_inverse: bool = False, cap_at_100: bool = False) -> float:
-    """
-    Calculate KPI achievement ratio.
-    
-    Args:
-        actual: Actual performance value
-        target: Target performance value
-        is_inverse: If True, calculate as target/actual (lower is better)
-        cap_at_100: If True, cap result at 100%
-        
-    Returns:
-        Achievement ratio (0-100 scale, capped if needed)
-    """
-    actual = float(actual) if not pd.isna(actual) else 0.0
-    target = float(target) if not pd.isna(target) else 0.0
-    
-    if is_inverse:
-        # Lower is better: target/actual
-        if actual == 0:
-            # No division by zero - assume perfect performance
-            achievement = 100.0
-        else:
-            achievement = (target / actual) * 100.0
-    else:
-        # Higher is better: actual/target
-        if target == 0:
-            # Cannot measure achievement if target is zero
-            achievement = 0.0 if actual == 0 else 0.0
-        else:
-            achievement = (actual / target) * 100.0
-    
-    # Apply capping if needed
-    if cap_at_100:
-        achievement = min(achievement, 100.0)
-    
-    return achievement
 
 
 def process_csr(file_path: str, team_config: Dict[str, Any] = None) -> pd.DataFrame:
@@ -199,20 +162,7 @@ def process_csr(file_path: str, team_config: Dict[str, Any] = None) -> pd.DataFr
     
     df['Performance'] = performance_scores
     
-    # Assign grades
-    def assign_grade(score: float) -> str:
-        if score >= thresholds['A']:
-            return 'A'
-        elif score >= thresholds['B']:
-            return 'B'
-        elif score >= thresholds['C']:
-            return 'C'
-        elif score >= thresholds['D']:
-            return 'D'
-        else:
-            return 'E'
-    
-    df['Grade'] = df['Performance'].apply(assign_grade)
+    df['Grade'] = df['Performance'].apply(lambda score: calculate_grade(score, thresholds))
     
     # Map to standard system columns
     for col in ['PerformanceScore', 'Performance_Score']:

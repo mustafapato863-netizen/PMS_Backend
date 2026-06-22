@@ -4,6 +4,7 @@ Provides common column name mappings used across teams.
 Reduces duplication and ensures consistency.
 """
 
+import math
 from typing import Dict
 
 # Common Excel column name variations across different teams
@@ -150,11 +151,11 @@ GRADE_THRESHOLDS = {
     'B': 85,
     'C': 75,
     'D': 65,
-    'F': 0,
+    'E': 0,
 }
 
 
-def calculate_grade(score: float) -> str:
+def calculate_grade(score: float, thresholds: Dict[str, float] = None) -> str:
     """
     Calculate grade from performance score.
     
@@ -164,16 +165,38 @@ def calculate_grade(score: float) -> str:
     Returns:
         Grade letter (A, B, C, D, F)
     """
-    if score >= GRADE_THRESHOLDS['A']:
+    thresholds = thresholds or GRADE_THRESHOLDS
+    if score >= thresholds['A']:
         return 'A'
-    elif score >= GRADE_THRESHOLDS['B']:
+    elif score >= thresholds['B']:
         return 'B'
-    elif score >= GRADE_THRESHOLDS['C']:
+    elif score >= thresholds['C']:
         return 'C'
-    elif score >= GRADE_THRESHOLDS['D']:
+    elif score >= thresholds['D']:
         return 'D'
-    else:
-        return 'F'
+    return 'E'
+
+
+def calculate_achievement(
+    actual: float,
+    target: float,
+    is_inverse: bool = False,
+    cap_at_100: bool = False,
+) -> float:
+    """Calculate direct or inverse KPI achievement on a 0-100 scale."""
+    def _safe_float(value) -> float:
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return 0.0
+        return number if math.isfinite(number) else 0.0
+
+    actual = _safe_float(actual)
+    target = _safe_float(target)
+    achievement = (target / actual * 100.0) if is_inverse and actual else (
+        actual / target * 100.0 if not is_inverse and target else 100.0 if is_inverse else 0.0
+    )
+    return min(achievement, 100.0) if cap_at_100 else achievement
 
 
 # Data type conversions
