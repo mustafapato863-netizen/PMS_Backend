@@ -16292,3 +16292,172 @@
 {"timestamp": "2026-06-23T09:36:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "6 changes detected", "request_id": null}
 {"timestamp": "2026-06-23T09:36:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
 {"timestamp": "2026-06-23T09:36:24Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:36:26Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:36:58Z", "level": "INFO", "logger": "watchfiles.main", "message": "3 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:37:00Z", "level": "INFO", "logger": "watchfiles.main", "message": "166 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:37:18Z", "level": "INFO", "logger": "watchfiles.main", "message": "104 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:37:23Z", "level": "INFO", "logger": "watchfiles.main", "message": "6 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:37:24Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:38:03Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:38:07Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:39:01Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:39:01Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:39:05Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:39:06Z", "level": "INFO", "logger": "watchfiles.main", "message": "6 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:39:07Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:39:20Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:39:34Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:39:52Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "3 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:04Z", "level": "INFO", "logger": "watchfiles.main", "message": "8 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:05Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:12Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:13Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:20Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:41Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:40:55Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:41:10Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:41:15Z", "level": "INFO", "logger": "watchfiles.main", "message": "8 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:41:26Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:41:36Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:41:44Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:41:52Z", "level": "INFO", "logger": "watchfiles.main", "message": "4 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:41:52Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:41:57Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:07Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:07Z", "level": "INFO", "logger": "watchfiles.main", "message": "6 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:09Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:17Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:18Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:27Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:31Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "10 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:38Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:42:51Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:43:08Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:43:16Z", "level": "INFO", "logger": "watchfiles.main", "message": "8 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:43:19Z", "level": "INFO", "logger": "watchfiles.main", "message": "10 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:43:21Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:43:21Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:43:21Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:43:28Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:43:29Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:43:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:43:34Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:43:34Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:43:43Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:09Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:10Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:15Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:44:15Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:15Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:44:18Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:19Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:24Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:24Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:44:24Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:44:29Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:30Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:35Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:44:35Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:44:35Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:44:45Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:01Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:07Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:45:07Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:45:08Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:08Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:08Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:25Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:45Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:46Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:50Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:45:50Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:45:51Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:45:59Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:46:57Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:46:58Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:03Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:47:03Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:03Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:47:08Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:09Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:14Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:47:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:14Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:47:18Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:18Z", "level": "INFO", "logger": "watchfiles.main", "message": "3 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:18Z", "level": "INFO", "logger": "watchfiles.main", "message": "15 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:19Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:19Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:47:38Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:48:05Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:48:08Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:48:09Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:48:27Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:49:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:49:34Z", "level": "INFO", "logger": "watchfiles.main", "message": "3 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:49:35Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:49:47Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:49:47Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:51:09Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:51:10Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:54:10Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:54:11Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:55:41Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:55:50Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:55:51Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:55:56Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:55:56Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:55:56Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:55:59Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:56:00Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:56:01Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:56:05Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:56:05Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:56:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:56:33Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:56:37Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:56:38Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:56:38Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:56:41Z", "level": "INFO", "logger": "watchfiles.main", "message": "4 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:56:42Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:56:56Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:57:02Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:57:11Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:57:12Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:58:19Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:58:20Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:58:25Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T09:58:25Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T09:58:25Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T09:58:31Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:58:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T09:58:47Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:00:12Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:00:13Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:03:08Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:03:09Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:03:13Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:03:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:05:32Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:05:33Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:05:34Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:05:38Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T10:05:38Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T10:06:13Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:06:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "2 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:06:14Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:06:19Z", "level": "INFO", "logger": "watchfiles.main", "message": "5 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:06:19Z", "level": "INFO", "logger": "root", "message": "Structured logging initialized. File: D:\\Projects\\PMS_Dashboard\\Backend\\logs\\pms_app.log", "request_id": null}
+{"timestamp": "2026-06-23T10:06:19Z", "level": "INFO", "logger": "services.permission_seed", "message": "Role permissions table is already populated. Skipping seeding.", "request_id": null}
+{"timestamp": "2026-06-23T10:06:27Z", "level": "INFO", "logger": "watchfiles.main", "message": "3 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:06:27Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:06:41Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:09:15Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}
+{"timestamp": "2026-06-23T10:09:15Z", "level": "INFO", "logger": "watchfiles.main", "message": "7 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:10:41Z", "level": "INFO", "logger": "watchfiles.main", "message": "55 changes detected", "request_id": null}
+{"timestamp": "2026-06-23T10:11:09Z", "level": "INFO", "logger": "watchfiles.main", "message": "1 change detected", "request_id": null}

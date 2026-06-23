@@ -219,25 +219,9 @@
     "grade": "D",
     "root_cause": "Rejection",
     "suggested_action": "Quality Calibration",
-    "manager_action": "Training: Need Study more reference",
+    "manager_action": "Training: Need Study more referenced",
     "manager_notes": "Rejection: 4.0% / 2.0%",
-    "timestamp": "2026-06-23T12:12:55.408105",
-    "created_by_name": "hima",
-    "created_by_role": "Manager"
-  },
-  {
-    "id": "SGHD03493_May_1782206178522",
-    "employee_id": "SGHD03493",
-    "employee_name": "Donald Thomas Anthoni Samy Anthony Samy",
-    "team": "Coding",
-    "month": "May",
-    "score": 74.93,
-    "grade": "D",
-    "root_cause": "Rejection",
-    "suggested_action": "Quality Calibration",
-    "manager_action": "PIP: Law Man",
-    "manager_notes": "Rejection: 4.0% / 2.0%",
-    "timestamp": "2026-06-23T12:18:45.337627",
+    "timestamp": "2026-06-23T13:31:45.507199",
     "created_by_name": "hima",
     "created_by_role": "Manager"
   }

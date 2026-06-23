@@ -211,9 +211,10 @@ async def update_user_route(
                     settings.JWT_SECRET,
                     algorithms=[settings.JWT_ALGORITHM],
                 ).get("username")
-            except Exception:
+            except Exception as e:
+                print(f"DEBUG JWT DECODE FAILED: {e}")
                 current_username = None
-        existing = db.query(User).filter(User.id == user_id).first()
+        existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:
             raise HTTPException(status_code=404, detail="User not found")
 
@@ -286,9 +287,10 @@ async def toggle_user_active_route(
                     settings.JWT_SECRET,
                     algorithms=[settings.JWT_ALGORITHM],
                 ).get("username")
-            except Exception:
+            except Exception as e:
+                print(f"DEBUG JWT DECODE TOGGLE FAILED: {e}")
                 current_username = None
-        existing = db.query(User).filter(User.id == user_id).first()
+        existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:
             raise HTTPException(status_code=404, detail="User not found")
 
@@ -328,9 +330,10 @@ async def delete_user_route(
                     settings.JWT_SECRET,
                     algorithms=[settings.JWT_ALGORITHM],
                 ).get("username")
-            except Exception:
+            except Exception as e:
+                print(f"DEBUG JWT DECODE DELETE FAILED: {e}")
                 current_username = None
-        existing = db.query(User).filter(User.id == user_id).first()
+        existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:
             raise HTTPException(status_code=404, detail="User not found")
 
@@ -395,3 +398,207 @@ async def get_all_corrective_actions(
         )
     except Exception as e:
         return StandardResponse(success=False, message=f"Failed to fetch corrective actions: {str(e)}")
+
+
+@users_router.get("/notifications", response_model=StandardResponse)
+async def get_user_notifications(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    try:
+        user_id = _current_user_id(request)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        from models.models import NotificationRecipient, Notification
+        from uuid import UUID
+        
+        recipients = (
+            db.query(NotificationRecipient)
+            .join(Notification, NotificationRecipient.notification_id == Notification.id)
+            .filter(NotificationRecipient.user_id == UUID(user_id))
+            .order_by(NotificationRecipient.created_at.desc())
+            .all()
+        )
+        
+        data = []
+        for r in recipients:
+            n = r.notification
+            ntype = 'info'
+            if n.type == 'action_recorded':
+                ntype = 'action'
+            elif n.type == 'data_upload':
+                ntype = 'upload'
+            elif n.type == 'warning':
+                ntype = 'error'
+            elif n.type == 'system':
+                ntype = 'success'
+                
+            dt = r.created_at if r.created_at else n.created_at
+            if dt.tzinfo is None:
+                timestamp_str = dt.isoformat() + "Z"
+            else:
+                timestamp_str = dt.astimezone(__import__('datetime').timezone.utc).isoformat().replace("+00:00", "Z")
+
+            data.append({
+                "id": str(r.id),
+                "type": ntype,
+                "message": n.message,
+                "timestamp": timestamp_str,
+                "read": r.is_read,
+                "meta": n.payload.get("created_by_name") + " - " + n.payload.get("created_by_role") if n.payload and isinstance(n.payload, dict) and n.payload.get("created_by_name") else None
+            })
+            
+        return StandardResponse(
+            success=True,
+            message="Notifications retrieved successfully",
+            data=data
+        )
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to fetch notifications: {str(e)}")
+
+
+@users_router.put("/notifications/{recipient_id}/read", response_model=StandardResponse)
+async def mark_notification_read(
+    recipient_id: str,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    try:
+        user_id = _current_user_id(request)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        from models.models import NotificationRecipient
+        from uuid import UUID
+        from datetime import datetime, timezone
+        
+        try:
+            req_uuid = UUID(recipient_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid UUID format")
+            
+        recipient = (
+            db.query(NotificationRecipient)
+            .filter(
+                (NotificationRecipient.id == req_uuid) | (NotificationRecipient.notification_id == req_uuid),
+                NotificationRecipient.user_id == UUID(user_id)
+            )
+            .first()
+        )
+        if not recipient:
+            raise HTTPException(status_code=404, detail="Notification not found")
+            
+        recipient.is_read = True
+        recipient.read_at = datetime.now(timezone.utc)
+        db.commit()
+        
+        return StandardResponse(
+            success=True,
+            message="Notification marked as read successfully"
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to mark notification as read: {str(e)}")
+
+
+@users_router.post("/notifications/read-all", response_model=StandardResponse)
+async def mark_all_notifications_read(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    try:
+        user_id = _current_user_id(request)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        from models.models import NotificationRecipient
+        from uuid import UUID
+        from datetime import datetime, timezone
+        
+        db.query(NotificationRecipient).filter(
+            NotificationRecipient.user_id == UUID(user_id),
+            NotificationRecipient.is_read == False
+        ).update(
+            {
+                "is_read": True,
+                "read_at": datetime.now(timezone.utc)
+            },
+            synchronize_session=False
+        )
+        db.commit()
+        
+        return StandardResponse(
+            success=True,
+            message="All notifications marked as read successfully"
+        )
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to mark all notifications as read: {str(e)}")
+
+
+@users_router.delete("/notifications/clear", response_model=StandardResponse)
+async def clear_all_notifications(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    try:
+        user_id = _current_user_id(request)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        from models.models import NotificationRecipient
+        from uuid import UUID
+        
+        db.query(NotificationRecipient).filter(NotificationRecipient.user_id == UUID(user_id)).delete(synchronize_session=False)
+        db.commit()
+        
+        return StandardResponse(
+            success=True,
+            message="All notifications cleared successfully"
+        )
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to clear notifications: {str(e)}")
+
+
+@users_router.delete("/notifications/{recipient_id}", response_model=StandardResponse)
+async def delete_notification(
+    recipient_id: str,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    try:
+        user_id = _current_user_id(request)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Authentication required")
+        
+        from models.models import NotificationRecipient
+        from uuid import UUID
+        
+        try:
+            req_uuid = UUID(recipient_id)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid UUID format")
+            
+        recipient = (
+            db.query(NotificationRecipient)
+            .filter(
+                (NotificationRecipient.id == req_uuid) | (NotificationRecipient.notification_id == req_uuid),
+                NotificationRecipient.user_id == UUID(user_id)
+            )
+            .first()
+        )
+        if not recipient:
+            raise HTTPException(status_code=404, detail="Notification not found")
+            
+        db.delete(recipient)
+        db.commit()
+        
+        return StandardResponse(
+            success=True,
+            message="Notification deleted successfully"
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to delete notification: {str(e)}")

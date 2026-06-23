@@ -315,7 +315,9 @@ class DatabaseSeeder:
             updated_records.append(r)
 
         self.performance_repo.save_all(updated_records)
+        imported_teams = list(set([team_name for team_name, _, _, _ in sheet_mappings]))
         return {
             "records_imported": len(all_new_records),
-            "employees_imported": len(all_new_employees)
+            "employees_imported": len(all_new_employees),
+            "teams": imported_teams
         }

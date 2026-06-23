@@ -51621,141 +51621,6 @@
     }
   },
   {
-    "id": "SGHD03945_May",
-    "employee_id": "SGHD03945",
-    "employee_name": "Varatha Raj Perumal",
-    "team": "Coding",
-    "month": "May",
-    "region": "UAE",
-    "calls": {
-      "inbound": 0,
-      "outbound": 0,
-      "total_handled": 0,
-      "abandoned": 0,
-      "aht_raw": "00:00:00"
-    },
-    "geo": {
-      "bookings": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      },
-      "attended": {
-        "dubai": 0,
-        "sharjah": 0,
-        "ajman": 0,
-        "clinics": 0
-      }
-    },
-    "actual": {
-      "booking_rate": 0.0,
-      "attend_rate": 0.0,
-      "abandon_rate": 0.0,
-      "reachability_rate": 0.0,
-      "rejection_rate": 0.0,
-      "initial_error_rate": 0.0,
-      "submission_rate": 0.0,
-      "quality_rate": 0.0,
-      "utz_rate": 0.0
-    },
-    "achievement": {
-      "booking_ach": 0.0,
-      "attend_ach": 0.0,
-      "quality_ach": 0.0,
-      "aht_ach": 0.0,
-      "reachability_ach": 0.0,
-      "abandon_ach": 0.0,
-      "rejection_ach": 1.4435,
-      "initial_error_ach": 0.0,
-      "submission_ach": 0.0,
-      "op_census_ach": 0.0,
-      "op_revenue_ach": 0.0,
-      "ip_census_ach": 0.0,
-      "ip_revenue_ach": 0.0,
-      "activity_ach": 0.0
-    },
-    "evaluation": {
-      "score": 100.0,
-      "grade": "A",
-      "root_cause": null,
-      "suggested_action": "Reward & Recognition",
-      "corrective_action": null,
-      "manager_notes": null,
-      "planning_category": [
-        "Promotion Candidate"
-      ],
-      "trend_status": {
-        "score": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "attendance": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "booking": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "quality": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        },
-        "aht": {
-          "mom": "Stable",
-          "qoq": "Stable",
-          "ytd": "Stable"
-        }
-      }
-    },
-    "upload_id": "fbe22ff6-9584-4ff6-9aa9-0806e09ce22c",
-    "raw_data": {
-      "Date": "2026-05-31 00:00:00",
-      "Region": "UAE",
-      "HRID": "SGHD03945",
-      "AgentName": "Varatha Raj Perumal",
-      "Status": "Active",
-      "Team": "Dubai",
-      "ReviewedClaims(SameMonth)": 508,
-      "ClaimAmount": 6325810.531999999,
-      "FinalErrorsClaims(RaisedbyQualitySameMonth)": null,
-      "TotalReviewingClaimsWithin48Hr": 305,
-      "ReviewedClaims(Previous3Months)": 340.0,
-      "ReviewedClaimsAmount(3MPrevious)": 4012140.120000003,
-      "InitialRAClaims(byInsurance,Previous3Month)": 312.0,
-      "RAClaimsAmount(3MonthPrevious)": 3478281.950000002,
-      "InitialRejectedClaims(byInsurance,Previous3Month)": 4.0,
-      "RejectedClaimsAmount3MonthPrevious": 48191.84000000078,
-      "A.QualityErrorsRate": 0,
-      "A.RejectionRate": 0.01385507002961642,
-      "A.TAT": 0.6003937007874016,
-      "T.QualityErrorsRate": 0.05,
-      "T.RejectionRate": 0.02,
-      "T.TAT": 1.0,
-      "QualityErrorsRateAch%": 1.0,
-      "RejectionRateAch%": 1.0,
-      "TATAch%": 0.6003937007874016,
-      "PerformanceScore": 100.0,
-      "PerformanceGrade": "Exceeds",
-      "Is_Inactive": 0,
-      "Is_New": 0,
-      "QualityErrors_Achievement": 100.0,
-      "Rejection_Achievement": 100.0,
-      "TAT_Achievement": 100.0,
-      "Performance": 100.0,
-      "Grade": "A",
-      "SuggestedAction": "Reward",
-      "PerformanceScore%": 100.0,
-      "PerformanceScor%": 100.0,
-      "Performance_Score": 100.0
-    }
-  },
-  {
     "id": "SGHA01348_May",
     "employee_id": "SGHA01348",
     "employee_name": "Jasir Saneen Abdul Sathar Poovathingal",
@@ -102299,6 +102164,141 @@
     }
   },
   {
+    "id": "SGHD03945_May",
+    "employee_id": "SGHD03945",
+    "employee_name": "Varatha Raj Perumal",
+    "team": "Coding",
+    "month": "May",
+    "region": "UAE",
+    "calls": {
+      "inbound": 0,
+      "outbound": 0,
+      "total_handled": 0,
+      "abandoned": 0,
+      "aht_raw": "00:00:00"
+    },
+    "geo": {
+      "bookings": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      },
+      "attended": {
+        "dubai": 0,
+        "sharjah": 0,
+        "ajman": 0,
+        "clinics": 0
+      }
+    },
+    "actual": {
+      "booking_rate": 0.0,
+      "attend_rate": 0.0,
+      "abandon_rate": 0.0,
+      "reachability_rate": 0.0,
+      "rejection_rate": 0.0,
+      "initial_error_rate": 0.0,
+      "submission_rate": 0.0,
+      "quality_rate": 0.0,
+      "utz_rate": 0.0
+    },
+    "achievement": {
+      "booking_ach": 0.0,
+      "attend_ach": 0.0,
+      "quality_ach": 0.0,
+      "aht_ach": 0.0,
+      "reachability_ach": 0.0,
+      "abandon_ach": 0.0,
+      "rejection_ach": 1.4435,
+      "initial_error_ach": 0.0,
+      "submission_ach": 0.0,
+      "op_census_ach": 0.0,
+      "op_revenue_ach": 0.0,
+      "ip_census_ach": 0.0,
+      "ip_revenue_ach": 0.0,
+      "activity_ach": 0.0
+    },
+    "evaluation": {
+      "score": 100.0,
+      "grade": "A",
+      "root_cause": null,
+      "suggested_action": "Reward & Recognition",
+      "corrective_action": null,
+      "manager_notes": null,
+      "planning_category": [
+        "Promotion Candidate"
+      ],
+      "trend_status": {
+        "score": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "attendance": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "booking": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "quality": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        },
+        "aht": {
+          "mom": "Stable",
+          "qoq": "Stable",
+          "ytd": "Stable"
+        }
+      }
+    },
+    "upload_id": "fbe22ff6-9584-4ff6-9aa9-0806e09ce22c",
+    "raw_data": {
+      "Date": "2026-05-31 00:00:00",
+      "Region": "UAE",
+      "HRID": "SGHD03945",
+      "AgentName": "Varatha Raj Perumal",
+      "Status": "Active",
+      "Team": "Dubai",
+      "ReviewedClaims(SameMonth)": 508,
+      "ClaimAmount": 6325810.531999999,
+      "FinalErrorsClaims(RaisedbyQualitySameMonth)": null,
+      "TotalReviewingClaimsWithin48Hr": 305,
+      "ReviewedClaims(Previous3Months)": 340.0,
+      "ReviewedClaimsAmount(3MPrevious)": 4012140.120000003,
+      "InitialRAClaims(byInsurance,Previous3Month)": 312.0,
+      "RAClaimsAmount(3MonthPrevious)": 3478281.950000002,
+      "InitialRejectedClaims(byInsurance,Previous3Month)": 4.0,
+      "RejectedClaimsAmount3MonthPrevious": 48191.84000000078,
+      "A.QualityErrorsRate": 0,
+      "A.RejectionRate": 0.01385507002961642,
+      "A.TAT": 0.6003937007874016,
+      "T.QualityErrorsRate": 0.05,
+      "T.RejectionRate": 0.02,
+      "T.TAT": 1.0,
+      "QualityErrorsRateAch%": 1.0,
+      "RejectionRateAch%": 1.0,
+      "TATAch%": 0.6003937007874016,
+      "PerformanceScore": 100.0,
+      "PerformanceGrade": "Exceeds",
+      "Is_Inactive": 0,
+      "Is_New": 0,
+      "QualityErrors_Achievement": 100.0,
+      "Rejection_Achievement": 100.0,
+      "TAT_Achievement": 100.0,
+      "Performance": 100.0,
+      "Grade": "A",
+      "SuggestedAction": "Reward",
+      "PerformanceScore%": 100.0,
+      "PerformanceScor%": 100.0,
+      "Performance_Score": 100.0
+    }
+  },
+  {
     "id": "SGHD03493_May",
     "employee_id": "SGHD03493",
     "employee_name": "Donald Thomas Anthoni Samy Anthony Samy",
@@ -102363,7 +102363,7 @@
         "target": 1.0
       },
       "suggested_action": "Quality Calibration",
-      "corrective_action": "PIP: Law Man",
+      "corrective_action": "Training: Need Study more referenced",
       "manager_notes": "Rejection: 4.0% / 2.0%",
       "planning_category": [
         "Training Candidate",

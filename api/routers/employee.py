@@ -459,6 +459,7 @@ async def  save_corrective_action(
             team_name=perf.team,
             created_by_name=created_by_name,
             created_by_role=created_by_role,
+            is_update=bool(existing_action),
         )
 
         return StandardResponse(
@@ -472,7 +473,7 @@ async def  save_corrective_action(
         return StandardResponse(success=False, message=f"Failed to save corrective action: {str(e)}")
 
 @router.delete("/{employee_id}/corrective-actions/{action_id}", response_model=StandardResponse)
-def  delete_corrective_action(
+async def delete_corrective_action(
     employee_id: str,
     action_id: str,
     role: str = Depends(require_role(["Admin", "Manager"]))
@@ -502,6 +503,11 @@ def  delete_corrective_action(
             perf.evaluation.corrective_action = latest_for_month.manager_action if latest_for_month else None
             perf.evaluation.manager_notes = latest_for_month.manager_notes if latest_for_month else None
             performance_repo.save(perf)
+
+        await SocketNotificationService.notify_info(
+            info_message=f"Action deleted for {target_action.employee_name}: {target_action.manager_action}",
+            team_name=target_action.team
+        )
 
         return StandardResponse(
             success=True,

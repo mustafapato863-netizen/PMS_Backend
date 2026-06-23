@@ -100,7 +100,7 @@ def test_admin_cannot_delete_self(test_client, db_session):
     admin = db_session.query(User).filter(User.username == "admin_user").first()
 
     response = test_client.delete(f"/api/users/{admin.id}", headers=headers)
-
+    print("DEBUG DELETE SELF RESPONSE:", response.json())
     assert response.status_code == 400
     assert "own account" in response.json()["detail"]
 
@@ -114,6 +114,6 @@ def test_admin_cannot_deactivate_self(test_client, db_session):
         params={"is_active": False},
         headers=headers,
     )
-
+    print("DEBUG DEACTIVATE SELF RESPONSE:", response.json())
     assert response.status_code == 400
     assert "own account" in response.json()["detail"]

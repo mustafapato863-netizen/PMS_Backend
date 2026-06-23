@@ -6,6 +6,14 @@ Handles socket event emission for real-time notifications.
 import asyncio
 from datetime import datetime
 from typing import Optional, Dict, Any
+"""
+Socket.io Service
+Handles socket event emission for real-time notifications.
+"""
+
+import asyncio
+from datetime import datetime
+from typing import Optional, Dict, Any
 from config.socket_config import broadcast_notification, broadcast_action_recorded, broadcast_data_update
 
 
@@ -15,11 +23,12 @@ class SocketNotificationService:
     @staticmethod
     async def notify_file_upload(filename: str, team_name: str, status: str = 'success'):
         """Emit file upload notification."""
+        msg = f"File '{filename}' uploaded successfully for {team_name}" if status == 'success' else f"File upload failed for '{filename}'"
         await broadcast_notification({
-            'type': 'upload',
-            'message': f"File '{filename}' uploaded successfully for {team_name}",
+            'type': 'upload' if status == 'success' else 'error',
+            'message': msg,
             'team': team_name,
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': datetime.utcnow().isoformat() + "Z",
             'data': {
                 'filename': filename,
                 'team_name': team_name,
@@ -28,13 +37,14 @@ class SocketNotificationService:
         })
 
     @staticmethod
-    async def notify_action_assigned(employee_name: str, action_type: str, team_name: str, created_by_name: str | None = None, created_by_role: str | None = None):
-        """Emit action assigned notification."""
+    async def notify_action_assigned(employee_name: str, action_type: str, team_name: str, created_by_name: str | None = None, created_by_role: str | None = None, is_update: bool = False):
+        """Emit action assigned or updated notification."""
+        action_verb = "updated for" if is_update else "assigned to"
         payload = {
             'type': 'action',
-            'message': f"{action_type} assigned to {employee_name} in {team_name}",
+            'message': f"{action_type} {action_verb} {employee_name} in {team_name}",
             'team': team_name,
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': datetime.utcnow().isoformat() + "Z",
             'data': {
                 'employee_name': employee_name,
                 'action_type': action_type,
@@ -53,7 +63,7 @@ class SocketNotificationService:
             'team_name': team_name,
             'metric_name': metric_name,
             'new_value': new_value,
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': datetime.utcnow().isoformat() + "Z",
         })
 
     @staticmethod
@@ -62,7 +72,7 @@ class SocketNotificationService:
         await broadcast_notification({
             'type': 'error',
             'message': error_message,
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': datetime.utcnow().isoformat() + "Z",
             'data': {
                 'user_id': user_id,
             },
@@ -75,7 +85,7 @@ class SocketNotificationService:
             'type': 'success',
             'message': success_message,
             'team': team_name,
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': datetime.utcnow().isoformat() + "Z",
         })
 
     @staticmethod
@@ -85,5 +95,5 @@ class SocketNotificationService:
             'type': 'info',
             'message': info_message,
             'team': team_name,
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': datetime.utcnow().isoformat() + "Z",
         })

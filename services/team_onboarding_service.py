@@ -159,7 +159,7 @@ class TeamOnboardingService:
                     'type': 'info',
                     'message': f"Onboarding step {step.step_number}/{len(steps)}: {step.name}",
                     'team': team_name,
-                    'timestamp': datetime.now().isoformat(),
+                    'timestamp': datetime.utcnow().isoformat() + "Z",
                 })
 
                 logger.info(f"Executing onboarding step {step.step_number}: {step.name} for team {team_name}")
@@ -294,7 +294,7 @@ class TeamOnboardingService:
                 'type': 'success',
                 'message': f"Team {team_name} has been successfully onboarded and is ready to use",
                 'team': team_name,
-                'timestamp': datetime.now().isoformat(),
+                'timestamp': datetime.utcnow().isoformat() + "Z",
             })
 
             logger.info(f"✓ Notification sent for team: {team_name}")

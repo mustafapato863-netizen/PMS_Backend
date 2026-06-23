@@ -72,6 +72,16 @@ async def upload_pms_file(
         CacheInvalidationService.flush_all()
         _warm_team_caches()
 
+        # Emit file upload success notification
+        from services.socket_service import SocketNotificationService
+        teams_list = result.get("teams", []) if isinstance(result, dict) else []
+        teams_str = ", ".join(teams_list) if teams_list else "All Teams"
+        await SocketNotificationService.notify_file_upload(
+            filename=file.filename,
+            team_name=teams_str,
+            status="success"
+        )
+
         return StandardResponse(
             success=True,
             message="PMS Excel uploaded and processed successfully",
@@ -80,6 +90,13 @@ async def upload_pms_file(
     except Exception as e:
         import traceback
         traceback.print_exc()
+        # Emit file upload failure notification
+        from services.socket_service import SocketNotificationService
+        await SocketNotificationService.notify_file_upload(
+            filename=file.filename,
+            team_name="All Teams",
+            status="failed"
+        )
         return StandardResponse(success=False, message=f"Failed to upload and process Excel file: {str(e)}")
 
 @router.delete("/{upload_id}", response_model=StandardResponse)
