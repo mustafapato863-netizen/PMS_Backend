@@ -6,7 +6,7 @@ Handles socket event emission for real-time notifications.
 import asyncio
 from datetime import datetime
 from typing import Optional, Dict, Any
-from config.socket_config import broadcast_notification, broadcast_data_update
+from config.socket_config import broadcast_notification, broadcast_action_recorded, broadcast_data_update
 
 
 class SocketNotificationService:
@@ -28,9 +28,9 @@ class SocketNotificationService:
         })
 
     @staticmethod
-    async def notify_action_assigned(employee_name: str, action_type: str, team_name: str):
+    async def notify_action_assigned(employee_name: str, action_type: str, team_name: str, created_by_name: str | None = None, created_by_role: str | None = None):
         """Emit action assigned notification."""
-        await broadcast_notification({
+        payload = {
             'type': 'action',
             'message': f"{action_type} assigned to {employee_name} in {team_name}",
             'team': team_name,
@@ -39,8 +39,12 @@ class SocketNotificationService:
                 'employee_name': employee_name,
                 'action_type': action_type,
                 'team_name': team_name,
+                'created_by_name': created_by_name,
+                'created_by_role': created_by_role,
             },
-        })
+        }
+        await broadcast_notification(payload)
+        await broadcast_action_recorded(payload['data'] | {'team': team_name, 'timestamp': payload['timestamp']})
 
     @staticmethod
     async def notify_performance_updated(team_name: str, metric_name: str, new_value: float):

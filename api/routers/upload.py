@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 import datetime
 
-from api.dependencies import uploads_repo, performance_repo, trend_service, planning_service, require_role
+from api.dependencies import uploads_repo, performance_repo, trend_service, planning_service
+from api.middleware.rbac_middleware import require_permission
 from services.seeding_service import DatabaseSeeder
 from services.cache_invalidation_service import CacheInvalidationService
 from models.schemas import StandardResponse
@@ -41,7 +42,7 @@ router = APIRouter()
 
 @router.get("/", response_model=StandardResponse)
 async def get_upload_history(
-    role: str = Depends(require_role(["Admin"]))
+    _user=Depends(require_permission("view_reports"))
 ):
     try:
         records = uploads_repo.get_all()
@@ -57,7 +58,7 @@ async def get_upload_history(
 @router.post("/pms", response_model=StandardResponse)
 async def upload_pms_file(
     file: UploadFile = File(...),
-    role: str = Depends(require_role(["Admin"]))
+    _user=Depends(require_permission("upload_data"))
 ):
     try:
         if not file.filename.lower().endswith(('.xlsx', '.xls')):
@@ -84,7 +85,7 @@ async def upload_pms_file(
 @router.delete("/{upload_id}", response_model=StandardResponse)
 async def delete_upload(
     upload_id: str,
-    role: str = Depends(require_role(["Admin"]))
+    _user=Depends(require_permission("delete_performance"))
 ):
     try:
         uploads = uploads_repo.get_all()

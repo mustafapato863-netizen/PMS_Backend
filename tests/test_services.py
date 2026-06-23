@@ -9,9 +9,12 @@ from datetime import datetime
 from decimal import Decimal
 from unittest.mock import Mock, patch, MagicMock
 
+import pandas as pd
+
 from services.team_service import TeamService
 from services.employee_service import EmployeeService
 from services.performance_service import PerformanceService
+from services.seeding_service import DatabaseSeeder
 
 
 # ============================================================
@@ -373,6 +376,13 @@ class TestPerformanceService:
         # Verify
         assert len(records) > 0
         mock_session.close.assert_called_once()
+
+
+def test_seeding_service_excludes_raw_performance_grade_values():
+    assert DatabaseSeeder._should_exclude_raw_row(pd.Series({"Performance Grade": "-"}))
+    assert DatabaseSeeder._should_exclude_raw_row(pd.Series({"Performance Grade": "New Staff"}))
+    assert DatabaseSeeder._should_exclude_raw_row(pd.Series({"PerformanceGrade": "Leave"}))
+    assert not DatabaseSeeder._should_exclude_raw_row(pd.Series({"Performance Grade": "A"}))
 
 
 # ============================================================

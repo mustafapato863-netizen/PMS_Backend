@@ -171,7 +171,8 @@ class User(Base):
     notifications = relationship("NotificationRecipient", back_populates="user")
     actions_created = relationship("Action", foreign_keys="Action.created_by_user_id", back_populates="created_by_user")
     actions_updated = relationship("Action", foreign_keys="Action.updated_by_user_id", back_populates="updated_by_user")
-    audit_logs = relationship("AuditLog", back_populates="performed_by_user")
+    # ponytail: keep deletes from loading audit rows when the live DB lags schema updates
+    audit_logs = relationship("AuditLog", back_populates="performed_by_user", passive_deletes=True)
 
 
 class UserTeamAssignment(Base):

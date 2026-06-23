@@ -6,6 +6,7 @@ from Data_Cleaning_Teams.sales import process_sales
 from Data_Cleaning_Teams.pharmacy import process_pharmacy
 from Data_Cleaning_Teams.coding import process_coding
 from Data_Cleaning_Teams.csr import process_csr
+from Data_Cleaning_Teams.submission import process_submission
 
 __all__ = [
     'process_inbound',
@@ -16,4 +17,5 @@ __all__ = [
     'process_pharmacy',
     'process_coding',
     'process_csr',
+    'process_submission',
 ]

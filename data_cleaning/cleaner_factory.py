@@ -123,6 +123,7 @@ class CleanerFactory:
             'pharmacy': {'class': None, 'function': 'process_pharmacy'},
             'coding': {'class': None, 'function': 'process_coding'},
             'csr': {'class': None, 'function': 'process_csr'},
+            'submission': {'class': None, 'function': 'process_submission'},
         }
         
         for module_name, config in cleaner_modules.items():

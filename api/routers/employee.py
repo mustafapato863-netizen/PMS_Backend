@@ -1,12 +1,15 @@
 import datetime
+from services.socket_service import SocketNotificationService
 from fastapi import APIRouter, Depends, Query, HTTPException, Request
 from typing import Dict, List
 from uuid import UUID
 
 from api.dependencies import (
     employee_repo, performance_repo, actions_repo, notes_repo, learning_service,
-    serialize_performance_record, require_role
+    serialize_performance_record, require_role, get_current_user_scope, filter_records_by_scope, user_can_access_team
 )
+from config.database import get_db
+from sqlalchemy.orm import Session
 from models.schemas import StandardResponse, ManagerNote, CorrectiveAction
 from services.employee_service import EmployeeService
 from services.performance_service import PerformanceService
@@ -163,7 +166,7 @@ def  create_employee(
 
 
 @router.get("/{employee_id}", response_model=StandardResponse)
-def get_employee_profile(employee_id: str, include_deleted: bool = Query(False)):
+def get_employee_profile(employee_id: str, request: Request, db: Session = Depends(get_db), include_deleted: bool = Query(False)):
     """
     Get employee profile including performance history.
     
@@ -180,8 +183,18 @@ def get_employee_profile(employee_id: str, include_deleted: bool = Query(False))
         if not emp:
             raise HTTPException(status_code=404, detail="Employee not found")
 
+        scope = get_current_user_scope(db, request)
+        if not scope.get("legacy_unscoped") and scope.get("role") == "Manager" and not scope.get("is_general_manager"):
+            if not user_can_access_team(scope, emp.team):
+                raise HTTPException(status_code=403, detail="Access denied for this employee")
+        elif not scope.get("legacy_unscoped") and scope.get("role") in {"Agent", "Executive"}:
+            self_id = str(scope.get("employee_id") or scope.get("user_id") or "")
+            if str(emp.id) != self_id:
+                raise HTTPException(status_code=403, detail="Access denied for this employee")
+
         records = performance_repo.get_all()
-        emp_records = [r for r in records if str(r.employee_id) == emp.id]
+        records = filter_records_by_scope(records, scope)
+        emp_records = [r for r in records if str(r.employee_id) == str(emp.id)]
         
         from services.planning_service import MONTH_ORDER
         emp_records.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
@@ -209,6 +222,8 @@ def get_employee_profile(employee_id: str, include_deleted: bool = Query(False))
 @router.put("/{employee_id}", response_model=StandardResponse)
 def  update_employee(
     employee_id: str,
+    request: Request,
+    db: Session = Depends(get_db),
     name: str = Query(None),
     team: str = Query(None),
     region: str = Query(None),
@@ -230,7 +245,16 @@ def  update_employee(
         emp = employee_repo.get_by_id(employee_id)
         if not emp:
             raise HTTPException(status_code=404, detail="Employee not found")
-        
+
+        scope = get_current_user_scope(db, request)
+        if not scope.get("legacy_unscoped") and scope.get("role") == "Manager" and not scope.get("is_general_manager"):
+            if not user_can_access_team(scope, emp.team):
+                raise HTTPException(status_code=403, detail="Access denied for this employee")
+        elif not scope.get("legacy_unscoped") and scope.get("role") in {"Agent", "Executive"}:
+            self_id = str(scope.get("employee_id") or scope.get("user_id") or "")
+            if str(emp.id) != self_id:
+                raise HTTPException(status_code=403, detail="Access denied for this employee")
+
         data = emp.model_dump()
         if name is not None:
             data['name'] = name
@@ -360,9 +384,10 @@ def  save_notes(
         return StandardResponse(success=False, message=f"Failed to save manager notes: {str(e)}")
 
 @router.post("/{employee_id}/corrective-actions", response_model=StandardResponse)
-def  save_corrective_action(
+async def  save_corrective_action(
     employee_id: str,
     payload: Dict[str, str],
+    request: Request,
     role: str = Depends(require_role(["Admin", "Manager"]))
 ):
     try:
@@ -377,6 +402,10 @@ def  save_corrective_action(
         perf = performance_repo.get_by_employee_and_month(employee_id, month)
         if not perf:
             raise HTTPException(status_code=404, detail="Performance record not found for the selected month")
+
+        current_user = getattr(request.state, "user", None) or {}
+        created_by_name = current_user.get("name") or current_user.get("username") or current_user.get("role") or "Unknown"
+        created_by_role = current_user.get("role") or role
 
         existing_action = None
         if action_id:
@@ -408,7 +437,9 @@ def  save_corrective_action(
                 suggested_action=perf.evaluation.suggested_action or "None",
                 manager_action=manager_action,
                 manager_notes=manager_notes,
-                timestamp=datetime.datetime.now().isoformat()
+                timestamp=datetime.datetime.now().isoformat(),
+                created_by_name=created_by_name,
+                created_by_role=created_by_role,
             )
             actions_repo.save(action)
 
@@ -421,6 +452,14 @@ def  save_corrective_action(
         perf.evaluation.corrective_action = latest_for_month.manager_action if latest_for_month else None
         perf.evaluation.manager_notes = latest_for_month.manager_notes if latest_for_month else None
         performance_repo.save(perf)
+
+        await SocketNotificationService.notify_action_assigned(
+            employee_name=perf.employee_name,
+            action_type=manager_action.split(': ', 1)[0] if ': ' in manager_action else 'Coaching',
+            team_name=perf.team,
+            created_by_name=created_by_name,
+            created_by_role=created_by_role,
+        )
 
         return StandardResponse(
             success=True,

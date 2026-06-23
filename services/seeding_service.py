@@ -19,6 +19,7 @@ from services.analysis_service import AnalysisService
 from services.learning_service import LearningService
 from services.planning_service import PlanningService
 from services.trend_service import TrendService
+from config.loader import load_team_config, ConfigurationError
 
 def safe_int(val) -> int:
     if pd.isna(val):
@@ -65,6 +66,17 @@ class DatabaseSeeder:
         self.planning_service = PlanningService(self.performance_repo)
         self.trend_service = TrendService()
 
+    @staticmethod
+    def _should_exclude_raw_row(row: pd.Series) -> bool:
+        excluded_grades = {"-", "new staff", "leave"}
+        for column_name, value in row.items():
+            normalized_name = str(column_name).strip().lower().replace(" ", "")
+            if normalized_name != "performancegrade":
+                continue
+            normalized_value = "" if pd.isna(value) else str(value).strip().lower()
+            return normalized_value in excluded_grades
+        return False
+
     def seed_database(self):
         """Initializes the database from the default Excel file if performance repository is empty."""
         if not os.path.exists(DEFAULT_FILE_PATH):
@@ -99,14 +111,16 @@ class DatabaseSeeder:
         return self._process_and_save_excel(excel_file, upload_id=upload_rec.id)
 
     def _process_and_save_excel(self, excel_file, upload_id: Optional[str] = None):
-        inbound_df = self.excel_processor.process_sheet_inbound(excel_file) if "Inbound" in excel_file.sheet_names else pd.DataFrame()
-        outbound_df = self.excel_processor.process_sheet_outbound(excel_file) if "Outbound" in excel_file.sheet_names else pd.DataFrame()
-        inbound_uae_df = self.excel_processor.process_sheet_inbound_uae(excel_file) if "Inbound UAE" in excel_file.sheet_names else pd.DataFrame()
-        preapprovals_df = self.excel_processor.process_sheet_preapprovals(excel_file) if "Pre-Approvals IP Offshore" in excel_file.sheet_names else pd.DataFrame()
-        sales_df = self.excel_processor.process_sheet_sales(excel_file) if "Sales" in excel_file.sheet_names else pd.DataFrame()
-        coding_df = self.excel_processor.process_sheet_coding(excel_file) if "Coding" in excel_file.sheet_names else pd.DataFrame()
-        csr_df = self.excel_processor.process_sheet_csr(excel_file) if "CSR" in excel_file.sheet_names else pd.DataFrame()
-        pharmacy_df = self.excel_processor.process_sheet_pharmacy(excel_file) if "Pharmacy" in excel_file.sheet_names else pd.DataFrame()
+        sheet_names = set(excel_file.sheet_names)
+        inbound_df = self.excel_processor.process_sheet_inbound(excel_file) if "Inbound" in sheet_names else pd.DataFrame()
+        outbound_df = self.excel_processor.process_sheet_outbound(excel_file) if "Outbound" in sheet_names else pd.DataFrame()
+        inbound_uae_df = self.excel_processor.process_sheet_inbound_uae(excel_file) if "Inbound UAE" in sheet_names else pd.DataFrame()
+        preapprovals_df = self.excel_processor.process_sheet_preapprovals(excel_file) if "Pre-Approvals IP Offshore" in sheet_names else pd.DataFrame()
+        sales_df = self.excel_processor.process_sheet_sales(excel_file) if "Sales" in sheet_names else pd.DataFrame()
+        coding_df = self.excel_processor.process_sheet_coding(excel_file) if "Coding" in sheet_names else pd.DataFrame()
+        csr_df = self.excel_processor.process_sheet_csr(excel_file) if "CSR" in sheet_names else pd.DataFrame()
+        pharmacy_df = self.excel_processor.process_sheet_pharmacy(excel_file) if "Pharmacy" in sheet_names else pd.DataFrame()
+        submission_df = self.excel_processor.process_sheet_submission(excel_file) if "Submission" in sheet_names else pd.DataFrame()
 
         all_new_records = []
         all_new_employees = []
@@ -128,9 +142,23 @@ class DatabaseSeeder:
             sheet_mappings.append(("CSR", csr_df, "HRID", "AgentName"))
         if not pharmacy_df.empty:
             sheet_mappings.append(("Pharmacy", pharmacy_df, "HRID", "AgentName"))
+        if not submission_df.empty:
+            try:
+                submission_config = load_team_config("Submission")
+                sheet_mappings.append((
+                    "Submission",
+                    submission_df,
+                    submission_config.get("employee_id_col", "EmployeeID"),
+                    submission_config.get("employee_name_col", "EmployeeName"),
+                ))
+            except ConfigurationError:
+                sheet_mappings.append(("Submission", submission_df, "EmployeeID", "EmployeeName"))
 
         for team_name, df, id_col, name_col in sheet_mappings:
             for _, row in df.iterrows():
+                if self._should_exclude_raw_row(row):
+                    continue
+
                 name = str(row.get(name_col, "")).strip()
                 emp_id = str(row.get(id_col, "")).strip()
                 
@@ -149,7 +177,7 @@ class DatabaseSeeder:
                 is_new = row.get("Is_New", False)
                 region_val = str(row.get("Region", "EGY")).strip().upper()
                 if not region_val or region_val == "NAN":
-                    region_val = "UAE" if team_name in ["Inbound UAE", "Sales", "Coding", "CSR", "Pharmacy"] else "EGY"
+                    region_val = "UAE" if team_name in ["Inbound UAE", "Sales", "Coding", "CSR", "Pharmacy", "Submission"] else "EGY"
 
                 employee = Employee(
                     id=emp_id,
@@ -198,9 +226,9 @@ class DatabaseSeeder:
                     attend_rate=safe_float(row.get("A.Attend%", 0.0)),
                     abandon_rate=safe_float(row.get("A.AbandonRate%", 0.0)),
                     reachability_rate=safe_float(row.get("A.Reachability%", 0.0)),
-                    rejection_rate=safe_float(row.get("IPInitialRejection%", 0.0)),
+                    rejection_rate=safe_float(row.get("A.InitialRejectionRate") or row.get("IPInitialRejection%") or row.get("A.CSRRejection%") or 0.0),
                     initial_error_rate=safe_float(row.get("Error%", 0.0)),
-                    submission_rate=safe_float(row.get("NumberApprovalwithin48hrs", 0.0)),
+                    submission_rate=safe_float(row.get("A.TAT48Hours") or row.get("NumberApprovalwithin48hrs") or 0.0),
                     quality_rate=safe_float(row.get("A.QualityScore", 0.0)),
                     utz_rate=safe_float(row.get("A.UTZ%", 0.0))
                 )
@@ -215,9 +243,9 @@ class DatabaseSeeder:
                     aht_ach=achievements.get("AHT", 0.0),
                     reachability_ach=achievements.get("Other", 0.0) if team_name == "Outbound" else 0.0,
                     abandon_ach=achievements.get("Other", 0.0) if team_name in ["Inbound", "Inbound UAE"] else 0.0,
-                    rejection_ach=achievements.get("Rejection", 0.0),
+                    rejection_ach=achievements.get("Rejection") or achievements.get("initial_rejection_rate") or 0.0,
                     initial_error_ach=achievements.get("InitialError", 0.0),
-                    submission_ach=achievements.get("Submission", 0.0),
+                    submission_ach=achievements.get("Submission") or achievements.get("submission_within_due_date") or 0.0,
                     op_census_ach=achievements.get("OPCensus", 0.0),
                     op_revenue_ach=achievements.get("OPRevenue", 0.0),
                     ip_census_ach=achievements.get("IPCensus", 0.0),

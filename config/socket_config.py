@@ -26,6 +26,9 @@ class NotificationNamespace(AsyncNamespace):
         connected_clients[sid] = {
             'sid': sid,
             'timestamp': __import__('datetime').datetime.now(),
+            'teams': set(),
+            'global_subscriber': True,
+            'role': None,
         }
         print(f"Client {sid} connected. Total: {len(connected_clients)}")
 
@@ -37,10 +40,27 @@ class NotificationNamespace(AsyncNamespace):
 
     async def on_subscribe_team(self, sid, data):
         """Subscribe to team notifications."""
+        team_names = data.get('team_names')
         team_name = data.get('team_name')
-        if team_name and sid in connected_clients:
-            connected_clients[sid]['team'] = team_name
+        is_global = bool(data.get('global'))
+        role = data.get('role')
+        if sid not in connected_clients:
+            return
+
+        client = connected_clients[sid]
+        if role:
+            client['role'] = role
+        client['global_subscriber'] = is_global or (not team_name and not team_names)
+        if team_names:
+            client['teams'] = set(team_names)
+            print(f"Client {sid} subscribed to teams: {team_names}")
+        elif team_name:
+            client['teams'] = {team_name}
+            client['global_subscriber'] = False
             print(f"Client {sid} subscribed to team: {team_name}")
+        elif is_global:
+            client['teams'] = set()
+            print(f"Client {sid} subscribed globally")
 
 
 # Register namespace
@@ -64,13 +84,38 @@ async def broadcast_notification(notification_data):
 
     for sid, client_info in connected_clients.items():
         # Skip if notification is team-specific and client not subscribed
-        if team_filter and client_info.get('team') != team_filter:
+        if team_filter:
+            client_teams = client_info.get('teams') or set()
+            if team_filter not in client_teams and not client_info.get('global_subscriber') and client_info.get('role') != 'Admin':
+                continue
+        elif not client_info.get('global_subscriber') and client_info.get('role') != 'Admin':
             continue
 
         try:
             await sio.emit('notification', notification_data, to=sid, namespace='/notifications')
         except Exception as e:
             print(f"Failed to send notification to {sid}: {e}")
+
+
+async def broadcast_action_recorded(action_data):
+    """Broadcast corrective-action updates to all authorized clients."""
+    if not connected_clients:
+        return
+
+    team_filter = action_data.get('team')
+
+    for sid, client_info in connected_clients.items():
+        if team_filter:
+            client_teams = client_info.get('teams') or set()
+            if team_filter not in client_teams and not client_info.get('global_subscriber') and client_info.get('role') != 'Admin':
+                continue
+        elif not client_info.get('global_subscriber') and client_info.get('role') != 'Admin':
+            continue
+
+        try:
+            await sio.emit('action_recorded', action_data, to=sid, namespace='/notifications')
+        except Exception as e:
+            print(f"Failed to send action record to {sid}: {e}")
 
 
 async def broadcast_data_update(event_type, data):

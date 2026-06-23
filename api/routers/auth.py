@@ -7,11 +7,19 @@ from fastapi import APIRouter, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from config.database import get_db
 from models.schemas import LoginPayload, JWTToken, StandardResponse
+from models.models import Team, User, UserTeamAssignment
 from services.auth_service import AuthenticationService, redis_client
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+
+def _current_user_payload(request: Request) -> dict:
+    payload = getattr(request.state, "user", None)
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
+    return payload
 
 
 @router.post("/login", response_model=StandardResponse)
@@ -82,3 +90,45 @@ async def logout(request: Request):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="An error occurred during logout."
         )
+
+
+@router.get("/me", response_model=StandardResponse)
+async def me(request: Request, db: Session = Depends(get_db)):
+    try:
+        payload = _current_user_payload(request)
+        user_id = payload.get("user_id")
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+        assignments = (
+            db.query(UserTeamAssignment, Team)
+            .join(Team, Team.id == UserTeamAssignment.team_id)
+            .filter(UserTeamAssignment.user_id == user.id)
+            .all()
+        )
+        accessible_teams = [team.name for _, team in assignments]
+        active_team_count = db.query(Team).filter(Team.is_active.is_(True)).count()
+        is_general_manager = user.role in {"Admin"} or (user.role == "Manager" and len(accessible_teams) >= active_team_count and active_team_count > 0)
+
+        return StandardResponse(
+            success=True,
+            message="Current user retrieved successfully",
+            data={
+                "id": str(user.id),
+                "username": user.username,
+                "name": user.employee_id or user.username,
+                "role": user.role,
+                "employee_id": user.employee_id,
+                "accessible_teams": accessible_teams,
+                "accessible_team_count": len(accessible_teams),
+                "total_team_count": active_team_count,
+                "is_general_manager": is_general_manager,
+                "is_self_only": user.role == "Agent",
+            },
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Me lookup error: {e}")
+        return StandardResponse(success=False, message=f"Failed to fetch current user: {str(e)}")

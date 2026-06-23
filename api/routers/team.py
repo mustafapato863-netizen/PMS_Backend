@@ -2,7 +2,7 @@ import datetime
 from fastapi import APIRouter, Depends, Query, HTTPException
 from typing import Dict
 
-from api.dependencies import require_role
+from api.middleware.rbac_middleware import require_permission
 from models.schemas import StandardResponse, TeamAction
 from repositories.json_repos import JSONTeamActionsRepository
 
@@ -27,7 +27,7 @@ async def get_team_action(
 @router.post("/", response_model=StandardResponse)
 async def save_team_action(
     payload: Dict[str, str],
-    role: str = Depends(require_role(["Admin"]))
+    _user=Depends(require_permission("create_actions"))
 ):
     try:
         team_id = payload.get("team_id", "")

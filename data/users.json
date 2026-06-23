@@ -5,5 +5,13 @@
     "username": "admin",
     "password": "admin123",
     "role": "Admin"
+  },
+  {
+    "id": "user-1782163715478",
+    "name": "diaa",
+    "username": "diaa",
+    "password": "diaa123",
+    "role": "Viewer",
+    "is_active": false
   }
 ]

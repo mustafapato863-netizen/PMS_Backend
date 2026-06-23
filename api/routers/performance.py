@@ -1,10 +1,21 @@
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query, HTTPException, Request
 from fastapi.responses import StreamingResponse
 import io
 from typing import List
 from datetime import datetime
 
-from api.dependencies import performance_repo, planning_service, insights_service, serialize_performance_record, require_role
+from api.dependencies import (
+    performance_repo,
+    planning_service,
+    insights_service,
+    serialize_performance_record,
+    require_role,
+    get_current_user_scope,
+    filter_records_by_scope,
+    user_can_access_team,
+)
+from config.database import get_db
+from sqlalchemy.orm import Session
 from models.schemas import StandardResponse
 from exports.report_exporter import ReportExporter
 
@@ -12,12 +23,18 @@ router = APIRouter(prefix="/performance", tags=["Performance"])
 
 @router.get("", response_model=StandardResponse)
 def get_all_records(
+    request: Request,
+    db: Session = Depends(get_db),
     team: str = Query(None, alias="team"),
     month: str = Query(None),
 ):
     try:
         records = performance_repo.get_all()
+        scope = get_current_user_scope(db, request)
+        records = filter_records_by_scope(records, scope)
         if team:
+            if not user_can_access_team(scope, team):
+                raise HTTPException(status_code=403, detail="Access denied for this team")
             records = [r for r in records if r.team == team]
         if month:
             records = [r for r in records if r.month == month]
@@ -38,12 +55,18 @@ def get_all_records(
 
 @router.get("/records", response_model=StandardResponse)
 def get_monthly_records(
+    request: Request,
+    db: Session = Depends(get_db),
     team: str = Query(None, alias="team"),
     month: str = Query(None),
 ):
     try:
         records = performance_repo.get_all()
+        scope = get_current_user_scope(db, request)
+        records = filter_records_by_scope(records, scope)
         if team:
+            if not user_can_access_team(scope, team):
+                raise HTTPException(status_code=403, detail="Access denied for this team")
             records = [r for r in records if r.team == team]
         if month:
             records = [r for r in records if r.month == month]
@@ -63,9 +86,11 @@ def get_monthly_records(
 
 
 @router.get("/employee/{emp_id}", response_model=StandardResponse)
-def get_employee_history(emp_id: str):
+def get_employee_history(emp_id: str, request: Request, db: Session = Depends(get_db)):
     try:
         records = performance_repo.get_all()
+        scope = get_current_user_scope(db, request)
+        records = filter_records_by_scope(records, scope)
         emp_records = [r for r in records if str(r.employee_id) == emp_id]
         from services.planning_service import MONTH_ORDER
         emp_records.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
@@ -83,9 +108,13 @@ def get_employee_history(emp_id: str):
 
 
 @router.get("/team/{team_name}", response_model=StandardResponse)
-def get_team_yearly_records(team_name: str):
+def get_team_yearly_records(team_name: str, request: Request, db: Session = Depends(get_db)):
     try:
         records = performance_repo.get_all()
+        scope = get_current_user_scope(db, request)
+        if not user_can_access_team(scope, team_name):
+            raise HTTPException(status_code=403, detail="Access denied for this team")
+        records = filter_records_by_scope(records, scope)
         team_records = [r for r in records if r.team == team_name]
 
         return StandardResponse(
@@ -103,6 +132,8 @@ def get_team_yearly_records(team_name: str):
 @router.get("/grade/{team_name}", response_model=StandardResponse)
 def get_by_grade(
     team_name: str,
+    request: Request,
+    db: Session = Depends(get_db),
     grade: str = Query(...),
     month: str = Query(...),
 ):
@@ -111,6 +142,10 @@ def get_by_grade(
             raise HTTPException(status_code=400, detail="month is required")
 
         records = performance_repo.get_all()
+        scope = get_current_user_scope(db, request)
+        if not user_can_access_team(scope, team_name):
+            raise HTTPException(status_code=403, detail="Access denied for this team")
+        records = filter_records_by_scope(records, scope)
         filtered = [r for r in records if r.team == team_name and r.evaluation.grade == grade and r.month == month]
 
         return StandardResponse(
@@ -130,6 +165,8 @@ def get_by_grade(
 @router.get("/status/{team_name}", response_model=StandardResponse)
 def get_by_status(
     team_name: str,
+    request: Request,
+    db: Session = Depends(get_db),
     status: str = Query(...),
     month: str = Query(...),
 ):
@@ -138,6 +175,10 @@ def get_by_status(
             raise HTTPException(status_code=400, detail="month is required")
 
         records = performance_repo.get_all()
+        scope = get_current_user_scope(db, request)
+        if not user_can_access_team(scope, team_name):
+            raise HTTPException(status_code=403, detail="Access denied for this team")
+        records = filter_records_by_scope(records, scope)
         status_val = status.lower()
         filtered = [r for r in records if r.team == team_name and r.month == month]
         if status_val == "exceeds":
@@ -199,6 +240,8 @@ def get_insights(
 
 @router.get("/export", response_class=StreamingResponse)
 def export_report(
+    request: Request,
+    db: Session = Depends(get_db),
     month: str = Query("All"),
     team: str = Query("All"),
     format: str = Query("excel"),
@@ -206,9 +249,13 @@ def export_report(
 ):
     try:
         records = performance_repo.get_all()
+        scope = get_current_user_scope(db, request)
+        records = filter_records_by_scope(records, scope)
         if month != "All":
             records = [r for r in records if r.month == month]
         if team != "All":
+            if not user_can_access_team(scope, team):
+                raise HTTPException(status_code=403, detail="Access denied for this team")
             records = [r for r in records if r.team == team]
 
         if format.lower() == "csv":

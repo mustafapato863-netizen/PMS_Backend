@@ -398,6 +398,13 @@ class JSONUserRepository:
         data = _load_json(self.filename, [])
         return [UserRecord(**item) for item in data]
 
+    def get_by_id(self, user_id: str) -> Optional[UserRecord]:
+        data = _load_json(self.filename, [])
+        for item in data:
+            if item.get("id") == user_id:
+                return UserRecord(**item)
+        return None
+
     def save(self, user: UserRecord) -> UserRecord:
         data = _load_json(self.filename, [])
         # Remove existing if exists
@@ -406,9 +413,29 @@ class JSONUserRepository:
         _save_json(self.filename, data)
         return user
 
+    def update(self, user_id: str, updates: dict) -> Optional[UserRecord]:
+        data = _load_json(self.filename, [])
+        updated = None
+        new_data = []
+        for item in data:
+            if item.get("id") == user_id:
+                item.update({k: v for k, v in updates.items() if v is not None})
+                updated = UserRecord(**item)
+                new_data.append(updated.model_dump())
+            else:
+                new_data.append(item)
+        if updated is None:
+            return None
+        _save_json(self.filename, new_data)
+        return updated
+
     def delete(self, user_id: str) -> bool:
         data = _load_json(self.filename, [])
         initial_len = len(data)
         data = [item for item in data if item.get("id") != user_id]
         _save_json(self.filename, data)
         return len(data) < initial_len
+
+    def toggle_active(self, user_id: str, is_active: bool) -> bool:
+        updated = self.update(user_id, {"is_active": is_active})
+        return updated is not None

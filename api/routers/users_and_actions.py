@@ -1,20 +1,153 @@
-from fastapi import APIRouter, Depends, HTTPException
+import uuid
 
-from api.dependencies import user_repo, actions_repo, require_role
-from models.schemas import StandardResponse, UserRecord, LoginPayload
+import jwt
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import Session
+
+from api.dependencies import actions_repo, require_role
+from config.database import get_db
+from config import settings
+from api.middleware.rbac_middleware import require_permission
+from models.models import Employee, Team, User, UserTeamAssignment
+from models.schemas import StandardResponse, UserRecord, UserUpdateRecord, LoginPayload
+from services.auth_service import AuthenticationService
+from services.password_service import hash_password
 
 users_router = APIRouter()
 
+
+def _user_to_public_dict(user: User) -> dict:
+    accessible_teams = [assignment.team.name for assignment in user.team_assignments if assignment.team]
+    return {
+        "id": str(user.id),
+        "name": user.employee_id or user.username,
+        "username": user.username,
+        "role": user.role,
+        "is_active": user.is_active,
+        "accessible_teams": accessible_teams,
+        "accessible_team_count": len(accessible_teams),
+        "is_general_manager": user.role == "Manager" and len(accessible_teams) > 0,
+    }
+
+
+def _admin_count(db: Session) -> int:
+    return db.query(User).filter(User.role == "Admin").count()
+
+
+def _active_teams(db: Session) -> list[Team]:
+    return db.query(Team).filter(Team.is_active.is_(True)).order_by(Team.name.asc()).all()
+
+
+def _linked_employee_id(db: Session, display_name: str) -> str | None:
+    normalized = display_name.strip()
+    if not normalized:
+        return None
+    try:
+        employee = (
+            db.query(Employee)
+            .filter((Employee.employee_id == normalized) | (Employee.name == normalized))
+            .first()
+        )
+        return employee.employee_id if employee else None
+    except OperationalError:
+        return None
+
+
+def _replace_team_assignments(db: Session, user_id, team_names: list[str] | None) -> None:
+    db.query(UserTeamAssignment).filter(UserTeamAssignment.user_id == user_id).delete(synchronize_session=False)
+    if not team_names:
+        return
+    teams_by_name = {team.name: team for team in _active_teams(db)}
+    for team_name in team_names:
+        team = teams_by_name.get(team_name)
+        if not team:
+            continue
+        db.add(UserTeamAssignment(
+            id=uuid.uuid4(),
+            user_id=user_id,
+            team_id=team.id,
+            access_level="admin",
+            assigned_by="Admin",
+        ))
+
+
+def _current_user_id(request: Request) -> str | None:
+    payload = getattr(request.state, "user", None) or {}
+    if hasattr(payload, "get"):
+        user_id = payload.get("user_id")
+    else:
+        user_id = getattr(payload, "user_id", None)
+    if user_id:
+        return user_id
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        try:
+            token_payload = AuthenticationService.validate_token(auth_header.split(" ", 1)[1])
+            return token_payload.get("user_id")
+        except Exception:
+            return None
+    return None
+
+
+def _current_user_username(request: Request) -> str | None:
+    payload = getattr(request.state, "user", None) or {}
+    if hasattr(payload, "get"):
+        return payload.get("username")
+    return getattr(payload, "username", None)
+
+
+def _auth_identity_from_request(request: Request) -> tuple[str | None, str | None]:
+    auth_header = request.headers.get("Authorization", "")
+    if not auth_header.startswith("Bearer "):
+        return None, None
+    try:
+        token_payload = jwt.decode(
+            auth_header.split(" ", 1)[1],
+            settings.JWT_SECRET,
+            algorithms=[settings.JWT_ALGORITHM],
+        )
+        return token_payload.get("user_id"), token_payload.get("username")
+    except Exception:
+        return None, None
+
+
+def _current_auth_user_id(request: Request) -> str | None:
+    user_id, _ = _auth_identity_from_request(request)
+    return user_id
+
+
+def _request_state_user_id(request: Request) -> str | None:
+    payload = getattr(request.state, "user", None)
+    if isinstance(payload, dict):
+        return payload.get("user_id")
+    return getattr(payload, "user_id", None)
+
+
+def _current_auth_username(request: Request) -> str | None:
+    _, username = _auth_identity_from_request(request)
+    return username
+
+
+def _payload_value(payload, key: str):
+    if payload is None:
+        return None
+    if isinstance(payload, dict):
+        return payload.get(key)
+    return getattr(payload, key, None)
+
+
 @users_router.get("/", response_model=StandardResponse)
 async def get_users(
-    role: str = Depends(require_role(["Admin"]))
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("manage_users"))
 ):
     try:
-        users = user_repo.get_all()
+        users = db.query(User).order_by(User.created_at.asc()).all()
         return StandardResponse(
             success=True,
             message="Users retrieved successfully",
-            data=[u.model_dump() for u in users]
+            data=[_user_to_public_dict(u) for u in users]
         )
     except Exception as e:
         return StandardResponse(success=False, message=f"Failed to fetch users: {str(e)}")
@@ -22,27 +155,195 @@ async def get_users(
 @users_router.post("/", response_model=StandardResponse)
 async def create_user(
     payload: UserRecord,
-    role: str = Depends(require_role(["Admin"]))
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("manage_users"))
 ):
     try:
-        user_repo.save(payload)
+        existing_username = db.query(User).filter(User.username == payload.username.lower()).first()
+        existing_email = db.query(User).filter(User.email == f"{payload.username.lower()}@pms.local").first()
+        if existing_username or existing_email:
+            raise HTTPException(status_code=409, detail="Username already exists")
+
+        new_user = User(
+            id=uuid.uuid4(),
+            employee_id=_linked_employee_id(db, payload.name),
+            username=payload.username.lower(),
+            email=f"{payload.username.lower()}@pms.local",
+            password_hash=hash_password(payload.password),
+            role=payload.role,
+            is_active=payload.is_active,
+            failed_login_attempts=0,
+        )
+        db.add(new_user)
+        db.commit()
+        if new_user.role == "Manager":
+            if payload.is_general_manager:
+                _replace_team_assignments(db, new_user.id, [team.name for team in _active_teams(db)])
+            else:
+                _replace_team_assignments(db, new_user.id, payload.accessible_teams)
+            db.commit()
+        db.refresh(new_user)
         return StandardResponse(
             success=True,
             message="User created successfully",
-            data=payload.model_dump()
+            data=_user_to_public_dict(new_user)
         )
+    except HTTPException as he:
+        raise he
     except Exception as e:
         return StandardResponse(success=False, message=f"Failed to create user: {str(e)}")
+
+@users_router.put("/{user_id}", response_model=StandardResponse)
+async def update_user_route(
+    user_id: str,
+    payload: UserUpdateRecord,
+    request: Request,
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("manage_users"))
+):
+    try:
+        auth_header = request.headers.get("Authorization", "")
+        current_username = None
+        if auth_header.startswith("Bearer "):
+            try:
+                current_username = jwt.decode(
+                    auth_header.split(" ", 1)[1],
+                    settings.JWT_SECRET,
+                    algorithms=[settings.JWT_ALGORITHM],
+                ).get("username")
+            except Exception:
+                current_username = None
+        existing = db.query(User).filter(User.id == user_id).first()
+        if not existing:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        updates = payload.model_dump(exclude_none=True)
+        updates.pop("id", None)
+        if (
+            current_username and current_username == existing.username
+        ) and updates.get("role") and updates["role"] != "Admin":
+            raise HTTPException(status_code=400, detail="Cannot demote your own Admin account")
+
+        if existing.role == "Admin":
+            if updates.get("is_active") is False and _admin_count(db) <= 1:
+                raise HTTPException(status_code=400, detail="Cannot deactivate the last Admin user")
+            if updates.get("role") and updates["role"] != "Admin" and _admin_count(db) <= 1:
+                raise HTTPException(status_code=400, detail="Cannot demote the last Admin user")
+
+        if "username" in updates:
+            new_username = updates["username"].lower()
+            conflict = db.query(User).filter(User.username == new_username, User.id != existing.id).first()
+            if conflict:
+                raise HTTPException(status_code=409, detail="Username already exists")
+            existing.username = new_username
+            existing.email = f"{new_username}@pms.local"
+
+        if "name" in updates:
+            existing.employee_id = _linked_employee_id(db, updates["name"])
+
+        if "role" in updates:
+            existing.role = updates["role"]
+
+        if "is_active" in updates:
+            existing.is_active = updates["is_active"]
+
+        if updates.get("password"):
+            existing.password_hash = hash_password(updates["password"])
+
+        if "accessible_teams" in updates or "is_general_manager" in updates:
+            if updates.get("is_general_manager") and existing.role == "Manager":
+                _replace_team_assignments(db, existing.id, [team.name for team in _active_teams(db)])
+            elif existing.role == "Manager":
+                _replace_team_assignments(db, existing.id, updates.get("accessible_teams"))
+
+        db.commit()
+        db.refresh(existing)
+        return StandardResponse(
+            success=True,
+            message="User updated successfully",
+            data=_user_to_public_dict(existing)
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to update user: {str(e)}")
+
+@users_router.post("/{user_id}/toggle-active", response_model=StandardResponse)
+async def toggle_user_active_route(
+    user_id: str,
+    is_active: bool,
+    request: Request,
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("manage_users"))
+):
+    try:
+        auth_header = request.headers.get("Authorization", "")
+        current_username = None
+        if auth_header.startswith("Bearer "):
+            try:
+                current_username = jwt.decode(
+                    auth_header.split(" ", 1)[1],
+                    settings.JWT_SECRET,
+                    algorithms=[settings.JWT_ALGORITHM],
+                ).get("username")
+            except Exception:
+                current_username = None
+        existing = db.query(User).filter(User.id == user_id).first()
+        if not existing:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        if (
+            current_username and current_username == existing.username
+        ) and not is_active:
+            raise HTTPException(status_code=400, detail="Cannot deactivate your own account")
+
+        if existing.role == "Admin" and not is_active and _admin_count(db) <= 1:
+            raise HTTPException(status_code=400, detail="Cannot deactivate the last Admin user")
+
+        existing.is_active = is_active
+        db.commit()
+        return StandardResponse(
+            success=True,
+            message="User status updated successfully"
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        return StandardResponse(success=False, message=f"Failed to update user status: {str(e)}")
 
 @users_router.delete("/{user_id}", response_model=StandardResponse)
 async def delete_user_route(
     user_id: str,
-    role: str = Depends(require_role(["Admin"]))
+    request: Request,
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("manage_users"))
 ):
     try:
-        success = user_repo.delete(user_id)
-        if not success:
+        auth_header = request.headers.get("Authorization", "")
+        current_username = None
+        if auth_header.startswith("Bearer "):
+            try:
+                current_username = jwt.decode(
+                    auth_header.split(" ", 1)[1],
+                    settings.JWT_SECRET,
+                    algorithms=[settings.JWT_ALGORITHM],
+                ).get("username")
+            except Exception:
+                current_username = None
+        existing = db.query(User).filter(User.id == user_id).first()
+        if not existing:
             raise HTTPException(status_code=404, detail="User not found")
+
+        if (
+            current_username and current_username == existing.username
+        ):
+            raise HTTPException(status_code=400, detail="Cannot delete your own account")
+
+        if existing.role == "Admin" and _admin_count(db) <= 1:
+            raise HTTPException(status_code=400, detail="Cannot delete the last Admin user")
+
+        db.delete(existing)
+        db.commit()
         return StandardResponse(
             success=True,
             message="User deleted successfully"
@@ -55,17 +356,22 @@ async def delete_user_route(
 @users_router.post("/login", response_model=StandardResponse)
 async def login_user(payload: LoginPayload):
     try:
-        users = user_repo.get_all()
-        found = None
-        for u in users:
-            if u.username.lower() == payload.username.strip().lower() and u.password == payload.password:
-                found = u
-                break
+        # Legacy route kept for compatibility, but DB is the source of truth.
+        # Users created through the admin panel are now stored in PostgreSQL.
+        from config.database import SessionLocal
+        db = SessionLocal()
+        found = db.query(User).filter(User.username == payload.username.strip().lower()).first()
+        db.close()
         if not found:
-            return StandardResponse(success=False, message="Invalid username or password")
-        
-        user_data = found.model_dump()
-        user_data.pop("password", None)
+            return StandardResponse(success=False, message="Invalid username, password, or inactive account")
+
+        # Legacy JSON accounts are still supported here if present.
+        if found.password_hash and found.is_active:
+            from services.password_service import verify_password
+            if not verify_password(payload.password, found.password_hash):
+                return StandardResponse(success=False, message="Invalid username, password, or inactive account")
+
+        user_data = _user_to_public_dict(found)
         return StandardResponse(
             success=True,
             message="Login successful",

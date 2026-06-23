@@ -61,6 +61,18 @@ def test_client(db_session):
     @test_app.post("/api/users")
     async def manage_users_route(user=Depends(require_permission("manage_users"))):
         return {"success": True, "message": "Access granted"}
+
+    @test_app.post("/api/settings/weights")
+    async def manage_permissions_route(user=Depends(require_permission("manage_permissions"))):
+        return {"success": True, "message": "Access granted"}
+
+    @test_app.post("/api/uploads/pms")
+    async def upload_data_route(user=Depends(require_permission("upload_data"))):
+        return {"success": True, "message": "Access granted"}
+
+    @test_app.post("/api/team-actions")
+    async def create_actions_route(user=Depends(require_permission("create_actions"))):
+        return {"success": True, "message": "Access granted"}
         
     @test_app.post("/api/teams/{team_id}/upload")
     async def upload_team_route(team_id: str, user=Depends(require_permission("upload_data"))):
@@ -192,3 +204,38 @@ class TestRBACEndpoints:
         response = test_client.post("/api/users", headers={"Authorization": f"Bearer {token}"})
         assert response.status_code == 403
         assert "denied" in response.json()["detail"].lower()
+
+    def test_manage_permissions_denied_for_viewer(self, test_client, db_session):
+        """Verify viewers cannot access permission-management endpoints"""
+        user = AuthenticationService.create_user(db_session, "viewer_two", "viewer3@test.com", "SecurePassword123!", "Viewer")
+        token = AuthenticationService.authenticate_user(db_session, "viewer_two", "SecurePassword123!")
+
+        response = test_client.post("/api/settings/weights", headers={"Authorization": f"Bearer {token}"})
+        assert response.status_code == 403
+        assert "manage_permissions" in response.json()["detail"]
+
+    def test_upload_data_denied_for_viewer(self, test_client, db_session):
+        """Verify viewers cannot access upload endpoints"""
+        user = AuthenticationService.create_user(db_session, "viewer_three", "viewer4@test.com", "SecurePassword123!", "Viewer")
+        token = AuthenticationService.authenticate_user(db_session, "viewer_three", "SecurePassword123!")
+
+        response = test_client.post(
+            "/api/uploads/pms",
+            headers={"Authorization": f"Bearer {token}"},
+            files={"file": ("sample.xlsx", b"dummy", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        )
+        assert response.status_code == 403
+        assert "upload_data" in response.json()["detail"]
+
+    def test_create_actions_denied_for_viewer(self, test_client, db_session):
+        """Verify viewers cannot create team actions"""
+        user = AuthenticationService.create_user(db_session, "viewer_four", "viewer5@test.com", "SecurePassword123!", "Viewer")
+        token = AuthenticationService.authenticate_user(db_session, "viewer_four", "SecurePassword123!")
+
+        response = test_client.post(
+            "/api/team-actions/",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"team_id": "team-1", "month": "January", "overall_action": "Test"},
+        )
+        assert response.status_code == 403
+        assert "create_actions" in response.json()["detail"]

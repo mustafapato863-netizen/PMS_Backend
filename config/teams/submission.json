@@ -1,0 +1,37 @@
+{
+  "team": "Submission",
+  "db_name": "Submission",
+  "region": "UAE",
+  "employee_id_col": "HRID",
+  "employee_name_col": "AgentName",
+  "grade_thresholds": {
+    "A": 95,
+    "B": 85,
+    "C": 75,
+    "D": 65
+  },
+  "kpis": [
+    {
+      "key": "initial_rejection_rate",
+      "label": "Initial Rejection Rate",
+      "weight": 0.6,
+      "direction": "lower_better",
+      "unit": "%",
+      "color": "#3B82F6",
+      "actual_col": "A.InitialRejectionRate",
+      "target_col": "T.InitialRejectionRate",
+      "capping": "uncapped"
+    },
+    {
+      "key": "submission_within_due_date",
+      "label": "Submission Within Due Date",
+      "weight": 0.4,
+      "direction": "higher_better",
+      "unit": "%",
+      "color": "#10B981",
+      "actual_col": "A.TAT48Hours",
+      "target_col": "T.%ofSubmissionWithinDuedate",
+      "capping": "uncapped"
+    }
+  ]
+}

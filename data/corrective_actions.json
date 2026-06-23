@@ -194,5 +194,51 @@
     "manager_action": "Training: this is the first month for him\nWill Give Him Training",
     "manager_notes": "Delay Due to Insurance Company Feedback",
     "timestamp": "2026-06-11T10:48:08.647821"
+  },
+  {
+    "id": "SGHD04275_April_1782196700708",
+    "employee_id": "SGHD04275",
+    "employee_name": "Taiyab  Taskeen",
+    "team": "Submission",
+    "month": "April",
+    "score": 99.81,
+    "grade": "A",
+    "root_cause": "submission_within_due_date",
+    "suggested_action": "Reward & Recognition",
+    "manager_action": "Reward: Best One",
+    "manager_notes": "Submission Within Due Date: 99.5% / 100.0%",
+    "timestamp": "2026-06-23T09:38:20.715982"
+  },
+  {
+    "id": "SGHD03493_May_1782205768338",
+    "employee_id": "SGHD03493",
+    "employee_name": "Donald Thomas Anthoni Samy Anthony Samy",
+    "team": "Coding",
+    "month": "May",
+    "score": 74.93,
+    "grade": "D",
+    "root_cause": "Rejection",
+    "suggested_action": "Quality Calibration",
+    "manager_action": "Training: Need Study more reference",
+    "manager_notes": "Rejection: 4.0% / 2.0%",
+    "timestamp": "2026-06-23T12:12:55.408105",
+    "created_by_name": "hima",
+    "created_by_role": "Manager"
+  },
+  {
+    "id": "SGHD03493_May_1782206178522",
+    "employee_id": "SGHD03493",
+    "employee_name": "Donald Thomas Anthoni Samy Anthony Samy",
+    "team": "Coding",
+    "month": "May",
+    "score": 74.93,
+    "grade": "D",
+    "root_cause": "Rejection",
+    "suggested_action": "Quality Calibration",
+    "manager_action": "PIP: Law Man",
+    "manager_notes": "Rejection: 4.0% / 2.0%",
+    "timestamp": "2026-06-23T12:18:45.337627",
+    "created_by_name": "hima",
+    "created_by_role": "Manager"
   }
 ]

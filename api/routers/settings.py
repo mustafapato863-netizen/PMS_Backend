@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
-from api.dependencies import weights_repo, targets_repo, performance_repo, kpi_service, require_role
+from api.dependencies import weights_repo, targets_repo, performance_repo, kpi_service
+from api.middleware.rbac_middleware import require_permission
 from models.schemas import StandardResponse, KPIWeight, Target
 
 router = APIRouter()
@@ -16,7 +17,7 @@ async def get_weights():
 @router.post("/weights", response_model=StandardResponse)
 async def update_weights(
     payload: KPIWeight,
-    role: str = Depends(require_role(["Admin"]))
+    _user=Depends(require_permission("manage_permissions"))
 ):
     try:
         weights_repo.save(payload)
@@ -35,7 +36,7 @@ async def get_targets():
 @router.post("/targets", response_model=StandardResponse)
 async def update_targets(
     payload: Target,
-    role: str = Depends(require_role(["Admin"]))
+    _user=Depends(require_permission("manage_permissions"))
 ):
     try:
         targets_repo.save(payload)
@@ -52,17 +53,17 @@ async def update_targets(
                 r.achievement.aht_ach = achievements.get("AHT", 0.0)
                 r.achievement.reachability_ach = achievements.get("Other", 0.0) if r.team == "Outbound" else 0.0
                 r.achievement.abandon_ach = achievements.get("Other", 0.0) if r.team in ["Inbound", "Inbound UAE"] else 0.0
-                r.achievement.rejection_ach = achievements.get("Rejection", 0.0)
+                r.achievement.rejection_ach = achievements.get("Rejection") or achievements.get("initial_rejection_rate") or 0.0
                 r.achievement.initial_error_ach = achievements.get("InitialError", 0.0)
-                r.achievement.submission_ach = achievements.get("Submission", 0.0)
+                r.achievement.submission_ach = achievements.get("Submission") or achievements.get("submission_within_due_date") or 0.0
                 
                 r.actual.booking_rate = float(r.raw_data.get("A.Booking%", 0.0))
                 r.actual.attend_rate = float(r.raw_data.get("A.Attend%", 0.0))
                 r.actual.abandon_rate = float(r.raw_data.get("A.AbandonRate%", 0.0))
                 r.actual.reachability_rate = float(r.raw_data.get("A.Reachability%", 0.0))
-                r.actual.rejection_rate = float(r.raw_data.get("IPInitialRejection%", 0.0))
+                r.actual.rejection_rate = float(r.raw_data.get("A.InitialRejectionRate") or r.raw_data.get("IPInitialRejection%") or r.raw_data.get("A.CSRRejection%") or 0.0)
                 r.actual.initial_error_rate = float(r.raw_data.get("Error%", 0.0))
-                r.actual.submission_rate = float(r.raw_data.get("NumberApprovalwithin48hrs", 0.0))
+                r.actual.submission_rate = float(r.raw_data.get("A.TAT48Hours") or r.raw_data.get("NumberApprovalwithin48hrs") or 0.0)
                 r.actual.quality_rate = float(r.raw_data.get("A.QualityScore", 0.0))
                 r.actual.utz_rate = float(r.raw_data.get("A.UTZ%", 0.0))
                 

@@ -57,6 +57,27 @@ class KPIService:
                 "IPCensus": 0.25,
                 "IPRevenue": 0.45,
                 "Activity": 0.10
+            },
+            "Coding": {
+                "QualityErrors": 0.20,
+                "Rejection": 0.50,
+                "TAT": 0.30
+            },
+            "CSR": {
+                "Rejection": 0.40,
+                "Queries": 0.30,
+                "AttendedCR": 0.30
+            },
+            "Pharmacy": {
+                "WaitingTime": 0.20,
+                "Leakage": 0.20,
+                "TenderCompliance": 0.20,
+                "ATV": 0.20,
+                "Prescription": 0.20
+            },
+            "Submission": {
+                "initial_rejection_rate": 0.60,
+                "submission_within_due_date": 0.40
             }
         }
         for team, weights in default_weights.items():
@@ -95,6 +116,27 @@ class KPIService:
                 "IPCensus": 1.0,
                 "IPRevenue": 1.0,
                 "Activity": 1.0
+            },
+            "Coding": {
+                "QualityErrors": 0.05,
+                "Rejection": 0.04,
+                "TAT": 2.5
+            },
+            "CSR": {
+                "Rejection": 0.01,
+                "Queries": 0.01,
+                "AttendedCR": 0.90
+            },
+            "Pharmacy": {
+                "WaitingTime": 15.0,
+                "Leakage": 0.10,
+                "TenderCompliance": 0.75,
+                "ATV": 600.0,
+                "Prescription": 0.07
+            },
+            "Submission": {
+                "initial_rejection_rate": 0.04,
+                "submission_within_due_date": 0.90
             }
         }
         for team, targets in default_targets.items():

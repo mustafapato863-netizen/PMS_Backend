@@ -3,7 +3,7 @@ Team Management Router
 API endpoints for managing teams (CRUD operations).
 """
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from models.team_models import (
     TeamResponse,
@@ -16,6 +16,7 @@ from models.team_models import (
 )
 from services.team_service import TeamService
 from services.team_onboarding_service import TeamOnboardingService
+from api.middleware.rbac_middleware import require_permission
 
 router = APIRouter(prefix="/team-management", tags=["Team Management"])
 
@@ -65,7 +66,10 @@ async def get_team(team_name: str):
 
 
 @router.post("/teams", response_model=TeamResponse, status_code=status.HTTP_201_CREATED)
-async def create_team(request: TeamCreateRequest):
+async def create_team(
+    request: TeamCreateRequest,
+    _user=Depends(require_permission("create_team"))
+):
     """
     Create new team.
     
@@ -90,7 +94,11 @@ async def create_team(request: TeamCreateRequest):
 
 
 @router.put("/teams/{team_name}", response_model=TeamResponse)
-async def update_team(team_name: str, request: TeamUpdateRequest):
+async def update_team(
+    team_name: str,
+    request: TeamUpdateRequest,
+    _user=Depends(require_permission("edit_team_config"))
+):
     """
     Update team configuration.
     
@@ -116,7 +124,10 @@ async def update_team(team_name: str, request: TeamUpdateRequest):
 
 
 @router.delete("/teams/{team_name}", status_code=status.HTTP_200_OK)
-async def delete_team(team_name: str):
+async def delete_team(
+    team_name: str,
+    _user=Depends(require_permission("delete_team"))
+):
     """
     Delete (deactivate) team.
     
@@ -194,7 +205,11 @@ async def get_statistics():
 
 
 @router.post("/teams/{team_name}/onboard", response_model=TeamOnboardingResponse)
-async def start_onboarding(team_name: str, request: TeamOnboardingRequest):
+async def start_onboarding(
+    team_name: str,
+    request: TeamOnboardingRequest,
+    _user=Depends(require_permission("create_team"))
+):
     """
     Start team onboarding workflow.
     

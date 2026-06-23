@@ -12,6 +12,9 @@ def clean_sheet_data(df, sheet_name, column_name="Performance Grade"):
     """
     print(f"\n--- Processing sheet: {sheet_name} ---")
     
+    # Standardize column headers to string to prevent TypeError with numeric/float headers
+    df.columns = [str(col).strip() for col in df.columns]
+    
     # STEP 1: Crop columns up to "Performance Grade"
     if column_name in df.columns:
         col_index = df.columns.get_loc(column_name)

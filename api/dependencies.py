@@ -1,4 +1,5 @@
 import time
+from uuid import UUID
 import pandas as pd
 from fastapi import Header, HTTPException, Request
 from typing import List, Dict, Any
@@ -16,6 +17,7 @@ from services.learning_service import LearningService
 from services.planning_service import PlanningService
 from services.trend_service import TrendService
 from services.insights_service import InsightsService
+from models.models import User, Team, UserTeamAssignment
 
 # ── cache for serialized performance records ──
 _serialize_cache: dict[str, tuple[dict, float]] = {}
@@ -178,3 +180,102 @@ def require_role(allowed_roles: List[str]):
             )
         return role
     return dependency
+
+
+def get_current_user_payload(request: Request) -> dict:
+    payload = getattr(request.state, "user", None)
+    if not isinstance(payload, dict):
+        return {
+            "role": request.headers.get("x-user-role", "Viewer"),
+            "user_id": request.headers.get("x-user-id", ""),
+            "employee_id": request.headers.get("x-user-employee-id", ""),
+            "legacy_unscoped": True,
+        }
+    return payload
+
+
+def get_current_user_scope(db, request: Request) -> dict:
+    payload = get_current_user_payload(request)
+    user_id = payload.get("user_id")
+    if not user_id:
+        if payload.get("legacy_unscoped"):
+            return {
+                "user_id": "",
+                "role": payload.get("role", "Admin"),
+                "employee_id": payload.get("employee_id") or "",
+                "accessible_teams": [],
+                "is_general_manager": True,
+                "is_self_only": False,
+                "active_team_names": [],
+                "legacy_unscoped": True,
+            }
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    user = db.query(User).filter(User.id == UUID(str(user_id))).first()
+    if not user:
+        return {
+            "user_id": str(user_id),
+            "role": payload.get("role", "Viewer"),
+            "employee_id": payload.get("employee_id") or "",
+            "accessible_teams": [],
+            "is_general_manager": False,
+            "is_self_only": payload.get("role") == "Agent",
+            "active_team_names": [],
+            "legacy_unscoped": True,
+        }
+
+    active_teams = db.query(Team).filter(Team.is_active.is_(True)).all()
+    active_team_names = [team.name for team in active_teams]
+    assigned_teams = [
+        team.name
+        for team in (
+            db.query(Team)
+            .join(UserTeamAssignment, Team.id == UserTeamAssignment.team_id)
+            .filter(UserTeamAssignment.user_id == user.id, Team.is_active.is_(True))
+            .all()
+        )
+    ]
+    is_general_manager = user.role == "Admin" or (
+        user.role == "Manager" and len(assigned_teams) > 0 and len(assigned_teams) >= len(active_team_names)
+    )
+
+    if user.role == "Admin" or is_general_manager:
+        accessible_teams = active_team_names
+    elif user.role == "Manager":
+        accessible_teams = assigned_teams
+    else:
+        accessible_teams = []
+
+    return {
+        "user": user,
+        "user_id": str(user.id),
+        "role": user.role,
+        "employee_id": user.employee_id,
+        "accessible_teams": accessible_teams,
+        "is_general_manager": is_general_manager,
+        "is_self_only": user.role == "Agent",
+        "active_team_names": active_team_names,
+        "legacy_unscoped": False,
+    }
+
+
+def user_can_access_team(scope: dict, team_name: str) -> bool:
+    if scope.get("legacy_unscoped"):
+        return True
+    if scope.get("role") == "Admin" or scope.get("is_general_manager"):
+        return True
+    accessible = {team.lower() for team in scope.get("accessible_teams", [])}
+    return team_name.lower() in accessible
+
+
+def filter_records_by_scope(records, scope: dict):
+    if scope.get("legacy_unscoped"):
+        return records
+    role = scope.get("role")
+    if role == "Agent" or role == "Executive":
+        self_id = str(scope.get("employee_id") or scope.get("user_id") or "")
+        return [r for r in records if str(getattr(r, "employee_id", "")) == self_id]
+    if role == "Manager" and not scope.get("is_general_manager"):
+        accessible = {team.lower() for team in scope.get("accessible_teams", [])}
+        return [r for r in records if str(getattr(r, "team", "")).lower() in accessible]
+    return records

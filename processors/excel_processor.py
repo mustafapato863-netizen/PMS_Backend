@@ -79,3 +79,7 @@ class ExcelProcessor:
         from Data_Cleaning_Teams.pharmacy import process_pharmacy
         return process_pharmacy(excel_file)
 
+    def process_sheet_submission(self, excel_file) -> pd.DataFrame:
+        from Data_Cleaning_Teams.submission import process_submission
+        return process_submission(excel_file)
+

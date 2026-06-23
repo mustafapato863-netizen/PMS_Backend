@@ -122,6 +122,8 @@ class CorrectiveAction(BaseModel):
     manager_action: str
     manager_notes: str
     timestamp: str
+    created_by_name: Optional[str] = None
+    created_by_role: Optional[str] = None
 
 class PlanningCategoryRecord(BaseModel):
     employee_id: str
@@ -142,6 +144,19 @@ class UserRecord(BaseModel):
     username: str
     password: str
     role: str
+    is_active: bool = True
+    accessible_teams: Optional[List[str]] = None
+    is_general_manager: bool = False
+
+class UserUpdateRecord(BaseModel):
+    id: str
+    name: str
+    username: str
+    role: str
+    is_active: bool = True
+    password: Optional[str] = None
+    accessible_teams: Optional[List[str]] = None
+    is_general_manager: bool = False
 
 class LoginPayload(BaseModel):
     username: str
