@@ -1,11 +1,19 @@
-PERFORMANCE_LEVELS = ("Employee", "Managerial", "Corporate")
+from enum import Enum
+
+class PerformanceLevel(str, Enum):
+    EMPLOYEE = "Employee"
+    MANAGERIAL = "Managerial"
+    CORPORATE = "Corporate"
+
+PERFORMANCE_LEVELS = (PerformanceLevel.EMPLOYEE.value, PerformanceLevel.MANAGERIAL.value, PerformanceLevel.CORPORATE.value)
+
 PERFORMANCE_LEVEL_ALIASES = {
-    "emp": "Employee",
-    "employee": "Employee",
-    "manager": "Managerial",
-    "managerial": "Managerial",
-    "corp": "Corporate",
-    "corporate": "Corporate",
+    "emp": PerformanceLevel.EMPLOYEE.value,
+    "employee": PerformanceLevel.EMPLOYEE.value,
+    "manager": PerformanceLevel.MANAGERIAL.value,
+    "managerial": PerformanceLevel.MANAGERIAL.value,
+    "corp": PerformanceLevel.CORPORATE.value,
+    "corporate": PerformanceLevel.CORPORATE.value,
 }
 
 

@@ -1,9 +1,10 @@
 import uuid
-from sqlalchemy import Column, String, Integer, SmallInteger, Numeric, Boolean, DateTime, ForeignKey, Text, ForeignKeyConstraint, UniqueConstraint, CheckConstraint, Enum as SQLEnum, JSON
+from sqlalchemy import Column, String, Integer, SmallInteger, Numeric, Boolean, DateTime, ForeignKey, Text, ForeignKeyConstraint, UniqueConstraint, CheckConstraint, Enum as SQLEnum, JSON, Index
 from sqlalchemy.dialects.postgresql import UUID, JSONB, INET
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from config.database import Base
+from utils.performance_levels import PerformanceLevel
 
 
 JSON_COMPAT_TYPE = JSON().with_variant(JSONB, "postgresql")
@@ -33,7 +34,7 @@ class TeamKPIConfig(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
-    performance_level = Column(String(20), nullable=False, default="Employee", server_default="Employee")
+    performance_level = Column(String(20), nullable=False, default=PerformanceLevel.EMPLOYEE.value, server_default=PerformanceLevel.EMPLOYEE.value)
     kpi_key = Column(String(50), nullable=False)
     kpi_label = Column(String(100), nullable=False)
     weight = Column(Numeric(5, 4), nullable=False)
@@ -51,7 +52,8 @@ class TeamKPIConfig(Base):
 
     __table_args__ = (
         UniqueConstraint('team_id', 'performance_level', 'kpi_key', name='uq_kpi_team_level_key'),
-        CheckConstraint("performance_level IN ('Employee', 'Managerial', 'Corporate')", name='ck_team_kpi_performance_level'),
+        CheckConstraint(f"performance_level IN ('{PerformanceLevel.EMPLOYEE.value}', '{PerformanceLevel.MANAGERIAL.value}', '{PerformanceLevel.CORPORATE.value}')", name='ck_team_kpi_performance_level'),
+        Index('idx_kpi_config_team_level', 'team_id', 'performance_level'),
     )
 
 
@@ -67,7 +69,7 @@ class Employee(Base):
     name = Column(String(255), nullable=False)
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False)
     region = Column(String(10), nullable=False, default="UAE")
-    performance_level = Column(String(20), nullable=False, default="Employee", server_default="Employee")
+    performance_level = Column(String(20), nullable=False, default=PerformanceLevel.EMPLOYEE.value, server_default=PerformanceLevel.EMPLOYEE.value)
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -77,7 +79,8 @@ class Employee(Base):
     performance_records = relationship("PerformanceRecord", back_populates="employee")
 
     __table_args__ = (
-        CheckConstraint("performance_level IN ('Employee', 'Managerial', 'Corporate')", name='ck_employee_performance_level'),
+        CheckConstraint(f"performance_level IN ('{PerformanceLevel.EMPLOYEE.value}', '{PerformanceLevel.MANAGERIAL.value}', '{PerformanceLevel.CORPORATE.value}')", name='ck_employee_performance_level'),
+        Index('idx_employee_perf_level', 'performance_level'),
     )
 
 
@@ -109,7 +112,7 @@ class PerformanceRecord(Base):
     employee_id = Column(UUID(as_uuid=True), ForeignKey("employees.id", ondelete="RESTRICT"), nullable=False)
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False)
     month = Column(String(20), nullable=False)
-    performance_level = Column(String(20), nullable=False, default="Employee", server_default="Employee")
+    performance_level = Column(String(20), nullable=False, default=PerformanceLevel.EMPLOYEE.value, server_default=PerformanceLevel.EMPLOYEE.value)
     score = Column(Numeric(6, 2), nullable=False)
     grade = Column(String(5), nullable=False)  # A, B, C, D, E
     status = Column(String(20), nullable=False)  # Exceeds, Meets, Below
@@ -121,7 +124,8 @@ class PerformanceRecord(Base):
     kpi_values = relationship("KPIValue", back_populates="performance_record")
 
     __table_args__ = (
-        CheckConstraint("performance_level IN ('Employee', 'Managerial', 'Corporate')", name='ck_performance_record_level'),
+        CheckConstraint(f"performance_level IN ('{PerformanceLevel.EMPLOYEE.value}', '{PerformanceLevel.MANAGERIAL.value}', '{PerformanceLevel.CORPORATE.value}')", name='ck_performance_record_level'),
+        Index('idx_perf_record_filters', 'team_id', 'performance_level', 'month', 'year'),
     )
 
 
