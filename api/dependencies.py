@@ -103,6 +103,7 @@ def serialize_performance_record(r) -> Dict[str, Any]:
         "team": r.team,
         "month": r.month,
         "region": getattr(r, "region", "EGY") or "EGY",
+        "performance_level": getattr(r, "performance_level", "Employee") or "Employee",
         "identity": {
             "name": r.employee_name,
             "month": r.month,
@@ -157,7 +158,8 @@ def serialize_performance_record(r) -> Dict[str, Any]:
             "planning_category": r.evaluation.planning_category,
             "trend_status": get_overall_trend_label(r.evaluation.trend_status)
         },
-        "raw_data": r.raw_data
+        "raw_data": r.raw_data,
+        "kpi_values": getattr(r, "kpi_values", []) or [],
     }
 
     _serialize_cache[cache_key] = (result, now + _SERIALIZE_CACHE_TTL)

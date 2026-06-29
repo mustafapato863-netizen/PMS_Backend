@@ -4,7 +4,8 @@ import logging
 from typing import Dict, Any, Tuple, Optional, List
 from models.schemas import PerformanceRecord, KPIWeight, Target
 from repositories.base import KPIWeightsRepository, TargetsRepository
-from config.loader import load_team_config, ConfigurationError
+from config.loader import load_team_config, resolve_team_config, ConfigurationError
+from utils.performance_levels import normalize_performance_level
 
 logger = logging.getLogger(__name__)
 
@@ -143,7 +144,7 @@ class KPIService:
             if not self.targets_repo.get_by_team(team):
                 self.targets_repo.save(Target(team=team, targets=targets))
 
-    def calculate_performance(self, team: str, row: Dict[str, Any]) -> Tuple[float, str, Dict[str, float], Dict[str, float]]:
+    def calculate_performance(self, team: str, row: Dict[str, Any], performance_level: str = "Employee") -> Tuple[float, str, Dict[str, float], Dict[str, float]]:
         """
         Calculate performance score and grade.
         Returns:
@@ -152,6 +153,16 @@ class KPIService:
           - achievements (dict): map of KPI name to achievement rate (0-1)
           - weights (dict): KPI weights used for this calculation
         """
+        performance_level = normalize_performance_level(performance_level)
+        if performance_level != "Employee":
+            score, grade, kpi_values_list = self.calculate_performance_multi_team(team, row, performance_level)
+            return (
+                score,
+                grade,
+                {value['kpi_key']: value['achievement_ratio'] for value in kpi_values_list},
+                {value['kpi_key']: value['weight_applied'] for value in kpi_values_list},
+            )
+
         # Load weights and targets (fallback to defaults if repo fails)
         w_record = self.weights_repo.get_by_team(team)
         weights = w_record.weights if w_record else {}
@@ -167,7 +178,7 @@ class KPIService:
 
         if team not in ["Inbound", "Outbound", "Inbound UAE", "Pre-Approvals IP Offshore", "Sales"]:
             try:
-                score, grade, kpi_values_list = self.calculate_performance_multi_team(team, row)
+                score, grade, kpi_values_list = self.calculate_performance_multi_team(team, row, performance_level)
                 achievements = {kv['kpi_key']: kv['achievement_ratio'] for kv in kpi_values_list}
                 final_weights = {kv['kpi_key']: kv['weight_applied'] for kv in kpi_values_list}
                 
@@ -568,7 +579,8 @@ class KPIService:
     def calculate_performance_multi_team(
         self,
         team_id: str,
-        row: Dict[str, Any]
+        row: Dict[str, Any],
+        performance_level: str = "Employee",
     ) -> Tuple[float, str, List[Dict[str, Any]]]:
         """
         Calculate performance score and grade for multi-team support (Pharmacy, Coding, CSR).
@@ -589,7 +601,7 @@ class KPIService:
                 - contribution: achievement × weight
         """
         try:
-            config = load_team_config(team_id)
+            config = resolve_team_config(load_team_config(team_id), performance_level)
         except ConfigurationError as e:
             logger.error(f"Failed to load config for team {team_id}: {e}")
             raise
@@ -598,6 +610,18 @@ class KPIService:
         team_name = config.get('team')
         grade_thresholds = config.get('grade_thresholds', {})
         kpis = config.get('kpis', [])
+
+        normalized_columns = {str(column).replace(" ", "").lower() for column in row}
+        missing_columns = sorted({
+            str(column)
+            for kpi in kpis
+            for column in (kpi.get('actual_col'), kpi.get('target_col'))
+            if column and str(column).replace(" ", "").lower() not in normalized_columns
+        })
+        if missing_columns:
+            raise ConfigurationError(
+                f"Missing {config['performance_level']} KPI columns for {team_name}: {', '.join(missing_columns)}"
+            )
         
         logger.info(f"Calculating performance for {team_name} with {len(kpis)} KPIs")
         
@@ -654,6 +678,10 @@ class KPIService:
             
             kpi_value = {
                 'kpi_key': kpi_key,
+                'label': kpi_def.get('label', kpi_key),
+                'unit': kpi_def.get('unit', '%'),
+                'color': kpi_def.get('color', '#3B82F6'),
+                'direction': direction,
                 'actual_value': float(actual_value),
                 'target_value': float(target_value),
                 'achievement_ratio': float(round(achievement_ratio, 4)),

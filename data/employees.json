@@ -1256,6 +1256,1398 @@
     "region": "EGY"
   },
   {
+    "id": "70150",
+    "name": "Ahmed Tarek Abdelgawad Nasr",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70161",
+    "name": "Aya Ali Mohamed Ahmed",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70120",
+    "name": "Aya Abdo Ali Khater",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70121",
+    "name": "Hadeer Gamal Asaad Rashed",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70094",
+    "name": "Hossam Mohamed Abdelsameea Tolba Ahmed",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70105",
+    "name": "Hussein Magdy Hussein Mahmoud Ibrahim",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70099",
+    "name": "Manar Emad Mohamed El-Sayed Hassan",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70143",
+    "name": "Nouran Salah Anwar Mohamed Dekrori",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70134",
+    "name": "Salma Hussein Mohamed Ali El-Ramly",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70121",
+    "name": "Hadeer Gamal Asaad Rashed",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70099",
+    "name": "Manar Emad Mohamed El-Sayed Hassan",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70143",
+    "name": "Nouran Salah Anwar Mohamed Dekrori",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70134",
+    "name": "Salma Hussein Mohamed Ali El-Ramly",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70134",
+    "name": "Salma Hussein Mohamed Ali El-Ramly",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70143",
+    "name": "Nouran Salah Anwar Mohamed Dekrori",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70151",
+    "name": "Omar Abdelhamid Amin Elsayed konswa",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70121",
+    "name": "Hadeer Gamal Asaad Rashed",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70099",
+    "name": "Manar Emad Mohamed El-Sayed Hassan",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "70094",
+    "name": "Hossam Mohamed Abdelsameea Tolba Ahmed",
+    "team": "Pre-Approvals IP Offshore",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70112",
+    "name": "Marwan Hesham El-Shazly Ahmed El-Shazly",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70115",
+    "name": "Anas Magdy Abdelghany Mohamed El-Gazzar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70116",
+    "name": "Salma Abdelhamid Wafik Badr Abdelhamid Badr",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70128",
+    "name": "Andrew Magdy George Moussa Ibrahim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70141",
+    "name": "Mahmoud Hassan El-Khalili Hassan",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70138",
+    "name": "Fahmy Sabry El-Saadany",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70139",
+    "name": "Mohamed Ahmed Ibrahim Mohamed El-Naggar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70159",
+    "name": "Abdelrahman Adnan El Sayed Abdelnaby",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70155",
+    "name": "Shams Yasser Hamed Mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70157",
+    "name": "Ammar Yasser sayed Ghareb",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70156",
+    "name": "Reda Ahmed Azouz Hussain",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70165",
+    "name": "youssef mohamed ismail abdelfattah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70170",
+    "name": "Ahmed Mohamed anwar Hussein",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70171",
+    "name": "Mohamed Salah Mohamed Ismail",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70168",
+    "name": "Mahmoud reda azab abdelhalim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70169",
+    "name": "Ahmed Mohamed Mansour Mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70147",
+    "name": "Abdelrahman Essam Anwar Abdelal",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70160",
+    "name": "Abdelati Selim Abdelati Hussein",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70148",
+    "name": "Mariam Tarek Hassan Mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70114",
+    "name": "Yasmin Ali Haiba Ali",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70112",
+    "name": "Marwan Hesham El-Shazly Ahmed El-Shazly",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70115",
+    "name": "Anas Magdy Abdelghany Mohamed El-Gazzar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70116",
+    "name": "Salma Abdelhamid Wafik Badr Abdelhamid Badr",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70128",
+    "name": "Andrew Magdy George Moussa Ibrahim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70141",
+    "name": "Mahmoud Hassan El-Khalili Hassan",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70138",
+    "name": "Fahmy Sabry El-Saadany",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70139",
+    "name": "Mohamed Ahmed Ibrahim Mohamed El-Naggar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70159",
+    "name": "Abdelrahman Adnan El Sayed Abdelnaby",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70155",
+    "name": "Shams Yasser Hamed Mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70157",
+    "name": "Ammar Yasser sayed Ghareb",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70156",
+    "name": "Reda Ahmed Azouz Hussain",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70165",
+    "name": "youssef mohamed ismail abdelfattah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70170",
+    "name": "Ahmed Mohamed anwar Hussein",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70171",
+    "name": "Mohamed Salah Mohamed Ismail",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70168",
+    "name": "Mahmoud reda azab abdelhalim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70172",
+    "name": "Ahmed mohamed abdelmged saleh",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70174",
+    "name": "mohamed hussein abdelfattah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70147",
+    "name": "Abdelrahman Essam Anwar Abdelal",
+    "team": "Inbound",
+    "status": "Inactive",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70160",
+    "name": "Abdelati Selim Abdelati Hussein",
+    "team": "Inbound",
+    "status": "Inactive",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70148",
+    "name": "Mariam Tarek Hassan Mohamed",
+    "team": "Inbound",
+    "status": "Inactive",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70173",
+    "name": "Mohamed Kamal Anwar Ahmed El-Shayeb",
+    "team": "Inbound",
+    "status": "Inactive",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70114",
+    "name": "Yasmin Ali Haiba Ali",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70112",
+    "name": "Marwan Hesham El-Shazly Ahmed El-Shazly",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70115",
+    "name": "Anas Magdy Abdelghany Mohamed El-Gazzar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70116",
+    "name": "Salma Abdelhamid Wafik Badr Abdelhamid Badr",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70128",
+    "name": "Andrew Magdy George Moussa Ibrahim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70141",
+    "name": "Mahmoud Hassan El-Khalili Hassan",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70138",
+    "name": "Fahmy Sabry El-Saadany",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70139",
+    "name": "Mohamed Ahmed Ibrahim Mohamed El-Naggar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70159",
+    "name": "Abdelrahman Adnan El Sayed Abdelnaby",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70155",
+    "name": "Shams Yasser Hamed Mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70157",
+    "name": "Ammar Yasser sayed Ghareb",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70156",
+    "name": "Reda Ahmed Azouz Hussain",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70165",
+    "name": "youssef mohamed ismail abdelfattah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70170",
+    "name": "Ahmed Mohamed anwar Hussein",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70171",
+    "name": "Mohamed Salah Mohamed Ismail",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70168",
+    "name": "Mahmoud reda azab abdelhalim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70172",
+    "name": "Ahmed mohamed abdelmged saleh",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70174",
+    "name": "mohamed hussein abdelfattah",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70114",
+    "name": "Yasmin Ali Haiba Ali",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70112",
+    "name": "Marwan Hesham El-Shazly Ahmed El-Shazly",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70115",
+    "name": "Anas Magdy Abdelghany Mohamed El-Gazzar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70116",
+    "name": "Salma Abdelhamid Wafik Badr Abdelhamid Badr",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70128",
+    "name": "Andrew Magdy George Moussa Ibrahim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70141",
+    "name": "Mahmoud Hassan El-Khalili Hassan",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70138",
+    "name": "Fahmy Sabry El-Saadany",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70139",
+    "name": "Mohamed Ahmed Ibrahim Mohamed El-Naggar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70159",
+    "name": "Abdelrahman Adnan El Sayed Abdelnaby",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70155",
+    "name": "Shams Yasser Hamed Mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70157",
+    "name": "Ammar Yasser sayed Ghareb",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70156",
+    "name": "Reda Ahmed Azouz Hussain",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70165",
+    "name": "youssef mohamed ismail abdelfattah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70170",
+    "name": "Ahmed Mohamed anwar Hussein",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70171",
+    "name": "Mohamed Salah Mohamed Ismail",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70168",
+    "name": "Mahmoud reda azab abdelhalim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70172",
+    "name": "Ahmed mohamed abdelmged saleh",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70174",
+    "name": "mohamed hussein abdelfattah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70181",
+    "name": "Salma louay taha mohamed",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70182",
+    "name": "Rahma hossam mahmoud elsayed",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70183",
+    "name": "Aya Ramadan Helmy Ibrahim",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70184",
+    "name": "Ahmed Mohamed Abdelrashed Abdelkahlek",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70185",
+    "name": "Ahmed Osama Mohammed Hafez",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70186",
+    "name": "Fayrouz Ahmed Amin Hussien",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70188",
+    "name": "Ali salama Ali Mohamed",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70189",
+    "name": "Mennatullah Mohamed Ali Saleh",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70190",
+    "name": "Toka sobhy mohamed mahmoud",
+    "team": "Inbound",
+    "status": "Active - New",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70114",
+    "name": "Yasmin Ali Haiba Ali",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70115",
+    "name": "Anas Magdy Abdelghany Mohamed El-Gazzar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70112",
+    "name": "Marwan Hesham El-Shazly Ahmed El-Shazly",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70116",
+    "name": "Salma Abdelhamid Wafik Badr Abdelhamid Badr",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70128",
+    "name": "Andrew Magdy George Moussa Ibrahim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70139",
+    "name": "Mohamed Ahmed Ibrahim Mohamed El-Naggar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70138",
+    "name": "Fahmy Sabry El-Saadany",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70141",
+    "name": "Mahmoud Hassan El-Khalili Hassan",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70159",
+    "name": "Abdelrahman Adnan El Sayed Abdelnaby",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70155",
+    "name": "Shams Yasser Hamed Mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70124",
+    "name": "Manar Ahmed Mohamed noureldin",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70156",
+    "name": "Reda Ahmed Azouz Hussain",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70165",
+    "name": "youssef mohamed ismail abdelfattah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70170",
+    "name": "Ahmed Mohamed anwar Hussein",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70171",
+    "name": "Mohamed Salah Mohamed Ismail",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70168",
+    "name": "Mahmoud reda azab abdelhalim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70172",
+    "name": "Ahmed mohamed abdelmged saleh",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70174",
+    "name": "mohamed hussein abdelfattah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70186",
+    "name": "Fayrouz Ahmed Amin Hussien",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70185",
+    "name": "Ahmed Osama Mohammed Hafez",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70184",
+    "name": "Ahmed Mohamed Abdelrashed Abdelkahlek",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70190",
+    "name": "Toka sobhy mohamed mahmoud",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70183",
+    "name": "Aya Ramadan Helmy Ibrahim",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70189",
+    "name": "Mennatullah Mohamed Ali Saleh",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70182",
+    "name": "Rahma hossam mahmoud elsayed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70188",
+    "name": "Ali salama Ali Mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70181",
+    "name": "Salma louay taha mohamed",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70200",
+    "name": "Royia gamal salem",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70195",
+    "name": "Suhila Youssef Ebrahim Hassan",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70197",
+    "name": "Shrouk abid alnwer mahmoud ali",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70196",
+    "name": "Rawan Mohamed Salah Elnajjar",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70194",
+    "name": "Youssef mostafa amin zaki",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70075",
+    "name": "Abdelrahman Yasser Abdullah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70085",
+    "name": "Aya Shaaban Abdelazim Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70087",
+    "name": "Mohamed Fakeh Mohamed Marghany",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70090",
+    "name": "Radwa Ahmed Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70110",
+    "name": "Salma Ali El-Sayed Khalafallah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70124",
+    "name": "Manar Ahmed Mohamed noureldin",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70130",
+    "name": "Kirillos Nabil Ayed Zaki",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70084",
+    "name": "Samy Gamal Hamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70075",
+    "name": "Abdelrahman Yasser Abdullah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70085",
+    "name": "Aya Shaaban Abdelazim Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70087",
+    "name": "Mohamed Fakeh Mohamed Marghany",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70090",
+    "name": "Radwa Ahmed Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70110",
+    "name": "Salma Ali El-Sayed Khalafallah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70124",
+    "name": "Manar Ahmed Mohamed noureldin",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70130",
+    "name": "Kirillos Nabil Ayed Zaki",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70084",
+    "name": "Samy Gamal Hamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70075",
+    "name": "Abdelrahman Yasser Abdullah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70085",
+    "name": "Aya Shaaban Abdelazim Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70087",
+    "name": "Mohamed Fakeh Mohamed Marghany",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70090",
+    "name": "Radwa Ahmed Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70110",
+    "name": "Salma Ali El-Sayed Khalafallah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70124",
+    "name": "Manar Ahmed Mohamed noureldin",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70130",
+    "name": "Kirillos Nabil Ayed Zaki",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70084",
+    "name": "Samy Gamal Hamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70075",
+    "name": "Abdelrahman Yasser Abdullah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70085",
+    "name": "Aya Shaaban Abdelazim Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70087",
+    "name": "Mohamed Fakeh Mohamed Marghany",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70090",
+    "name": "Radwa Ahmed Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70110",
+    "name": "Salma Ali El-Sayed Khalafallah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70124",
+    "name": "Manar Ahmed Mohamed noureldin",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70084",
+    "name": "Samy Gamal Hamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70075",
+    "name": "Abdelrahman Yasser Abdullah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70085",
+    "name": "Aya Shaaban Abdelazim Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70087",
+    "name": "Mohamed Fakeh Mohamed Marghany",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70090",
+    "name": "Radwa Ahmed Mohamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70110",
+    "name": "Salma Ali El-Sayed Khalafallah",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
+    "id": "SGHD70157",
+    "name": "Ammar Yasser sayed Ghareb",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY"
+  },
+  {
     "id": "3743",
     "name": "Abeer Omer Hassan Omer",
     "team": "Inbound UAE",
@@ -1512,7 +2904,7 @@
     "region": "UAE"
   },
   {
-    "id": "70150",
+    "id": "SGHD70150",
     "name": "Ahmed Tarek Abdelgawad Nasr",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1520,7 +2912,7 @@
     "region": "EGY"
   },
   {
-    "id": "70161",
+    "id": "SGHD70161",
     "name": "Aya Ali Mohamed Ahmed",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1528,7 +2920,7 @@
     "region": "EGY"
   },
   {
-    "id": "70120",
+    "id": "SGHD70120",
     "name": "Aya Abdo Ali Khater",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1536,7 +2928,7 @@
     "region": "EGY"
   },
   {
-    "id": "70121",
+    "id": "SGHD70121",
     "name": "Hadeer Gamal Asaad Rashed",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1544,7 +2936,7 @@
     "region": "EGY"
   },
   {
-    "id": "70094",
+    "id": "SGHD70094",
     "name": "Hossam Mohamed Abdelsameea Tolba Ahmed",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1552,7 +2944,7 @@
     "region": "EGY"
   },
   {
-    "id": "70105",
+    "id": "SGHD70105",
     "name": "Hussein Magdy Hussein Mahmoud Ibrahim",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1560,7 +2952,7 @@
     "region": "EGY"
   },
   {
-    "id": "70099",
+    "id": "SGHD70099",
     "name": "Manar Emad Mohamed El-Sayed Hassan",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1568,7 +2960,7 @@
     "region": "EGY"
   },
   {
-    "id": "70143",
+    "id": "SGHD70143",
     "name": "Nouran Salah Anwar Mohamed Dekrori",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1576,7 +2968,7 @@
     "region": "EGY"
   },
   {
-    "id": "70134",
+    "id": "SGHD70134",
     "name": "Salma Hussein Mohamed Ali El-Ramly",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1584,7 +2976,7 @@
     "region": "EGY"
   },
   {
-    "id": "70121",
+    "id": "SGHD70121",
     "name": "Hadeer Gamal Asaad Rashed",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1592,7 +2984,7 @@
     "region": "EGY"
   },
   {
-    "id": "70099",
+    "id": "SGHD70099",
     "name": "Manar Emad Mohamed El-Sayed Hassan",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1600,7 +2992,7 @@
     "region": "EGY"
   },
   {
-    "id": "70143",
+    "id": "SGHD70143",
     "name": "Nouran Salah Anwar Mohamed Dekrori",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1608,7 +3000,7 @@
     "region": "EGY"
   },
   {
-    "id": "70134",
+    "id": "SGHD70134",
     "name": "Salma Hussein Mohamed Ali El-Ramly",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1616,7 +3008,7 @@
     "region": "EGY"
   },
   {
-    "id": "70134",
+    "id": "SGHD70134",
     "name": "Salma Hussein Mohamed Ali El-Ramly",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1624,7 +3016,7 @@
     "region": "EGY"
   },
   {
-    "id": "70143",
+    "id": "SGHD70143",
     "name": "Nouran Salah Anwar Mohamed Dekrori",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1632,7 +3024,7 @@
     "region": "EGY"
   },
   {
-    "id": "70151",
+    "id": "SGHD70151",
     "name": "Omar Abdelhamid Amin Elsayed konswa",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1640,7 +3032,7 @@
     "region": "EGY"
   },
   {
-    "id": "70121",
+    "id": "SGHD70121",
     "name": "Hadeer Gamal Asaad Rashed",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1648,7 +3040,7 @@
     "region": "EGY"
   },
   {
-    "id": "70099",
+    "id": "SGHD70099",
     "name": "Manar Emad Mohamed El-Sayed Hassan",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",
@@ -1656,7 +3048,7 @@
     "region": "EGY"
   },
   {
-    "id": "70094",
+    "id": "SGHD70094",
     "name": "Hossam Mohamed Abdelsameea Tolba Ahmed",
     "team": "Pre-Approvals IP Offshore",
     "status": "Active",

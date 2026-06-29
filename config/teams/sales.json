@@ -10,6 +10,24 @@
     "C": 75,
     "D": 65
   },
+  "performance_levels": {
+    "Managerial": {
+      "kpis": [
+        {"key": "PipelineAttainment", "label": "Pipeline Attainment", "weight": 0.35, "direction": "higher_better", "unit": "%", "color": "#2563EB", "actual_col": "A.PipelineAttainment", "target_col": "T.PipelineAttainment"},
+        {"key": "ForecastAccuracy", "label": "Forecast Accuracy", "weight": 0.25, "direction": "higher_better", "unit": "%", "color": "#0D9488", "actual_col": "A.ForecastAccuracy", "target_col": "T.ForecastAccuracy"},
+        {"key": "CoachingCompletion", "label": "Coaching Completion", "weight": 0.20, "direction": "higher_better", "unit": "%", "color": "#D97706", "actual_col": "A.CoachingCompletion", "target_col": "T.CoachingCompletion"},
+        {"key": "EscalationResolution", "label": "Escalation Resolution", "weight": 0.20, "direction": "higher_better", "unit": "%", "color": "#7C3AED", "actual_col": "A.EscalationResolution", "target_col": "T.EscalationResolution"}
+      ]
+    },
+    "Corporate": {
+      "kpis": [
+        {"key": "StrategicDelivery", "label": "Strategic Delivery", "weight": 0.30, "direction": "higher_better", "unit": "%", "color": "#2563EB", "actual_col": "A.StrategicDelivery", "target_col": "T.StrategicDelivery"},
+        {"key": "RevenueGovernance", "label": "Revenue Governance", "weight": 0.25, "direction": "higher_better", "unit": "%", "color": "#0D9488", "actual_col": "A.RevenueGovernance", "target_col": "T.RevenueGovernance"},
+        {"key": "StakeholderSatisfaction", "label": "Stakeholder Satisfaction", "weight": 0.25, "direction": "higher_better", "unit": "%", "color": "#D97706", "actual_col": "A.StakeholderSatisfaction", "target_col": "T.StakeholderSatisfaction"},
+        {"key": "ProjectMilestones", "label": "Project Milestone Completion", "weight": 0.20, "direction": "higher_better", "unit": "%", "color": "#7C3AED", "actual_col": "A.ProjectMilestones", "target_col": "T.ProjectMilestones"}
+      ]
+    }
+  },
   "kpis": [
     {
       "key": "OPCensus",

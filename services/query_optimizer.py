@@ -47,7 +47,9 @@ class QueryOptimizer:
             try:
                 val = redis_client.get(cache_key)
                 if val:
+                    logger.info("cache hit", extra={"cache_key": cache_key, "cache_type": "paginated_performance"})
                     return json.loads(val)
+                logger.info("cache miss", extra={"cache_key": cache_key, "cache_type": "paginated_performance"})
             except Exception as e:
                 logger.warning(f"Failed to read paginated performance cache: {e}")
 
@@ -105,6 +107,7 @@ class QueryOptimizer:
         if redis_client:
             try:
                 redis_client.set(cache_key, json.dumps(serialized_records), ex=3600)
+                logger.info("cache set", extra={"cache_key": cache_key, "cache_type": "paginated_performance", "ttl": 3600})
             except Exception as e:
                 logger.warning(f"Failed to cache paginated performance records: {e}")
 
@@ -124,6 +127,7 @@ class QueryOptimizer:
         # Try cache first
         cached_data = CacheService.get_team_performance_cache(team_id, month, year)
         if cached_data:
+            logger.info("cache hit", extra={"cache_key": f"team_performance:{team_id}:{month}:{year}", "cache_type": "team_aggregate"})
             return cached_data
 
         try:

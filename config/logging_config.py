@@ -57,11 +57,14 @@ def setup_logging():
     for handler in list(root_logger.handlers):
         root_logger.removeHandler(handler)
 
-    root_logger.setLevel(logging.INFO)
+    # Configure log level from environment
+    log_level_str = os.getenv("LOG_LEVEL", "INFO").upper()
+    log_level = getattr(logging, log_level_str, logging.INFO)
+    root_logger.setLevel(log_level)
 
     # 1. Console Handler (for readable stdout)
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.INFO)
+    console_handler.setLevel(log_level)
     console_formatter = logging.Formatter(
         "[%(asctime)s] %(levelname)s [%(name)s] [ReqID: %(request_id)s] %(message)s"
     )
@@ -77,7 +80,7 @@ def setup_logging():
         backupCount=30,
         encoding="utf-8"
     )
-    file_handler.setLevel(logging.INFO)
+    file_handler.setLevel(log_level)
     file_formatter = JSONFormatter()
     file_handler.setFormatter(file_formatter)
     file_handler.addFilter(RequestIDFilter())

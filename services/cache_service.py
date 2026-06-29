@@ -41,7 +41,9 @@ class CacheService:
             try:
                 val = redis_client.get(key)
                 if val:
+                    logger.info("cache hit", extra={"cache_key": key, "cache_type": "performance"})
                     return json.loads(val)
+                logger.info("cache miss", extra={"cache_key": key, "cache_type": "performance"})
             except Exception as e:
                 logger.warning(f"Redis get performance cache error: {e}")
         return in_memory_cache.get_session(key)
@@ -53,6 +55,7 @@ class CacheService:
         if redis_client:
             try:
                 redis_client.set(key, json.dumps(data), ex=ttl)
+                logger.info("cache set", extra={"cache_key": key, "cache_type": "performance", "ttl": ttl})
             except Exception as e:
                 logger.warning(f"Redis set performance cache error: {e}")
         in_memory_cache.set_session(key, data, ttl)
@@ -66,7 +69,9 @@ class CacheService:
             try:
                 val = redis_client.get(key)
                 if val:
+                    logger.info("cache hit", extra={"cache_key": key, "cache_type": "team_performance"})
                     return json.loads(val)
+                logger.info("cache miss", extra={"cache_key": key, "cache_type": "team_performance"})
             except Exception as e:
                 logger.warning(f"Redis get team performance cache error: {e}")
         return in_memory_cache.get_session(key)
@@ -78,6 +83,7 @@ class CacheService:
         if redis_client:
             try:
                 redis_client.set(key, json.dumps(data), ex=ttl)
+                logger.info("cache set", extra={"cache_key": key, "cache_type": "team_performance", "ttl": ttl})
             except Exception as e:
                 logger.warning(f"Redis set team performance cache error: {e}")
         in_memory_cache.set_session(key, data, ttl)

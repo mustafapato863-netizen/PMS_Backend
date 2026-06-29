@@ -1,11 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 import datetime
+import logging
+import time
 
 from api.dependencies import uploads_repo, performance_repo, trend_service, planning_service
 from api.middleware.rbac_middleware import require_permission
 from services.seeding_service import DatabaseSeeder
 from services.cache_invalidation_service import CacheInvalidationService
 from models.schemas import StandardResponse
+
+logger = logging.getLogger(__name__)
 
 def _warm_team_caches() -> None:
     """Pre-compute and cache team performance aggregates after data changes."""
@@ -34,7 +38,6 @@ def _warm_team_caches() -> None:
             }
             CacheService.set_team_performance_cache(team_name, month, 2026, aggregated)
     except Exception as e:
-        import logging
         logging.getLogger(__name__).warning(f"Cache warming failed (non-critical): {e}")
 
 
@@ -61,6 +64,8 @@ async def upload_pms_file(
     _user=Depends(require_permission("upload_data"))
 ):
     try:
+        started_at = time.perf_counter()
+        upload_filename = file.filename
         if not file.filename.lower().endswith(('.xlsx', '.xls')):
             raise HTTPException(status_code=400, detail="Only excel files accepted.")
 
@@ -79,7 +84,12 @@ async def upload_pms_file(
         await SocketNotificationService.notify_file_upload(
             filename=file.filename,
             team_name=teams_str,
+            teams=teams_list,
             status="success"
+        )
+        logger.info(
+            "upload processed",
+            extra={"upload_filename": upload_filename, "duration_ms": round((time.perf_counter() - started_at) * 1000.0, 2)},
         )
 
         return StandardResponse(
@@ -90,14 +100,31 @@ async def upload_pms_file(
     except Exception as e:
         import traceback
         traceback.print_exc()
+        report = getattr(e, "report", None) or {}
+        teams_list = report.get("detected_teams") or report.get("attempted_teams") or report.get("teams") or []
+        payload = {
+            "filename": file.filename,
+            "team_name": "All Teams",
+            "status": "failed",
+            "detected_teams": report.get("detected_teams", teams_list),
+            "attempted_teams": report.get("attempted_teams", teams_list),
+            "persisted_teams": report.get("persisted_teams", []),
+            "failed_teams": report.get("failed_teams", []),
+        }
         # Emit file upload failure notification
         from services.socket_service import SocketNotificationService
         await SocketNotificationService.notify_file_upload(
             filename=file.filename,
             team_name="All Teams",
-            status="failed"
+            teams=teams_list,
+            status="failed",
+            details=payload,
         )
-        return StandardResponse(success=False, message=f"Failed to upload and process Excel file: {str(e)}")
+        logger.warning(
+            "upload failed",
+            extra={"upload_filename": file.filename, "duration_ms": round((time.perf_counter() - started_at) * 1000.0, 2)},
+        )
+        return StandardResponse(success=False, message=f"Failed to upload and process Excel file: {str(e)}", data=payload)
 
 @router.delete("/{upload_id}", response_model=StandardResponse)
 async def delete_upload(

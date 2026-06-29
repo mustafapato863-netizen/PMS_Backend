@@ -37,7 +37,10 @@ class TeamService:
         """Build a response payload using config JSON as the source of truth when available."""
         config = TeamService._load_team_config(team.name, team.db_name)
 
-        kpi_configs = db.query(TeamKPIConfig).filter(TeamKPIConfig.team_id == team.id).all()
+        kpi_configs = db.query(TeamKPIConfig).filter(
+            TeamKPIConfig.team_id == team.id,
+            TeamKPIConfig.performance_level == "Employee",
+        ).all()
         if kpi_configs:
             kpi_keys = [kpi.kpi_key for kpi in kpi_configs]
             kpi_weights = {kpi.kpi_key: float(kpi.weight) for kpi in kpi_configs}
@@ -367,9 +370,12 @@ class TeamService:
             if not kpi_configs:
                 errors.append("No KPI configurations defined")
             else:
-                total_weight = sum(float(kpi.weight) for kpi in kpi_configs)
-                if abs(total_weight - 1.0) > 0.01:
-                    errors.append(f"KPI weights don't sum to 1.0 (got {total_weight})")
+                totals = {}
+                for kpi in kpi_configs:
+                    totals[kpi.performance_level] = totals.get(kpi.performance_level, 0.0) + float(kpi.weight)
+                for level, total_weight in totals.items():
+                    if total_weight > 1.01:
+                        errors.append(f"{level} KPI weights exceed 1.0 (got {total_weight})")
             
             try:
                 config = TeamService._load_team_config(team.name, team.db_name)

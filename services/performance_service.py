@@ -20,6 +20,33 @@ class PerformanceService:
     """Service for managing performance records - Database-backed version."""
 
     @staticmethod
+    def _record_to_dict(record, include_kpis: bool = False) -> Dict[str, Any]:
+        record_dict = {
+            'id': str(record.id),
+            'employee_id': str(record.employee_id),
+            'team_id': str(record.team_id),
+            'month': record.month,
+            'performance_level': record.performance_level,
+            'year': record.year,
+            'score': float(record.score),
+            'grade': record.grade,
+            'status': record.status,
+            'uploaded_at': record.uploaded_at.isoformat() if record.uploaded_at else None,
+        }
+        if include_kpis:
+            record_dict['kpi_values'] = [
+                {
+                    'kpi_key': kpi.kpi_key,
+                    'actual_value': float(kpi.actual_value),
+                    'target_value': float(kpi.target_value),
+                    'achievement_ratio': float(kpi.achievement_ratio),
+                    'contribution': float(kpi.contribution),
+                }
+                for kpi in record.kpi_values
+            ]
+        return record_dict
+
+    @staticmethod
     def get_monthly_records(team_id: any, month: str, year: int) -> List[Dict[str, Any]]:
         """
         Get all performance records for a team in a specific month.
@@ -37,35 +64,7 @@ class PerformanceService:
             repo = PerformanceRepository(db, PerformanceRecord)
             records = repo.get_monthly_records(team_id, month, year)
             
-            result = []
-            for record in records:
-                record_dict = {
-                    'id': str(record.id),
-                    'employee_id': str(record.employee_id),
-                    'team_id': str(record.team_id),
-                    'month': record.month,
-                    'year': record.year,
-                    'score': float(record.score),
-                    'grade': record.grade,
-                    'status': record.status,
-                    'uploaded_at': record.uploaded_at.isoformat() if record.uploaded_at else None,
-                }
-                
-                # Read from preloaded kpi_values relationship
-                record_dict['kpi_values'] = [
-                    {
-                        'kpi_key': kpi.kpi_key,
-                        'actual_value': float(kpi.actual_value),
-                        'target_value': float(kpi.target_value),
-                        'achievement_ratio': float(kpi.achievement_ratio),
-                        'contribution': float(kpi.contribution),
-                    }
-                    for kpi in record.kpi_values
-                ]
-                
-                result.append(record_dict)
-            
-            return result
+            return [PerformanceService._record_to_dict(record, include_kpis=True) for record in records]
         
         except Exception as e:
             logger.error(f"Failed to get monthly records for team {team_id}, month {month}, year {year}: {e}")
@@ -91,35 +90,7 @@ class PerformanceService:
             repo = PerformanceRepository(db, PerformanceRecord)
             records = repo.get_employee_history(employee_id, year)
             
-            result = []
-            for record in records:
-                record_dict = {
-                    'id': str(record.id),
-                    'employee_id': str(record.employee_id),
-                    'team_id': str(record.team_id),
-                    'month': record.month,
-                    'year': record.year,
-                    'score': float(record.score),
-                    'grade': record.grade,
-                    'status': record.status,
-                    'uploaded_at': record.uploaded_at.isoformat() if record.uploaded_at else None,
-                }
-                
-                # Read from preloaded kpi_values relationship
-                record_dict['kpi_values'] = [
-                    {
-                        'kpi_key': kpi.kpi_key,
-                        'actual_value': float(kpi.actual_value),
-                        'target_value': float(kpi.target_value),
-                        'achievement_ratio': float(kpi.achievement_ratio),
-                        'contribution': float(kpi.contribution),
-                    }
-                    for kpi in record.kpi_values
-                ]
-                
-                result.append(record_dict)
-            
-            return result
+            return [PerformanceService._record_to_dict(record, include_kpis=True) for record in records]
         
         except Exception as e:
             logger.error(f"Failed to get employee history for {employee_id}, year {year}: {e}")
@@ -147,22 +118,7 @@ class PerformanceService:
             repo = PerformanceRepository(db, PerformanceRecord)
             records = repo.get_by_grade(team_id, grade, month, year)
             
-            result = []
-            for record in records:
-                record_dict = {
-                    'id': str(record.id),
-                    'employee_id': str(record.employee_id),
-                    'team_id': str(record.team_id),
-                    'month': record.month,
-                    'year': record.year,
-                    'score': float(record.score),
-                    'grade': record.grade,
-                    'status': record.status,
-                    'uploaded_at': record.uploaded_at.isoformat() if record.uploaded_at else None,
-                }
-                result.append(record_dict)
-            
-            return result
+            return [PerformanceService._record_to_dict(record) for record in records]
         
         except Exception as e:
             logger.error(f"Failed to get records by grade {grade}: {e}")
@@ -223,6 +179,7 @@ class PerformanceService:
         score: float,
         grade: str,
         status: str,
+        performance_level: str = "Employee",
         kpi_data: Optional[List[Dict[str, Any]]] = None
     ) -> Tuple[bool, Dict[str, Any], List[str]]:
         """
@@ -262,6 +219,7 @@ class PerformanceService:
                 'score': score,
                 'grade': grade,
                 'status': status,
+                'performance_level': performance_level,
             }
             
             record = repo.create(record_data)
@@ -284,16 +242,7 @@ class PerformanceService:
             
             db.commit()
             
-            record_dict = {
-                'id': str(record.id),
-                'employee_id': str(record.employee_id),
-                'team_id': str(record.team_id),
-                'month': record.month,
-                'year': record.year,
-                'score': float(record.score),
-                'grade': record.grade,
-                'status': record.status,
-            }
+            record_dict = PerformanceService._record_to_dict(record)
             
             return True, record_dict, errors
         
@@ -348,16 +297,7 @@ class PerformanceService:
             db.commit()
             logger.info(f"Updated performance record: {record_id}")
             
-            record_dict = {
-                'id': str(updated_record.id),
-                'employee_id': str(updated_record.employee_id),
-                'team_id': str(updated_record.team_id),
-                'month': updated_record.month,
-                'year': updated_record.year,
-                'score': float(updated_record.score),
-                'grade': updated_record.grade,
-                'status': updated_record.status,
-            }
+            record_dict = PerformanceService._record_to_dict(updated_record)
             
             return True, record_dict, errors
         
@@ -430,22 +370,7 @@ class PerformanceService:
             repo = PerformanceRepository(db, PerformanceRecord)
             records = repo.get_team_yearly_records(team_id, year)
             
-            result = []
-            for record in records:
-                record_dict = {
-                    'id': str(record.id),
-                    'employee_id': str(record.employee_id),
-                    'team_id': str(record.team_id),
-                    'month': record.month,
-                    'year': record.year,
-                    'score': float(record.score),
-                    'grade': record.grade,
-                    'status': record.status,
-                    'uploaded_at': record.uploaded_at.isoformat() if record.uploaded_at else None,
-                }
-                result.append(record_dict)
-            
-            return result
+            return [PerformanceService._record_to_dict(record) for record in records]
         
         except Exception as e:
             logger.error(f"Failed to get team yearly records for team {team_id}, year {year}: {e}")

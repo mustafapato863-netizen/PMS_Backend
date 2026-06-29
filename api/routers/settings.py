@@ -45,7 +45,9 @@ async def update_targets(
         updated_records = []
         for r in records:
             if r.team == payload.team:
-                score, grade, achievements, weights_used = kpi_service.calculate_performance(r.team, r.raw_data)
+                score, grade, achievements, weights_used = kpi_service.calculate_performance(
+                    r.team, r.raw_data, r.performance_level
+                )
                 
                 r.achievement.booking_ach = achievements.get("Booking", 0.0)
                 r.achievement.attend_ach = achievements.get("Attend", 0.0)

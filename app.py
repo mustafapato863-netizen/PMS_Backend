@@ -7,6 +7,8 @@ Run with:  cd Backend && uvicorn app:app --reload --port 8000
 import sys
 import os
 import io
+import time
+import logging
 
 # Force UTF-8 encoding for console output (Windows compatibility)
 if sys.stdout and hasattr(sys.stdout, 'buffer'):
@@ -29,6 +31,7 @@ from config.logging_config import setup_logging
 
 # Initialize structured logging
 setup_logging()
+logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,6 +42,8 @@ async def lifespan(app: FastAPI):
     # Run database seeder on startup
     seeder = DatabaseSeeder()
     seeder.seed_database()
+    if os.environ.get("PMS_SEED_DEMO_LEVELS", "").lower() == "true":
+        seeder.seed_demo_performance_levels()
     
     # Run role permissions seeder
     db = SessionLocal()
@@ -55,6 +60,22 @@ app = FastAPI(
     version="2.0.0",
     lifespan=lifespan
 )
+
+@app.middleware("http")
+async def request_timing_middleware(request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    duration_ms = (time.perf_counter() - start) * 1000.0
+    logger.info(
+        "request completed",
+        extra={
+            "path": request.url.path,
+            "method": request.method,
+            "status_code": getattr(response, "status_code", None),
+            "duration_ms": round(duration_ms, 2),
+        },
+    )
+    return response
 
 # Register AuthMiddleware
 app.add_middleware(AuthMiddleware)

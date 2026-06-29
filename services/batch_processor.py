@@ -7,6 +7,7 @@ import uuid
 from typing import List, Dict, Any, Tuple
 from sqlalchemy.orm import Session
 from models.models import PerformanceRecord, KPIValue, Team, Employee, TeamKPIConfig
+from utils.performance_levels import normalize_performance_level
 from services.audit_service import AuditService
 
 logger = logging.getLogger(__name__)
@@ -206,7 +207,8 @@ class BatchProcessor:
         db: Session,
         team_id: str,
         updates: List[Dict[str, Any]],
-        performed_by_user_id: str = None
+        performed_by_user_id: str = None,
+        performance_level: str = "Employee",
     ) -> Dict[str, Any]:
         """
         Validate weights up-front (sum must equal 1.0 within 0.01 tolerance)
@@ -227,7 +229,11 @@ class BatchProcessor:
             team_uuid = uuid.UUID(team_id) if isinstance(team_id, str) else team_id
             
             # Fetch existing KPI configs
-            configs = db.query(TeamKPIConfig).filter(TeamKPIConfig.team_id == team_uuid).all()
+            performance_level = normalize_performance_level(performance_level)
+            configs = db.query(TeamKPIConfig).filter(
+                TeamKPIConfig.team_id == team_uuid,
+                TeamKPIConfig.performance_level == performance_level,
+            ).all()
             if not configs:
                 errors.append(f"No KPI configurations found for team {team_id}.")
                 return {"success": False, "errors": errors}
@@ -244,10 +250,10 @@ class BatchProcessor:
                     return {"success": False, "errors": errors}
                 weights_map[k_key] = float(k_weight)
                 
-            # Enforce that sum equals 1.0 (with 0.01 tolerance)
+            # Weight totals are independent for each team + performance level.
             total_weight = sum(weights_map.values())
-            if abs(total_weight - 1.0) > 0.01:
-                errors.append(f"KPI weights do not sum to 1.0 (got {total_weight:.3f}).")
+            if total_weight > 1.01:
+                errors.append(f"{performance_level} KPI weights exceed 1.0 (got {total_weight:.3f}).")
                 return {"success": False, "errors": errors}
 
             # Apply updates inside a transaction block

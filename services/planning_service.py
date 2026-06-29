@@ -11,13 +11,15 @@ class PlanningService:
     def __init__(self, performance_repo: PerformanceRepository):
         self.performance_repo = performance_repo
 
-    def classify_all(self, month: str) -> Dict[str, List[PerformanceRecord]]:
+    def classify_all(self, month: str, performance_level: str | None = None) -> Dict[str, List[PerformanceRecord]]:
         """
         Classifies all employee performance records for the target month into planning categories.
         Returns:
           - categories (dict): Map of category name to list of PerformanceRecord
         """
         all_records = self.performance_repo.get_all()
+        if performance_level:
+            all_records = [r for r in all_records if r.performance_level == performance_level]
         month_records = [r for r in all_records if r.month == month]
         
         # Group records by employee to analyze history

@@ -72,6 +72,8 @@ class AuthenticationService:
         user = db.query(User).filter(User.username == username).first()
         if not user:
             raise ValueError("Invalid username or password.")
+        if not user.is_active:
+            raise ValueError("User account is disabled")
 
         now = datetime.now(timezone.utc)
 

@@ -1,6 +1,6 @@
 [
   {
-    "employee_id": "70090",
+    "employee_id": "SGHD70090",
     "employee_name": "Radwa Ahmed Mohamed",
     "team": "Outbound",
     "month": "May",
@@ -11,10 +11,10 @@
     "manager_action": "Coaching: Productivity has stayed essentially flat over the action plan period — it moved less than half a point",
     "manager_notes": "Utilization Performance",
     "timestamp": "2026-06-10T13:00:55.870597",
-    "id": "70090_May_2026-06-10T13:00:55.870597"
+    "id": "SGHD70090_May_2026-06-10T13:00:55.870597"
   },
   {
-    "employee_id": "70075",
+    "employee_id": "SGHD70075",
     "employee_name": "Abdelrahman Yasser Abdullah",
     "team": "Outbound",
     "month": "May",
@@ -25,10 +25,10 @@
     "manager_action": "Coaching: 1:1 Coaching To Up Utilization.",
     "manager_notes": "Utilization Performance",
     "timestamp": "2026-06-10T13:10:41.015162",
-    "id": "70075_May_2026-06-10T13:10:41.015162"
+    "id": "SGHD70075_May_2026-06-10T13:10:41.015162"
   },
   {
-    "employee_id": "70110",
+    "employee_id": "SGHD70110",
     "employee_name": "Salma Ali El-Sayed Khalafallah",
     "team": "Outbound",
     "month": "May",
@@ -39,10 +39,10 @@
     "manager_action": "Coaching: 1:1 Coaching To Up Utilization.",
     "manager_notes": "Utilization Performance",
     "timestamp": "2026-06-10T13:11:06.902444",
-    "id": "70110_May_2026-06-10T13:11:06.902444"
+    "id": "SGHD70110_May_2026-06-10T13:11:06.902444"
   },
   {
-    "employee_id": "70087",
+    "employee_id": "SGHD70087",
     "employee_name": "Mohamed Fakeh Mohamed Marghany",
     "team": "Outbound",
     "month": "May",
@@ -53,11 +53,11 @@
     "manager_action": "Coaching: 1:1 Coaching To Up Utilization.",
     "manager_notes": "Utilization Performance",
     "timestamp": "2026-06-10T13:11:25.791369",
-    "id": "70087_May_2026-06-10T13:11:25.791369"
+    "id": "SGHD70087_May_2026-06-10T13:11:25.791369"
   },
   {
-    "employee_id": "70157",
-    "employee_name": "Ammar Yasser sayed Ghareb",
+    "employee_id": "SGHD70157",
+    "employee_name": "Ammar Yasser sayed Ghareb",
     "team": "Outbound",
     "month": "May",
     "score": 92.32,
@@ -67,10 +67,10 @@
     "manager_action": "Coaching: 1:1 Coaching To Up Utilization.",
     "manager_notes": "Utilization Performance",
     "timestamp": "2026-06-10T13:12:10.154768",
-    "id": "70157_May_2026-06-10T13:12:10.154768"
+    "id": "SGHD70157_May_2026-06-10T13:12:10.154768"
   },
   {
-    "employee_id": "70085",
+    "employee_id": "SGHD70085",
     "employee_name": "Aya Shaaban Abdelazim Mohamed",
     "team": "Outbound",
     "month": "May",
@@ -81,11 +81,11 @@
     "manager_action": "Coaching: 1:1 Coaching To Up Utilization.",
     "manager_notes": "Utilization Performance",
     "timestamp": "2026-06-10T13:12:23.585370",
-    "id": "70085_May_2026-06-10T13:12:23.585370"
+    "id": "SGHD70085_May_2026-06-10T13:12:23.585370"
   },
   {
-    "id": "70090_May_2026-06-10T13:23:47.397289",
-    "employee_id": "70090",
+    "id": "SGHD70090_May_2026-06-10T13:23:47.397289",
+    "employee_id": "SGHD70090",
     "employee_name": "Radwa Ahmed Mohamed",
     "team": "Outbound",
     "month": "May",
@@ -98,7 +98,7 @@
     "timestamp": "2026-06-10T13:50:49.560689"
   },
   {
-    "employee_id": "70143",
+    "employee_id": "SGHD70143",
     "employee_name": "Nouran Salah Anwar Mohamed Dekrori",
     "team": "Pre-Approvals IP Offshore",
     "month": "May",
@@ -109,10 +109,10 @@
     "manager_action": "Coaching: Reminder and follow up daily for errors",
     "manager_notes": "Rejection ↑ (main issue)",
     "timestamp": "2026-06-10T13:32:20.583982",
-    "id": "70143_May_2026-06-10T13:32:20.583982"
+    "id": "SGHD70143_May_2026-06-10T13:32:20.583982"
   },
   {
-    "employee_id": "70143",
+    "employee_id": "SGHD70143",
     "employee_name": "Nouran Salah Anwar Mohamed Dekrori",
     "team": "Pre-Approvals IP Offshore",
     "month": "May",
@@ -123,10 +123,10 @@
     "manager_action": "PIP: She declined compared to the previous month, decreasing from 82.4% to 44.6%. Dr. Hossam will conduct additional follow-up to help improve performance and accelerate the process.",
     "manager_notes": "Rejection ↑ (main issue)",
     "timestamp": "2026-06-10T13:34:15.499582",
-    "id": "70143_May_2026-06-10T13:34:15.499582"
+    "id": "SGHD70143_May_2026-06-10T13:34:15.499582"
   },
   {
-    "employee_id": "70134",
+    "employee_id": "SGHD70134",
     "employee_name": "Salma Hussein Mohamed Ali El-Ramly",
     "team": "Pre-Approvals IP Offshore",
     "month": "May",
@@ -137,10 +137,10 @@
     "manager_action": "Monitor: Reminder and follow up daily for errors",
     "manager_notes": "Rejection ↑ (main issue)",
     "timestamp": "2026-06-10T13:35:42.235415",
-    "id": "70134_May_2026-06-10T13:35:42.235415"
+    "id": "SGHD70134_May_2026-06-10T13:35:42.235415"
   },
   {
-    "employee_id": "70134",
+    "employee_id": "SGHD70134",
     "employee_name": "Salma Hussein Mohamed Ali El-Ramly",
     "team": "Pre-Approvals IP Offshore",
     "month": "May",
@@ -151,10 +151,11 @@
     "manager_action": "Coaching: Reminder and follow up daily for errors",
     "manager_notes": "Rejection ↑ (main issue)",
     "timestamp": "2026-06-10T13:36:18.685890",
-    "id": "70134_May_2026-06-10T13:36:18.685890"
+    "id": "SGHD70134_May_2026-06-10T13:36:18.685890"
   },
   {
-    "employee_id": "70134",
+    "id": "SGHD70134_May_2026-06-10T13:37:05.400976",
+    "employee_id": "SGHD70134",
     "employee_name": "Salma Hussein Mohamed Ali El-Ramly",
     "team": "Pre-Approvals IP Offshore",
     "month": "May",
@@ -163,12 +164,13 @@
     "root_cause": "Rejection",
     "suggested_action": "Quality Calibration",
     "manager_action": "PIP: She declined compared to the previous month, decreasing from 80% to 66.3%. Dr. Hossam will conduct additional follow-up to help improve performance and accelerate the process.",
-    "manager_notes": "Rejection ↑ (main issue)",
-    "timestamp": "2026-06-10T13:37:05.400976",
-    "id": "70134_May_2026-06-10T13:37:05.400976"
+    "manager_notes": "Rejection Rate",
+    "timestamp": "2026-06-23T15:12:01.765768",
+    "created_by_name": null,
+    "created_by_role": null
   },
   {
-    "employee_id": "70143",
+    "employee_id": "SGHD70143",
     "employee_name": "Nouran Salah Anwar Mohamed Dekrori",
     "team": "Pre-Approvals IP Offshore",
     "month": "May",
@@ -179,11 +181,11 @@
     "manager_action": "PIP: She declined compared to the previous month, decreasing from 82.4% to 44.6%. Dr. Hossam will conduct additional follow-up to help improve performance and accelerate the process.",
     "manager_notes": "(Rejection&Errors&Submmition) ↑ (main issue)",
     "timestamp": "2026-06-10T13:39:38.270476",
-    "id": "70143_May_2026-06-10T13:39:38.270476"
+    "id": "SGHD70143_May_2026-06-10T13:39:38.270476"
   },
   {
-    "id": "70151_May_1781164088589",
-    "employee_id": "70151",
+    "id": "SGHD70151_May_1781164088589",
+    "employee_id": "SGHD70151",
     "employee_name": "Omar Abdelhamid Amin Elsayed konswa",
     "team": "Pre-Approvals IP Offshore",
     "month": "May",
@@ -194,20 +196,6 @@
     "manager_action": "Training: this is the first month for him\nWill Give Him Training",
     "manager_notes": "Delay Due to Insurance Company Feedback",
     "timestamp": "2026-06-11T10:48:08.647821"
-  },
-  {
-    "id": "SGHD04275_April_1782196700708",
-    "employee_id": "SGHD04275",
-    "employee_name": "Taiyab  Taskeen",
-    "team": "Submission",
-    "month": "April",
-    "score": 99.81,
-    "grade": "A",
-    "root_cause": "submission_within_due_date",
-    "suggested_action": "Reward & Recognition",
-    "manager_action": "Reward: Best One",
-    "manager_notes": "Submission Within Due Date: 99.5% / 100.0%",
-    "timestamp": "2026-06-23T09:38:20.715982"
   },
   {
     "id": "SGHD03493_May_1782205768338",
@@ -222,7 +210,23 @@
     "manager_action": "Training: Need Study more referenced",
     "manager_notes": "Rejection: 4.0% / 2.0%",
     "timestamp": "2026-06-23T13:31:45.507199",
-    "created_by_name": "hima",
+    "created_by_name": "3mak",
     "created_by_role": "Manager"
+  },
+  {
+    "id": "SGHD03641_May_1782306069677",
+    "employee_id": "SGHD03641",
+    "employee_name": "Tawfik Ibrahim Tawfik Mahmoud",
+    "team": "Sales",
+    "month": "May",
+    "score": 58.19,
+    "grade": "E",
+    "root_cause": "IPRevenue",
+    "suggested_action": "PI",
+    "manager_action": "Coaching: Coatching",
+    "manager_notes": "OP Census Ach: 52.7% / 100.0%",
+    "timestamp": "2026-06-24T16:01:09.753299",
+    "created_by_name": "super",
+    "created_by_role": "Admin"
   }
 ]

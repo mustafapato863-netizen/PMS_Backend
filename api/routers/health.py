@@ -32,3 +32,33 @@ async def check_health(response: Response, db: Session = Depends(get_db)):
             "status": "unhealthy",
             "error": str(e)
         }
+
+
+@router.get("/liveness", status_code=status.HTTP_200_OK)
+async def check_liveness():
+    """
+    Liveness probe for host/container health checking.
+    Returns HTTP 200 immediately.
+    """
+    return {"status": "alive"}
+
+
+@router.get("/readiness", status_code=status.HTTP_200_OK)
+async def check_readiness(response: Response, db: Session = Depends(get_db)):
+    """
+    Readiness probe for full system dependencies check.
+    Checks database and Redis cache connectivity.
+    """
+    try:
+        report = HealthCheckService.check_health(db)
+        if report["status"] != "healthy":
+            response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return report
+    except Exception as e:
+        logger.error(f"Readiness check failed: {e}")
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return {
+            "status": "unhealthy",
+            "error": str(e)
+        }
+

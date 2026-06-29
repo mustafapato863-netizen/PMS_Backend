@@ -132,3 +132,21 @@ async def me(request: Request, db: Session = Depends(get_db)):
     except Exception as e:
         logger.error(f"Me lookup error: {e}")
         return StandardResponse(success=False, message=f"Failed to fetch current user: {str(e)}")
+
+# --- Development endpoint to unlock a user account ---
+@router.post("/unlock/{user_id}", response_model=StandardResponse)
+async def unlock_user(user_id: str, db: Session = Depends(get_db)):
+    """Reset failed login attempts and lockout for a user. Intended for admin use during development/testing."""
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        user.failed_login_attempts = 0
+        user.locked_until = None
+        db.commit()
+        return StandardResponse(success=True, message="User unlocked successfully")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Unlock user error: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to unlock user")

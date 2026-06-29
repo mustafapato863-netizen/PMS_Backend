@@ -217,6 +217,9 @@ async def update_user_route(
         existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:
             raise HTTPException(status_code=404, detail="User not found")
+        # Protect Super Admin (username 'super') from being modified
+        if existing.username == "super":
+            raise HTTPException(status_code=400, detail="Cannot modify Super Admin account")
 
         updates = payload.model_dump(exclude_none=True)
         updates.pop("id", None)
@@ -293,6 +296,9 @@ async def toggle_user_active_route(
         existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:
             raise HTTPException(status_code=404, detail="User not found")
+        # Protect Super Admin from deactivation
+        if existing.username == "super" and not is_active:
+            raise HTTPException(status_code=400, detail="Cannot deactivate Super Admin account")
 
         if (
             current_username and current_username == existing.username
@@ -336,6 +342,9 @@ async def delete_user_route(
         existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:
             raise HTTPException(status_code=404, detail="User not found")
+        # Protect Super Admin from deletion
+        if existing.username == "super":
+            raise HTTPException(status_code=400, detail="Cannot delete Super Admin account")
 
         if (
             current_username and current_username == existing.username

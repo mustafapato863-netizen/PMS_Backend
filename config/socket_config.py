@@ -3,7 +3,12 @@ Socket.io Configuration and Setup
 Handles real-time communication for notifications and live data updates.
 """
 
+import logging
+
 from socketio import AsyncServer, AsyncNamespace
+from services.notification_service import NotificationService
+
+logger = logging.getLogger(__name__)
 
 # Create global Socket.io instance
 sio = AsyncServer(
@@ -32,13 +37,13 @@ class NotificationNamespace(AsyncNamespace):
             'role': None,
         }
         await self.enter_room(sid, 'global')
-        print(f"Client {sid} connected. Total: {len(connected_clients)}")
+        logger.info("Client %s connected. Total: %s", sid, len(connected_clients))
 
     async def on_disconnect(self, sid):
         """Client disconnected."""
         if sid in connected_clients:
             del connected_clients[sid]
-        print(f"Client {sid} disconnected. Total: {len(connected_clients)}")
+        logger.info("Client %s disconnected. Total: %s", sid, len(connected_clients))
 
     async def on_join_room(self, sid, data):
         """Join a socket room."""
@@ -49,7 +54,7 @@ class NotificationNamespace(AsyncNamespace):
         if 'rooms' not in connected_clients[sid]:
             connected_clients[sid]['rooms'] = set()
         connected_clients[sid]['rooms'].add(room)
-        print(f"Client {sid} joined room: {room}")
+        logger.info("Client %s joined room: %s", sid, room)
 
     async def on_leave_room(self, sid, data):
         """Leave a socket room."""
@@ -59,7 +64,7 @@ class NotificationNamespace(AsyncNamespace):
         await self.leave_room(sid, room)
         if 'rooms' in connected_clients[sid]:
             connected_clients[sid]['rooms'].discard(room)
-        print(f"Client {sid} left room: {room}")
+        logger.info("Client %s left room: %s", sid, room)
 
     async def on_subscribe_team(self, sid, data):
         """Subscribe to team notifications."""
@@ -87,7 +92,7 @@ class NotificationNamespace(AsyncNamespace):
                 if 'rooms' not in client:
                     client['rooms'] = set()
                 client['rooms'].add(f"team_{t}")
-            print(f"Client {sid} subscribed to teams: {team_names}")
+            logger.info("Client %s subscribed to teams: %s", sid, team_names)
         elif team_name:
             client['teams'] = {team_name}
             client['global_subscriber'] = False
@@ -95,10 +100,10 @@ class NotificationNamespace(AsyncNamespace):
             if 'rooms' not in client:
                 client['rooms'] = set()
             client['rooms'].add(f"team_{team_name}")
-            print(f"Client {sid} subscribed to team: {team_name}")
+            logger.info("Client %s subscribed to team: %s", sid, team_name)
         elif is_global:
             client['teams'] = set()
-            print(f"Client {sid} subscribed globally")
+            logger.info("Client %s subscribed globally", sid)
 
 
 # Register namespace
@@ -106,100 +111,8 @@ sio.register_namespace(NotificationNamespace('/notifications'))
 
 
 def save_notification_to_db(notification_data: dict, db=None) -> str | None:
-    """Save notification and create recipients in the database."""
-    from config.database import SessionLocal
-    from models.models import Notification, NotificationRecipient, User, UserTeamAssignment, Team
-    import uuid
-    from datetime import datetime, timezone
-
-    is_local_db = False
-    if db is None:
-        db = SessionLocal()
-        is_local_db = True
-
-    try:
-        ntype = notification_data.get('type', 'info')
-        db_type = 'system'
-        if ntype == 'action':
-            db_type = 'action_recorded'
-        elif ntype == 'upload':
-            db_type = 'data_upload'
-        elif ntype == 'error':
-            db_type = 'warning'
-        elif ntype == 'success':
-            db_type = 'system'
-
-        title_map = {
-            'action': 'Action Assigned',
-            'upload': 'Data Uploaded',
-            'error': 'System Error',
-            'success': 'Operation Success',
-            'info': 'System Info'
-        }
-        title = title_map.get(ntype, 'Notification')
-
-        team_name = notification_data.get('team')
-        
-        notification = Notification(
-            id=uuid.uuid4(),
-            type=db_type,
-            title=title,
-            message=notification_data.get('message', ''),
-            room=f"team_{team_name}" if team_name else "global",
-            payload=notification_data.get('data'),
-            created_at=datetime.now(timezone.utc)
-        )
-        db.add(notification)
-        db.flush()
-
-        recipient_user_ids = set()
-
-        # Active Admin users always receive notifications
-        admins = db.query(User).filter(User.role == 'Admin', User.is_active == True).all()
-        for admin in admins:
-            recipient_user_ids.add(admin.id)
-
-        # If team-scoped, active Managers assigned to that team also receive notifications
-        if team_name:
-            managers = (
-                db.query(User)
-                .join(UserTeamAssignment, User.id == UserTeamAssignment.user_id)
-                .join(Team, UserTeamAssignment.team_id == Team.id)
-                .filter(
-                    User.role == 'Manager',
-                    User.is_active == True,
-                    Team.name == team_name,
-                    Team.is_active == True
-                )
-                .all()
-            )
-            for manager in managers:
-                recipient_user_ids.add(manager.id)
-
-        for user_id in recipient_user_ids:
-            recipient = NotificationRecipient(
-                id=uuid.uuid4(),
-                notification_id=notification.id,
-                user_id=user_id,
-                is_read=False,
-                created_at=datetime.now(timezone.utc)
-            )
-            db.add(recipient)
-
-        if is_local_db:
-            db.commit()
-        else:
-            db.flush()
-
-        return str(notification.id)
-    except Exception as e:
-        if is_local_db:
-            db.rollback()
-        print(f"Failed to save notification to database: {e}")
-        return None
-    finally:
-        if is_local_db:
-            db.close()
+    """Backward-compatible wrapper around NotificationService."""
+    return NotificationService.save_notification(notification_data, db=db)
 
 
 async def broadcast_notification(notification_data):
@@ -212,21 +125,26 @@ async def broadcast_notification(notification_data):
             - message: str
             - team: str (optional, for team-specific notifications)
     """
-    if not connected_clients:
-        return
-
-    # Save notification to DB and attach ID to payload
     db_id = save_notification_to_db(notification_data)
     if db_id:
         notification_data['id'] = db_id
 
+    if not connected_clients:
+        logger.info("Notification persisted without active socket clients.")
+        return
+
     team_filter = notification_data.get('team')
+    team_filters = set(notification_data.get('teams') or [])
 
     for sid, client_info in connected_clients.items():
         is_admin = client_info.get('role') == 'Admin' or 'admin' in client_info.get('rooms', set())
         
         if is_admin:
             pass
+        elif team_filters:
+            client_teams = client_info.get('teams') or set()
+            if client_teams.isdisjoint(team_filters) and not client_info.get('global_subscriber'):
+                continue
         elif team_filter:
             client_teams = client_info.get('teams') or set()
             if team_filter not in client_teams and not client_info.get('global_subscriber'):
@@ -237,7 +155,7 @@ async def broadcast_notification(notification_data):
         try:
             await sio.emit('notification', notification_data, to=sid, namespace='/notifications')
         except Exception as e:
-            print(f"Failed to send notification to {sid}: {e}")
+            logger.exception("Failed to send notification to %s: %s", sid, e)
 
 
 async def broadcast_action_recorded(action_data):
@@ -262,7 +180,7 @@ async def broadcast_action_recorded(action_data):
         try:
             await sio.emit('action_recorded', action_data, to=sid, namespace='/notifications')
         except Exception as e:
-            print(f"Failed to send action record to {sid}: {e}")
+            logger.exception("Failed to send action record to %s: %s", sid, e)
 
 
 async def broadcast_data_update(event_type, data):
@@ -280,4 +198,4 @@ async def broadcast_data_update(event_type, data):
         try:
             await sio.emit(event_type, data, to=sid, namespace='/notifications')
         except Exception as e:
-            print(f"Failed to send update to {sid}: {e}")
+            logger.exception("Failed to send update to %s: %s", sid, e)

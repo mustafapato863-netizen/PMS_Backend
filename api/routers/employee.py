@@ -13,11 +13,20 @@ from sqlalchemy.orm import Session
 from models.schemas import StandardResponse, ManagerNote, CorrectiveAction
 from services.employee_service import EmployeeService
 from services.performance_service import PerformanceService
+from utils.performance_levels import normalize_performance_level
 
 router = APIRouter(prefix="", tags=["Employees"])
 
+
+def _level_filter(value: str | None) -> str | None:
+    try:
+        normalized = normalize_performance_level(value, allow_all=True)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return None if normalized == "All" else normalized
+
 @router.get("", response_model=StandardResponse)
-def get_all_employees(include_deleted: bool = Query(False)):
+def get_all_employees(include_deleted: bool = Query(False), performance_level: str = Query(None)):
     """
     Get all employees from database.
     
@@ -26,6 +35,9 @@ def get_all_employees(include_deleted: bool = Query(False)):
     """
     try:
         employees = employee_repo.get_all()
+        level = _level_filter(performance_level)
+        if level:
+            employees = [e for e in employees if e.performance_level == level]
         data = [e.model_dump() for e in employees]
         if not include_deleted:
             data = [e for e in data if e.get("status", "Active") != "Inactive"]
@@ -42,7 +54,7 @@ def get_all_employees(include_deleted: bool = Query(False)):
 
 
 @router.get("/search", response_model=StandardResponse)
-def  search_employees(name: str = Query(...), include_deleted: bool = Query(False)):
+def  search_employees(name: str = Query(...), include_deleted: bool = Query(False), performance_level: str = Query(None)):
     """
     Search employees by name.
     
@@ -56,6 +68,9 @@ def  search_employees(name: str = Query(...), include_deleted: bool = Query(Fals
         employees = employee_repo.get_all()
         name_lower = name.lower()
         matched = [e for e in employees if name_lower in e.name.lower()]
+        level = _level_filter(performance_level)
+        if level:
+            matched = [e for e in matched if e.performance_level == level]
         data = [e.model_dump() for e in matched]
         if not include_deleted:
             data = [e for e in data if e.get("status", "Active") != "Inactive"]
@@ -72,7 +87,7 @@ def  search_employees(name: str = Query(...), include_deleted: bool = Query(Fals
 
 
 @router.get("/team/{team_name}", response_model=StandardResponse)
-def get_employees_by_team(team_name: str, include_deleted: bool = Query(False)):
+def get_employees_by_team(team_name: str, include_deleted: bool = Query(False), performance_level: str = Query(None)):
     """
     Get all employees in a team.
     
@@ -85,6 +100,9 @@ def get_employees_by_team(team_name: str, include_deleted: bool = Query(False)):
     try:
         employees = employee_repo.get_all()
         matched = [e for e in employees if e.team == team_name]
+        level = _level_filter(performance_level)
+        if level:
+            matched = [e for e in matched if e.performance_level == level]
         data = [e.model_dump() for e in matched]
         if not include_deleted:
             data = [e for e in data if e.get("status", "Active") != "Inactive"]
@@ -101,7 +119,7 @@ def get_employees_by_team(team_name: str, include_deleted: bool = Query(False)):
 
 
 @router.get("/team/{team_name}/active", response_model=StandardResponse)
-def get_active_employees_by_team(team_name: str):
+def get_active_employees_by_team(team_name: str, performance_level: str = Query(None)):
     """
     Get all active employees in a team.
     
@@ -114,6 +132,9 @@ def get_active_employees_by_team(team_name: str):
     try:
         employees = employee_repo.get_all()
         matched = [e for e in employees if e.team == team_name and e.status == "Active"]
+        level = _level_filter(performance_level)
+        if level:
+            matched = [e for e in matched if e.performance_level == level]
         data = [e.model_dump() for e in matched]
         return StandardResponse(
             success=True,

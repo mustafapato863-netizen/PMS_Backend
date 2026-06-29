@@ -6,8 +6,10 @@ Validates configurations for correctness and consistency.
 
 import json
 import logging
+from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
+from utils.performance_levels import PERFORMANCE_LEVELS, normalize_performance_level
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,7 @@ class ThresholdValidationError(ConfigurationError):
     pass
 
 
-def _validate_weights(kpis: List[Dict[str, Any]]) -> Tuple[bool, List[str]]:
+def _validate_weights(kpis: List[Dict[str, Any]], context: str = "configuration") -> Tuple[bool, List[str]]:
     """
     Validate that KPI weights sum to 1.0 within 0.001 tolerance.
     
@@ -44,12 +46,9 @@ def _validate_weights(kpis: List[Dict[str, Any]]) -> Tuple[bool, List[str]]:
         return False, errors
     
     total_weight = sum(float(kpi.get('weight', 0)) for kpi in kpis)
-    tolerance = 0.001
-    
-    if abs(total_weight - 1.0) > tolerance:
+    if total_weight > 1.001:
         errors.append(
-            f"KPI weights sum to {total_weight:.4f}, expected 1.0 (±0.001 tolerance). "
-            f"Difference: {abs(total_weight - 1.0):.6f}"
+            f"KPI weights for {context} sum to {total_weight:.4f}; the maximum is 1.0"
         )
         return False, errors
     
@@ -103,20 +102,23 @@ def _validate_required_fields(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
         Tuple of (is_valid, [error_messages])
     """
     errors = []
-    required_top_level = ['team', 'db_name', 'region', 'employee_id_col', 'employee_name_col', 'grade_thresholds', 'kpis']
+    required_top_level = ['team', 'db_name', 'region', 'employee_id_col', 'employee_name_col', 'grade_thresholds']
     
     for field in required_top_level:
         if field not in config:
             errors.append(f"Missing required field: '{field}'")
     
-    # Validate KPI fields
-    if 'kpis' in config:
-        required_kpi_fields = ['key', 'label', 'weight', 'direction', 'unit', 'color', 'actual_col', 'target_col']
-        
-        for idx, kpi in enumerate(config['kpis']):
+    if 'kpis' not in config and 'performance_levels' not in config:
+        errors.append("Missing required field: 'kpis' or 'performance_levels'")
+
+    required_kpi_fields = ['key', 'label', 'weight', 'direction', 'unit', 'color', 'actual_col', 'target_col']
+    groups = [("Employee", config.get('kpis', []))]
+    groups.extend((level, value.get('kpis', [])) for level, value in config.get('performance_levels', {}).items())
+    for level, kpis in groups:
+        for idx, kpi in enumerate(kpis):
             for field in required_kpi_fields:
                 if field not in kpi:
-                    errors.append(f"KPI {idx} ({kpi.get('key', 'unknown')}): missing field '{field}'")
+                    errors.append(f"{level} KPI {idx} ({kpi.get('key', 'unknown')}): missing field '{field}'")
     
     return len(errors) == 0, errors
 
@@ -141,15 +143,45 @@ def validate_team_config(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
         # Can't continue validation without required fields
         return False, all_errors
     
-    # Validate weights sum to 1.0
-    is_valid, errors = _validate_weights(config.get('kpis', []))
-    all_errors.extend(errors)
+    if config.get('kpis'):
+        _, errors = _validate_weights(config['kpis'], "Employee")
+        all_errors.extend(errors)
+
+    for raw_level, level_config in config.get('performance_levels', {}).items():
+        try:
+            level = normalize_performance_level(raw_level)
+        except ValueError as exc:
+            all_errors.append(str(exc))
+            continue
+        _, errors = _validate_weights(level_config.get('kpis', []), level)
+        all_errors.extend(errors)
     
     # Validate grade thresholds
     is_valid, errors = _validate_thresholds(config.get('grade_thresholds', {}))
     all_errors.extend(errors)
     
     return len(all_errors) == 0, all_errors
+
+
+def resolve_team_config(config: Dict[str, Any], performance_level: str = "Employee") -> Dict[str, Any]:
+    """Return one level's KPI config while treating legacy flat KPIs as Employee."""
+    level = normalize_performance_level(performance_level)
+    resolved = deepcopy(config)
+    level_config = config.get("performance_levels", {}).get(level)
+    if level_config:
+        resolved.update(level_config)
+    elif level != "Employee":
+        raise ConfigurationError(f"No {level} KPI configuration for team {config.get('team', 'unknown')}")
+    resolved["performance_level"] = level
+    return resolved
+
+
+def get_configured_performance_levels(config: Dict[str, Any]) -> List[str]:
+    levels = {"Employee"} if config.get("kpis") else set()
+    for raw_level, level_config in config.get("performance_levels", {}).items():
+        if level_config.get("kpis"):
+            levels.add(normalize_performance_level(raw_level))
+    return [level for level in PERFORMANCE_LEVELS if level in levels]
 
 
 def load_team_config(team_name: str) -> Dict[str, Any]:

@@ -8,11 +8,13 @@ class InsightsService:
         self.performance_repo = performance_repo
         self.planning_service = planning_service
 
-    def generate_insights(self, month: str) -> List[Dict[str, str]]:
+    def generate_insights(self, month: str, performance_level: str | None = None) -> List[Dict[str, str]]:
         """Generates dynamic executive insights for the selected month."""
         insights = []
 
         all_records = self.performance_repo.get_all()
+        if performance_level:
+            all_records = [r for r in all_records if r.performance_level == performance_level]
         curr_records = [r for r in all_records if r.month == month]
         
         if not curr_records:
@@ -65,7 +67,7 @@ class InsightsService:
                 })
 
         # 3. Planning categories counts
-        planning_lists = self.planning_service.classify_all(month)
+        planning_lists = self.planning_service.classify_all(month, performance_level)
         
         training_cnt = len(planning_lists.get("Training Candidate", []))
         if training_cnt > 0:

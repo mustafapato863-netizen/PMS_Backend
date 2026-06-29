@@ -4,7 +4,7 @@ Exposes high-performance batch endpoints protected by RBAC permissions.
 
 import logging
 from typing import Dict, List, Any
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from sqlalchemy.orm import Session
 from config.database import get_db
 from models.schemas import StandardResponse
@@ -67,7 +67,8 @@ async def bulk_update_kpi_weights(
     payload: List[Dict[str, Any]],
     request: Request,
     db: Session = Depends(get_db),
-    user_payload: dict = Depends(require_permission("edit_team_config"))
+    user_payload: dict = Depends(require_permission("edit_team_config")),
+    performance_level: str = Query("Employee"),
 ):
     """
     Bulk update KPI weights for a team, validating that the new weights sum to 1.0.
@@ -78,7 +79,8 @@ async def bulk_update_kpi_weights(
             db=db,
             team_id=team_id,
             updates=payload,
-            performed_by_user_id=performed_by_user_id
+            performed_by_user_id=performed_by_user_id,
+            performance_level=performance_level,
         )
         
         if not result["success"]:

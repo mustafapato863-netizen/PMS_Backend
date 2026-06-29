@@ -149,23 +149,65 @@ class JSONPerformanceRepository(PerformanceRepository):
     def __init__(self):
         self.filename = "performance_records.json"
 
-    def get_by_id(self, record_id: str) -> Optional[PerformanceRecord]:
-        data = _load_json(self.filename, [])
-        for item in data:
-            if item.get("id") == record_id:
-                return PerformanceRecord(**item)
-        return None
-
-    def get_by_employee_and_month(self, employee_id: str, month: str) -> Optional[PerformanceRecord]:
-        data = _load_json(self.filename, [])
-        for item in data:
-            if str(item.get("employee_id")) == str(employee_id) and item.get("month") == month:
-                return PerformanceRecord(**item)
-        return None
-
-    def get_all(self) -> List[PerformanceRecord]:
+    def _all_records(self) -> List[PerformanceRecord]:
         data = _load_json(self.filename, [])
         return [PerformanceRecord(**item) for item in data]
+
+    def get_by_id(self, record_id: str) -> Optional[PerformanceRecord]:
+        return next((record for record in self._all_records() if record.id == record_id), None)
+
+    def get_by_employee_and_month(self, employee_id: str, month: str) -> Optional[PerformanceRecord]:
+        return next(
+            (
+                record
+                for record in self._all_records()
+                if str(record.employee_id) == str(employee_id) and record.month == month
+            ),
+            None,
+        )
+
+    def get_all(self) -> List[PerformanceRecord]:
+        return self._all_records()
+
+    def get_filtered(
+        self,
+        team: str | None = None,
+        month: str | None = None,
+        employee_id: str | None = None,
+        grade: str | None = None,
+        status: str | None = None,
+        performance_level: str | None = None,
+    ) -> List[PerformanceRecord]:
+        records = self.get_all()
+        if team:
+            records = [r for r in records if r.team == team]
+        if month:
+            records = [r for r in records if r.month == month]
+        if employee_id:
+            records = [r for r in records if str(r.employee_id) == str(employee_id)]
+        if grade:
+            records = [r for r in records if getattr(r.evaluation, "grade", None) == grade]
+        if status:
+            status_val = status.lower()
+            if status_val == "exceeds":
+                records = [r for r in records if float(getattr(r.evaluation, "score", 0.0)) >= 90]
+            elif status_val == "meets":
+                records = [r for r in records if 70 <= float(getattr(r.evaluation, "score", 0.0)) < 90]
+            elif status_val == "below":
+                records = [r for r in records if float(getattr(r.evaluation, "score", 0.0)) < 70]
+        if performance_level:
+            records = [r for r in records if r.performance_level == performance_level]
+        return records
+
+    def get_filtered_by_keys(self, keys: set[tuple[str, str, str]]) -> List[PerformanceRecord]:
+        if not keys:
+            return []
+        records = self.get_all()
+        return [
+            record
+            for record in records
+            if (str(record.employee_id), str(record.team), str(record.month)) in keys
+        ]
 
     def save(self, record: PerformanceRecord) -> PerformanceRecord:
         data = _load_json(self.filename, [])
@@ -387,7 +429,7 @@ class JSONUserRepository:
             default_admin = {
                 "id": "admin-1",
                 "name": "Admin User",
-                "username": "admin",
+                "username": "super",
                 "password": "admin123",
                 "role": "Admin"
             }

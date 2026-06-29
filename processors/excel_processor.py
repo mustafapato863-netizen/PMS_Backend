@@ -52,34 +52,50 @@ class ExcelProcessor:
 
         return df
 
+    @staticmethod
+    def _process_team_sheet(excel_file, sheet_name: str, legacy_processor) -> pd.DataFrame:
+        raw = pd.read_excel(excel_file, sheet_name=sheet_name)
+        role_col = next((column for column in raw.columns if str(column).strip().lower() == "role"), None)
+        if role_col is None:
+            logger.warning("Legacy %s sheet has no Role column; defaulting rows to Employee", sheet_name)
+            return legacy_processor(excel_file)
+
+        from cleaned import clean_sheet_data
+        roles = raw[role_col].copy()
+        df = clean_sheet_data(raw, sheet_name=sheet_name)
+        df.columns = df.columns.str.replace(r'\s+', '', regex=True)
+        if "Role" not in df.columns:
+            df["Role"] = roles
+        return df
+
     def process_sheet_inbound(self, excel_file) -> pd.DataFrame:
-        return process_inbound(excel_file)
+        return self._process_team_sheet(excel_file, "Inbound", process_inbound)
 
     def process_sheet_outbound(self, excel_file) -> pd.DataFrame:
-        return process_outbound(excel_file)
+        return self._process_team_sheet(excel_file, "Outbound", process_outbound)
 
     def process_sheet_inbound_uae(self, excel_file) -> pd.DataFrame:
-        return process_inbound_uae(excel_file)
+        return self._process_team_sheet(excel_file, "Inbound UAE", process_inbound_uae)
 
     def process_sheet_preapprovals(self, excel_file) -> pd.DataFrame:
-        return process_preapprovals_offshore(excel_file)
+        return self._process_team_sheet(excel_file, "Pre-Approvals IP Offshore", process_preapprovals_offshore)
 
     def process_sheet_sales(self, excel_file) -> pd.DataFrame:
-        return process_sales(excel_file)
+        return self._process_team_sheet(excel_file, "Sales", process_sales)
 
     def process_sheet_coding(self, excel_file) -> pd.DataFrame:
         from Data_Cleaning_Teams.coding import process_coding
-        return process_coding(excel_file)
+        return self._process_team_sheet(excel_file, "Coding", process_coding)
 
     def process_sheet_csr(self, excel_file) -> pd.DataFrame:
         from Data_Cleaning_Teams.csr import process_csr
-        return process_csr(excel_file)
+        return self._process_team_sheet(excel_file, "CSR", process_csr)
 
     def process_sheet_pharmacy(self, excel_file) -> pd.DataFrame:
         from Data_Cleaning_Teams.pharmacy import process_pharmacy
-        return process_pharmacy(excel_file)
+        return self._process_team_sheet(excel_file, "Pharmacy", process_pharmacy)
 
     def process_sheet_submission(self, excel_file) -> pd.DataFrame:
         from Data_Cleaning_Teams.submission import process_submission
-        return process_submission(excel_file)
+        return self._process_team_sheet(excel_file, "Submission", process_submission)
 

@@ -13,6 +13,7 @@ class Employee(BaseModel):
     status: str = "Active"
     hiring_date: Optional[str] = None
     region: Optional[str] = "EGY"
+    performance_level: str = "Employee"
 
 class GeoBreakdown(BaseModel):
     dubai: int = 0
@@ -81,6 +82,7 @@ class PerformanceRecord(BaseModel):
     team: str
     month: str
     region: Optional[str] = "EGY"
+    performance_level: str = "Employee"
     calls: CallsData = Field(default_factory=CallsData)
     geo: GeoData = Field(default_factory=GeoData)
     actual: ActualMetrics = Field(default_factory=ActualMetrics)
@@ -88,6 +90,7 @@ class PerformanceRecord(BaseModel):
     evaluation: EvaluationData
     upload_id: Optional[str] = None
     raw_data: Dict[str, Any] = Field(default_factory=dict)
+    kpi_values: List[Dict[str, Any]] = Field(default_factory=list)
 
 class KPIWeight(BaseModel):
     team: str
