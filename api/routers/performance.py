@@ -13,6 +13,8 @@ from api.dependencies import (
     get_current_user_scope,
     filter_records_by_scope,
     user_can_access_team,
+    user_can_access_team_level,
+    require_authenticated_scope,
 )
 from config.database import get_db
 from sqlalchemy.orm import Session
@@ -21,6 +23,8 @@ from exports.report_exporter import ReportExporter
 from repositories.performance_repository import PerformanceRepository as SQLPerformanceRepository
 from models.models import PerformanceRecord
 from utils.performance_levels import normalize_performance_level
+from config.loader import ConfigurationError, load_team_config, resolve_team_config
+from services.balanced_scorecard_service import BalancedScorecardService
 
 router = APIRouter(prefix="/performance", tags=["Performance"])
 
@@ -70,6 +74,57 @@ def _get_dashboard_records(
         status=status,
         performance_level=performance_level,
     )
+
+
+@router.get("/balanced-scorecard", response_model=StandardResponse)
+def get_balanced_scorecard(
+    request: Request,
+    db: Session = Depends(get_db),
+    team: str = Query(...),
+    performance_level: str = Query(...),
+    month: str = Query("All"),
+    year: int = Query(..., ge=2000, le=2100),
+    branch: str | None = Query(None),
+    employee_ids: List[str] = Query(default=[]),
+    history_months: int = Query(6, ge=1, le=24),
+    selected_kpi: str | None = Query(None),
+):
+    level = _level_filter(performance_level)
+    if level not in {"Managerial", "Corporate"}:
+        raise HTTPException(status_code=422, detail="Balanced Scorecard supports Managerial and Corporate only")
+    if branch and branch.lower() != "all":
+        raise HTTPException(status_code=422, detail="Branch filtering is not configured for this team")
+
+    scope = require_authenticated_scope(db, request)
+    if not user_can_access_team_level(scope, team, level):
+        raise HTTPException(status_code=403, detail="Access denied for this team and performance level")
+
+    try:
+        config = resolve_team_config(load_team_config(team), level)
+    except ConfigurationError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    if not config.get("balanced_scorecard", {}).get("enabled"):
+        raise HTTPException(status_code=404, detail="Balanced Scorecard is not configured for this context")
+
+    records = _get_dashboard_records(db, team=team, performance_level=level)
+    records = filter_records_by_scope(records, scope)
+    available_ids = {str(record.employee_id) for record in records}
+    requested_ids = set(employee_ids)
+    if requested_ids - available_ids:
+        raise HTTPException(status_code=403, detail="One or more selected people are outside the authorized context")
+
+    data = BalancedScorecardService.build(
+        records=records,
+        config=config,
+        team=team,
+        performance_level=level,
+        month=month,
+        year=year,
+        employee_ids=employee_ids,
+        history_months=history_months,
+        selected_kpi=selected_kpi,
+    )
+    return StandardResponse(success=True, message="Balanced Scorecard retrieved successfully", data=data)
 
 @router.get("", response_model=StandardResponse)
 def get_all_records(

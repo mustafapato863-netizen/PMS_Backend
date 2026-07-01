@@ -9,6 +9,7 @@ from config.database import get_db
 from models.schemas import LoginPayload, JWTToken, StandardResponse
 from models.models import Team, User, UserTeamAssignment
 from services.auth_service import AuthenticationService, redis_client
+from utils.performance_levels import PERFORMANCE_LEVELS
 
 logger = logging.getLogger(__name__)
 
@@ -107,9 +108,19 @@ async def me(request: Request, db: Session = Depends(get_db)):
             .filter(UserTeamAssignment.user_id == user.id)
             .all()
         )
-        accessible_teams = [team.name for _, team in assignments]
+        accessible_teams = list(dict.fromkeys(team.name for _, team in assignments))
+        accessible_team_levels = [
+            [team.name, level]
+            for assignment, team in assignments
+            for level in ([assignment.performance_level] if assignment.performance_level else PERFORMANCE_LEVELS)
+        ]
         active_team_count = db.query(Team).filter(Team.is_active.is_(True)).count()
-        is_general_manager = user.role in {"Admin"} or (user.role == "Manager" and len(accessible_teams) >= active_team_count and active_team_count > 0)
+        unrestricted_teams = {
+            team.name for assignment, team in assignments if assignment.performance_level is None
+        }
+        is_general_manager = user.role == "Admin" or (
+            user.role == "Manager" and active_team_count > 0 and len(unrestricted_teams) >= active_team_count
+        )
 
         return StandardResponse(
             success=True,
@@ -121,6 +132,7 @@ async def me(request: Request, db: Session = Depends(get_db)):
                 "role": user.role,
                 "employee_id": user.employee_id,
                 "accessible_teams": accessible_teams,
+                "accessible_team_levels": accessible_team_levels,
                 "accessible_team_count": len(accessible_teams),
                 "total_team_count": active_team_count,
                 "is_general_manager": is_general_manager,

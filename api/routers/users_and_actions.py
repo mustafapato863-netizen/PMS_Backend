@@ -13,12 +13,21 @@ from models.models import Employee, Team, User, UserTeamAssignment
 from models.schemas import StandardResponse, UserRecord, UserUpdateRecord, LoginPayload
 from services.auth_service import AuthenticationService
 from services.password_service import hash_password
+from utils.performance_levels import PERFORMANCE_LEVELS
 
 users_router = APIRouter()
 
 
 def _user_to_public_dict(user: User) -> dict:
-    accessible_teams = [assignment.team.name for assignment in user.team_assignments if assignment.team]
+    accessible_teams = list(dict.fromkeys(
+        assignment.team.name for assignment in user.team_assignments if assignment.team
+    ))
+    accessible_team_levels = [
+        [assignment.team.name, level]
+        for assignment in user.team_assignments
+        if assignment.team
+        for level in ([assignment.performance_level] if assignment.performance_level else PERFORMANCE_LEVELS)
+    ]
     return {
         "id": str(user.id),
         "name": user.employee_id or user.username,
@@ -26,6 +35,7 @@ def _user_to_public_dict(user: User) -> dict:
         "role": user.role,
         "is_active": user.is_active,
         "accessible_teams": accessible_teams,
+        "accessible_team_levels": accessible_team_levels,
         "accessible_team_count": len(accessible_teams),
         "is_general_manager": user.role == "Manager" and len(accessible_teams) > 0,
     }
@@ -54,11 +64,25 @@ def _linked_employee_id(db: Session, display_name: str) -> str | None:
         return None
 
 
-def _replace_team_assignments(db: Session, user_id, team_names: list[str] | None) -> None:
+def _replace_team_assignments(
+    db: Session,
+    user_id,
+    team_names: list[str] | None,
+    team_levels: list[tuple[str, str]] | None = None,
+) -> None:
     db.query(UserTeamAssignment).filter(UserTeamAssignment.user_id == user_id).delete(synchronize_session=False)
-    if not team_names:
+    if not team_names and not team_levels:
         return
     teams_by_name = {team.name: team for team in _active_teams(db)}
+    if team_levels:
+        for team_name, level in dict.fromkeys(team_levels):
+            team = teams_by_name.get(team_name)
+            if team:
+                db.add(UserTeamAssignment(
+                    id=uuid.uuid4(), user_id=user_id, team_id=team.id,
+                    performance_level=level, access_level="admin", assigned_by="Admin",
+                ))
+        return
     for team_name in team_names:
         team = teams_by_name.get(team_name)
         if not team:
@@ -67,6 +91,7 @@ def _replace_team_assignments(db: Session, user_id, team_names: list[str] | None
             id=uuid.uuid4(),
             user_id=user_id,
             team_id=team.id,
+            performance_level=None,
             access_level="admin",
             assigned_by="Admin",
         ))
@@ -180,7 +205,7 @@ async def create_user(
             if payload.is_general_manager:
                 _replace_team_assignments(db, new_user.id, [team.name for team in _active_teams(db)])
             else:
-                _replace_team_assignments(db, new_user.id, payload.accessible_teams)
+                _replace_team_assignments(db, new_user.id, payload.accessible_teams, payload.accessible_team_levels)
             db.commit()
         db.refresh(new_user)
         return StandardResponse(
@@ -254,11 +279,16 @@ async def update_user_route(
         if updates.get("password"):
             existing.password_hash = hash_password(updates["password"])
 
-        if "accessible_teams" in updates or "is_general_manager" in updates:
+        if "accessible_teams" in updates or "accessible_team_levels" in updates or "is_general_manager" in updates:
             if updates.get("is_general_manager") and existing.role == "Manager":
                 _replace_team_assignments(db, existing.id, [team.name for team in _active_teams(db)])
             elif existing.role == "Manager":
-                _replace_team_assignments(db, existing.id, updates.get("accessible_teams"))
+                _replace_team_assignments(
+                    db,
+                    existing.id,
+                    updates.get("accessible_teams"),
+                    updates.get("accessible_team_levels"),
+                )
 
         db.commit()
         db.refresh(existing)

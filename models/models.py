@@ -201,6 +201,7 @@ class UserTeamAssignment(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
+    performance_level = Column(String(20), nullable=True)
     access_level = Column(String(20), nullable=False, default="read")  # read, write, admin
     assigned_at = Column(DateTime(timezone=True), server_default=func.now())
     assigned_by = Column(String(100), nullable=False)
@@ -208,6 +209,14 @@ class UserTeamAssignment(Base):
     # Relationships
     user = relationship("User", back_populates="team_assignments")
     team = relationship("Team")
+
+    __table_args__ = (
+        CheckConstraint(
+            "performance_level IS NULL OR performance_level IN ('Employee', 'Managerial', 'Corporate')",
+            name="ck_user_team_assignment_performance_level",
+        ),
+        Index("idx_user_team_assignment_scope", "user_id", "team_id", "performance_level"),
+    )
 
 
 # ============================================================

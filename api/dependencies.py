@@ -18,6 +18,7 @@ from services.planning_service import PlanningService
 from services.trend_service import TrendService
 from services.insights_service import InsightsService
 from models.models import User, Team, UserTeamAssignment
+from utils.performance_levels import PERFORMANCE_LEVELS
 
 # ── cache for serialized performance records ──
 _serialize_cache: dict[str, tuple[dict, float]] = {}
@@ -228,17 +229,23 @@ def get_current_user_scope(db, request: Request) -> dict:
 
     active_teams = db.query(Team).filter(Team.is_active.is_(True)).all()
     active_team_names = [team.name for team in active_teams]
-    assigned_teams = [
-        team.name
-        for team in (
-            db.query(Team)
-            .join(UserTeamAssignment, Team.id == UserTeamAssignment.team_id)
-            .filter(UserTeamAssignment.user_id == user.id, Team.is_active.is_(True))
-            .all()
-        )
-    ]
+    assignments = (
+        db.query(UserTeamAssignment, Team)
+        .join(Team, Team.id == UserTeamAssignment.team_id)
+        .filter(UserTeamAssignment.user_id == user.id, Team.is_active.is_(True))
+        .all()
+    )
+    assigned_teams = list(dict.fromkeys(team.name for _, team in assignments))
+    accessible_team_levels = list(dict.fromkeys(
+        (team.name, level)
+        for assignment, team in assignments
+        for level in ([assignment.performance_level] if assignment.performance_level else PERFORMANCE_LEVELS)
+    ))
+    unrestricted_teams = {
+        team.name for assignment, team in assignments if assignment.performance_level is None
+    }
     is_general_manager = user.role == "Admin" or (
-        user.role == "Manager" and len(assigned_teams) > 0 and len(assigned_teams) >= len(active_team_names)
+        user.role == "Manager" and bool(active_team_names) and unrestricted_teams >= set(active_team_names)
     )
 
     if user.role == "Admin" or is_general_manager:
@@ -254,6 +261,7 @@ def get_current_user_scope(db, request: Request) -> dict:
         "role": user.role,
         "employee_id": user.employee_id,
         "accessible_teams": accessible_teams,
+        "accessible_team_levels": accessible_team_levels,
         "is_general_manager": is_general_manager,
         "is_self_only": user.role == "Agent",
         "active_team_names": active_team_names,
@@ -268,6 +276,29 @@ def user_can_access_team(scope: dict, team_name: str) -> bool:
         return True
     accessible = {team.lower() for team in scope.get("accessible_teams", [])}
     return team_name.lower() in accessible
+
+
+def user_can_access_team_level(scope: dict, team_name: str, performance_level: str) -> bool:
+    """Level-specific assignments restrict BSC access; legacy NULL assignments retain all-level access."""
+    if scope.get("legacy_unscoped"):
+        return False
+    if scope.get("role") == "Admin" or scope.get("is_general_manager"):
+        return True
+    if not user_can_access_team(scope, team_name):
+        return False
+    configured = {
+        (str(team).lower(), str(level))
+        for team, level in scope.get("accessible_team_levels", [])
+    }
+    team_levels = {level for team, level in configured if team == team_name.lower()}
+    return not team_levels or performance_level in team_levels
+
+
+def require_authenticated_scope(db, request: Request) -> dict:
+    scope = get_current_user_scope(db, request)
+    if scope.get("legacy_unscoped"):
+        raise HTTPException(status_code=401, detail="Authenticated session required")
+    return scope
 
 
 def filter_records_by_scope(records, scope: dict):

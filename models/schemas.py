@@ -81,6 +81,7 @@ class PerformanceRecord(BaseModel):
     employee_name: str
     team: str
     month: str
+    year: Optional[int] = None
     region: Optional[str] = "EGY"
     performance_level: str = "Employee"
     calls: CallsData = Field(default_factory=CallsData)
@@ -149,6 +150,7 @@ class UserRecord(BaseModel):
     role: str
     is_active: bool = True
     accessible_teams: Optional[List[str]] = None
+    accessible_team_levels: Optional[List[tuple[str, str]]] = None
     is_general_manager: bool = False
 
 class UserUpdateRecord(BaseModel):
@@ -159,6 +161,7 @@ class UserUpdateRecord(BaseModel):
     is_active: bool = True
     password: Optional[str] = None
     accessible_teams: Optional[List[str]] = None
+    accessible_team_levels: Optional[List[tuple[str, str]]] = None
     is_general_manager: bool = False
 
 class LoginPayload(BaseModel):

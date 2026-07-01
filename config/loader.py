@@ -13,6 +13,9 @@ from utils.performance_levels import PERFORMANCE_LEVELS, normalize_performance_l
 
 logger = logging.getLogger(__name__)
 
+PERSPECTIVES = ("Financial", "Customer", "Internal Process", "Learning & Growth")
+ROLLUPS = {"average", "sum", "latest"}
+
 
 class ConfigurationError(Exception):
     """Base exception for configuration errors."""
@@ -123,6 +126,39 @@ def _validate_required_fields(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
     return len(errors) == 0, errors
 
 
+def _validate_balanced_scorecard(level: str, level_config: Dict[str, Any]) -> List[str]:
+    bsc = level_config.get("balanced_scorecard")
+    if not bsc or not bsc.get("enabled"):
+        return []
+    errors = []
+    if level not in {"Managerial", "Corporate"}:
+        return [f"Balanced Scorecard is not supported for {level}"]
+
+    perspectives = bsc.get("perspectives", [])
+    keys = [item.get("key") for item in perspectives]
+    if len(keys) != len(set(keys)):
+        errors.append(f"{level} Balanced Scorecard perspective keys must be unique")
+    unknown = sorted(set(keys) - set(PERSPECTIVES))
+    if unknown:
+        errors.append(f"{level} has invalid perspectives: {', '.join(unknown)}")
+    missing = [key for key in PERSPECTIVES if key not in keys]
+    if missing:
+        errors.append(f"{level} is missing perspectives: {', '.join(missing)}")
+
+    configured = set(keys)
+    for link in bsc.get("strategy_map_links", []):
+        if link.get("from") not in configured or link.get("to") not in configured:
+            errors.append(f"{level} strategy map link references an unknown perspective")
+
+    for kpi in level_config.get("kpis", []):
+        key = kpi.get("key", "unknown")
+        if kpi.get("perspective") not in configured:
+            errors.append(f"{level} KPI {key}: missing or invalid perspective")
+        if kpi.get("rollup", "average") not in ROLLUPS:
+            errors.append(f"{level} KPI {key}: invalid rollup")
+    return errors
+
+
 def validate_team_config(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
     """
     Validate a team configuration for correctness and consistency.
@@ -155,6 +191,7 @@ def validate_team_config(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
             continue
         _, errors = _validate_weights(level_config.get('kpis', []), level)
         all_errors.extend(errors)
+        all_errors.extend(_validate_balanced_scorecard(level, level_config))
     
     # Validate grade thresholds
     is_valid, errors = _validate_thresholds(config.get('grade_thresholds', {}))
