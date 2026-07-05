@@ -3,8 +3,9 @@ Team Management Router
 API endpoints for managing teams (CRUD operations).
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from typing import List
+from sqlalchemy.orm import Session
 from models.team_models import (
     TeamResponse,
     TeamListResponse,
@@ -14,8 +15,10 @@ from models.team_models import (
     TeamOnboardingRequest,
     TeamOnboardingResponse,
 )
+from config.database import get_db
 from services.team_service import TeamService
 from services.team_onboarding_service import TeamOnboardingService
+from services.management_bsc_service import ManagementBSCService
 from api.middleware.rbac_middleware import require_permission
 
 router = APIRouter(prefix="/team-management", tags=["Team Management"])
@@ -291,3 +294,78 @@ async def get_onboarding_status(team_name: str):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get onboarding status: {str(e)}"
         )
+
+
+@router.get("/management-kpi-config")
+async def get_management_kpi_config(
+    team: str = Query(...),
+    performance_level: str | None = Query(None),
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("view_reports")),
+):
+    try:
+        rows = ManagementBSCService(db).list_configs(team_name=team, performance_level=performance_level)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    return {
+        "success": True,
+        "data": rows,
+        "count": len(rows),
+    }
+
+
+@router.get("/management-kpi-config/teams")
+async def get_management_kpi_config_teams(
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("view_reports")),
+):
+    rows = ManagementBSCService(db).list_management_teams()
+    return {
+        "success": True,
+        "data": rows,
+        "count": len(rows),
+    }
+
+
+@router.get("/management-kpi-config/uploads")
+async def get_management_kpi_uploads(
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("view_reports")),
+):
+    rows = ManagementBSCService(db).list_upload_batches()
+    return {
+        "success": True,
+        "data": rows,
+        "count": len(rows),
+    }
+
+
+@router.delete("/management-kpi-config/uploads/{batch_id}")
+async def delete_management_kpi_upload(
+    batch_id: str,
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("upload_data")),
+):
+    result = ManagementBSCService(db).delete_upload_batch(batch_id)
+    return {
+        "success": True,
+        "data": result,
+        "message": "Management upload batch deleted successfully",
+    }
+
+
+@router.get("/management-kpi-config/history")
+async def get_management_kpi_config_history(
+    team: str = Query(...),
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("view_reports")),
+):
+    try:
+        rows = ManagementBSCService(db).list_history(team_name=team)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    return {
+        "success": True,
+        "data": rows,
+        "count": len(rows),
+    }

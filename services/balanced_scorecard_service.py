@@ -78,12 +78,14 @@ class BalancedScorecardService:
 
         for definition in definitions:
             values = cls._kpi_values(records, definition["key"])
-            weight = float(definition.get("weight", 0))
+            configured_weight = float(definition.get("weight", 0))
             mode = definition.get("rollup", "average")
             contributions = [float(_value(value, "contribution")) for value in values if _value(value, "contribution") is not None]
             achievements = [float(_value(value, "achievement_ratio")) for value in values if _value(value, "achievement_ratio") is not None]
             actuals = [float(_value(value, "actual_value")) for value in values if _value(value, "actual_value") is not None]
             targets = [float(_value(value, "target_value")) for value in values if _value(value, "target_value") is not None]
+            applied_weights = [float(_value(value, "weight_applied")) for value in values if _value(value, "weight_applied") is not None]
+            weight = mean(applied_weights) if applied_weights else configured_weight
             contribution = mean(contributions) if contributions else None
             score = contribution / weight * 100 if contribution is not None and weight else None
             state = "measured" if contribution is not None else "no_data"

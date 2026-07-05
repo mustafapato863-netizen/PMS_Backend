@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, Request
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, Depends, Query, HTTPException, Request, UploadFile, File
+from fastapi.responses import StreamingResponse, FileResponse
 import io
 from typing import List
 from datetime import datetime
@@ -25,8 +25,54 @@ from models.models import PerformanceRecord
 from utils.performance_levels import normalize_performance_level
 from config.loader import ConfigurationError, load_team_config, resolve_team_config
 from services.balanced_scorecard_service import BalancedScorecardService
+from services.bsc_template_service import bsc_template_service
+from services.management_bsc_service import ManagementBSCService
+from api.middleware.rbac_middleware import require_permission
 
 router = APIRouter(prefix="/performance", tags=["Performance"])
+
+
+def _management_base_config(team: str, level: str) -> dict:
+    return {
+        "team": team,
+        "db_name": team,
+        "region": "UAE",
+        "employee_id_col": "Employee ID",
+        "employee_name_col": "Employee Name",
+        "grade_thresholds": {"A": 90, "B": 80, "C": 70, "D": 60},
+        "kpis": [
+            {
+                "key": "management_placeholder",
+                "label": "Management Placeholder",
+                "weight": 1.0,
+                "direction": "higher_better",
+                "unit": "%",
+                "color": "#10B981",
+                "actual_col": "Actual Value",
+                "target_col": "Target Value",
+                "achievement_col": "Score %",
+            }
+        ],
+        "performance_levels": {
+            level: {
+                "balanced_scorecard": {
+                    "enabled": True,
+                    "perspectives": [
+                        {"key": "Financial", "label": "Financial", "display_order": 1, "icon_key": "wallet"},
+                        {"key": "Customer", "label": "Customer", "display_order": 2, "icon_key": "users"},
+                        {"key": "Internal Process", "label": "Internal Process", "display_order": 3, "icon_key": "settings"},
+                        {"key": "Learning & Growth", "label": "Learning & Growth", "display_order": 4, "icon_key": "graduation-cap"},
+                    ],
+                    "strategy_map_links": [
+                        {"from": "Learning & Growth", "to": "Internal Process"},
+                        {"from": "Internal Process", "to": "Customer"},
+                        {"from": "Customer", "to": "Financial"},
+                    ],
+                },
+                "kpis": [],
+            }
+        },
+    }
 
 
 def _level_filter(value: str | None) -> str | None:
@@ -101,30 +147,78 @@ def get_balanced_scorecard(
 
     try:
         config = resolve_team_config(load_team_config(team), level)
-    except ConfigurationError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ConfigurationError:
+        config = resolve_team_config(_management_base_config(team, level), level)
     if not config.get("balanced_scorecard", {}).get("enabled"):
         raise HTTPException(status_code=404, detail="Balanced Scorecard is not configured for this context")
 
     records = _get_dashboard_records(db, team=team, performance_level=level)
     records = filter_records_by_scope(records, scope)
-    available_ids = {str(record.employee_id) for record in records}
-    requested_ids = set(employee_ids)
-    if requested_ids - available_ids:
-        raise HTTPException(status_code=403, detail="One or more selected people are outside the authorized context")
+    available_ids = {str(getattr(record, "employee_id", None) or record.get("employee_id")) for record in records}
 
-    data = BalancedScorecardService.build(
-        records=records,
-        config=config,
-        team=team,
+    management_service = ManagementBSCService(db)
+    data = management_service.build_scorecard_dataset(
+        team_name=team,
         performance_level=level,
         month=month,
         year=year,
         employee_ids=employee_ids,
         history_months=history_months,
         selected_kpi=selected_kpi,
+        base_config=config,
     )
+    requested_ids = set(employee_ids)
+    dataset_ids = {item["employee_id"] for item in data.get("available_people", [])}
+    if requested_ids - (available_ids | dataset_ids):
+        raise HTTPException(status_code=403, detail="One or more selected people are outside the authorized context")
     return StandardResponse(success=True, message="Balanced Scorecard retrieved successfully", data=data)
+
+
+@router.get("/balanced-scorecard/template/download")
+def download_balanced_scorecard_template(
+    _user=Depends(require_permission("view_reports")),
+):
+    template_path = bsc_template_service.template_path()
+    if not template_path.exists():
+        raise HTTPException(status_code=404, detail="Management Overview template is not available")
+    return FileResponse(
+        path=template_path,
+        filename=template_path.name,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
+
+@router.post("/balanced-scorecard/template/upload", response_model=StandardResponse)
+async def upload_balanced_scorecard_template(
+    db: Session = Depends(get_db),
+    file: UploadFile = File(...),
+    _user=Depends(require_permission("upload_data")),
+):
+    if not file.filename.lower().endswith(".xlsx"):
+        raise HTTPException(status_code=400, detail="Management Overview template upload accepts .xlsx only")
+
+    contents = await file.read()
+    uploaded_by = _user.get("username", "Admin") if isinstance(_user, dict) else "Admin"
+    rows = bsc_template_service.parse_upload(contents)
+    try:
+        result = ManagementBSCService(db).import_template_rows(
+            rows=rows,
+            updated_by=uploaded_by,
+            source_filename=file.filename,
+        )
+    except ValueError as exc:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return StandardResponse(
+        success=True,
+        message="Management Overview template uploaded successfully",
+        data={
+            "filename": file.filename,
+            "sheet_name": bsc_template_service.sheet_name,
+            **bsc_template_service.summarize_rows(rows),
+            **result,
+        },
+    )
 
 @router.get("", response_model=StandardResponse)
 def get_all_records(

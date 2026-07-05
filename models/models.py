@@ -57,6 +57,129 @@ class TeamKPIConfig(Base):
     )
 
 
+class ManagementKPIConfig(Base):
+    __tablename__ = "management_kpi_config"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
+    performance_level = Column(String(20), nullable=False)
+    position_name = Column(String(255), nullable=True)
+    employee_identifier = Column(String(50), nullable=True)
+    perspective_key = Column(String(50), nullable=False)
+    kpi_key = Column(String(100), nullable=False)
+    kpi_label = Column(String(255), nullable=False)
+    direction = Column(String(20), nullable=False, default="higher_better")
+    weight = Column(Numeric(7, 4), nullable=False)
+    target_value = Column(Numeric(18, 4), nullable=True)
+    target_unit = Column(String(20), nullable=True, default="%")
+    display_order = Column(SmallInteger, nullable=False, default=0)
+    effective_month = Column(String(20), nullable=False)
+    effective_year = Column(SmallInteger, nullable=False)
+    upload_batch_id = Column(UUID(as_uuid=True), nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True, server_default="1")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    updated_by = Column(String(100), nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint(
+            "team_id",
+            "performance_level",
+            "effective_month",
+            "effective_year",
+            "position_name",
+            "employee_identifier",
+            "kpi_key",
+            name="uq_management_kpi_config_scope",
+        ),
+        CheckConstraint(
+            f"performance_level IN ('{PerformanceLevel.MANAGERIAL.value}', '{PerformanceLevel.CORPORATE.value}')",
+            name="ck_management_kpi_config_level",
+        ),
+        CheckConstraint(
+            "((position_name IS NOT NULL AND employee_identifier IS NULL) OR "
+            "(position_name IS NULL AND employee_identifier IS NOT NULL))",
+            name="ck_management_kpi_config_scope",
+        ),
+        CheckConstraint("weight > 0", name="ck_management_kpi_config_weight_positive"),
+        Index(
+            "idx_management_kpi_config_lookup",
+            "team_id",
+            "performance_level",
+            "effective_year",
+            "effective_month",
+            "position_name",
+            "employee_identifier",
+        ),
+        Index("idx_management_kpi_config_batch", "upload_batch_id"),
+    )
+
+
+class ManagementKPIConfigHistory(Base):
+    __tablename__ = "management_kpi_config_history"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    config_id = Column(UUID(as_uuid=True), nullable=True)
+    team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
+    action = Column(String(20), nullable=False, default="replace")
+    old_values = Column(JSON_COMPAT_TYPE, nullable=True)
+    new_values = Column(JSON_COMPAT_TYPE, nullable=True)
+    upload_batch_id = Column(UUID(as_uuid=True), nullable=True)
+    source_filename = Column(String(255), nullable=True)
+    changed_at = Column(DateTime(timezone=True), server_default=func.now())
+    changed_by = Column(String(100), nullable=True)
+
+    __table_args__ = (
+        Index("idx_management_kpi_config_history_team", "team_id", "changed_at"),
+        Index("idx_management_kpi_config_history_batch", "upload_batch_id"),
+    )
+
+
+class ManagementKPISnapshot(Base):
+    __tablename__ = "management_kpi_snapshots"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
+    employee_identifier = Column(String(50), nullable=False)
+    employee_name = Column(String(255), nullable=False)
+    position_name = Column(String(255), nullable=False)
+    performance_level = Column(String(20), nullable=False)
+    month = Column(String(20), nullable=False)
+    year = Column(SmallInteger, nullable=False)
+    perspective_key = Column(String(50), nullable=False)
+    kpi_key = Column(String(100), nullable=False)
+    kpi_label = Column(String(255), nullable=False)
+    actual_value = Column(Numeric(18, 4), nullable=True)
+    upload_batch_id = Column(UUID(as_uuid=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    updated_by = Column(String(100), nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint(
+            "team_id",
+            "employee_identifier",
+            "performance_level",
+            "month",
+            "year",
+            "kpi_key",
+            name="uq_management_kpi_snapshot_scope",
+        ),
+        CheckConstraint(
+            f"performance_level IN ('{PerformanceLevel.MANAGERIAL.value}', '{PerformanceLevel.CORPORATE.value}')",
+            name="ck_management_kpi_snapshot_level",
+        ),
+        Index(
+            "idx_management_kpi_snapshot_lookup",
+            "team_id",
+            "performance_level",
+            "year",
+            "month",
+        ),
+        Index("idx_management_kpi_snapshot_batch", "upload_batch_id"),
+    )
+
+
 # ============================================================
 # 2. CORE EMPLOYEES MODEL
 # ============================================================

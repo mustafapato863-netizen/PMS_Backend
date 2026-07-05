@@ -145,6 +145,17 @@ def test_endpoint_rejects_people_outside_authorized_context(monkeypatch):
     monkeypatch.setattr("api.routers.performance.resolve_team_config", lambda raw, level: config())
     monkeypatch.setattr("api.routers.performance._get_dashboard_records", lambda *args, **kwargs: [record("1", "A", 2025, 0.5, 0.3)])
     monkeypatch.setattr("api.routers.performance.filter_records_by_scope", lambda records, scope: records)
+    monkeypatch.setattr(
+        "api.routers.performance.ManagementBSCService",
+        lambda db: SimpleNamespace(
+            build_scorecard_dataset=lambda **kwargs: {
+                "available_people": [{"employee_id": "1", "employee_name": "A"}],
+                "perspectives": [],
+                "kpi_table": [],
+                "history": [],
+            }
+        ),
+    )
 
     with pytest.raises(HTTPException) as exc:
         get_balanced_scorecard(

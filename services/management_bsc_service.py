@@ -1,0 +1,610 @@
+from __future__ import annotations
+
+from collections import defaultdict
+from datetime import datetime
+from typing import Any
+import uuid
+
+from sqlalchemy.orm import Session
+
+from models.models import ManagementKPIConfig, ManagementKPIConfigHistory, ManagementKPISnapshot, Team
+from services.balanced_scorecard_service import BalancedScorecardService, MONTHS
+
+
+def _to_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    return float(value)
+
+
+def _period_value(month: str, year: int) -> tuple[int, int]:
+    return (int(year), MONTHS.get(str(month), 0))
+
+
+def _direction_ratio(direction: str, actual_value: float | None, target_value: float | None) -> float | None:
+    if actual_value is None or target_value is None:
+        return None
+    if direction == "lower_better":
+        if actual_value == 0:
+            return 1.0 if target_value == 0 else None
+        return target_value / actual_value
+    if target_value == 0:
+        return 1.0 if actual_value == 0 else None
+    return actual_value / target_value
+
+
+def _highest_position(positions: set[str]) -> str | None:
+    def rank(position: str) -> tuple[int, str]:
+        value = position.lower()
+        # ponytail: title-based ranking; replace with position_rank if hierarchy becomes configurable.
+        score = next((score for title, score in (
+            ("chief", 6), ("vice president", 5), ("president", 6), ("director", 4),
+            ("head", 3), ("group manager", 3), ("general manager", 3), ("manager", 2),
+        ) if title in value), 0)
+        if "assistant" in value or "account manager" in value:
+            score -= 1
+        return score, value
+
+    return max(positions, key=rank) if positions else None
+
+
+class ManagementBSCService:
+    def __init__(self, db: Session):
+        self.db = db
+
+    def import_template_rows(
+        self,
+        *,
+        rows: list[dict[str, Any]],
+        updated_by: str | None = None,
+        default_team_name: str | None = None,
+        source_filename: str | None = None,
+    ) -> dict[str, Any]:
+        upload_batch_id = uuid.uuid4()
+        grouped_rows: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for row in rows:
+            team_name = str(row.get("team") or default_team_name or "").strip()
+            if not team_name:
+                raise ValueError("Template row is missing Team")
+            grouped_rows[team_name].append(row)
+
+        total_config_rows = 0
+        total_snapshot_rows = 0
+        touched_period_labels: set[str] = set()
+        touched_levels: set[str] = set()
+
+        for team_name, team_rows in grouped_rows.items():
+            team = self._get_or_create_team(team_name)
+            payload = self._build_database_payload(team_rows)
+            touched_periods = sorted({(row["performance_level"], row["effective_year"], row["effective_month"]) for row in payload["config_rows"]})
+
+            for level, year, month in touched_periods:
+                self._replace_period_config(
+                    team_id=team.id,
+                    performance_level=level,
+                    year=year,
+                    month=month,
+                    config_rows=[row for row in payload["config_rows"] if row["performance_level"] == level and row["effective_year"] == year and row["effective_month"] == month],
+                    updated_by=updated_by,
+                    upload_batch_id=upload_batch_id,
+                    source_filename=source_filename,
+                )
+                self._replace_period_snapshots(
+                    team_id=team.id,
+                    performance_level=level,
+                    year=year,
+                    month=month,
+                    snapshot_rows=[row for row in payload["snapshots"] if row["performance_level"] == level and row["year"] == year and row["month"] == month],
+                    updated_by=updated_by,
+                    upload_batch_id=upload_batch_id,
+                )
+                touched_period_labels.add(f"{month} {year}")
+                touched_levels.add(level)
+
+            total_config_rows += len(payload["config_rows"])
+            total_snapshot_rows += len(payload["snapshots"])
+
+        self.db.commit()
+
+        return {
+            "upload_batch_id": str(upload_batch_id),
+            "teams": sorted(grouped_rows),
+            "rows_count": len(rows),
+            "config_rows": total_config_rows,
+            "snapshot_rows": total_snapshot_rows,
+            "periods": sorted(touched_period_labels),
+            "levels": sorted(touched_levels),
+            "data_source": "database_config",
+        }
+
+    def build_scorecard_dataset(
+        self,
+        *,
+        team_name: str,
+        performance_level: str,
+        month: str,
+        year: int,
+        employee_ids: list[str] | None,
+        history_months: int,
+        selected_kpi: str | None,
+        base_config: dict[str, Any],
+    ) -> dict[str, Any]:
+        team = self._get_team(team_name)
+        snapshots = (
+            self.db.query(ManagementKPISnapshot)
+            .filter(
+                ManagementKPISnapshot.team_id == team.id,
+                ManagementKPISnapshot.performance_level == performance_level,
+            )
+            .all()
+        )
+        top_position = _highest_position({row.position_name for row in snapshots if row.position_name})
+        if employee_ids:
+            selected_ids = set(employee_ids)
+            snapshots = [row for row in snapshots if row.employee_identifier in selected_ids]
+
+        if not snapshots:
+            return self._empty_response(team_name, performance_level, month, year, history_months)
+
+        periods = sorted({_period_value(row.month, row.year) for row in snapshots if MONTHS.get(row.month)})
+        if not periods:
+            return self._empty_response(team_name, performance_level, month, year, history_months)
+
+        selected_period = (year, MONTHS.get(month, 0)) if month and month != "All" else periods[-1]
+        if selected_period not in periods:
+            return self._empty_response(team_name, performance_level, month, year, history_months)
+
+        active_periods = [period for period in periods if period <= selected_period]
+        active_periods = active_periods[-max(1, min(history_months, 24)):]
+        allowed_periods = set(active_periods)
+
+        snapshots = [row for row in snapshots if _period_value(row.month, row.year) in allowed_periods]
+        configs = (
+            self.db.query(ManagementKPIConfig)
+            .filter(
+                ManagementKPIConfig.team_id == team.id,
+                ManagementKPIConfig.performance_level == performance_level,
+                ManagementKPIConfig.is_active.is_(True),
+            )
+            .all()
+        )
+        configs = [row for row in configs if _period_value(row.effective_month, row.effective_year) in allowed_periods]
+        if not configs:
+            return self._empty_response(team_name, performance_level, month, year, history_months)
+
+        config_lookup = self._group_configs(configs)
+        records = self._build_records_from_snapshots(snapshots, config_lookup)
+        if not records:
+            return self._empty_response(team_name, performance_level, month, year, history_months)
+
+        config = self._build_runtime_config(configs, base_config, team_name, performance_level, selected_period)
+        data = BalancedScorecardService.build(
+            records=records,
+            config=config,
+            team=team_name,
+            performance_level=performance_level,
+            month=month,
+            year=year,
+            employee_ids=employee_ids,
+            history_months=history_months,
+            selected_kpi=selected_kpi,
+        )
+        data.setdefault("selection", {})
+        data.setdefault("team", {})["top_position"] = top_position
+        data["selection"]["data_source"] = "database_config"
+        data["selection"]["effective_month"] = next((name for name, number in MONTHS.items() if number == selected_period[1]), None)
+        data["selection"]["effective_year"] = selected_period[0]
+        data["selection"]["config_scope_summary"] = {
+            "position_configs": len([row for row in configs if row.position_name]),
+            "employee_overrides": len([row for row in configs if row.employee_identifier]),
+        }
+        return data
+
+    def list_configs(self, *, team_name: str, performance_level: str | None = None) -> list[dict[str, Any]]:
+        team = self._get_team(team_name)
+        query = self.db.query(ManagementKPIConfig).filter(ManagementKPIConfig.team_id == team.id)
+        if performance_level:
+            query = query.filter(ManagementKPIConfig.performance_level == performance_level)
+        rows = query.order_by(
+            ManagementKPIConfig.effective_year.desc(),
+            ManagementKPIConfig.effective_month.desc(),
+            ManagementKPIConfig.display_order.asc(),
+        ).all()
+        return [
+            {
+                "id": str(row.id),
+                "performance_level": row.performance_level,
+                "position_name": row.position_name,
+                "employee_identifier": row.employee_identifier,
+                "perspective_key": row.perspective_key,
+                "kpi_key": row.kpi_key,
+                "kpi_label": row.kpi_label,
+                "direction": row.direction,
+                "weight": _to_float(row.weight),
+                "target_value": _to_float(row.target_value),
+                "target_unit": row.target_unit,
+                "effective_month": row.effective_month,
+                "effective_year": row.effective_year,
+                "display_order": row.display_order,
+                "updated_by": row.updated_by,
+            }
+            for row in rows
+        ]
+
+    def list_history(self, *, team_name: str) -> list[dict[str, Any]]:
+        team = self._get_team(team_name)
+        rows = (
+            self.db.query(ManagementKPIConfigHistory)
+            .filter(ManagementKPIConfigHistory.team_id == team.id)
+            .order_by(ManagementKPIConfigHistory.changed_at.desc())
+            .all()
+        )
+        return [
+            {
+                "id": str(row.id),
+                "config_id": str(row.config_id) if row.config_id else None,
+                "action": row.action,
+                "old_values": row.old_values,
+                "new_values": row.new_values,
+                "changed_at": row.changed_at.isoformat() if row.changed_at else None,
+                "changed_by": row.changed_by,
+            }
+            for row in rows
+        ]
+
+    def list_management_teams(self) -> list[str]:
+        rows = (
+            self.db.query(Team.name)
+            .join(ManagementKPIConfig, ManagementKPIConfig.team_id == Team.id)
+            .filter(ManagementKPIConfig.is_active.is_(True))
+            .distinct()
+            .order_by(Team.name.asc())
+            .all()
+        )
+        return [name for (name,) in rows if name]
+
+    def list_upload_batches(self) -> list[dict[str, Any]]:
+        rows = (
+            self.db.query(ManagementKPIConfigHistory, Team.name)
+            .join(Team, Team.id == ManagementKPIConfigHistory.team_id)
+            .filter(ManagementKPIConfigHistory.upload_batch_id.isnot(None))
+            .order_by(ManagementKPIConfigHistory.changed_at.desc())
+            .all()
+        )
+        grouped: dict[str, dict[str, Any]] = {}
+        for history, team_name in rows:
+            batch_id = str(history.upload_batch_id)
+            item = grouped.setdefault(batch_id, {
+                "id": batch_id,
+                "filename": history.source_filename or "Management Template",
+                "uploaded_at": history.changed_at.isoformat() if history.changed_at else None,
+                "uploaded_by": history.changed_by or "Admin",
+                "teams": set(),
+                "periods": set(),
+                "levels": set(),
+            })
+            item["teams"].add(team_name)
+            for row in history.new_values or []:
+                if row.get("effective_month") and row.get("effective_year"):
+                    item["periods"].add(f"{row['effective_month']} {row['effective_year']}")
+                if row.get("performance_level"):
+                    item["levels"].add(row["performance_level"])
+        return [
+            {
+                **item,
+                "teams": sorted(item["teams"]),
+                "periods": sorted(item["periods"]),
+                "levels": sorted(item["levels"]),
+            }
+            for item in grouped.values()
+        ]
+
+    def delete_upload_batch(self, batch_id: str) -> dict[str, Any]:
+        batch_uuid = uuid.UUID(str(batch_id))
+        config_count = (
+            self.db.query(ManagementKPIConfig)
+            .filter(ManagementKPIConfig.upload_batch_id == batch_uuid)
+            .delete(synchronize_session=False)
+        )
+        snapshot_count = (
+            self.db.query(ManagementKPISnapshot)
+            .filter(ManagementKPISnapshot.upload_batch_id == batch_uuid)
+            .delete(synchronize_session=False)
+        )
+        history_count = (
+            self.db.query(ManagementKPIConfigHistory)
+            .filter(ManagementKPIConfigHistory.upload_batch_id == batch_uuid)
+            .delete(synchronize_session=False)
+        )
+        self.db.commit()
+        return {
+            "upload_batch_id": batch_id,
+            "config_rows_deleted": config_count,
+            "snapshot_rows_deleted": snapshot_count,
+            "history_rows_deleted": history_count,
+        }
+
+    def _get_team(self, team_name: str) -> Team:
+        team = self.db.query(Team).filter(Team.name == team_name).first()
+        if not team:
+            raise ValueError(f"Team '{team_name}' was not found in database")
+        return team
+
+    def _get_or_create_team(self, team_name: str) -> Team:
+        team = self.db.query(Team).filter(Team.name == team_name).first()
+        if team:
+            return team
+        team = Team(name=team_name, db_name=team_name, region="UAE", is_active=True)
+        self.db.add(team)
+        self.db.flush()
+        return team
+
+    def _build_database_payload(self, rows: list[dict[str, Any]]) -> dict[str, Any]:
+        from services.bsc_template_service import bsc_template_service
+
+        return bsc_template_service.build_database_payload(rows)
+
+    def _replace_period_config(
+        self,
+        *,
+        team_id,
+        performance_level: str,
+        year: int,
+        month: str,
+        config_rows: list[dict[str, Any]],
+        updated_by: str | None,
+        upload_batch_id,
+        source_filename: str | None,
+    ) -> None:
+        existing = (
+            self.db.query(ManagementKPIConfig)
+            .filter(
+                ManagementKPIConfig.team_id == team_id,
+                ManagementKPIConfig.performance_level == performance_level,
+                ManagementKPIConfig.effective_year == year,
+                ManagementKPIConfig.effective_month == month,
+            )
+            .all()
+        )
+        old_snapshots = [self._serialize_config_row(row) for row in existing]
+        if existing:
+            for row in existing:
+                self.db.delete(row)
+
+        for row in config_rows:
+            payload = dict(row)
+            payload.pop("scope_type", None)
+            self.db.add(ManagementKPIConfig(team_id=team_id, updated_by=updated_by, upload_batch_id=upload_batch_id, **payload))
+
+        self.db.add(
+            ManagementKPIConfigHistory(
+                team_id=team_id,
+                action="replace",
+                old_values=old_snapshots,
+                new_values=config_rows,
+                upload_batch_id=upload_batch_id,
+                source_filename=source_filename,
+                changed_by=updated_by,
+            )
+        )
+
+    def _replace_period_snapshots(
+        self,
+        *,
+        team_id,
+        performance_level: str,
+        year: int,
+        month: str,
+        snapshot_rows: list[dict[str, Any]],
+        updated_by: str | None,
+        upload_batch_id,
+    ) -> None:
+        (
+            self.db.query(ManagementKPISnapshot)
+            .filter(
+                ManagementKPISnapshot.team_id == team_id,
+                ManagementKPISnapshot.performance_level == performance_level,
+                ManagementKPISnapshot.year == year,
+                ManagementKPISnapshot.month == month,
+            )
+            .delete(synchronize_session=False)
+        )
+        for row in snapshot_rows:
+            row = {key: value for key, value in row.items() if key != "display_order"}
+            self.db.add(ManagementKPISnapshot(team_id=team_id, updated_by=updated_by, upload_batch_id=upload_batch_id, **row))
+
+    def _group_configs(self, configs: list[ManagementKPIConfig]) -> dict[tuple[int, int], dict[str, dict[str, list[ManagementKPIConfig]]]]:
+        lookup: dict[tuple[int, int], dict[str, dict[str, list[ManagementKPIConfig]]]] = {}
+        for row in configs:
+            period = _period_value(row.effective_month, row.effective_year)
+            bucket = lookup.setdefault(period, {"position": defaultdict(list), "employee": defaultdict(list)})
+            if row.employee_identifier:
+                bucket["employee"][row.employee_identifier].append(row)
+            elif row.position_name:
+                bucket["position"][row.position_name].append(row)
+        for bucket in lookup.values():
+            for scope_rows in bucket["position"].values():
+                scope_rows.sort(key=lambda item: (item.display_order, item.kpi_label))
+            for scope_rows in bucket["employee"].values():
+                scope_rows.sort(key=lambda item: (item.display_order, item.kpi_label))
+        return lookup
+
+    def _build_records_from_snapshots(
+        self,
+        snapshots: list[ManagementKPISnapshot],
+        config_lookup: dict[tuple[int, int], dict[str, dict[str, list[ManagementKPIConfig]]]],
+    ) -> list[dict[str, Any]]:
+        grouped: dict[tuple[str, str, int], dict[str, Any]] = {}
+        snapshot_map: dict[tuple[str, str, int], dict[str, ManagementKPISnapshot]] = defaultdict(dict)
+        positions: dict[tuple[str, str, int], str] = {}
+        names: dict[tuple[str, str, int], str] = {}
+
+        for row in snapshots:
+            key = (row.employee_identifier, row.month, int(row.year))
+            snapshot_map[key][row.kpi_key] = row
+            positions[key] = row.position_name
+            names[key] = row.employee_name
+
+        for key, kpi_rows in snapshot_map.items():
+            employee_identifier, month, year = key
+            period = _period_value(month, year)
+            period_configs = config_lookup.get(period, {})
+            config_rows = period_configs.get("employee", {}).get(employee_identifier) or period_configs.get("position", {}).get(positions[key]) or []
+            if not config_rows:
+                continue
+
+            record = grouped.setdefault(
+                key,
+                {
+                    "id": f"{employee_identifier}_{month}_{year}",
+                    "employee_id": employee_identifier,
+                    "employee_name": names[key],
+                    "team": None,
+                    "month": month,
+                    "year": year,
+                    "performance_level": config_rows[0].performance_level,
+                    "raw_data": {"Position": positions[key], "Period": f"{month} {year}"},
+                    "kpi_values": [],
+                    "evaluation": {"score": 0, "grade": "B"},
+                },
+            )
+
+            for config_row in config_rows:
+                snapshot_row = kpi_rows.get(config_row.kpi_key)
+                actual_value = _to_float(snapshot_row.actual_value) if snapshot_row else None
+                target_value = _to_float(config_row.target_value)
+                ratio = _direction_ratio(config_row.direction, actual_value, target_value)
+                weight = _to_float(config_row.weight) or 0.0
+                record["kpi_values"].append(
+                    {
+                        "kpi_key": config_row.kpi_key,
+                        "actual_value": actual_value,
+                        "target_value": target_value,
+                        "achievement_ratio": ratio,
+                        "weight_applied": weight,
+                        "contribution": weight * ratio if ratio is not None else None,
+                    }
+                )
+        return list(grouped.values())
+
+    def _build_runtime_config(
+        self,
+        configs: list[ManagementKPIConfig],
+        base_config: dict[str, Any],
+        team_name: str,
+        performance_level: str,
+        selected_period: tuple[int, int],
+    ) -> dict[str, Any]:
+        base_bsc = base_config.get("balanced_scorecard", {}) or {}
+        base_perspectives = {
+            item.get("key"): item
+            for item in base_bsc.get("perspectives", [])
+            if item.get("key")
+        }
+
+        perspective_order = ["Financial", "Customer", "Internal Process", "Learning & Growth"]
+        default_meta = {
+            "Financial": {"label": "Financial", "focus": "Business profitability & revenue", "display_order": 1, "icon_key": "wallet"},
+            "Customer": {"label": "Customer", "focus": "Stakeholder & patient experience", "display_order": 2, "icon_key": "users"},
+            "Internal Process": {"label": "Internal Process", "focus": "Operational accuracy & compliance", "display_order": 3, "icon_key": "settings"},
+            "Learning & Growth": {"label": "Learning & Growth", "focus": "Staff capacity & digital transformation", "display_order": 4, "icon_key": "graduation-cap"},
+        }
+        perspectives = []
+        for key in perspective_order:
+            meta = dict(default_meta[key])
+            meta.update(base_perspectives.get(key, {}))
+            meta["key"] = key
+            perspectives.append(meta)
+
+        ordered = sorted(
+            configs,
+            key=lambda row: (
+                _period_value(row.effective_month, row.effective_year) != selected_period,
+                -row.effective_year,
+                -MONTHS.get(row.effective_month, 0),
+                row.display_order,
+                row.kpi_label,
+            ),
+        )
+        seen = set()
+        kpis = []
+        for row in ordered:
+            if row.kpi_key in seen:
+                continue
+            seen.add(row.kpi_key)
+            kpis.append(
+                {
+                    "key": row.kpi_key,
+                    "label": row.kpi_label,
+                    "perspective": row.perspective_key,
+                    "weight": _to_float(row.weight) or 0.0,
+                    "direction": row.direction,
+                    "unit": row.target_unit or "%",
+                    "color": None,
+                    "rollup": "average",
+                }
+            )
+
+        return {
+            "team": team_name,
+            "performance_level": performance_level,
+            "grade_thresholds": base_config.get("grade_thresholds", {"A": 90, "B": 80, "C": 70, "D": 60}),
+            "balanced_scorecard": {
+                "enabled": True,
+                "perspectives": perspectives,
+                "strategy_map_links": base_bsc.get("strategy_map_links", []),
+            },
+            "kpis": kpis,
+        }
+
+    def _serialize_config_row(self, row: ManagementKPIConfig) -> dict[str, Any]:
+        return {
+            "performance_level": row.performance_level,
+            "position_name": row.position_name,
+            "employee_identifier": row.employee_identifier,
+            "perspective_key": row.perspective_key,
+            "kpi_key": row.kpi_key,
+            "kpi_label": row.kpi_label,
+            "direction": row.direction,
+            "weight": _to_float(row.weight),
+            "target_value": _to_float(row.target_value),
+            "target_unit": row.target_unit,
+            "display_order": row.display_order,
+            "effective_month": row.effective_month,
+            "effective_year": row.effective_year,
+        }
+
+    def _empty_response(self, team_name: str, performance_level: str, month: str, year: int, history_months: int) -> dict[str, Any]:
+        return {
+            "team": {"name": team_name, "performance_level": performance_level, "balanced_scorecard": True},
+            "selection": {
+                "month": month if month != "All" else None,
+                "year": year,
+                "employee_ids": [],
+                "people_count": 0,
+                "history_months": history_months,
+                "data_source": "database_config",
+                "effective_month": month if month != "All" else None,
+                "effective_year": year,
+                "config_scope_summary": {"position_configs": 0, "employee_overrides": 0},
+            },
+            "available_periods": [],
+            "available_people": [],
+            "scorecard": {
+                "score": None,
+                "status": "No Data",
+                "state": "no_data",
+                "configured_weight": 0,
+                "measured_weight": 0,
+                "coverage": None,
+                "weighted_contribution": None,
+                "record_count": 0,
+                "kpi_count": 0,
+            },
+            "perspectives": [],
+            "kpi_table": [],
+            "strategy_map": {"links": []},
+            "contributors": [],
+            "history": [],
+            "selected_kpi": None,
+        }
