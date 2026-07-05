@@ -129,7 +129,7 @@ def get_balanced_scorecard(
     team: str = Query(...),
     performance_level: str = Query(...),
     month: str = Query("All"),
-    year: int = Query(..., ge=2000, le=2100),
+    year: int | None = Query(None, ge=2000, le=2100),
     branch: str | None = Query(None),
     employee_ids: List[str] = Query(default=[]),
     history_months: int = Query(6, ge=1, le=24),
@@ -155,6 +155,14 @@ def get_balanced_scorecard(
     records = _get_dashboard_records(db, team=team, performance_level=level)
     records = filter_records_by_scope(records, scope)
     available_ids = {str(getattr(record, "employee_id", None) or record.get("employee_id")) for record in records}
+    requested_ids = set(employee_ids)
+    is_self_scoped = scope.get("role") in {"Agent", "Executive"}
+    if is_self_scoped:
+        self_id = str(scope.get("employee_id") or scope.get("user_id") or "")
+        authorized_ids = available_ids | ({self_id} if self_id else set())
+        if requested_ids - authorized_ids:
+            raise HTTPException(status_code=403, detail="One or more selected people are outside the authorized context")
+        employee_ids = employee_ids or sorted(authorized_ids)
 
     management_service = ManagementBSCService(db)
     data = management_service.build_scorecard_dataset(
@@ -167,9 +175,8 @@ def get_balanced_scorecard(
         selected_kpi=selected_kpi,
         base_config=config,
     )
-    requested_ids = set(employee_ids)
     dataset_ids = {item["employee_id"] for item in data.get("available_people", [])}
-    if requested_ids - (available_ids | dataset_ids):
+    if not is_self_scoped and requested_ids - (available_ids | dataset_ids):
         raise HTTPException(status_code=403, detail="One or more selected people are outside the authorized context")
     return StandardResponse(success=True, message="Balanced Scorecard retrieved successfully", data=data)
 

@@ -123,7 +123,7 @@ class ManagementBSCService:
         team_name: str,
         performance_level: str,
         month: str,
-        year: int,
+        year: int | None,
         employee_ids: list[str] | None,
         history_months: int,
         selected_kpi: str | None,
@@ -144,15 +144,21 @@ class ManagementBSCService:
             snapshots = [row for row in snapshots if row.employee_identifier in selected_ids]
 
         if not snapshots:
-            return self._empty_response(team_name, performance_level, month, year, history_months)
+            return self._empty_response(team_name, performance_level, month, year, history_months, top_position=top_position)
 
         periods = sorted({_period_value(row.month, row.year) for row in snapshots if MONTHS.get(row.month)})
         if not periods:
-            return self._empty_response(team_name, performance_level, month, year, history_months)
+            return self._empty_response(team_name, performance_level, month, year, history_months, top_position=top_position)
 
-        selected_period = (year, MONTHS.get(month, 0)) if month and month != "All" else periods[-1]
-        if selected_period not in periods:
-            return self._empty_response(team_name, performance_level, month, year, history_months)
+        candidates = [period for period in periods if year is None or period[0] == year]
+        if month and month != "All":
+            candidates = [period for period in candidates if period[1] == MONTHS.get(month, 0)]
+        if not candidates:
+            return self._empty_response(
+                team_name, performance_level, month, year, history_months,
+                top_position=top_position, available_periods=periods,
+            )
+        selected_period = candidates[-1]
 
         active_periods = [period for period in periods if period <= selected_period]
         active_periods = active_periods[-max(1, min(history_months, 24)):]
@@ -170,27 +176,45 @@ class ManagementBSCService:
         )
         configs = [row for row in configs if _period_value(row.effective_month, row.effective_year) in allowed_periods]
         if not configs:
-            return self._empty_response(team_name, performance_level, month, year, history_months)
+            return self._empty_response(
+                team_name, performance_level, month, year, history_months,
+                top_position=top_position, available_periods=periods,
+            )
 
         config_lookup = self._group_configs(configs)
         records = self._build_records_from_snapshots(snapshots, config_lookup)
         if not records:
-            return self._empty_response(team_name, performance_level, month, year, history_months)
+            return self._empty_response(
+                team_name, performance_level, month, year, history_months,
+                top_position=top_position, available_periods=periods,
+            )
 
-        config = self._build_runtime_config(configs, base_config, team_name, performance_level, selected_period)
+        period_configs = {
+            period: self._build_runtime_config(configs, base_config, team_name, performance_level, period)
+            for period in active_periods
+        }
+        config = period_configs[selected_period]
         data = BalancedScorecardService.build(
             records=records,
             config=config,
             team=team_name,
             performance_level=performance_level,
             month=month,
-            year=year,
+            year=selected_period[0],
             employee_ids=employee_ids,
             history_months=history_months,
             selected_kpi=selected_kpi,
+            period_configs=period_configs,
         )
         data.setdefault("selection", {})
         data.setdefault("team", {})["top_position"] = top_position
+        data["available_periods"] = [
+            {
+                "month": next(name for name, number in MONTHS.items() if number == period[1]),
+                "year": period[0],
+            }
+            for period in periods
+        ]
         data["selection"]["data_source"] = "database_config"
         data["selection"]["effective_month"] = next((name for name, number in MONTHS.items() if number == selected_period[1]), None)
         data["selection"]["effective_year"] = selected_period[0]
@@ -449,7 +473,11 @@ class ManagementBSCService:
             employee_identifier, month, year = key
             period = _period_value(month, year)
             period_configs = config_lookup.get(period, {})
-            config_rows = period_configs.get("employee", {}).get(employee_identifier) or period_configs.get("position", {}).get(positions[key]) or []
+            position_rows = period_configs.get("position", {}).get(positions[key], [])
+            employee_rows = period_configs.get("employee", {}).get(employee_identifier, [])
+            config_by_kpi = {row.kpi_key: row for row in position_rows}
+            config_by_kpi.update({row.kpi_key: row for row in employee_rows})
+            config_rows = sorted(config_by_kpi.values(), key=lambda item: (item.display_order, item.kpi_label))
             if not config_rows:
                 continue
 
@@ -517,14 +545,8 @@ class ManagementBSCService:
             perspectives.append(meta)
 
         ordered = sorted(
-            configs,
-            key=lambda row: (
-                _period_value(row.effective_month, row.effective_year) != selected_period,
-                -row.effective_year,
-                -MONTHS.get(row.effective_month, 0),
-                row.display_order,
-                row.kpi_label,
-            ),
+            (row for row in configs if _period_value(row.effective_month, row.effective_year) == selected_period),
+            key=lambda row: (row.display_order, row.kpi_label),
         )
         seen = set()
         kpis = []
@@ -574,9 +596,24 @@ class ManagementBSCService:
             "effective_year": row.effective_year,
         }
 
-    def _empty_response(self, team_name: str, performance_level: str, month: str, year: int, history_months: int) -> dict[str, Any]:
+    def _empty_response(
+        self,
+        team_name: str,
+        performance_level: str,
+        month: str,
+        year: int | None,
+        history_months: int,
+        *,
+        top_position: str | None = None,
+        available_periods: list[tuple[int, int]] | None = None,
+    ) -> dict[str, Any]:
         return {
-            "team": {"name": team_name, "performance_level": performance_level, "balanced_scorecard": True},
+            "team": {
+                "name": team_name,
+                "performance_level": performance_level,
+                "balanced_scorecard": True,
+                "top_position": top_position,
+            },
             "selection": {
                 "month": month if month != "All" else None,
                 "year": year,
@@ -588,7 +625,10 @@ class ManagementBSCService:
                 "effective_year": year,
                 "config_scope_summary": {"position_configs": 0, "employee_overrides": 0},
             },
-            "available_periods": [],
+            "available_periods": [
+                {"month": next(name for name, number in MONTHS.items() if number == period[1]), "year": period[0]}
+                for period in (available_periods or [])
+            ],
             "available_people": [],
             "scorecard": {
                 "score": None,

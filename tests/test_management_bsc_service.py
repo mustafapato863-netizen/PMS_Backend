@@ -115,6 +115,54 @@ def test_employee_override_beats_position_config():
     session.close()
 
 
+def test_partial_employee_override_keeps_other_position_kpis():
+    session = _db()
+    _seed_team(session, "Sales")
+    service = ManagementBSCService(session)
+    rows = []
+    for employee_id in ("EMP-1", "EMP-2", "EMP-3"):
+        for perspective, label, weight, target, actual in (
+            ("Financial", "Revenue Achievement", 0.6, 100.0, 100.0),
+            ("Learning & Growth", "Coaching Completion", 0.4, 100.0, 90.0),
+        ):
+            rows.append({
+                "employee_id": employee_id,
+                "team": "Sales",
+                "employee_name": employee_id,
+                "position": "Sales Manager",
+                "performance_level": "Managerial",
+                "month": "May",
+                "year": 2025,
+                "perspective": perspective,
+                "kpi_label": label,
+                "direction": "higher_better",
+                "weight": weight,
+                "target_value": 50.0 if employee_id == "EMP-3" and label == "Revenue Achievement" else target,
+                "target_unit": "%",
+                "actual_value": actual,
+            })
+
+    result = service.import_template_rows(rows=rows, updated_by="tester")
+    data = service.build_scorecard_dataset(
+        team_name="Sales",
+        performance_level="Managerial",
+        month="May",
+        year=2025,
+        employee_ids=["EMP-3"],
+        history_months=6,
+        selected_kpi="revenue_achievement",
+        base_config=_base_config(),
+    )
+
+    kpis = {row["kpi_key"]: row for row in data["kpi_table"]}
+    assert result["config_rows"] == 3
+    assert set(kpis) == {"revenue_achievement", "coaching_completion"}
+    assert kpis["revenue_achievement"]["score"] == 200.0
+    assert kpis["coaching_completion"]["score"] == 90.0
+    assert data["scorecard"]["coverage"] == 1.0
+    session.close()
+
+
 def test_historical_month_uses_exact_period_config():
     session = _db()
     _seed_team(session, "Sales")
@@ -183,6 +231,99 @@ def test_historical_month_uses_exact_period_config():
     assert june_score == 200.0
     assert may_data["selection"]["effective_month"] == "May"
     assert june_data["selection"]["effective_month"] == "June"
+    session.close()
+
+
+def test_all_months_honors_explicit_year():
+    session = _db()
+    _seed_team(session, "Sales")
+    service = ManagementBSCService(session)
+    rows = [
+        {
+            "employee_id": "EMP-1",
+            "team": "Sales",
+            "employee_name": "One",
+            "position": "Sales Manager",
+            "performance_level": "Managerial",
+            "month": "May",
+            "year": year,
+            "perspective": "Financial",
+            "kpi_label": "Revenue Achievement",
+            "direction": "higher_better",
+            "weight": 1.0,
+            "target_value": 100.0,
+            "target_unit": "%",
+            "actual_value": actual,
+        }
+        for year, actual in ((2025, 90.0), (2026, 110.0))
+    ]
+    service.import_template_rows(rows=rows, updated_by="tester")
+
+    data = service.build_scorecard_dataset(
+        team_name="Sales",
+        performance_level="Managerial",
+        month="All",
+        year=2025,
+        employee_ids=["EMP-1"],
+        history_months=6,
+        selected_kpi="revenue_achievement",
+        base_config=_base_config(),
+    )
+
+    assert data["selection"]["year"] == 2025
+    assert data["scorecard"]["score"] == 90.0
+    assert data["available_periods"] == [
+        {"month": "May", "year": 2025},
+        {"month": "May", "year": 2026},
+    ]
+    session.close()
+
+
+def test_each_period_uses_its_own_kpi_configuration():
+    session = _db()
+    _seed_team(session, "Sales")
+    service = ManagementBSCService(session)
+    rows = [
+        {
+            "employee_id": "EMP-1",
+            "team": "Sales",
+            "employee_name": "One",
+            "position": "Sales Manager",
+            "performance_level": "Managerial",
+            "month": month,
+            "year": 2025,
+            "perspective": perspective,
+            "kpi_label": label,
+            "direction": "higher_better",
+            "weight": 1.0,
+            "target_value": 100.0,
+            "target_unit": "%",
+            "actual_value": actual,
+        }
+        for month, perspective, label, actual in (
+            ("April", "Financial", "Revenue Achievement", 100.0),
+            ("May", "Learning & Growth", "Coaching Completion", 90.0),
+        )
+    ]
+    service.import_template_rows(rows=rows, updated_by="tester")
+
+    data = service.build_scorecard_dataset(
+        team_name="Sales",
+        performance_level="Managerial",
+        month="All",
+        year=2025,
+        employee_ids=["EMP-1"],
+        history_months=6,
+        selected_kpi="coaching_completion",
+        base_config=_base_config(),
+    )
+
+    assert [row["kpi_key"] for row in data["kpi_table"]] == ["coaching_completion"]
+    assert [(row["month"], row["score"]) for row in data["history"]] == [
+        ("April", 100.0),
+        ("May", 90.0),
+    ]
+    assert [row["month"] for row in data["selected_kpi"]["history"]] == ["May"]
     session.close()
 
 

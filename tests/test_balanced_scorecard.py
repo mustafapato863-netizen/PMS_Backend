@@ -43,15 +43,15 @@ def config():
     }
 
 
-def record(employee_id, name, date, revenue_contribution, cycle_contribution):
+def record(employee_id, name, date, revenue_contribution, cycle_contribution, month="May"):
     return PerformanceRecord(
         id=f"{employee_id}_{date}",
         employee_id=employee_id,
         employee_name=name,
         team="Test Team",
-        month="May",
+        month=month,
         performance_level="Managerial",
-        raw_data={"Date": f"{date}-05-01T00:00:00"},
+        raw_data={"Date": f"{date}-05-01T00:00:00", "Position": "Test Manager"},
         evaluation=EvaluationData(score=80, grade="B"),
         kpi_values=[
             {"kpi_key": "revenue", "actual_value": 110, "target_value": 100, "achievement_ratio": 1.1, "weight_applied": 0.5, "contribution": revenue_contribution},
@@ -99,6 +99,40 @@ def test_year_is_explicit_and_history_ends_at_selected_period():
     assert data["selection"]["year"] == 2025
     assert data["available_periods"] == [{"month": "May", "year": 2025}, {"month": "May", "year": 2026}]
     assert data["history"][-1]["year"] == 2025
+
+
+def test_selected_kpi_contract_and_trends_use_real_period_records():
+    data = BalancedScorecardService.build(
+        [
+            record("1", "A", 2025, 0.4, 0.2, month="April"),
+            record("1", "A", 2025, 0.5, 0.3, month="May"),
+        ],
+        config(), "Test Team", "Managerial", "May", 2025,
+        employee_ids=["1"], selected_kpi="revenue",
+    )
+
+    assert data["selected_kpi"]["key"] == "revenue"
+    assert data["selected_kpi"]["label"] == "Revenue"
+    assert [row["month"] for row in data["selected_kpi"]["history"]] == ["April", "May"]
+    assert [row["score"] for row in data["selected_kpi"]["history"]] == [80.0, 100.0]
+    assert data["perspectives"][0]["trend_vs_previous"] == pytest.approx(20.0)
+    assert data["contributors"][0]["perspectives"]["Financial"]["trend"] == pytest.approx(20.0)
+    assert data["contributors"][0]["perspectives"]["Financial"]["measured_weight"] == pytest.approx(0.5)
+    assert data["contributors"][0]["perspectives"]["Financial"]["top_kpi_label"] == "Revenue"
+    assert data["available_people"][0]["role"] == "Test Manager"
+
+
+def test_selected_person_history_does_not_invent_other_people_periods():
+    data = BalancedScorecardService.build(
+        [
+            record("2", "B", 2025, 0.4, 0.2, month="April"),
+            record("1", "A", 2025, 0.5, 0.3, month="May"),
+        ],
+        config(), "Test Team", "Managerial", "May", 2025,
+        employee_ids=["1"], selected_kpi="revenue",
+    )
+
+    assert [row["month"] for row in data["selected_kpi"]["history"]] == ["May"]
 
 
 def test_bsc_config_validation_rejects_unknown_perspective():
@@ -162,6 +196,30 @@ def test_endpoint_rejects_people_outside_authorized_context(monkeypatch):
             request=SimpleNamespace(), db=None, team="Test Team", performance_level="Managerial",
             month="May", year=2025, branch=None, employee_ids=["outside"], history_months=6, selected_kpi=None,
         )
+    assert exc.value.status_code == 403
+
+
+def test_endpoint_rejects_cross_employee_selection_for_self_scoped_user(monkeypatch):
+    monkeypatch.setattr(
+        "api.routers.performance.require_authenticated_scope",
+        lambda db, request: {
+            "legacy_unscoped": False,
+            "role": "Executive",
+            "employee_id": "1",
+        },
+    )
+    monkeypatch.setattr("api.routers.performance.user_can_access_team_level", lambda scope, team, level: True)
+    monkeypatch.setattr("api.routers.performance.load_team_config", lambda team: {"team": team})
+    monkeypatch.setattr("api.routers.performance.resolve_team_config", lambda raw, level: config())
+    monkeypatch.setattr("api.routers.performance._get_dashboard_records", lambda *args, **kwargs: [record("1", "A", 2025, 0.5, 0.3)])
+    monkeypatch.setattr("api.routers.performance.filter_records_by_scope", lambda records, scope: records)
+
+    with pytest.raises(HTTPException) as exc:
+        get_balanced_scorecard(
+            request=SimpleNamespace(), db=None, team="Test Team", performance_level="Corporate",
+            month="May", year=2025, branch=None, employee_ids=["2"], history_months=6, selected_kpi=None,
+        )
+
     assert exc.value.status_code == 403
 
 

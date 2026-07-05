@@ -122,6 +122,7 @@ class BalancedScorecardService:
             risk = max(measured, key=lambda row: row["performance_gap"], default=None)
             perspectives.append({
                 **metadata,
+                "target_score": 100.0,
                 "configured_weight": configured_weight,
                 "measured_weight": measured_weight,
                 "coverage": measured_weight / configured_weight if configured_weight else None,
@@ -145,6 +146,7 @@ class BalancedScorecardService:
         return {
             "scorecard": {
                 "score": score,
+                "target_score": 100.0,
                 "status": _status(score, thresholds, state),
                 "state": state,
                 "configured_weight": configured_weight,
@@ -170,11 +172,18 @@ class BalancedScorecardService:
             for perspective in perspectives:
                 keys = {kpi["kpi_key"] for kpi in perspective["kpis"]}
                 values = [value for value in (_value(record, "kpi_values", []) or []) if _value(value, "kpi_key") in keys]
-                contribution = sum(float(_value(value, "contribution", 0)) for value in values)
-                weight = sum(float(_value(value, "weight_applied", 0)) for value in values)
+                measured = [value for value in values if _value(value, "contribution") is not None]
+                contribution = sum(float(_value(value, "contribution")) for value in measured)
+                weight = sum(float(_value(value, "weight_applied", 0) or 0) for value in measured)
+                top_value = max(measured, key=lambda value: float(_value(value, "contribution") or 0), default=None)
+                top_key = _value(top_value, "kpi_key") if top_value else None
+                top_kpi = next((kpi for kpi in perspective["kpis"] if kpi["kpi_key"] == top_key), None)
                 person["perspectives"][perspective["key"]] = {
                     "score": contribution / weight * 100 if weight else None,
-                    "weighted_contribution": contribution if values else None,
+                    "weighted_contribution": contribution if measured else None,
+                    "measured_weight": weight if measured else None,
+                    "top_kpi_label": top_kpi["kpi_label"] if top_kpi else None,
+                    "trend": None,
                     "kpis": {str(_value(value, "kpi_key")): _value(value, "actual_value") for value in values},
                 }
             rows.append(person)
@@ -192,6 +201,7 @@ class BalancedScorecardService:
         employee_ids: list[str] | None = None,
         history_months: int = 6,
         selected_kpi: str | None = None,
+        period_configs: dict[tuple[int, int], dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         periods = sorted({_period_key(record) for record in records if _period_key(record)[0] and _period_key(record)[1]})
         if month and month != "All":
@@ -201,27 +211,40 @@ class BalancedScorecardService:
 
         people_by_id = {}
         for record in records:
+            raw_data = _value(record, "raw_data", {}) or {}
             people_by_id[str(_value(record, "employee_id", ""))] = {
                 "employee_id": str(_value(record, "employee_id", "")),
                 "employee_name": _value(record, "employee_name", ""),
+                "team_name": _value(record, "team", team),
+                "role": raw_data.get("Position") or raw_data.get("position"),
             }
         selected_ids = set(employee_ids or [])
         scoped_records = [record for record in records if not selected_ids or str(_value(record, "employee_id", "")) in selected_ids]
         current = [record for record in scoped_records if selected_period and _period_key(record) == selected_period]
-        summary = cls._summarize(current, config)
+        current_config = (period_configs or {}).get(selected_period, config)
+        summary = cls._summarize(current, current_config)
         history_periods = [period for period in periods if not selected_period or period <= selected_period]
         history_periods = history_periods[-max(1, min(history_months, 24)):]
 
         history = []
         for period in history_periods:
             period_records = [record for record in scoped_records if _period_key(record) == period]
-            period_summary = cls._summarize(period_records, config)
+            period_summary = cls._summarize(period_records, (period_configs or {}).get(period, config))
             history.append({
                 "month": next(name for name, number in MONTHS.items() if number == period[1]),
                 "year": period[0],
                 **period_summary["scorecard"],
                 "perspective_scores": {item["key"]: item["score"] for item in period_summary["perspectives"]},
             })
+
+        previous_history = history[-2] if len(history) >= 2 else None
+        for perspective in summary["perspectives"]:
+            previous_score = (previous_history or {}).get("perspective_scores", {}).get(perspective["key"])
+            perspective["trend_vs_previous"] = (
+                perspective["score"] - previous_score
+                if perspective["score"] is not None and previous_score is not None
+                else None
+            )
 
         selected = next((row for row in summary["kpi_table"] if row["kpi_key"] == selected_kpi), None)
         if selected is None:
@@ -234,15 +257,50 @@ class BalancedScorecardService:
         if selected:
             for period in history_periods:
                 period_records = [record for record in scoped_records if _period_key(record) == period]
+                period_config = (period_configs or {}).get(period, config)
                 row = next(
-                    item for item in cls._summarize(period_records, config)["kpi_table"]
-                    if item["kpi_key"] == selected["kpi_key"]
+                    (
+                        item for item in cls._summarize(period_records, period_config)["kpi_table"]
+                        if item["kpi_key"] == selected["kpi_key"]
+                    ),
+                    None,
                 )
+                if not row or not row["record_count"] or row["score"] is None:
+                    continue
                 selected_history.append({
                     "month": next(name for name, number in MONTHS.items() if number == period[1]),
                     "year": period[0],
                     **row,
                 })
+
+        contributors = cls._contributors(current, summary["perspectives"])
+        if selected_period:
+            for contributor in contributors:
+                previous_periods = sorted({
+                    _period_key(record)
+                    for record in scoped_records
+                    if str(_value(record, "employee_id", "")) == contributor["employee_id"]
+                    and _period_key(record) < selected_period
+                })
+                if not previous_periods:
+                    continue
+                previous_period = previous_periods[-1]
+                previous_records = [
+                    record for record in scoped_records
+                    if str(_value(record, "employee_id", "")) == contributor["employee_id"]
+                    and _period_key(record) == previous_period
+                ]
+                previous_config = (period_configs or {}).get(previous_period, config)
+                previous_perspectives = cls._summarize(previous_records, previous_config)["perspectives"]
+                previous_contributor = cls._contributors(previous_records, previous_perspectives)[0]
+                for key, current_perspective in contributor["perspectives"].items():
+                    previous_score = previous_contributor["perspectives"][key]["score"]
+                    current_score = current_perspective["score"]
+                    current_perspective["trend"] = (
+                        current_score - previous_score
+                        if current_score is not None and previous_score is not None
+                        else None
+                    )
 
         return {
             "team": {"name": team, "performance_level": performance_level, "balanced_scorecard": True},
@@ -260,7 +318,12 @@ class BalancedScorecardService:
             "available_people": sorted(people_by_id.values(), key=lambda person: (person["employee_name"], person["employee_id"])),
             **summary,
             "strategy_map": {"links": config["balanced_scorecard"].get("strategy_map_links", [])},
-            "contributors": cls._contributors(current, summary["perspectives"]),
+            "contributors": contributors,
             "history": history,
-            "selected_kpi": {"current": selected, "history": selected_history} if selected else None,
+            "selected_kpi": {
+                "key": selected["kpi_key"],
+                "label": selected["kpi_label"],
+                "current": selected,
+                "history": selected_history,
+            } if selected else None,
         }
