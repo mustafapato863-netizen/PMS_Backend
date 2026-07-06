@@ -51,22 +51,44 @@ async def update_targets(
                 
                 r.achievement.booking_ach = achievements.get("Booking", 0.0)
                 r.achievement.attend_ach = achievements.get("Attend", 0.0)
-                r.achievement.quality_ach = achievements.get("Quality", 0.0)
+                r.achievement.quality_ach = achievements.get("Quality") or achievements.get("quality_errors_rate") or 0.0
                 r.achievement.aht_ach = achievements.get("AHT", 0.0)
                 r.achievement.reachability_ach = achievements.get("Other", 0.0) if r.team == "Outbound" else 0.0
                 r.achievement.abandon_ach = achievements.get("Other", 0.0) if r.team in ["Inbound", "Inbound UAE"] else 0.0
-                r.achievement.rejection_ach = achievements.get("Rejection") or achievements.get("initial_rejection_rate") or 0.0
+                r.achievement.rejection_ach = (
+                    achievements.get("Rejection")
+                    or achievements.get("initial_rejection_rate")
+                    or achievements.get("rejection_rate_after_resubmission")
+                    or 0.0
+                )
                 r.achievement.initial_error_ach = achievements.get("InitialError", 0.0)
-                r.achievement.submission_ach = achievements.get("Submission") or achievements.get("submission_within_due_date") or 0.0
+                r.achievement.submission_ach = (
+                    achievements.get("Submission")
+                    or achievements.get("submission_within_due_date")
+                    or achievements.get("tat")
+                    or 0.0
+                )
                 
                 r.actual.booking_rate = float(r.raw_data.get("A.Booking%", 0.0))
                 r.actual.attend_rate = float(r.raw_data.get("A.Attend%", 0.0))
                 r.actual.abandon_rate = float(r.raw_data.get("A.AbandonRate%", 0.0))
                 r.actual.reachability_rate = float(r.raw_data.get("A.Reachability%", 0.0))
-                r.actual.rejection_rate = float(r.raw_data.get("A.InitialRejectionRate") or r.raw_data.get("IPInitialRejection%") or r.raw_data.get("A.CSRRejection%") or 0.0)
+                r.actual.rejection_rate = float(
+                    r.raw_data.get("A.InitialRejectionRate")
+                    or r.raw_data.get("IPInitialRejection%")
+                    or r.raw_data.get("A.CSRRejection%")
+                    or r.raw_data.get("A.RejectionRateAfterResubmission")
+                    or r.raw_data.get("A.RejectionRateAfterRe-Submission")
+                    or 0.0
+                )
                 r.actual.initial_error_rate = float(r.raw_data.get("Error%", 0.0))
-                r.actual.submission_rate = float(r.raw_data.get("A.TAT48Hours") or r.raw_data.get("NumberApprovalwithin48hrs") or 0.0)
-                r.actual.quality_rate = float(r.raw_data.get("A.QualityScore", 0.0))
+                r.actual.submission_rate = float(
+                    r.raw_data.get("A.TAT48Hours")
+                    or r.raw_data.get("NumberApprovalwithin48hrs")
+                    or r.raw_data.get("A.TAT")
+                    or 0.0
+                )
+                r.actual.quality_rate = float(r.raw_data.get("A.QualityScore") or r.raw_data.get("A.QualityErrorsRate") or 0.0)
                 r.actual.utz_rate = float(r.raw_data.get("A.UTZ%", 0.0))
                 
                 r.evaluation.score = score

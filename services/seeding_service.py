@@ -393,6 +393,7 @@ class DatabaseSeeder:
         csr_df = self.excel_processor.process_sheet_csr(excel_file) if "CSR" in sheet_names else pd.DataFrame()
         pharmacy_df = self.excel_processor.process_sheet_pharmacy(excel_file) if "Pharmacy" in sheet_names else pd.DataFrame()
         submission_df = self.excel_processor.process_sheet_submission(excel_file) if "Submission" in sheet_names else pd.DataFrame()
+        re_submission_df = self.excel_processor.process_sheet_re_submission(excel_file) if "Re-Submission" in sheet_names else pd.DataFrame()
 
         all_new_records = []
         all_new_employees = []
@@ -429,6 +430,17 @@ class DatabaseSeeder:
                 ))
             except ConfigurationError:
                 sheet_mappings.append(("Submission", submission_df, "EmployeeID", "EmployeeName"))
+        if not re_submission_df.empty:
+            try:
+                re_submission_config = load_team_config("Re-Submission")
+                sheet_mappings.append((
+                    "Re-Submission",
+                    re_submission_df,
+                    re_submission_config.get("employee_id_col", "EmployeeID"),
+                    re_submission_config.get("employee_name_col", "EmployeeName"),
+                ))
+            except ConfigurationError:
+                sheet_mappings.append(("Re-Submission", re_submission_df, "EmployeeID", "EmployeeName"))
 
         for team_name, df, id_col, _ in sheet_mappings:
             self._normalize_sheet_levels(df, id_col, team_name)
@@ -484,7 +496,7 @@ class DatabaseSeeder:
                     is_new = row.get("Is_New", False)
                     region_val = str(row.get("Region", "EGY")).strip().upper()
                     if not region_val or region_val == "NAN":
-                        region_val = "UAE" if team_name in ["Inbound UAE", "Sales", "Coding", "CSR", "Pharmacy", "Submission"] else "EGY"
+                        region_val = "UAE" if team_name in ["Inbound UAE", "Sales", "Coding", "CSR", "Pharmacy", "Submission", "Re-Submission"] else "EGY"
 
                     employee = Employee(
                         id=emp_id,
@@ -535,10 +547,17 @@ class DatabaseSeeder:
                         attend_rate=safe_float(row.get("A.Attend%", 0.0)),
                         abandon_rate=safe_float(row.get("A.AbandonRate%", 0.0)),
                         reachability_rate=safe_float(row.get("A.Reachability%", 0.0)),
-                        rejection_rate=safe_float(row.get("A.InitialRejectionRate") or row.get("IPInitialRejection%") or row.get("A.CSRRejection%") or 0.0),
+                        rejection_rate=safe_float(
+                            row.get("A.InitialRejectionRate")
+                            or row.get("IPInitialRejection%")
+                            or row.get("A.CSRRejection%")
+                            or row.get("A.RejectionRateAfterResubmission")
+                            or row.get("A.RejectionRateAfterRe-Submission")
+                            or 0.0
+                        ),
                         initial_error_rate=safe_float(row.get("Error%", 0.0)),
-                        submission_rate=safe_float(row.get("A.TAT48Hours") or row.get("NumberApprovalwithin48hrs") or 0.0),
-                        quality_rate=safe_float(row.get("A.QualityScore", 0.0)),
+                        submission_rate=safe_float(row.get("A.TAT48Hours") or row.get("NumberApprovalwithin48hrs") or row.get("A.TAT") or 0.0),
+                        quality_rate=safe_float(row.get("A.QualityScore") or row.get("A.QualityErrorsRate") or 0.0),
                         utz_rate=safe_float(row.get("A.UTZ%", 0.0))
                     )
 
@@ -557,13 +576,13 @@ class DatabaseSeeder:
                     ach = AchievementMetrics(
                         booking_ach=achievements.get("Booking", 0.0),
                         attend_ach=achievements.get("Attend", 0.0),
-                        quality_ach=achievements.get("Quality", 0.0),
+                        quality_ach=achievements.get("Quality") or achievements.get("quality_errors_rate") or 0.0,
                         aht_ach=achievements.get("AHT", 0.0),
                         reachability_ach=achievements.get("Other", 0.0) if team_name == "Outbound" else 0.0,
                         abandon_ach=achievements.get("Other", 0.0) if team_name in ["Inbound", "Inbound UAE"] else 0.0,
-                        rejection_ach=achievements.get("Rejection") or achievements.get("initial_rejection_rate") or 0.0,
+                        rejection_ach=achievements.get("Rejection") or achievements.get("initial_rejection_rate") or achievements.get("rejection_rate_after_resubmission") or 0.0,
                         initial_error_ach=achievements.get("InitialError", 0.0),
-                        submission_ach=achievements.get("Submission") or achievements.get("submission_within_due_date") or 0.0,
+                        submission_ach=achievements.get("Submission") or achievements.get("submission_within_due_date") or achievements.get("tat") or 0.0,
                         op_census_ach=achievements.get("OPCensus", 0.0),
                         op_revenue_ach=achievements.get("OPRevenue", 0.0),
                         ip_census_ach=achievements.get("IPCensus", 0.0),

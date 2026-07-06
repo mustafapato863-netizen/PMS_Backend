@@ -82,7 +82,12 @@ def serialize_performance_record(r) -> Dict[str, Any]:
     actual_attend = r.actual.attend_rate or safe_float(r.raw_data.get("A.Attend%", 0.0))
     actual_abandon = r.actual.abandon_rate or safe_float(r.raw_data.get("A.AbandonRate%", 0.0))
     actual_reachability = r.actual.reachability_rate or safe_float(r.raw_data.get("A.Reachability%", 0.0))
-    actual_rejection = r.actual.rejection_rate or safe_float(r.raw_data.get("IPInitialRejection%", 0.0))
+    actual_rejection = r.actual.rejection_rate or safe_float(
+        r.raw_data.get("IPInitialRejection%")
+        or r.raw_data.get("A.RejectionRateAfterRe-Submission")
+        or r.raw_data.get("A.RejectionRateAfterResubmission")
+        or 0.0
+    )
     actual_error = r.actual.initial_error_rate or safe_float(r.raw_data.get("Error%", 0.0))
     actual_submission = r.actual.submission_rate or safe_float(r.raw_data.get("NumberApprovalwithin48hrs", 0.0))
     actual_quality = getattr(r.actual, "quality_rate", 0.0) or safe_float(r.raw_data.get("A.QualityScore", 0.0))
