@@ -168,6 +168,16 @@ class AnalysisService:
                 sum_target_activity = sum(safe_float(clean_row.get(c)) for c in t_act_cols)
                 actual_val = sum_actual_activity / sum_target_activity if sum_target_activity > 0 else 0.0
                 target_val = 1.0
+        elif team == "Re-Submission":
+            if root_kpi == "quality_errors_rate":
+                actual_val = safe_float(row.get("A.QualityErrorsRate"))
+                target_val = targets.get("quality_errors_rate", 0.05)
+            elif root_kpi == "rejection_rate_after_resubmission":
+                actual_val = safe_float(row.get("A.RejectionRateAfterResubmission"))
+                target_val = targets.get("rejection_rate_after_resubmission", 0.60)
+            elif root_kpi == "tat":
+                actual_val = safe_float(row.get("A.TAT"))
+                target_val = targets.get("tat", 1.0)
 
         if math.isnan(actual_val):
             actual_val = 0.0

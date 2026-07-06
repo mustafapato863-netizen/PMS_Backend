@@ -1,10 +1,12 @@
 import uuid
 
+import pytest
+from sqlalchemy.exc import ProgrammingError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from models.models import Base, Team
-from services.management_bsc_service import ManagementBSCService, _highest_position
+from services.management_bsc_service import ManagementBSCService, ManagementBSCSchemaError, _highest_position
 
 
 def _db():
@@ -473,4 +475,30 @@ def test_delete_upload_batch_removes_management_rows():
     assert deleted["config_rows_deleted"] > 0
     assert deleted["snapshot_rows_deleted"] > 0
     assert service.list_upload_batches() == []
+    session.close()
+
+
+def test_list_upload_batches_and_history_return_empty_when_no_rows_exist():
+    session = _db()
+    _seed_team(session, "Sales")
+    service = ManagementBSCService(session)
+
+    assert service.list_upload_batches() == []
+    assert service.list_history(team_name="Sales") == []
+    session.close()
+
+
+def test_schema_mismatch_raises_explicit_management_bsc_error(monkeypatch):
+    session = _db()
+    service = ManagementBSCService(session)
+
+    def _broken_query(*args, **kwargs):
+        raise ProgrammingError("SELECT 1", {}, Exception("UndefinedTable: management_kpi_snapshots does not exist"))
+
+    monkeypatch.setattr(session, "query", _broken_query)
+
+    with pytest.raises(ManagementBSCSchemaError) as exc:
+        service.list_upload_batches()
+
+    assert "schema is out of date" in str(exc.value)
     session.close()

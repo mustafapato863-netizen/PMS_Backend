@@ -99,3 +99,7 @@ class ExcelProcessor:
         from Data_Cleaning_Teams.submission import process_submission
         return self._process_team_sheet(excel_file, "Submission", process_submission)
 
+    def process_sheet_re_submission(self, excel_file) -> pd.DataFrame:
+        from Data_Cleaning_Teams.re_submission import process_re_submission
+        return self._process_team_sheet(excel_file, "Re-Submission", process_re_submission)
+

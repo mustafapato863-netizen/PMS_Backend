@@ -246,6 +246,60 @@ class TestPerformanceRouter:
             assert response.json()["data"][0]["evaluation"]["score"] == 85.5
 
 
+class TestSearchRouter:
+    def test_global_search_returns_scoped_teams_and_employee_matches(self):
+        employees = [
+            EmployeeSchema(id="EMP001", name="John Doe", team="Sales", region="UAE", performance_level="Employee"),
+            EmployeeSchema(id="EMP002", name="Jane Roe", team="Inbound", region="UAE", performance_level="Employee"),
+        ]
+        with (
+            patch("api.routers.search.require_authenticated_scope") as mock_scope,
+            patch("api.routers.search.employee_repo.get_all") as mock_get_all,
+        ):
+            mock_scope.return_value = {
+                "role": "Manager",
+                "accessible_teams": ["Sales"],
+                "active_team_names": ["Sales", "Inbound"],
+                "is_general_manager": False,
+                "employee_id": None,
+                "user_id": "manager-1",
+            }
+            mock_get_all.return_value = employees
+
+            response = client.get("/api/search/global", params={"q": "jo"})
+
+            assert response.status_code == 200
+            data = response.json()["data"]
+            assert data["teams"] == []
+            assert data["employees"] == [
+                {
+                    "id": "EMP001",
+                    "name": "John Doe",
+                    "employee_id": "EMP001",
+                    "team": "Sales",
+                    "performance_level": "Employee",
+                }
+            ]
+
+    def test_global_search_empty_query_returns_accessible_teams_only(self):
+        with patch("api.routers.search.require_authenticated_scope") as mock_scope:
+            mock_scope.return_value = {
+                "role": "Admin",
+                "accessible_teams": [],
+                "active_team_names": ["Sales", "Inbound"],
+                "is_general_manager": True,
+                "employee_id": None,
+                "user_id": "admin-1",
+            }
+
+            response = client.get("/api/search/global")
+
+            assert response.status_code == 200
+            data = response.json()["data"]
+            assert [team["name"] for team in data["teams"]] == ["Inbound", "Sales"]
+            assert data["employees"] == []
+
+
 class TestErrorHandling:
     def test_404_error_handling(self):
         with patch("api.routers.employee.employee_repo.get_all") as mock_get:

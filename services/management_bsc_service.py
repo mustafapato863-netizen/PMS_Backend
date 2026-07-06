@@ -4,11 +4,19 @@ from collections import defaultdict
 from datetime import datetime
 from typing import Any
 import uuid
+import logging
 
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 
 from models.models import ManagementKPIConfig, ManagementKPIConfigHistory, ManagementKPISnapshot, Team
 from services.balanced_scorecard_service import BalancedScorecardService, MONTHS
+
+logger = logging.getLogger(__name__)
+
+
+class ManagementBSCSchemaError(RuntimeError):
+    """Raised when the database is missing required management BSC schema."""
 
 
 def _to_float(value: Any) -> float | None:
@@ -60,62 +68,67 @@ class ManagementBSCService:
         default_team_name: str | None = None,
         source_filename: str | None = None,
     ) -> dict[str, Any]:
-        upload_batch_id = uuid.uuid4()
-        grouped_rows: dict[str, list[dict[str, Any]]] = defaultdict(list)
-        for row in rows:
-            team_name = str(row.get("team") or default_team_name or "").strip()
-            if not team_name:
-                raise ValueError("Template row is missing Team")
-            grouped_rows[team_name].append(row)
+        try:
+            upload_batch_id = uuid.uuid4()
+            grouped_rows: dict[str, list[dict[str, Any]]] = defaultdict(list)
+            for row in rows:
+                team_name = str(row.get("team") or default_team_name or "").strip()
+                if not team_name:
+                    raise ValueError("Template row is missing Team")
+                grouped_rows[team_name].append(row)
 
-        total_config_rows = 0
-        total_snapshot_rows = 0
-        touched_period_labels: set[str] = set()
-        touched_levels: set[str] = set()
+            total_config_rows = 0
+            total_snapshot_rows = 0
+            touched_period_labels: set[str] = set()
+            touched_levels: set[str] = set()
 
-        for team_name, team_rows in grouped_rows.items():
-            team = self._get_or_create_team(team_name)
-            payload = self._build_database_payload(team_rows)
-            touched_periods = sorted({(row["performance_level"], row["effective_year"], row["effective_month"]) for row in payload["config_rows"]})
+            for team_name, team_rows in grouped_rows.items():
+                team = self._get_or_create_team(team_name)
+                payload = self._build_database_payload(team_rows)
+                touched_periods = sorted({(row["performance_level"], row["effective_year"], row["effective_month"]) for row in payload["config_rows"]})
 
-            for level, year, month in touched_periods:
-                self._replace_period_config(
-                    team_id=team.id,
-                    performance_level=level,
-                    year=year,
-                    month=month,
-                    config_rows=[row for row in payload["config_rows"] if row["performance_level"] == level and row["effective_year"] == year and row["effective_month"] == month],
-                    updated_by=updated_by,
-                    upload_batch_id=upload_batch_id,
-                    source_filename=source_filename,
-                )
-                self._replace_period_snapshots(
-                    team_id=team.id,
-                    performance_level=level,
-                    year=year,
-                    month=month,
-                    snapshot_rows=[row for row in payload["snapshots"] if row["performance_level"] == level and row["year"] == year and row["month"] == month],
-                    updated_by=updated_by,
-                    upload_batch_id=upload_batch_id,
-                )
-                touched_period_labels.add(f"{month} {year}")
-                touched_levels.add(level)
+                for level, year, month in touched_periods:
+                    self._replace_period_config(
+                        team_id=team.id,
+                        performance_level=level,
+                        year=year,
+                        month=month,
+                        config_rows=[row for row in payload["config_rows"] if row["performance_level"] == level and row["effective_year"] == year and row["effective_month"] == month],
+                        updated_by=updated_by,
+                        upload_batch_id=upload_batch_id,
+                        source_filename=source_filename,
+                    )
+                    self._replace_period_snapshots(
+                        team_id=team.id,
+                        performance_level=level,
+                        year=year,
+                        month=month,
+                        snapshot_rows=[row for row in payload["snapshots"] if row["performance_level"] == level and row["year"] == year and row["month"] == month],
+                        updated_by=updated_by,
+                        upload_batch_id=upload_batch_id,
+                    )
+                    touched_period_labels.add(f"{month} {year}")
+                    touched_levels.add(level)
 
-            total_config_rows += len(payload["config_rows"])
-            total_snapshot_rows += len(payload["snapshots"])
+                total_config_rows += len(payload["config_rows"])
+                total_snapshot_rows += len(payload["snapshots"])
 
-        self.db.commit()
+            self.db.commit()
 
-        return {
-            "upload_batch_id": str(upload_batch_id),
-            "teams": sorted(grouped_rows),
-            "rows_count": len(rows),
-            "config_rows": total_config_rows,
-            "snapshot_rows": total_snapshot_rows,
-            "periods": sorted(touched_period_labels),
-            "levels": sorted(touched_levels),
-            "data_source": "database_config",
-        }
+            return {
+                "upload_batch_id": str(upload_batch_id),
+                "teams": sorted(grouped_rows),
+                "rows_count": len(rows),
+                "config_rows": total_config_rows,
+                "snapshot_rows": total_snapshot_rows,
+                "periods": sorted(touched_period_labels),
+                "levels": sorted(touched_levels),
+                "data_source": "database_config",
+            }
+        except SQLAlchemyError as exc:
+            self.db.rollback()
+            self._raise_if_schema_mismatch(exc, operation="import management BSC template")
+            raise
 
     def build_scorecard_dataset(
         self,
@@ -129,15 +142,19 @@ class ManagementBSCService:
         selected_kpi: str | None,
         base_config: dict[str, Any],
     ) -> dict[str, Any]:
-        team = self._get_team(team_name)
-        snapshots = (
-            self.db.query(ManagementKPISnapshot)
-            .filter(
-                ManagementKPISnapshot.team_id == team.id,
-                ManagementKPISnapshot.performance_level == performance_level,
+        try:
+            team = self._get_team(team_name)
+            snapshots = (
+                self.db.query(ManagementKPISnapshot)
+                .filter(
+                    ManagementKPISnapshot.team_id == team.id,
+                    ManagementKPISnapshot.performance_level == performance_level,
+                )
+                .all()
             )
-            .all()
-        )
+        except SQLAlchemyError as exc:
+            self._raise_if_schema_mismatch(exc, operation="read management BSC scorecard")
+            raise
         top_position = _highest_position({row.position_name for row in snapshots if row.position_name})
         if employee_ids:
             selected_ids = set(employee_ids)
@@ -165,15 +182,19 @@ class ManagementBSCService:
         allowed_periods = set(active_periods)
 
         snapshots = [row for row in snapshots if _period_value(row.month, row.year) in allowed_periods]
-        configs = (
-            self.db.query(ManagementKPIConfig)
-            .filter(
-                ManagementKPIConfig.team_id == team.id,
-                ManagementKPIConfig.performance_level == performance_level,
-                ManagementKPIConfig.is_active.is_(True),
+        try:
+            configs = (
+                self.db.query(ManagementKPIConfig)
+                .filter(
+                    ManagementKPIConfig.team_id == team.id,
+                    ManagementKPIConfig.performance_level == performance_level,
+                    ManagementKPIConfig.is_active.is_(True),
+                )
+                .all()
             )
-            .all()
-        )
+        except SQLAlchemyError as exc:
+            self._raise_if_schema_mismatch(exc, operation="read management BSC config")
+            raise
         configs = [row for row in configs if _period_value(row.effective_month, row.effective_year) in allowed_periods]
         if not configs:
             return self._empty_response(
@@ -225,15 +246,19 @@ class ManagementBSCService:
         return data
 
     def list_configs(self, *, team_name: str, performance_level: str | None = None) -> list[dict[str, Any]]:
-        team = self._get_team(team_name)
-        query = self.db.query(ManagementKPIConfig).filter(ManagementKPIConfig.team_id == team.id)
-        if performance_level:
-            query = query.filter(ManagementKPIConfig.performance_level == performance_level)
-        rows = query.order_by(
-            ManagementKPIConfig.effective_year.desc(),
-            ManagementKPIConfig.effective_month.desc(),
-            ManagementKPIConfig.display_order.asc(),
-        ).all()
+        try:
+            team = self._get_team(team_name)
+            query = self.db.query(ManagementKPIConfig).filter(ManagementKPIConfig.team_id == team.id)
+            if performance_level:
+                query = query.filter(ManagementKPIConfig.performance_level == performance_level)
+            rows = query.order_by(
+                ManagementKPIConfig.effective_year.desc(),
+                ManagementKPIConfig.effective_month.desc(),
+                ManagementKPIConfig.display_order.asc(),
+            ).all()
+        except SQLAlchemyError as exc:
+            self._raise_if_schema_mismatch(exc, operation="list management KPI config")
+            raise
         return [
             {
                 "id": str(row.id),
@@ -256,13 +281,17 @@ class ManagementBSCService:
         ]
 
     def list_history(self, *, team_name: str) -> list[dict[str, Any]]:
-        team = self._get_team(team_name)
-        rows = (
-            self.db.query(ManagementKPIConfigHistory)
-            .filter(ManagementKPIConfigHistory.team_id == team.id)
-            .order_by(ManagementKPIConfigHistory.changed_at.desc())
-            .all()
-        )
+        try:
+            team = self._get_team(team_name)
+            rows = (
+                self.db.query(ManagementKPIConfigHistory)
+                .filter(ManagementKPIConfigHistory.team_id == team.id)
+                .order_by(ManagementKPIConfigHistory.changed_at.desc())
+                .all()
+            )
+        except SQLAlchemyError as exc:
+            self._raise_if_schema_mismatch(exc, operation="list management KPI history")
+            raise
         return [
             {
                 "id": str(row.id),
@@ -277,24 +306,32 @@ class ManagementBSCService:
         ]
 
     def list_management_teams(self) -> list[str]:
-        rows = (
-            self.db.query(Team.name)
-            .join(ManagementKPIConfig, ManagementKPIConfig.team_id == Team.id)
-            .filter(ManagementKPIConfig.is_active.is_(True))
-            .distinct()
-            .order_by(Team.name.asc())
-            .all()
-        )
+        try:
+            rows = (
+                self.db.query(Team.name)
+                .join(ManagementKPIConfig, ManagementKPIConfig.team_id == Team.id)
+                .filter(ManagementKPIConfig.is_active.is_(True))
+                .distinct()
+                .order_by(Team.name.asc())
+                .all()
+            )
+        except SQLAlchemyError as exc:
+            self._raise_if_schema_mismatch(exc, operation="list management KPI teams")
+            raise
         return [name for (name,) in rows if name]
 
     def list_upload_batches(self) -> list[dict[str, Any]]:
-        rows = (
-            self.db.query(ManagementKPIConfigHistory, Team.name)
-            .join(Team, Team.id == ManagementKPIConfigHistory.team_id)
-            .filter(ManagementKPIConfigHistory.upload_batch_id.isnot(None))
-            .order_by(ManagementKPIConfigHistory.changed_at.desc())
-            .all()
-        )
+        try:
+            rows = (
+                self.db.query(ManagementKPIConfigHistory, Team.name)
+                .join(Team, Team.id == ManagementKPIConfigHistory.team_id)
+                .filter(ManagementKPIConfigHistory.upload_batch_id.isnot(None))
+                .order_by(ManagementKPIConfigHistory.changed_at.desc())
+                .all()
+            )
+        except SQLAlchemyError as exc:
+            self._raise_if_schema_mismatch(exc, operation="list management upload batches")
+            raise
         grouped: dict[str, dict[str, Any]] = {}
         for history, team_name in rows:
             batch_id = str(history.upload_batch_id)
@@ -324,29 +361,34 @@ class ManagementBSCService:
         ]
 
     def delete_upload_batch(self, batch_id: str) -> dict[str, Any]:
-        batch_uuid = uuid.UUID(str(batch_id))
-        config_count = (
-            self.db.query(ManagementKPIConfig)
-            .filter(ManagementKPIConfig.upload_batch_id == batch_uuid)
-            .delete(synchronize_session=False)
-        )
-        snapshot_count = (
-            self.db.query(ManagementKPISnapshot)
-            .filter(ManagementKPISnapshot.upload_batch_id == batch_uuid)
-            .delete(synchronize_session=False)
-        )
-        history_count = (
-            self.db.query(ManagementKPIConfigHistory)
-            .filter(ManagementKPIConfigHistory.upload_batch_id == batch_uuid)
-            .delete(synchronize_session=False)
-        )
-        self.db.commit()
-        return {
-            "upload_batch_id": batch_id,
-            "config_rows_deleted": config_count,
-            "snapshot_rows_deleted": snapshot_count,
-            "history_rows_deleted": history_count,
-        }
+        try:
+            batch_uuid = uuid.UUID(str(batch_id))
+            config_count = (
+                self.db.query(ManagementKPIConfig)
+                .filter(ManagementKPIConfig.upload_batch_id == batch_uuid)
+                .delete(synchronize_session=False)
+            )
+            snapshot_count = (
+                self.db.query(ManagementKPISnapshot)
+                .filter(ManagementKPISnapshot.upload_batch_id == batch_uuid)
+                .delete(synchronize_session=False)
+            )
+            history_count = (
+                self.db.query(ManagementKPIConfigHistory)
+                .filter(ManagementKPIConfigHistory.upload_batch_id == batch_uuid)
+                .delete(synchronize_session=False)
+            )
+            self.db.commit()
+            return {
+                "upload_batch_id": batch_id,
+                "config_rows_deleted": config_count,
+                "snapshot_rows_deleted": snapshot_count,
+                "history_rows_deleted": history_count,
+            }
+        except SQLAlchemyError as exc:
+            self.db.rollback()
+            self._raise_if_schema_mismatch(exc, operation="delete management upload batch")
+            raise
 
     def _get_team(self, team_name: str) -> Team:
         team = self.db.query(Team).filter(Team.name == team_name).first()
@@ -648,3 +690,18 @@ class ManagementBSCService:
             "history": [],
             "selected_kpi": None,
         }
+
+    def _raise_if_schema_mismatch(self, exc: SQLAlchemyError, *, operation: str) -> None:
+        text = f"{exc.__class__.__name__}: {exc}"
+        markers = (
+            "UndefinedColumn",
+            "UndefinedTable",
+            "does not exist",
+            "no such column",
+            "no such table",
+        )
+        if any(marker in text for marker in markers):
+            logger.error("Management BSC schema mismatch during %s: %s", operation, exc, exc_info=exc)
+            raise ManagementBSCSchemaError(
+                "Management Overview database schema is out of date. Run backend migrations."
+            ) from exc

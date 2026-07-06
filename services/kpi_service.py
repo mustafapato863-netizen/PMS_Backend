@@ -79,6 +79,11 @@ class KPIService:
             "Submission": {
                 "initial_rejection_rate": 0.60,
                 "submission_within_due_date": 0.40
+            },
+            "Re-Submission": {
+                "quality_errors_rate": 0.20,
+                "rejection_rate_after_resubmission": 0.50,
+                "tat": 0.30,
             }
         }
         for team, weights in default_weights.items():
@@ -138,6 +143,11 @@ class KPIService:
             "Submission": {
                 "initial_rejection_rate": 0.04,
                 "submission_within_due_date": 0.90
+            },
+            "Re-Submission": {
+                "quality_errors_rate": 0.05,
+                "rejection_rate_after_resubmission": 0.60,
+                "tat": 1.00,
             }
         }
         for team, targets in default_targets.items():
@@ -638,10 +648,20 @@ class KPIService:
             # Parse actual and target from row
             actual_value = self._resolve_row_value(row, actual_col)
             target_value = self._resolve_row_value(row, target_col)
+            achievement_col = kpi_def.get('achievement_col')
+            precomputed_achievement = None
+            if achievement_col:
+                achievement_raw = self._resolve_row_value(row, achievement_col)
+                normalized_achievement_col = self._normalize_key(achievement_col)
+                has_achievement_col = any(self._normalize_key(key) == normalized_achievement_col for key in row.keys())
+                if has_achievement_col:
+                    precomputed_achievement = achievement_raw if achievement_raw > 2.0 else achievement_raw * 100.0
             
             # Calculate achievement
             is_inverse = direction == 'lower_better'
-            if target_value == 0.0:
+            if precomputed_achievement is not None:
+                achievement = max(precomputed_achievement, 0.0)
+            elif target_value == 0.0:
                 # Try to search for precalculated achievement in row
                 found_ach_val = None
                 possible_keys = [

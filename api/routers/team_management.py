@@ -18,7 +18,7 @@ from models.team_models import (
 from config.database import get_db
 from services.team_service import TeamService
 from services.team_onboarding_service import TeamOnboardingService
-from services.management_bsc_service import ManagementBSCService
+from services.management_bsc_service import ManagementBSCService, ManagementBSCSchemaError
 from api.middleware.rbac_middleware import require_permission
 
 router = APIRouter(prefix="/team-management", tags=["Team Management"])
@@ -307,6 +307,8 @@ async def get_management_kpi_config(
         rows = ManagementBSCService(db).list_configs(team_name=team, performance_level=performance_level)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ManagementBSCSchemaError as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
     return {
         "success": True,
         "data": rows,
@@ -319,7 +321,10 @@ async def get_management_kpi_config_teams(
     db: Session = Depends(get_db),
     _user=Depends(require_permission("view_reports")),
 ):
-    rows = ManagementBSCService(db).list_management_teams()
+    try:
+        rows = ManagementBSCService(db).list_management_teams()
+    except ManagementBSCSchemaError as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
     return {
         "success": True,
         "data": rows,
@@ -332,7 +337,10 @@ async def get_management_kpi_uploads(
     db: Session = Depends(get_db),
     _user=Depends(require_permission("view_reports")),
 ):
-    rows = ManagementBSCService(db).list_upload_batches()
+    try:
+        rows = ManagementBSCService(db).list_upload_batches()
+    except ManagementBSCSchemaError as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
     return {
         "success": True,
         "data": rows,
@@ -346,7 +354,12 @@ async def delete_management_kpi_upload(
     db: Session = Depends(get_db),
     _user=Depends(require_permission("upload_data")),
 ):
-    result = ManagementBSCService(db).delete_upload_batch(batch_id)
+    try:
+        result = ManagementBSCService(db).delete_upload_batch(batch_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    except ManagementBSCSchemaError as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
     return {
         "success": True,
         "data": result,
@@ -364,6 +377,8 @@ async def get_management_kpi_config_history(
         rows = ManagementBSCService(db).list_history(team_name=team)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    except ManagementBSCSchemaError as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
     return {
         "success": True,
         "data": rows,

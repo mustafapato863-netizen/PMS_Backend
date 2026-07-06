@@ -26,7 +26,7 @@ from utils.performance_levels import normalize_performance_level
 from config.loader import ConfigurationError, load_team_config, resolve_team_config
 from services.balanced_scorecard_service import BalancedScorecardService
 from services.bsc_template_service import bsc_template_service
-from services.management_bsc_service import ManagementBSCService
+from services.management_bsc_service import ManagementBSCService, ManagementBSCSchemaError
 from api.middleware.rbac_middleware import require_permission
 
 router = APIRouter(prefix="/performance", tags=["Performance"])
@@ -165,16 +165,19 @@ def get_balanced_scorecard(
         employee_ids = employee_ids or sorted(authorized_ids)
 
     management_service = ManagementBSCService(db)
-    data = management_service.build_scorecard_dataset(
-        team_name=team,
-        performance_level=level,
-        month=month,
-        year=year,
-        employee_ids=employee_ids,
-        history_months=history_months,
-        selected_kpi=selected_kpi,
-        base_config=config,
-    )
+    try:
+        data = management_service.build_scorecard_dataset(
+            team_name=team,
+            performance_level=level,
+            month=month,
+            year=year,
+            employee_ids=employee_ids,
+            history_months=history_months,
+            selected_kpi=selected_kpi,
+            base_config=config,
+        )
+    except ManagementBSCSchemaError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
     dataset_ids = {item["employee_id"] for item in data.get("available_people", [])}
     if not is_self_scoped and requested_ids - (available_ids | dataset_ids):
         raise HTTPException(status_code=403, detail="One or more selected people are outside the authorized context")
@@ -206,8 +209,8 @@ async def upload_balanced_scorecard_template(
 
     contents = await file.read()
     uploaded_by = _user.get("username", "Admin") if isinstance(_user, dict) else "Admin"
-    rows = bsc_template_service.parse_upload(contents)
     try:
+        rows = bsc_template_service.parse_upload(contents)
         result = ManagementBSCService(db).import_template_rows(
             rows=rows,
             updated_by=uploaded_by,
@@ -216,6 +219,9 @@ async def upload_balanced_scorecard_template(
     except ValueError as exc:
         db.rollback()
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except ManagementBSCSchemaError as exc:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
     return StandardResponse(
         success=True,
         message="Management Overview template uploaded successfully",

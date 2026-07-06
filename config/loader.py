@@ -240,8 +240,8 @@ def load_team_config(team_name: str) -> Dict[str, Any]:
     """
     config_dir = Path(__file__).parent / "teams"
     
-    # Normalize team name to filename (snake_case)
-    filename = team_name.lower().replace(" ", "_") + ".json"
+    # Normalize team name to filename (snake_case) and tolerate hyphenated names.
+    filename = team_name.lower().replace(" ", "_").replace("-", "_") + ".json"
     config_path = config_dir / filename
     
     if not config_path.exists():

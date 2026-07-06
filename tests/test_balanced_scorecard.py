@@ -1,8 +1,9 @@
 from types import SimpleNamespace
 import uuid
+import io
 
 import pytest
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -11,7 +12,8 @@ from config.loader import validate_team_config
 from models.schemas import EvaluationData, PerformanceRecord
 from models.models import Base, Team, User, UserTeamAssignment
 from services.balanced_scorecard_service import BalancedScorecardService
-from api.routers.performance import get_balanced_scorecard
+from api.routers.performance import get_balanced_scorecard, upload_balanced_scorecard_template
+from services.management_bsc_service import ManagementBSCSchemaError
 
 
 PERSPECTIVES = [
@@ -251,3 +253,63 @@ def test_level_specific_access_to_all_teams_does_not_become_general_manager():
     assert user_can_access_team_level(scope, "Finance", "Managerial") is True
     assert user_can_access_team_level(scope, "Finance", "Corporate") is False
     session.close()
+
+
+def test_endpoint_rejects_invalid_branch_filter(monkeypatch):
+    monkeypatch.setattr("api.routers.performance.require_authenticated_scope", lambda db, request: {"legacy_unscoped": False})
+    monkeypatch.setattr("api.routers.performance.user_can_access_team_level", lambda scope, team, level: True)
+    monkeypatch.setattr("api.routers.performance.load_team_config", lambda team: {"team": team})
+    monkeypatch.setattr("api.routers.performance.resolve_team_config", lambda raw, level: config())
+
+    with pytest.raises(HTTPException) as exc:
+        get_balanced_scorecard(
+            request=SimpleNamespace(), db=None, team="Test Team", performance_level="Managerial",
+            month="May", year=2025, branch="Dubai", employee_ids=[], history_months=6, selected_kpi=None,
+        )
+
+    assert exc.value.status_code == 422
+
+
+def test_endpoint_surfaces_schema_mismatch_as_server_error(monkeypatch):
+    monkeypatch.setattr("api.routers.performance.require_authenticated_scope", lambda db, request: {"legacy_unscoped": False})
+    monkeypatch.setattr("api.routers.performance.user_can_access_team_level", lambda scope, team, level: True)
+    monkeypatch.setattr("api.routers.performance.load_team_config", lambda team: {"team": team})
+    monkeypatch.setattr("api.routers.performance.resolve_team_config", lambda raw, level: config())
+    monkeypatch.setattr("api.routers.performance._get_dashboard_records", lambda *args, **kwargs: [])
+    monkeypatch.setattr("api.routers.performance.filter_records_by_scope", lambda records, scope: records)
+    monkeypatch.setattr(
+        "api.routers.performance.ManagementBSCService",
+        lambda db: SimpleNamespace(build_scorecard_dataset=lambda **kwargs: (_ for _ in ()).throw(
+            ManagementBSCSchemaError("Management Overview database schema is out of date. Run backend migrations.")
+        )),
+    )
+
+    with pytest.raises(HTTPException) as exc:
+        get_balanced_scorecard(
+            request=SimpleNamespace(), db=None, team="Test Team", performance_level="Managerial",
+            month="May", year=2025, branch=None, employee_ids=[], history_months=6, selected_kpi=None,
+        )
+
+    assert exc.value.status_code == 500
+
+
+class _RollbackOnlyDB:
+    def __init__(self):
+        self.rolled_back = False
+
+    def rollback(self):
+        self.rolled_back = True
+
+
+@pytest.mark.asyncio
+async def test_upload_endpoint_returns_400_for_invalid_template(monkeypatch):
+    db = _RollbackOnlyDB()
+    monkeypatch.setattr("api.routers.performance.bsc_template_service.parse_upload", lambda contents: (_ for _ in ()).throw(ValueError("bad row")))
+
+    file = UploadFile(filename="management.xlsx", file=io.BytesIO(b"x"))
+
+    with pytest.raises(HTTPException) as exc:
+        await upload_balanced_scorecard_template(db=db, file=file, _user={"username": "tester"})
+
+    assert exc.value.status_code == 400
+    assert db.rolled_back is True

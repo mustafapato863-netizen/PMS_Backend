@@ -77,5 +77,13 @@
       "initial_rejection_rate": 0.04,
       "submission_within_due_date": 0.9
     }
+  },
+  {
+    "team": "Re-Submission",
+    "targets": {
+      "quality_errors_rate": 0.05,
+      "rejection_rate_after_resubmission": 0.6,
+      "tat": 1.0
+    }
   }
 ]

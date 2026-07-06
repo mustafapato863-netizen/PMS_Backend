@@ -33,6 +33,10 @@ class CleanerFactory:
     _process_functions: Dict[str, Callable] = {}
     _loaded = False
 
+    @staticmethod
+    def _normalize_team_name(team_name: str) -> str:
+        return team_name.lower().replace(' ', '_').replace('-', '_')
+
     @classmethod
     def get_cleaner(cls, team_name: str) -> BaseDataCleaner:
         """
@@ -47,7 +51,7 @@ class CleanerFactory:
         Raises:
             ValueError: If cleaner not found
         """
-        team_name_lower = team_name.lower().replace(' ', '_')
+        team_name_lower = cls._normalize_team_name(team_name)
         
         # Load all cleaners if not loaded
         if not cls._loaded:
@@ -56,7 +60,7 @@ class CleanerFactory:
         # Look for cleaner (case-insensitive)
         cleaner_class = None
         for key, cls_ref in cls._cache.items():
-            if key.lower().replace(' ', '_') == team_name_lower:
+            if cls._normalize_team_name(key) == team_name_lower:
                 cleaner_class = cls_ref
                 break
         
@@ -79,7 +83,7 @@ class CleanerFactory:
         Raises:
             ValueError: If function not found
         """
-        team_name_lower = team_name.lower().replace(' ', '_')
+        team_name_lower = cls._normalize_team_name(team_name)
         
         # Load all cleaners if not loaded
         if not cls._loaded:
@@ -88,7 +92,7 @@ class CleanerFactory:
         # Look for process function (case-insensitive)
         process_func = None
         for key, func in cls._process_functions.items():
-            if key.lower().replace(' ', '_') == team_name_lower:
+            if cls._normalize_team_name(key) == team_name_lower:
                 process_func = func
                 break
         
@@ -124,6 +128,7 @@ class CleanerFactory:
             'coding': {'class': None, 'function': 'process_coding'},
             'csr': {'class': None, 'function': 'process_csr'},
             'submission': {'class': None, 'function': 'process_submission'},
+            're_submission': {'class': None, 'function': 'process_re_submission'},
         }
         
         for module_name, config in cleaner_modules.items():
