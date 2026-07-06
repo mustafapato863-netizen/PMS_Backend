@@ -18,8 +18,8 @@
       "direction": "lower_better",
       "unit": "%",
       "color": "#EF4444",
-      "actual_col": "A-QualityErrorsRate",
-      "target_col": "T-QualityErrorsRate",
+      "actual_col": "A.QualityErrorsRate",
+      "target_col": "T.QualityErrorsRate",
       "achievement_col": "QualityErrorsRateAch%",
       "capping": "uncapped"
     },
@@ -30,8 +30,8 @@
       "direction": "lower_better",
       "unit": "%",
       "color": "#F97316",
-      "actual_col": "A-RejectionRateAfterRe-Submission",
-      "target_col": "T-RejectionRateAfterRe-Submission",
+      "actual_col": "A.RejectionRateAfterRe-Submission",
+      "target_col": "T.RejectionRateAfterRe-Submission",
       "achievement_col": "RejectionRateAfterResubmissionAch%",
       "capping": "uncapped"
     },
@@ -42,8 +42,8 @@
       "direction": "higher_better",
       "unit": "%",
       "color": "#2563EB",
-      "actual_col": "A-TAT",
-      "target_col": "T-TAT",
+      "actual_col": "A.TAT",
+      "target_col": "T.TAT",
       "achievement_col": "TATAch%",
       "capping": "uncapped"
     }
