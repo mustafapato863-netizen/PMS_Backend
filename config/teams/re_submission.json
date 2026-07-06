@@ -32,7 +32,7 @@
       "color": "#F97316",
       "actual_col": "A.RejectionRateAfterRe-Submission",
       "target_col": "T.RejectionRateAfterRe-Submission",
-      "achievement_col": "RejectionRateAfterResubmissionAch%",
+      "achievement_col": "RejectionRateAfterRe-SubmissionAch%",
       "capping": "uncapped"
     },
     {
