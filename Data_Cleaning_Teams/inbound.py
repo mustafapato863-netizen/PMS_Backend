@@ -28,9 +28,12 @@ def process_inbound(file_path):
     # Static Weights
     W_ATTEND = 0.70   # 70%
     W_BOOKING = 0.10  # 10%
-    W_QUALITY = 0.05  # 5%
     W_AHT = 0.05      # 5%
-    W_DYNAMIC_10 = 0.10 # 10% (Shared between UTZ and Abandon)
+    
+    # Dynamic weights for Quality and UTZ/Abandon for June 2026 only
+    is_june_26 = (df['Date'].dt.month == 6) & (df['Date'].dt.year == 2026)
+    w_quality = np.where(is_june_26, 0.0, 0.05)
+    w_dynamic = np.where(is_june_26, 0.15, 0.10)
     
     # Fetch clean column names and immediately fill NaNs with 0 to secure calculation
     attend_cr = df['Attend%Ach%'].fillna(0) if 'Attend%Ach%' in df.columns else 0
@@ -55,9 +58,9 @@ def process_inbound(file_path):
     df['Performance'] = (
         (attend_cr * W_ATTEND) +
         (booking_cr * W_BOOKING) +
-        (quality_score * W_QUALITY) +
+        (quality_score * w_quality) +
         (aht_score * W_AHT) +
-        (dynamic_kpi * W_DYNAMIC_10)
+        (dynamic_kpi * w_dynamic)
     )
     
     df = add_computed_columns(df)

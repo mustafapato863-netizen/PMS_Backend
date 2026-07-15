@@ -275,7 +275,28 @@ class KPIService:
                 "AHT": aht_ach,
                 "Other": other_ach
             }
-            final_weights = weights
+            
+            date_val = row.get("Date")
+            is_june_2026 = False
+            if date_val:
+                if hasattr(date_val, "month") and hasattr(date_val, "year"):
+                    is_june_2026 = (date_val.month == 6 and date_val.year == 2026)
+                elif isinstance(date_val, str):
+                    is_june_2026 = ('2026-06' in date_val or '/06/2026' in date_val or 'June 2026' in date_val)
+
+            w_booking = weights.get("Booking", 0.10)
+            w_attend = weights.get("Attend", 0.70)
+            w_aht = weights.get("AHT", 0.05)
+            w_quality = 0.0 if is_june_2026 else weights.get("Quality", 0.05)
+            w_other = 0.15 if is_june_2026 else weights.get("Other", 0.10)
+
+            final_weights = {
+                "Booking": w_booking,
+                "Attend": w_attend,
+                "AHT": w_aht,
+                "Quality": w_quality,
+                "Other": w_other
+            }
 
             # Inject computed values back to row for backward compatibility
             row["A.Booking%"] = actual_booking_cr

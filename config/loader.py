@@ -49,9 +49,9 @@ def _validate_weights(kpis: List[Dict[str, Any]], context: str = "configuration"
         return False, errors
     
     total_weight = sum(float(kpi.get('weight', 0)) for kpi in kpis)
-    if total_weight > 1.001:
+    if total_weight > 1.001 or total_weight < 0.999:
         errors.append(
-            f"KPI weights for {context} sum to {total_weight:.4f}; the maximum is 1.0"
+            f"KPI weights for {context} sum to {total_weight:.4f}; must sum to 1.0"
         )
         return False, errors
     
@@ -179,7 +179,7 @@ def validate_team_config(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
         # Can't continue validation without required fields
         return False, all_errors
     
-    if config.get('kpis'):
+    if 'kpis' in config:
         _, errors = _validate_weights(config['kpis'], "Employee")
         all_errors.extend(errors)
 
