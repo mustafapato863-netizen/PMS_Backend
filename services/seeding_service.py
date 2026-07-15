@@ -294,7 +294,7 @@ class DatabaseSeeder:
                 if existing:
                     existing.score = safe_decimal(record.evaluation.score)
                     existing.grade = record.evaluation.grade
-                    existing.status = "Exceeds" if float(record.evaluation.score or 0.0) >= 90 else "Meets" if float(record.evaluation.score or 0.0) >= 70 else "Below"
+                    existing.status = "Exceeds" if float(record.evaluation.score or 0.0) >= 95 else "Meets" if float(record.evaluation.score or 0.0) >= 90 else "Below"
                     existing.team_id = team.id
                     existing.performance_level = record.performance_level
                     # ponytail: keep DB sync independent from JSON upload logs until upload_log is mirrored too
@@ -310,7 +310,7 @@ class DatabaseSeeder:
                         performance_level=record.performance_level,
                         score=safe_decimal(record.evaluation.score),
                         grade=record.evaluation.grade,
-                        status="Exceeds" if float(record.evaluation.score or 0.0) >= 90 else "Meets" if float(record.evaluation.score or 0.0) >= 70 else "Below",
+                        status="Exceeds" if float(record.evaluation.score or 0.0) >= 95 else "Meets" if float(record.evaluation.score or 0.0) >= 90 else "Below",
                         upload_id=None,
                     )
                     db.add(db_record)
@@ -477,6 +477,11 @@ class DatabaseSeeder:
 
                     name = str(row.get(name_col, "")).strip()
                     emp_id = str(row.get(id_col, "")).strip()
+                    # Clean hidden unicode marks (RTL mark \u200f, LTR mark \u200e, zero-width space \u200b, BOM \ufeff)
+                    for bad_char in ['\u200f', '\u200e', '\u200b', '\ufeff']:
+                        emp_id = emp_id.replace(bad_char, '')
+                    emp_id = emp_id.strip()
+                    
                     current_employee_id = emp_id or "unknown"
                     
                     if emp_id.endswith(".0"):

@@ -350,11 +350,22 @@ class KPIService:
                 "Quality": quality_ach,
                 "Other": reachability_ach
             }
+            date_val = row.get("Date")
+            is_june_26 = False
+            if date_val:
+                if hasattr(date_val, "month") and hasattr(date_val, "year"):
+                    is_june_26 = (date_val.month == 6 and date_val.year == 2026)
+                elif isinstance(date_val, str):
+                    is_june_26 = ('2026-06' in date_val or '/06/2026' in date_val or 'June 2026' in date_val or 'June' in date_val)
+
+            w_quality = 0.00 if is_june_26 else weights.get("Quality", 0.10)
+            w_other = 0.20 if is_june_26 else weights.get("Other", 0.10)
+
             final_weights = {
                 "Attend": weights.get("Attend", 0.70),
                 "Booking": weights.get("Booking", 0.10),
-                "Quality": weights.get("Quality", 0.10),
-                "Other": weights.get("Other", 0.10)
+                "Quality": w_quality,
+                "Other": w_other
             }
 
             row["A.Booking%"] = actual_booking_cr
@@ -598,11 +609,11 @@ class KPIService:
         """
         if score >= 95.0:
             return "A"
-        elif score >= 85.0:
+        elif score >= 90.0:
             return "B"
-        elif score >= 75.0:
+        elif score >= 80.0:
             return "C"
-        elif score >= 65.0:
+        elif score >= 70.0:
             return "D"
         else:
             return "E"
@@ -929,9 +940,9 @@ class KPIService:
             Grade letter: A, B, C, D, or E
         """
         threshold_a = float(thresholds.get('A', 95))
-        threshold_b = float(thresholds.get('B', 85))
-        threshold_c = float(thresholds.get('C', 75))
-        threshold_d = float(thresholds.get('D', 65))
+        threshold_b = float(thresholds.get('B', 90))
+        threshold_c = float(thresholds.get('C', 80))
+        threshold_d = float(thresholds.get('D', 70))
         
         if score >= threshold_a:
             return 'A'

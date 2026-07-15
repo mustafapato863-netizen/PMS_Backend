@@ -32,8 +32,15 @@ def process_outbound(file_path):
     # Static Weights
     W_ATTEND = 0.70   # 70%
     W_BOOKING = 0.10  # 10%
-    W_QUALITY = 0.1  # 10%
-    W_REACHABILITY = 0.1      # 10%
+    # Dynamic June 2026 Weights Override (Quality = 0%, Reachability = 20%)
+    is_june_26 = (df['Date'].dt.month == 6) & (df['Date'].dt.year == 2026) if 'Date' in df.columns else False
+    
+    w_quality = pd.Series(0.10, index=df.index)
+    w_reachability = pd.Series(0.10, index=df.index)
+    
+    if isinstance(is_june_26, pd.Series):
+        w_quality[is_june_26] = 0.00
+        w_reachability[is_june_26] = 0.20
     
     # Fetch clean column names and immediately fill NaNs with 0 to secure calculation
     attend_cr = df['AttendC.RAch%'].fillna(0) if 'AttendC.RAch%' in df.columns else 0
@@ -45,8 +52,8 @@ def process_outbound(file_path):
     df['Performance'] = (
         (attend_cr * W_ATTEND) +
         (booking_cr * W_BOOKING) +
-        (quality_score * W_QUALITY) +
-        (reachability_score * W_REACHABILITY)
+        (quality_score * w_quality) +
+        (reachability_score * w_reachability)
     )
     
     df = add_computed_columns(df)

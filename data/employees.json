@@ -1777,6 +1777,24 @@
     "performance_level": "Employee"
   },
   {
+    "id": "SGHD70210",
+    "name": "Rodina Abdallah Ibrahim Abdallah",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY",
+    "performance_level": "Employee"
+  },
+  {
+    "id": "SGHD70203",
+    "name": "Alaa Mahmoud Kamel",
+    "team": "Inbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY",
+    "performance_level": "Employee"
+  },
+  {
     "id": "SGHD70075",
     "name": "Abdelrahman Yasser Abdullah",
     "team": "Outbound",
@@ -1833,6 +1851,15 @@
   {
     "id": "SGHD70084",
     "name": "Samy Gamal Hamed",
+    "team": "Outbound",
+    "status": "Active",
+    "hiring_date": null,
+    "region": "EGY",
+    "performance_level": "Employee"
+  },
+  {
+    "id": "SGHD70090",
+    "name": "Radwa Ahmed Mohamed",
     "team": "Outbound",
     "status": "Active",
     "hiring_date": null,
