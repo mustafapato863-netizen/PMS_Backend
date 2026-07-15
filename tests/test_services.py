@@ -297,6 +297,75 @@ class TestEmployeeService:
             assert len(errors) == 0
             assert emp_dict['employee_id'] == 'EMP002'
 
+    @patch('services.employee_service.TeamRepository')
+    @patch('services.employee_service.EmployeeRepository')
+    @patch('services.employee_service.SessionLocal')
+    def test_update_employee_assignment_by_external_id(self, mock_session_local, mock_emp_repo, mock_team_repo):
+        mock_session = MagicMock()
+        mock_session_local.return_value = mock_session
+        employee = MagicMock()
+        employee.employee_id = 'EMP001'
+        employee.performance_level = 'Employee'
+        team = MagicMock()
+        team.id = uuid.uuid4()
+        team.name = 'Outbound'
+        mock_emp_repo.return_value.get_by_employee_id.return_value = employee
+        mock_team_repo.return_value.get_by_name.return_value = team
+
+        success, data, errors = EmployeeService.update_employee_assignment('EMP001', 'Outbound', 'Managerial')
+
+        assert success is True
+        assert errors == []
+        assert data == {
+            'employee_id': 'EMP001',
+            'team': 'Outbound',
+            'performance_level': 'Managerial',
+        }
+        assert employee.team_id == team.id
+        assert employee.performance_level == 'Managerial'
+        mock_session.commit.assert_called_once()
+        mock_session.close.assert_called_once()
+
+    @patch('services.employee_service.TeamRepository')
+    @patch('services.employee_service.EmployeeRepository')
+    @patch('services.employee_service.SessionLocal')
+    def test_update_employee_assignment_rolls_back_on_commit_failure(self, mock_session_local, mock_emp_repo, mock_team_repo):
+        mock_session = MagicMock()
+        mock_session.commit.side_effect = RuntimeError('commit failed')
+        mock_session_local.return_value = mock_session
+        employee = MagicMock()
+        employee.employee_id = 'EMP001'
+        team = MagicMock()
+        team.id = uuid.uuid4()
+        team.name = 'Outbound'
+        mock_emp_repo.return_value.get_by_employee_id.return_value = employee
+        mock_team_repo.return_value.get_by_name.return_value = team
+
+        success, data, errors = EmployeeService.update_employee_assignment('EMP001', 'Outbound', 'Managerial')
+
+        assert success is False
+        assert data == {}
+        assert errors == ['Failed to update employee assignment: commit failed']
+        mock_session.rollback.assert_called_once()
+        mock_session.close.assert_called_once()
+
+    @patch('services.soft_delete_service.SoftDeleteService.soft_delete_employee')
+    @patch('services.employee_service.EmployeeRepository')
+    @patch('services.employee_service.SessionLocal')
+    def test_delete_employee_resolves_external_id(self, mock_session_local, mock_emp_repo, mock_soft_delete):
+        mock_session = MagicMock()
+        mock_session_local.return_value = mock_session
+        employee = MagicMock(id=uuid.uuid4())
+        mock_emp_repo.return_value.get_by_employee_id.return_value = employee
+        mock_soft_delete.return_value = True
+
+        success, errors = EmployeeService.delete_employee('EMP001', 'admin-id')
+
+        assert success is True
+        assert errors == []
+        mock_soft_delete.assert_called_once_with(mock_session, employee.id, 'admin-id')
+        mock_session.close.assert_called_once()
+
 
 # ============================================================
 # PERFORMANCE SERVICE TESTS

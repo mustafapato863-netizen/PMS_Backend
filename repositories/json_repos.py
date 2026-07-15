@@ -423,18 +423,6 @@ class JSONTeamActionsRepository:
 class JSONUserRepository:
     def __init__(self):
         self.filename = "users.json"
-        # Seed default admin user if file is empty/missing
-        data = _load_json(self.filename, [])
-        if not data:
-            default_admin = {
-                "id": "admin-1",
-                "name": "Admin User",
-                "username": "super",
-                "password": "admin123",
-                "role": "Admin"
-            }
-            data.append(default_admin)
-            _save_json(self.filename, data)
 
     def get_all(self) -> List[UserRecord]:
         data = _load_json(self.filename, [])

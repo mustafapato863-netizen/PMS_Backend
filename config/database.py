@@ -3,11 +3,11 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Find the exact directory of the current file and look for the .env at the Backend root
+# Load the shared DevOps environment file from the repository root.
 backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-env_path = os.path.join(backend_dir, ".env")
+project_root = os.path.abspath(os.path.join(backend_dir, ".."))
+env_path = os.path.join(project_root, "DevOps", ".env")
 
-# Load environment variables from the verified .env file path
 load_dotenv(dotenv_path=env_path)
 
 # In production, this dynamically fetches the DATABASE_URL key from your secure .env file

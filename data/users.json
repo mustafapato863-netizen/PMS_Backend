@@ -1,17 +1,1 @@
-[
-  {
-    "id": "admin-1",
-    "name": "Admin User",
-    "username": "super",
-    "password": "admin123",
-    "role": "Admin"
-  },
-  {
-    "id": "user-1782163715478",
-    "name": "diaa",
-    "username": "diaa",
-    "password": "diaa123",
-    "role": "Viewer",
-    "is_active": false
-  }
-]
+[]

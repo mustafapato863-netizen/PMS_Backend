@@ -17,15 +17,15 @@ pip install -r requirements.txt
 
 ### 2. Configure Database
 
-**Edit `.env`** (already exists):
+**Edit `../DevOps/.env`**:
 ```env
-DATABASE_URL=postgresql://postgres:123456@localhost:5432/PMS_Sys
+DATABASE_URL=postgresql://postgres:<password>@localhost:5432/PMS_Sys
 ```
 
 **Options**:
-- **Local PostgreSQL**: `postgresql://user:password@localhost:5432/database_name`
-- **Docker PostgreSQL**: `postgresql://postgres:password@db:5432/database_name`
-- **Cloud (AWS RDS)**: `postgresql://user:password@your-rds-endpoint:5432/database_name`
+- **Local PostgreSQL**: `postgresql://<user>:<password>@localhost:5432/<database_name>`
+- **Docker PostgreSQL**: `postgresql://postgres:<password>@db:5432/<database_name>`
+- **Cloud (AWS RDS)**: `postgresql://<user>:<password>@<your-rds-endpoint>:5432/<database_name>`
 
 ### 3. Create Database
 ```bash
@@ -180,7 +180,7 @@ class UploadLog(Base):
 ### File: `Backend/config/database.py`
 
 **What it does**:
-1. Loads `.env` file from `Backend/` directory
+1. Loads `.env` file from `DevOps/` directory
 2. Creates SQLAlchemy async engine with connection pooling
 3. Provides `SessionLocal` for database sessions
 4. Exports `get_db()` dependency for FastAPI
@@ -193,23 +193,23 @@ pool_pre_ping=True        # Test connection before using
 pool_recycle=1800         # Recycle connections after 30 min
 ```
 
-### File: `Backend/.env`
+### File: `DevOps/.env`
 
 **Current**:
 ```env
-DATABASE_URL=postgresql://postgres:123456@localhost:5432/PMS_Sys
+DATABASE_URL=postgresql://postgres:<password>@localhost:5432/PMS_Sys
 ```
 
 **Change if needed** (for different setup):
 ```env
 # Local development
-DATABASE_URL=postgresql://postgres:password@localhost:5432/pms_dev
+DATABASE_URL=postgresql://postgres:<password>@localhost:5432/pms_dev
 
 # Docker
-DATABASE_URL=postgresql://postgres:password@db:5432/pms_prod
+DATABASE_URL=postgresql://postgres:<password>@db:5432/pms_prod
 
 # AWS RDS
-DATABASE_URL=postgresql://admin:password@pms-db.abc123.us-east-1.rds.amazonaws.com:5432/pms
+DATABASE_URL=postgresql://<user>:<password>@<rds-endpoint>:5432/<database_name>
 ```
 
 ### File: `Backend/requirements.txt`
@@ -260,7 +260,7 @@ psql -U postgres
 CREATE DATABASE PMS_Sys;
 
 # Create user (optional, use postgres if just testing)
-CREATE USER pms_user WITH PASSWORD 'secure_password';
+CREATE USER pms_user WITH PASSWORD '<secure_password>';
 GRANT ALL PRIVILEGES ON DATABASE PMS_Sys TO pms_user;
 
 # Exit
@@ -270,7 +270,7 @@ GRANT ALL PRIVILEGES ON DATABASE PMS_Sys TO pms_user;
 ### Step 3: Update `.env`
 
 ```env
-DATABASE_URL=postgresql://pms_user:secure_password@localhost:5432/PMS_Sys
+DATABASE_URL=postgresql://pms_user:<secure_password>@localhost:5432/PMS_Sys
 ```
 
 ### Step 4: Install Python Dependencies
@@ -428,7 +428,7 @@ db.close()
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 # For async operations (recommended):
-DATABASE_URL = "postgresql+asyncpg://user:password@localhost/dbname"
+DATABASE_URL = "postgresql+asyncpg://<user>:<password>@localhost/<dbname>"
 
 @app.get("/api/teams")
 async def list_teams(db: AsyncSession = Depends(get_db)):
@@ -447,8 +447,8 @@ async def list_teams(db: AsyncSession = Depends(get_db)):
 ## Troubleshooting
 
 ### Error: "DATABASE_URL is not set"
-- **Solution**: Verify `.env` file exists in `Backend/` directory
-- Check: `cat Backend/.env` (should show DATABASE_URL)
+- **Solution**: Verify `.env` file exists in `DevOps/` directory
+- Check: `cat DevOps/.env` (should show DATABASE_URL)
 
 ### Error: "could not connect to server"
 - **Solution**: Verify PostgreSQL is running

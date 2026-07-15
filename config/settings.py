@@ -1,7 +1,12 @@
 import os
+from dotenv import load_dotenv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.environ.get("PMS_DATA_DIR", os.path.join(BASE_DIR, "data"))
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
+ENV_PATH = os.path.join(PROJECT_ROOT, "DevOps", ".env")
+
+load_dotenv(dotenv_path=ENV_PATH)
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
@@ -16,7 +21,9 @@ ROLE_VIEWER = "Viewer"
 ROLES = [ROLE_ADMIN, ROLE_MANAGER, ROLE_EXECUTIVE, ROLE_VIEWER]
 
 # JWT & Security settings
-JWT_SECRET = os.environ.get("JWT_SECRET", "super_secret_pms_dashboard_key_12345!@#")
+JWT_SECRET = os.environ.get("JWT_SECRET")
+if not JWT_SECRET:
+    raise ValueError("JWT_SECRET must be set in DevOps/.env or the environment.")
 JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "HS256")
 JWT_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRE_MINUTES", "60"))
 

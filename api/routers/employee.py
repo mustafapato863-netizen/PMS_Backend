@@ -5,12 +5,17 @@ from typing import Dict, List
 from uuid import UUID
 
 from api.dependencies import (
-    employee_repo, performance_repo, actions_repo, notes_repo, learning_service,
+    employee_repo, performance_repo, notes_repo, learning_service,
     serialize_performance_record, require_role, get_current_user_scope, filter_records_by_scope, user_can_access_team
 )
 from config.database import get_db
 from sqlalchemy.orm import Session
-from models.schemas import StandardResponse, ManagerNote, CorrectiveAction
+from models.schemas import StandardResponse, ManagerNote
+from services.corrective_action_service import (
+    CorrectiveActionNotFoundError,
+    CorrectiveActionService,
+    CorrectiveActionValidationError,
+)
 from services.employee_service import EmployeeService
 from services.performance_service import PerformanceService
 from utils.performance_levels import normalize_performance_level
@@ -220,13 +225,12 @@ def get_employee_profile(employee_id: str, request: Request, db: Session = Depen
         from services.planning_service import MONTH_ORDER
         emp_records.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
 
-        history = actions_repo.get_history(emp.id)
-        history.sort(key=lambda x: x.timestamp, reverse=True)
+        history = CorrectiveActionService(db).get_history(str(emp.id))
 
         profile_data = {
             "employee": emp.model_dump(),
             "performance_history": [serialize_performance_record(r) for r in emp_records],
-            "corrective_action_history": [h.model_dump() for h in history]
+            "corrective_action_history": history
         }
 
         return StandardResponse(
@@ -301,6 +305,30 @@ def  update_employee(
         )
 
 
+@router.put("/{employee_id}/assignment", response_model=StandardResponse)
+def update_employee_assignment(
+    employee_id: str,
+    team: str = Query(..., min_length=1),
+    performance_level: str = Query(...),
+    role: str = Depends(require_role(["Admin"])),
+):
+    """Update the employee's active team and performance level."""
+    success, data, errors = EmployeeService.update_employee_assignment(
+        employee_identifier=employee_id,
+        team_name=team,
+        performance_level=performance_level,
+    )
+    if not success:
+        message = "; ".join(errors)
+        status_code = 404 if "Employee not found" in errors else 400
+        raise HTTPException(status_code=status_code, detail=message)
+    return StandardResponse(
+        success=True,
+        message="Employee assignment updated successfully",
+        data=data,
+    )
+
+
 @router.delete("/{employee_id}", response_model=StandardResponse)
 def  delete_employee(
     employee_id: str,
@@ -325,7 +353,7 @@ def  delete_employee(
         
         return StandardResponse(
             success=True,
-            message="Employee deleted successfully"
+            message="Employee deactivated successfully"
         )
     except HTTPException as he:
         raise he
@@ -409,6 +437,7 @@ async def  save_corrective_action(
     employee_id: str,
     payload: Dict[str, str],
     request: Request,
+    db: Session = Depends(get_db),
     role: str = Depends(require_role(["Admin", "Manager"]))
 ):
     try:
@@ -420,74 +449,37 @@ async def  save_corrective_action(
         if not month or not manager_action:
             raise HTTPException(status_code=400, detail="Month and Corrective Action are required")
 
-        perf = performance_repo.get_by_employee_and_month(employee_id, month)
-        if not perf:
-            raise HTTPException(status_code=404, detail="Performance record not found for the selected month")
-
         current_user = getattr(request.state, "user", None) or {}
         created_by_name = current_user.get("name") or current_user.get("username") or current_user.get("role") or "Unknown"
         created_by_role = current_user.get("role") or role
-
-        existing_action = None
-        if action_id:
-            history = actions_repo.get_history(employee_id)
-            for a in history:
-                if a.id == action_id:
-                    existing_action = a
-                    break
-
-        if existing_action:
-            existing_action.manager_action = manager_action
-            existing_action.manager_notes = manager_notes
-            existing_action.timestamp = datetime.datetime.now().isoformat()
-            actions_repo.save(existing_action)
-            action = existing_action
-        else:
-            if not action_id:
-                action_id = f"{employee_id}_{month}_{datetime.datetime.now().isoformat()}"
-
-            action = CorrectiveAction(
-                id=action_id,
-                employee_id=employee_id,
-                employee_name=perf.employee_name,
-                team=perf.team,
-                month=month,
-                score=perf.evaluation.score,
-                grade=perf.evaluation.grade,
-                root_cause=perf.evaluation.root_cause.kpi if perf.evaluation.root_cause else "None",
-                suggested_action=perf.evaluation.suggested_action or "None",
-                manager_action=manager_action,
-                manager_notes=manager_notes,
-                timestamp=datetime.datetime.now().isoformat(),
-                created_by_name=created_by_name,
-                created_by_role=created_by_role,
-            )
-            actions_repo.save(action)
-
-        remaining = actions_repo.get_history(employee_id)
-        latest_for_month = None
-        for r in sorted(remaining, key=lambda x: x.timestamp):
-            if r.month == month:
-                latest_for_month = r
-
-        perf.evaluation.corrective_action = latest_for_month.manager_action if latest_for_month else None
-        perf.evaluation.manager_notes = latest_for_month.manager_notes if latest_for_month else None
-        performance_repo.save(perf)
+        action, is_update = CorrectiveActionService(db).save(
+            employee_identifier=employee_id,
+            month=month,
+            manager_action=manager_action,
+            manager_notes=manager_notes,
+            action_id=action_id,
+            year=int(payload["year"]) if payload.get("year") else None,
+            user_id=current_user.get("user_id"),
+        )
 
         await SocketNotificationService.notify_action_assigned(
-            employee_name=perf.employee_name,
+            employee_name=action["employee_name"],
             action_type=manager_action.split(': ', 1)[0] if ': ' in manager_action else 'Coaching',
-            team_name=perf.team,
+            team_name=action["team"],
             created_by_name=created_by_name,
             created_by_role=created_by_role,
-            is_update=bool(existing_action),
+            is_update=is_update,
         )
 
         return StandardResponse(
             success=True,
             message="Corrective Action saved successfully",
-            data=action.model_dump()
+            data=action
         )
+    except CorrectiveActionNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except (CorrectiveActionValidationError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     except HTTPException as he:
         raise he
     except Exception as e:
@@ -497,43 +489,29 @@ async def  save_corrective_action(
 async def delete_corrective_action(
     employee_id: str,
     action_id: str,
+    request: Request,
+    db: Session = Depends(get_db),
     role: str = Depends(require_role(["Admin", "Manager"]))
 ):
     try:
-        history = actions_repo.get_history(employee_id)
-        target_action = None
-        for a in history:
-            if a.id == action_id:
-                target_action = a
-                break
-
-        if not target_action:
-            raise HTTPException(status_code=404, detail="Corrective Action not found")
-
-        month = target_action.month
-        actions_repo.delete(action_id)
-
-        remaining = actions_repo.get_history(employee_id)
-        latest_for_month = None
-        for r in sorted(remaining, key=lambda x: x.timestamp):
-            if r.month == month:
-                latest_for_month = r
-
-        perf = performance_repo.get_by_employee_and_month(employee_id, month)
-        if perf:
-            perf.evaluation.corrective_action = latest_for_month.manager_action if latest_for_month else None
-            perf.evaluation.manager_notes = latest_for_month.manager_notes if latest_for_month else None
-            performance_repo.save(perf)
+        current_user = getattr(request.state, "user", None) or {}
+        target_action = CorrectiveActionService(db).deactivate(
+            employee_identifier=employee_id,
+            action_id=action_id,
+            user_id=current_user.get("user_id"),
+        )
 
         await SocketNotificationService.notify_info(
-            info_message=f"Action deleted for {target_action.employee_name}: {target_action.manager_action}",
-            team_name=target_action.team
+            info_message=f"Action deleted for {target_action['employee_name']}: {target_action['manager_action']}",
+            team_name=target_action["team"]
         )
 
         return StandardResponse(
             success=True,
             message="Corrective Action deleted successfully"
         )
+    except CorrectiveActionNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     except HTTPException as he:
         raise he
     except Exception as e:

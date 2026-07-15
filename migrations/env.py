@@ -1,12 +1,15 @@
 from logging.config import fileConfig
 import os
+from pathlib import Path
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from alembic import context
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Load the shared DevOps environment file from the repository root.
+backend_dir = Path(__file__).resolve().parent.parent
+env_path = backend_dir.parent / "DevOps" / ".env"
+load_dotenv(dotenv_path=env_path)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

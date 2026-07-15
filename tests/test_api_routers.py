@@ -137,19 +137,20 @@ class TestEmployeeRouter:
         with (
             patch("api.routers.employee.employee_repo.get_all") as mock_employees,
             patch("api.routers.employee.performance_repo.get_all") as mock_records,
-            patch("api.routers.employee.actions_repo.get_history") as mock_history,
+            patch("api.routers.employee.CorrectiveActionService") as mock_action_service,
         ):
             mock_employees.return_value = [
                 EmployeeSchema(id="EMP001", name="John Doe", team="Sales", region="UAE")
             ]
             mock_records.return_value = [_performance_record()]
-            mock_history.return_value = []
+            mock_action_service.return_value.get_history.return_value = []
 
             response = client.get("/api/employee/EMP001")
             assert response.status_code == 200
             data = response.json()["data"]
             assert data["employee"]["id"] == "EMP001"
             assert len(data["performance_history"]) == 1
+            mock_action_service.return_value.get_history.assert_called_once_with("EMP001")
 
     def test_create_employee(self):
         with patch("api.routers.employee.employee_repo.save") as mock_save:
@@ -197,6 +198,37 @@ class TestEmployeeRouter:
             response = client.delete("/api/employee/EMP001", headers={"X-User-Role": "Admin"})
             assert response.status_code == 200
             assert response.json()["success"] is True
+
+    def test_update_employee_assignment(self):
+        with patch("api.routers.employee.EmployeeService.update_employee_assignment") as mock_update:
+            mock_update.return_value = (
+                True,
+                {"employee_id": "EMP001", "team": "Outbound", "performance_level": "Managerial"},
+                [],
+            )
+
+            response = client.put(
+                "/api/employee/EMP001/assignment",
+                params={"team": "Outbound", "performance_level": "Managerial"},
+                headers={"X-User-Role": "Admin"},
+            )
+
+            assert response.status_code == 200
+            assert response.json()["data"]["performance_level"] == "Managerial"
+            mock_update.assert_called_once_with(
+                employee_identifier="EMP001",
+                team_name="Outbound",
+                performance_level="Managerial",
+            )
+
+    def test_update_employee_assignment_rejects_manager(self):
+        response = client.put(
+            "/api/employee/EMP001/assignment",
+            params={"team": "Outbound", "performance_level": "Managerial"},
+            headers={"X-User-Role": "Manager"},
+        )
+
+        assert response.status_code == 403
 
 
 class TestPerformanceRouter:

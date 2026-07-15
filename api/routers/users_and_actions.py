@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
-from api.dependencies import actions_repo, require_role
+from api.dependencies import require_role
 from config.database import get_db
 from config import settings
 from api.middleware.rbac_middleware import require_permission
@@ -13,6 +13,7 @@ from models.models import Employee, Team, User, UserTeamAssignment
 from models.schemas import StandardResponse, UserRecord, UserUpdateRecord, LoginPayload
 from services.auth_service import AuthenticationService
 from services.password_service import hash_password
+from services.corrective_action_service import CorrectiveActionService
 from utils.performance_levels import PERFORMANCE_LEVELS
 
 users_router = APIRouter()
@@ -426,14 +427,15 @@ actions_router = APIRouter()
 
 @actions_router.get("/", response_model=StandardResponse)
 async def get_all_corrective_actions(
+    db: Session = Depends(get_db),
     role: str = Depends(require_role(["Admin", "Manager", "Executive"]))
 ):
     try:
-        actions = actions_repo.get_history()
+        actions = CorrectiveActionService(db).list_all()
         return StandardResponse(
             success=True,
             message="Retrieved all corrective actions successfully",
-            data=[a.model_dump() for a in actions]
+            data=actions
         )
     except Exception as e:
         return StandardResponse(success=False, message=f"Failed to fetch corrective actions: {str(e)}")

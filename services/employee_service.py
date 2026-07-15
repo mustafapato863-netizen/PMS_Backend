@@ -21,6 +21,17 @@ class EmployeeService:
     """Service for managing employees - Database-backed version."""
 
     @staticmethod
+    def _resolve_employee(repo: EmployeeRepository, identifier: str, include_deleted: bool = False) -> Employee | None:
+        """Resolve either the external employee ID used by the UI or the internal UUID."""
+        employee = repo.get_by_employee_id(identifier, include_deleted=include_deleted)
+        if employee:
+            return employee
+        try:
+            return repo.get_by_id(uuid.UUID(str(identifier)), include_deleted=include_deleted)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
     def get_all_employees(include_deleted: bool = False) -> List[Dict[str, Any]]:
         """
         Get all employees from database.
@@ -392,6 +403,49 @@ class EmployeeService:
             db.close()
 
     @staticmethod
+    def update_employee_assignment(
+        employee_identifier: str,
+        team_name: str,
+        performance_level: str,
+    ) -> Tuple[bool, Dict[str, Any], List[str]]:
+        """Update an active employee's team and performance level atomically."""
+        from utils.performance_levels import normalize_performance_level
+
+        errors: List[str] = []
+        db = SessionLocal()
+        try:
+            employee_repo = EmployeeRepository(db, Employee)
+            team_repo = TeamRepository(db, Team)
+            employee = EmployeeService._resolve_employee(employee_repo, employee_identifier)
+            if not employee:
+                return False, {}, ["Employee not found"]
+
+            team = team_repo.get_by_name(team_name) or team_repo.get_by_db_name(team_name)
+            if not team:
+                return False, {}, [f"Team '{team_name}' not found"]
+
+            try:
+                level = normalize_performance_level(performance_level, allow_all=False)
+            except ValueError as exc:
+                return False, {}, [str(exc)]
+
+            employee.team_id = team.id
+            employee.performance_level = level
+            db.commit()
+            db.refresh(employee)
+            return True, {
+                "employee_id": employee.employee_id,
+                "team": team.name,
+                "performance_level": employee.performance_level,
+            }, errors
+        except Exception as exc:
+            db.rollback()
+            logger.error("Update employee assignment failed: %s", exc)
+            return False, {}, [f"Failed to update employee assignment: {exc}"]
+        finally:
+            db.close()
+
+    @staticmethod
     def delete_employee(employee_uuid: any, performed_by_user_id: str = None) -> Tuple[bool, List[str]]:
         """
         Delete an employee (soft delete - mark as inactive).
@@ -407,7 +461,11 @@ class EmployeeService:
         db = SessionLocal()
         try:
             from services.soft_delete_service import SoftDeleteService
-            success = SoftDeleteService.soft_delete_employee(db, employee_uuid, performed_by_user_id)
+            repo = EmployeeRepository(db, Employee)
+            employee = EmployeeService._resolve_employee(repo, str(employee_uuid))
+            if not employee:
+                return False, ["Employee not found or already inactive"]
+            success = SoftDeleteService.soft_delete_employee(db, employee.id, performed_by_user_id)
             if not success:
                 errors.append("Employee not found or already inactive")
                 return False, errors

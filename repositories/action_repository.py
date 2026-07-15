@@ -1,4 +1,6 @@
-from sqlalchemy.orm import Session
+from uuid import UUID
+
+from sqlalchemy.orm import Session, joinedload
 from repositories.base_repository import BaseRepository
 from models.models import Action
 import logging
@@ -8,6 +10,50 @@ logger = logging.getLogger(__name__)
 
 class ActionRepository(BaseRepository[Action]):
     """Repository for Action model"""
+
+    def __init__(self, db: Session, model: type = Action):
+        super().__init__(db, model)
+
+    def list_active(self) -> list[Action]:
+        return (
+            self.db.query(Action)
+            .options(
+                joinedload(Action.employee),
+                joinedload(Action.team),
+                joinedload(Action.created_by_user),
+            )
+            .filter(Action.is_active.is_(True))
+            .order_by(Action.created_at.desc())
+            .all()
+        )
+
+    def get_active(self, action_id: UUID) -> Action | None:
+        return (
+            self.db.query(Action)
+            .options(
+                joinedload(Action.employee),
+                joinedload(Action.team),
+                joinedload(Action.created_by_user),
+            )
+            .filter(Action.id == action_id, Action.is_active.is_(True))
+            .first()
+        )
+
+    def list_active_by_employee(self, employee_id: UUID) -> list[Action]:
+        return (
+            self.db.query(Action)
+            .options(
+                joinedload(Action.employee),
+                joinedload(Action.team),
+                joinedload(Action.created_by_user),
+            )
+            .filter(Action.employee_id == employee_id, Action.is_active.is_(True))
+            .order_by(Action.created_at.desc())
+            .all()
+        )
+
+    def add(self, action: Action) -> None:
+        self.db.add(action)
     
     def get_by_employee(self, employee_id) -> list:
         """Get all actions for employee"""
