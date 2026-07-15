@@ -237,8 +237,7 @@ async def update_user_route(
                     settings.JWT_SECRET,
                     algorithms=[settings.JWT_ALGORITHM],
                 ).get("username")
-            except Exception as e:
-                print(f"DEBUG JWT DECODE FAILED: {e}")
+            except Exception:
                 current_username = None
         existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:
@@ -321,8 +320,7 @@ async def toggle_user_active_route(
                     settings.JWT_SECRET,
                     algorithms=[settings.JWT_ALGORITHM],
                 ).get("username")
-            except Exception as e:
-                print(f"DEBUG JWT DECODE TOGGLE FAILED: {e}")
+            except Exception:
                 current_username = None
         existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:
@@ -367,8 +365,7 @@ async def delete_user_route(
                     settings.JWT_SECRET,
                     algorithms=[settings.JWT_ALGORITHM],
                 ).get("username")
-            except Exception as e:
-                print(f"DEBUG JWT DECODE DELETE FAILED: {e}")
+            except Exception:
                 current_username = None
         existing = db.query(User).filter(User.id == uuid.UUID(str(user_id))).first()
         if not existing:

@@ -22,8 +22,8 @@ try:
     )
     _client.ping()
     redis_client = _client
-except Exception as e:
-    logger.warning(f"Could not connect to Redis at {settings.REDIS_URL}: {e}. Fallback to in-memory cache.")
+except Exception:
+    logger.warning("Could not connect to Redis. Falling back to the in-memory cache.")
     redis_client = None
 
 # Process-level in-memory cache fallback (128 MB limit)

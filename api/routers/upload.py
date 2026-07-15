@@ -98,8 +98,6 @@ async def upload_pms_file(
             data=result
         )
     except Exception as e:
-        import traceback
-        traceback.print_exc()
         report = getattr(e, "report", None) or {}
         teams_list = report.get("detected_teams") or report.get("attempted_teams") or report.get("teams") or []
         payload = {
@@ -170,6 +168,4 @@ async def delete_upload(
     except HTTPException as he:
         raise he
     except Exception as e:
-        import traceback
-        traceback.print_exc()
         return StandardResponse(success=False, message=f"Failed to delete upload: {str(e)}")
