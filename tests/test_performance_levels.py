@@ -35,7 +35,7 @@ def test_resolve_team_config_uses_selected_level_and_validation_is_scoped():
         "performance_levels": {
             "Managerial": {
                 "kpis": [
-                    {"key": "revenue", "label": "Revenue", "weight": 0.7, "direction": "up", "unit": "%", "color": "#222", "actual_col": "revenue_actual", "target_col": "revenue_target"},
+                    {"key": "revenue", "label": "Revenue", "weight": 0.8, "direction": "up", "unit": "%", "color": "#222", "actual_col": "revenue_actual", "target_col": "revenue_target"},
                     {"key": "ops", "label": "Ops", "weight": 0.2, "direction": "up", "unit": "%", "color": "#333", "actual_col": "ops_actual", "target_col": "ops_target"},
                 ]
             }

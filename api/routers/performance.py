@@ -28,6 +28,7 @@ from services.balanced_scorecard_service import BalancedScorecardService
 from services.bsc_template_service import bsc_template_service
 from services.management_bsc_service import ManagementBSCService, ManagementBSCSchemaError
 from api.middleware.rbac_middleware import require_permission
+from services.upload_security import read_validated_excel
 
 router = APIRouter(prefix="/performance", tags=["Performance"])
 
@@ -177,7 +178,7 @@ def get_balanced_scorecard(
             base_config=config,
         )
     except ManagementBSCSchemaError as exc:
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+        raise HTTPException(status_code=500, detail="Failed to load performance records.") from exc
     dataset_ids = {item["employee_id"] for item in data.get("available_people", [])}
     if not is_self_scoped and requested_ids - (available_ids | dataset_ids):
         raise HTTPException(status_code=403, detail="One or more selected people are outside the authorized context")
@@ -204,10 +205,7 @@ async def upload_balanced_scorecard_template(
     file: UploadFile = File(...),
     _user=Depends(require_permission("upload_data")),
 ):
-    if not file.filename.lower().endswith(".xlsx"):
-        raise HTTPException(status_code=400, detail="Management Overview template upload accepts .xlsx only")
-
-    contents = await file.read()
+    contents = await read_validated_excel(file, allowed_extensions=(".xlsx",))
     uploaded_by = _user.get("username", "Admin") if isinstance(_user, dict) else "Admin"
     try:
         rows = bsc_template_service.parse_upload(contents)
@@ -221,7 +219,7 @@ async def upload_balanced_scorecard_template(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except ManagementBSCSchemaError as exc:
         db.rollback()
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
+        raise HTTPException(status_code=500, detail="Failed to process the scorecard template.") from exc
     return StandardResponse(
         success=True,
         message="Management Overview template uploaded successfully",
@@ -259,7 +257,7 @@ def get_all_records(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to fetch performance records: {str(e)}"
+            message="Failed to fetch performance records."
         )
 
 
@@ -289,7 +287,7 @@ def get_monthly_records(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to fetch performance records: {str(e)}"
+            message="Failed to fetch performance records."
         )
 
 
@@ -311,7 +309,7 @@ def get_employee_history(emp_id: str, request: Request, db: Session = Depends(ge
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to fetch employee performance history: {str(e)}"
+            message="Failed to fetch employee performance history."
         )
 
 
@@ -332,7 +330,7 @@ def get_team_yearly_records(team_name: str, request: Request, db: Session = Depe
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to fetch team performance records: {str(e)}"
+            message="Failed to fetch team performance records."
         )
 
 
@@ -365,7 +363,7 @@ def get_by_grade(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to fetch records by grade: {str(e)}"
+            message="Failed to fetch records by grade."
         )
 
 
@@ -398,7 +396,7 @@ def get_by_status(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to fetch records by status: {str(e)}"
+            message="Failed to fetch records by status."
         )
 
 
@@ -420,7 +418,7 @@ def get_planning_categories(
             data=flat_categories
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to compile planning lists: {str(e)}")
+        return StandardResponse(success=False, message="Failed to compile planning lists.")
 
 
 @router.get("/insights", response_model=StandardResponse)
@@ -437,7 +435,7 @@ def get_insights(
             data=insights
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to compile executive insights: {str(e)}")
+        return StandardResponse(success=False, message="Failed to compile executive insights.")
 
 
 @router.get("/export", response_class=StreamingResponse)
@@ -478,4 +476,4 @@ def export_report(
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Export failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Export failed.")

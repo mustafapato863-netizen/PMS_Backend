@@ -8,6 +8,7 @@ from api.middleware.rbac_middleware import require_permission
 from services.seeding_service import DatabaseSeeder
 from services.cache_invalidation_service import CacheInvalidationService
 from models.schemas import StandardResponse
+from services.upload_security import read_validated_excel
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +57,8 @@ async def get_upload_history(
             data=[r.model_dump() for r in records]
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to fetch uploads: {str(e)}")
+        logger.exception("Failed to fetch upload history")
+        return StandardResponse(success=False, message="Failed to fetch upload history.")
 
 @router.post("/pms", response_model=StandardResponse)
 async def upload_pms_file(
@@ -66,10 +68,7 @@ async def upload_pms_file(
     try:
         started_at = time.perf_counter()
         upload_filename = file.filename
-        if not file.filename.lower().endswith(('.xlsx', '.xls')):
-            raise HTTPException(status_code=400, detail="Only excel files accepted.")
-
-        contents = await file.read()
+        contents = await read_validated_excel(file)
         seeder = DatabaseSeeder()
         result = seeder.process_uploaded_file(file.filename, contents)
 
@@ -97,6 +96,8 @@ async def upload_pms_file(
             message="PMS Excel uploaded and processed successfully",
             data=result
         )
+    except HTTPException:
+        raise
     except Exception as e:
         report = getattr(e, "report", None) or {}
         teams_list = report.get("detected_teams") or report.get("attempted_teams") or report.get("teams") or []
@@ -122,7 +123,11 @@ async def upload_pms_file(
             "upload failed",
             extra={"upload_filename": file.filename, "duration_ms": round((time.perf_counter() - started_at) * 1000.0, 2)},
         )
-        return StandardResponse(success=False, message=f"Failed to upload and process Excel file: {str(e)}", data=payload)
+        logger.exception("Unexpected upload processing failure")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to upload and process the Excel file.",
+        ) from e
 
 @router.delete("/{upload_id}", response_model=StandardResponse)
 async def delete_upload(
@@ -168,4 +173,5 @@ async def delete_upload(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to delete upload: {str(e)}")
+        logger.exception("Failed to delete upload")
+        return StandardResponse(success=False, message="Failed to delete upload.")

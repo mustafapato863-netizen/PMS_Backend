@@ -65,11 +65,11 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                 try:
                     with SessionLocal() as db:
                         ErrorTracker.log_error(db, request, exc, request_id)
-                except Exception as db_err:
-                    logger.error(f"Error handling middleware failed to write to database: {db_err}")
+                except Exception:
+                    logger.exception("Error handling middleware failed to write to database")
 
             # Keep detailed logs on stdout/stderr
-            logger.error(f"Unhandled exception on {request.method} {request.url.path}: {exc}", exc_info=exc)
+            logger.exception("Unhandled exception on %s %s", request.method, request.url.path)
 
             # Return a consistent structured response
             error_message = "An internal server error occurred."

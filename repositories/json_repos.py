@@ -3,7 +3,7 @@ import json
 import time
 import threading
 from typing import Any, List, Optional
-from config.settings import DATA_DIR
+from config.settings import APP_ENV, DATA_DIR
 from models.schemas import (
     Employee, PerformanceRecord, KPIWeight, Target, UploadRecord, ManagerNote, CorrectiveAction, TeamAction, UserRecord
 )
@@ -85,6 +85,10 @@ def _load_json(filename: str, default_val: list | dict) -> list | dict:
 
     path = os.path.join(DATA_DIR, filename)
     if not os.path.exists(path):
+        if APP_ENV == "production":
+            raise RuntimeError(
+                f"Required private runtime data file is missing: {filename}"
+            )
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(default_val, f, indent=2)
         with _cache_lock:

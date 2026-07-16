@@ -30,7 +30,7 @@ async def check_health(response: Response, db: Session = Depends(get_db)):
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         return {
             "status": "unhealthy",
-            "error": str(e)
+            "error": "Health check failed"
         }
 
 
@@ -59,6 +59,6 @@ async def check_readiness(response: Response, db: Session = Depends(get_db)):
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
         return {
             "status": "unhealthy",
-            "error": str(e)
+            "error": "Readiness check failed"
         }
 

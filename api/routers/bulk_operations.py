@@ -57,7 +57,7 @@ async def bulk_insert_performance_records(
         logger.error(f"Bulk performance insert error: {e}")
         return StandardResponse(
             success=False,
-            message=f"Failed to process bulk insert: {str(e)}"
+            message="Failed to process bulk insert."
         )
 
 
@@ -99,7 +99,7 @@ async def bulk_update_kpi_weights(
         logger.error(f"Bulk KPI update error: {e}")
         return StandardResponse(
             success=False,
-            message=f"Failed to update KPI weights: {str(e)}"
+            message="Failed to update KPI weights."
         )
 
 
@@ -168,5 +168,5 @@ async def bulk_delete_employees(
         logger.error(f"Bulk employee delete error: {e}")
         return StandardResponse(
             success=False,
-            message=f"Failed to process bulk employee delete: {str(e)}"
+            message="Failed to process bulk employee delete."
         )

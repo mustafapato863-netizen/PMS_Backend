@@ -42,7 +42,7 @@ async def get_all_team_configs() -> Dict[str, Any]:
             "data": configs
         }
     except ValueError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Failed to load team configurations.") from e
 
 
 @router.get("/config/teams/{team_name}")
@@ -99,4 +99,4 @@ async def get_team_names_list() -> Dict[str, Any]:
             "data": names
         }
     except ValueError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Failed to load team configuration.") from e

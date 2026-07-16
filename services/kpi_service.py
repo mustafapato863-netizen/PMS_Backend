@@ -653,12 +653,11 @@ class KPIService:
         grade_thresholds = config.get('grade_thresholds', {})
         kpis = config.get('kpis', [])
 
-        normalized_columns = {str(column).replace(" ", "").lower() for column in row}
         missing_columns = sorted({
             str(column)
             for kpi in kpis
             for column in (kpi.get('actual_col'), kpi.get('target_col'))
-            if column and str(column).replace(" ", "").lower() not in normalized_columns
+            if column and self._find_row_key(row, str(column)) is None
         })
         if missing_columns:
             raise ConfigurationError(
@@ -811,9 +810,14 @@ class KPIService:
         return ''.join(ch.lower() for ch in str(key) if ch.isalnum())
 
     def _resolve_row_value(self, row: Dict[str, Any], col_name: str) -> float:
-        value = self._parse_kpi_value(row, col_name)
-        if value != 0.0 or col_name in row:
-            return value
+        matching_key = self._find_row_key(row, col_name)
+        if matching_key is not None:
+            return self._parse_kpi_value(row, matching_key)
+        return self._parse_kpi_value(row, col_name)
+
+    def _find_row_key(self, row: Dict[str, Any], col_name: str) -> str | None:
+        if col_name in row:
+            return col_name
 
         prefix = None
         if isinstance(col_name, str) and len(col_name) >= 2 and col_name[1] == '.':
@@ -841,15 +845,15 @@ class KPIService:
         for key in preferred_keys + fallback_keys:
             norm_key = self._normalize_key(key)
             if norm_key in norm_candidates:
-                return self._parse_kpi_value(row, key)
+                return key
             for candidate in norm_candidates:
                 if not candidate:
                     continue
                 stripped_key = norm_key[1:] if len(norm_key) > 1 else norm_key
                 stripped_candidate = candidate[1:] if len(candidate) > 1 else candidate
                 if candidate in norm_key or norm_key in candidate or stripped_candidate in stripped_key or stripped_key in stripped_candidate:
-                    return self._parse_kpi_value(row, key)
-        return value
+                    return key
+        return None
 
     def _calculate_achievement(
         self,

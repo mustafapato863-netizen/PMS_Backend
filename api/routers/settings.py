@@ -12,7 +12,7 @@ async def get_weights():
         weights = weights_repo.get_all()
         return StandardResponse(success=True, message="KPI Weights retrieved", data=[w.model_dump() for w in weights])
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+        return StandardResponse(success=False, message="Failed to load KPI weights.")
 
 @router.post("/weights", response_model=StandardResponse)
 async def update_weights(
@@ -23,7 +23,7 @@ async def update_weights(
         weights_repo.save(payload)
         return StandardResponse(success=True, message="KPI Weights updated", data=payload.model_dump())
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+        return StandardResponse(success=False, message="Failed to save KPI weights.")
 
 @router.get("/targets", response_model=StandardResponse)
 async def get_targets():
@@ -31,7 +31,7 @@ async def get_targets():
         targets = targets_repo.get_all()
         return StandardResponse(success=True, message="KPI Targets retrieved", data=[t.model_dump() for t in targets])
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+        return StandardResponse(success=False, message="Failed to load targets.")
 
 @router.post("/targets", response_model=StandardResponse)
 async def update_targets(
@@ -108,4 +108,4 @@ async def update_targets(
         
         return StandardResponse(success=True, message="KPI Targets updated and all performance records recalculated", data=payload.model_dump())
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+        return StandardResponse(success=False, message="Failed to save targets.")

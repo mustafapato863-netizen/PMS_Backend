@@ -143,7 +143,7 @@ async def me(request: Request, db: Session = Depends(get_db)):
         raise
     except Exception as e:
         logger.error(f"Me lookup error: {e}")
-        return StandardResponse(success=False, message=f"Failed to fetch current user: {str(e)}")
+        return StandardResponse(success=False, message="Failed to fetch current user.")
 
 # --- Development endpoint to unlock a user account ---
 @router.post("/unlock/{user_id}", response_model=StandardResponse)

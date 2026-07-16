@@ -6,6 +6,7 @@ Handles real-time communication for notifications and live data updates.
 import logging
 
 from socketio import AsyncServer, AsyncNamespace
+from config import settings
 from services.notification_service import NotificationService
 
 logger = logging.getLogger(__name__)
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 # Create global Socket.io instance
 sio = AsyncServer(
     async_mode='asgi',
-    cors_allowed_origins=['*'],
+    cors_allowed_origins=list(settings.CORS_ORIGINS),
     ping_timeout=60,
     ping_interval=25,
     client_manager=None,

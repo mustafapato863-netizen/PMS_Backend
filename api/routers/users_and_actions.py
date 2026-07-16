@@ -176,7 +176,7 @@ async def get_users(
             data=[_user_to_public_dict(u) for u in users]
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to fetch users: {str(e)}")
+        return StandardResponse(success=False, message="Failed to fetch users.")
 
 @users_router.post("/", response_model=StandardResponse)
 async def create_user(
@@ -217,7 +217,7 @@ async def create_user(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to create user: {str(e)}")
+        return StandardResponse(success=False, message="Failed to create user.")
 
 @users_router.put("/{user_id}", response_model=StandardResponse)
 async def update_user_route(
@@ -300,7 +300,7 @@ async def update_user_route(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to update user: {str(e)}")
+        return StandardResponse(success=False, message="Failed to update user.")
 
 @users_router.post("/{user_id}/toggle-active", response_model=StandardResponse)
 async def toggle_user_active_route(
@@ -346,7 +346,7 @@ async def toggle_user_active_route(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to update user status: {str(e)}")
+        return StandardResponse(success=False, message="Failed to update user status.")
 
 @users_router.delete("/{user_id}", response_model=StandardResponse)
 async def delete_user_route(
@@ -391,7 +391,7 @@ async def delete_user_route(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to delete user: {str(e)}")
+        return StandardResponse(success=False, message="Failed to delete user.")
 
 @users_router.post("/login", response_model=StandardResponse)
 async def login_user(payload: LoginPayload):
@@ -418,7 +418,7 @@ async def login_user(payload: LoginPayload):
             data=user_data
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Login failed: {str(e)}")
+        return StandardResponse(success=False, message="Login failed.")
 
 actions_router = APIRouter()
 
@@ -435,7 +435,7 @@ async def get_all_corrective_actions(
             data=actions
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to fetch corrective actions: {str(e)}")
+        return StandardResponse(success=False, message="Failed to fetch corrective actions.")
 
 
 @users_router.get("/notifications", response_model=StandardResponse)
@@ -493,7 +493,7 @@ async def get_user_notifications(
             data=data
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to fetch notifications: {str(e)}")
+        return StandardResponse(success=False, message="Failed to fetch notifications.")
 
 
 @users_router.put("/notifications/{recipient_id}/read", response_model=StandardResponse)
@@ -538,7 +538,7 @@ async def mark_notification_read(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to mark notification as read: {str(e)}")
+        return StandardResponse(success=False, message="Failed to mark notification as read.")
 
 
 @users_router.post("/notifications/read-all", response_model=StandardResponse)
@@ -572,7 +572,7 @@ async def mark_all_notifications_read(
             message="All notifications marked as read successfully"
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to mark all notifications as read: {str(e)}")
+        return StandardResponse(success=False, message="Failed to mark all notifications as read.")
 
 
 @users_router.delete("/notifications/clear", response_model=StandardResponse)
@@ -596,7 +596,7 @@ async def clear_all_notifications(
             message="All notifications cleared successfully"
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to clear notifications: {str(e)}")
+        return StandardResponse(success=False, message="Failed to clear notifications.")
 
 
 @users_router.delete("/notifications/{recipient_id}", response_model=StandardResponse)
@@ -639,4 +639,4 @@ async def delete_notification(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to delete notification: {str(e)}")
+        return StandardResponse(success=False, message="Failed to delete notification.")

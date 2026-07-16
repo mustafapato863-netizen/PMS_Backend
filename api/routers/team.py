@@ -22,7 +22,7 @@ async def get_team_action(
             data=act.model_dump() if act else None
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+        return StandardResponse(success=False, message="Failed to load teams.")
 
 @router.post("/", response_model=StandardResponse)
 async def save_team_action(
@@ -51,4 +51,4 @@ async def save_team_action(
             data=act.model_dump()
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed: {str(e)}")
+        return StandardResponse(success=False, message="Failed to load team performance.")

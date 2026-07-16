@@ -28,6 +28,7 @@ from api.middleware.auth_middleware import AuthMiddleware
 from api.middleware.error_handling_middleware import ErrorHandlingMiddleware
 from config.database import SessionLocal
 from config.logging_config import setup_logging
+from config import settings
 
 # Initialize structured logging
 setup_logging()
@@ -86,7 +87,7 @@ app.add_middleware(ErrorHandlingMiddleware)
 # CORS Middleware — allow frontend dev servers (outermost to wrap errors and auth responses)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Open to all origins for easier dashboard connections
+    allow_origins=list(settings.CORS_ORIGINS),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

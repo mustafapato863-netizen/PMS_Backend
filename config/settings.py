@@ -11,6 +11,19 @@ load_dotenv(dotenv_path=ENV_PATH)
 os.makedirs(DATA_DIR, exist_ok=True)
 
 DEFAULT_FILE_PATH = os.environ.get("PMS_DEFAULT_FILE_PATH", r"D:\Trend\PMS_Trend_All.xlsx")
+APP_ENV = os.environ.get("APP_ENV", "development").strip().lower()
+
+_cors_origins = os.environ.get(
+    "CORS_ORIGINS",
+    "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000",
+)
+CORS_ORIGINS = tuple(origin.strip() for origin in _cors_origins.split(",") if origin.strip())
+if "*" in CORS_ORIGINS:
+    raise ValueError("CORS_ORIGINS must contain explicit origins when credentials are enabled.")
+
+MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_BYTES", str(25 * 1024 * 1024)))
+if MAX_UPLOAD_BYTES <= 0:
+    raise ValueError("MAX_UPLOAD_BYTES must be greater than zero.")
 
 # Security Roles definitions
 ROLE_ADMIN = "Admin"

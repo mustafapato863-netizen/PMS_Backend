@@ -4,16 +4,48 @@ Validates Bearer tokens and attaches the authenticated user's details to the req
 
 import logging
 import os
+from contextlib import contextmanager
 
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 
 from services.auth_service import AuthenticationService
-from config.database import SessionLocal
+from config.database import SessionLocal, get_db
 from models.models import User
+from config import settings
 
 logger = logging.getLogger(__name__)
+
+
+def _legacy_access_allowed() -> bool:
+    if os.environ.get("PYTEST_CURRENT_TEST"):
+        return True
+    return (
+        settings.APP_ENV in {"development", "test"}
+        and os.environ.get("ALLOW_LEGACY_API_ACCESS") == "1"
+    )
+
+
+@contextmanager
+def _authentication_session(request: Request):
+    override = request.app.dependency_overrides.get(get_db)
+    if override is None:
+        db = SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+        return
+
+    dependency = override()
+    db = next(dependency) if hasattr(dependency, "__next__") else dependency
+    try:
+        yield db
+    finally:
+        close = getattr(dependency, "close", None)
+        if close:
+            close()
 
 class AuthMiddleware(BaseHTTPMiddleware):
     """Enforces JWT Authentication on protected routes"""
@@ -41,10 +73,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 "/api/team",
                 "/api/upload",
             )
-            if (
-                os.environ.get("PYTEST_CURRENT_TEST")
-                or os.environ.get("ALLOW_LEGACY_API_ACCESS") == "1"
-            ) and any(path.startswith(lp) for lp in legacy_paths):
+            if _legacy_access_allowed() and any(path.startswith(lp) for lp in legacy_paths):
                 request.state.user = {
                     "role": request.headers.get("x-user-role", "Admin"),
                     "user_id": request.headers.get("x-user-id", "legacy"),
@@ -69,8 +98,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             except (ValueError, TypeError):
                 user_id = user_id_str
 
-            db = SessionLocal()
-            try:
+            with _authentication_session(request) as db:
                 user = db.query(User).filter(User.id == user_id).first()
                 if not user or not user.is_active:
                     raise ValueError("User account is disabled")
@@ -80,13 +108,11 @@ class AuthMiddleware(BaseHTTPMiddleware):
                     "role": user.role,
                     "employee_id": getattr(user, "employee_id", None),
                 }
-            finally:
-                db.close()
-        except Exception as e:
-            logger.error(f"Middleware validation error: {e}")
+        except Exception:
+            logger.warning("Authentication token validation failed")
             return JSONResponse(
                 status_code=401,
-                content={"success": False, "message": "Invalid authentication token"},
+                content={"success": False, "message": "Invalid token"},
             )
 
         return await call_next(request)

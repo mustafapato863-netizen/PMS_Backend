@@ -254,7 +254,7 @@ async def start_onboarding(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Onboarding failed: {str(e)}"
+            detail="Team onboarding failed."
         )
 
 
@@ -292,7 +292,7 @@ async def get_onboarding_status(team_name: str):
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to get onboarding status: {str(e)}"
+            detail="Failed to get onboarding status."
         )
 
 
@@ -308,7 +308,7 @@ async def get_management_kpi_config(
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     except ManagementBSCSchemaError as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to retrieve the team.") from exc
     return {
         "success": True,
         "data": rows,
@@ -324,7 +324,7 @@ async def get_management_kpi_config_teams(
     try:
         rows = ManagementBSCService(db).list_management_teams()
     except ManagementBSCSchemaError as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to retrieve teams.") from exc
     return {
         "success": True,
         "data": rows,
@@ -340,7 +340,7 @@ async def get_management_kpi_uploads(
     try:
         rows = ManagementBSCService(db).list_upload_batches()
     except ManagementBSCSchemaError as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to create the team.") from exc
     return {
         "success": True,
         "data": rows,
@@ -359,7 +359,7 @@ async def delete_management_kpi_upload(
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
     except ManagementBSCSchemaError as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to update the team.") from exc
     return {
         "success": True,
         "data": result,
@@ -378,7 +378,7 @@ async def get_management_kpi_config_history(
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
     except ManagementBSCSchemaError as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(exc)) from exc
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete the team.") from exc
     return {
         "success": True,
         "data": rows,

@@ -54,7 +54,7 @@ def get_all_employees(include_deleted: bool = Query(False), performance_level: s
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to retrieve employees: {str(e)}"
+            message="Failed to retrieve employees."
         )
 
 
@@ -87,7 +87,7 @@ def  search_employees(name: str = Query(...), include_deleted: bool = Query(Fals
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to search employees: {str(e)}"
+            message="Failed to search employees."
         )
 
 
@@ -119,7 +119,7 @@ def get_employees_by_team(team_name: str, include_deleted: bool = Query(False), 
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to retrieve team employees: {str(e)}"
+            message="Failed to retrieve team employees."
         )
 
 
@@ -149,7 +149,7 @@ def get_active_employees_by_team(team_name: str, performance_level: str = Query(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to retrieve active team employees: {str(e)}"
+            message="Failed to retrieve active team employees."
         )
 
 
@@ -187,7 +187,7 @@ def  create_employee(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to create employee: {str(e)}"
+            message="Failed to create employee."
         )
 
 
@@ -241,7 +241,7 @@ def get_employee_profile(employee_id: str, request: Request, db: Session = Depen
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to retrieve employee profile: {str(e)}")
+        return StandardResponse(success=False, message="Failed to retrieve employee profile.")
 
 
 @router.put("/{employee_id}", response_model=StandardResponse)
@@ -301,7 +301,7 @@ def  update_employee(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to update employee: {str(e)}"
+            message="Failed to update employee."
         )
 
 
@@ -360,7 +360,7 @@ def  delete_employee(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to delete employee: {str(e)}"
+            message="Failed to delete employee."
         )
 
 
@@ -395,7 +395,7 @@ def  restore_employee(
     except Exception as e:
         return StandardResponse(
             success=False,
-            message=f"Failed to restore employee: {str(e)}"
+            message="Failed to restore employee."
         )
 
 
@@ -430,7 +430,7 @@ def  save_notes(
             data=note.model_dump()
         )
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to save manager notes: {str(e)}")
+        return StandardResponse(success=False, message="Failed to save manager notes.")
 
 @router.post("/{employee_id}/corrective-actions", response_model=StandardResponse)
 async def  save_corrective_action(
@@ -483,7 +483,7 @@ async def  save_corrective_action(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to save corrective action: {str(e)}")
+        return StandardResponse(success=False, message="Failed to save corrective action.")
 
 @router.delete("/{employee_id}/corrective-actions/{action_id}", response_model=StandardResponse)
 async def delete_corrective_action(
@@ -515,7 +515,7 @@ async def delete_corrective_action(
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to delete corrective action: {str(e)}")
+        return StandardResponse(success=False, message="Failed to delete corrective action.")
 
 @router.get("/{employee_id}/recommendations", response_model=StandardResponse)
 def get_action_recommendations(employee_id: str, month: str = Query(...)):
@@ -546,4 +546,4 @@ def get_action_recommendations(employee_id: str, month: str = Query(...)):
     except HTTPException as he:
         raise he
     except Exception as e:
-        return StandardResponse(success=False, message=f"Failed to calculate recommendations: {str(e)}")
+        return StandardResponse(success=False, message="Failed to calculate recommendations.")

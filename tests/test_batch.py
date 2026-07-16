@@ -227,7 +227,7 @@ def test_batch_update_kpi_weights_sum_error(mock_log, db_session):
     result = BatchProcessor.batch_update_kpi_weights(db_session, str(team.id), updates)
     assert result["success"] is False
     assert len(result["errors"]) > 0
-    assert "weights do not sum to 1.0" in result["errors"][0]
+    assert "weights exceed 1.0" in result["errors"][0]
     assert mock_log.call_count == 0
     
     # Verify old weights remain unchanged
