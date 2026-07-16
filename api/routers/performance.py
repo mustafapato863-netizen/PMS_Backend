@@ -92,6 +92,9 @@ def _get_dashboard_records(
     grade: str | None = None,
     status: str | None = None,
     performance_level: str | None = None,
+    year: int | None = None,
+    position: str | None = None,
+    region: str | None = None,
 ):
     sql_repo = SQLPerformanceRepository(db, PerformanceRecord)
     try:
@@ -102,6 +105,9 @@ def _get_dashboard_records(
             grade=grade,
             status=status,
             performance_level=performance_level,
+            year=year,
+            position=position,
+            region=region,
         )
     except Exception:
         keys = []
@@ -120,6 +126,9 @@ def _get_dashboard_records(
         grade=grade,
         status=status,
         performance_level=performance_level,
+        year=year,
+        position=position,
+        region=region,
     )
 
 
@@ -238,13 +247,24 @@ def get_all_records(
     team: str = Query(None, alias="team"),
     month: str = Query(None),
     performance_level: str = Query(None),
+    year: int | None = Query(None, ge=2000, le=2100),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
 ):
     try:
         scope = get_current_user_scope(db, request)
         if team and not user_can_access_team(scope, team):
             raise HTTPException(status_code=403, detail="Access denied for this team")
 
-        records = _get_dashboard_records(db, team=team, month=month, performance_level=_level_filter(performance_level))
+        records = _get_dashboard_records(
+            db,
+            team=team,
+            month=month,
+            performance_level=_level_filter(performance_level),
+            year=year,
+            position=position,
+            region=region,
+        )
         records = filter_records_by_scope(records, scope)
 
         return StandardResponse(
@@ -268,13 +288,24 @@ def get_monthly_records(
     team: str = Query(None, alias="team"),
     month: str = Query(None),
     performance_level: str = Query(None),
+    year: int | None = Query(None, ge=2000, le=2100),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
 ):
     try:
         scope = get_current_user_scope(db, request)
         if team and not user_can_access_team(scope, team):
             raise HTTPException(status_code=403, detail="Access denied for this team")
 
-        records = _get_dashboard_records(db, team=team, month=month, performance_level=_level_filter(performance_level))
+        records = _get_dashboard_records(
+            db,
+            team=team,
+            month=month,
+            performance_level=_level_filter(performance_level),
+            year=year,
+            position=position,
+            region=region,
+        )
         records = filter_records_by_scope(records, scope)
 
         return StandardResponse(
@@ -292,14 +323,29 @@ def get_monthly_records(
 
 
 @router.get("/employee/{emp_id}", response_model=StandardResponse)
-def get_employee_history(emp_id: str, request: Request, db: Session = Depends(get_db), performance_level: str = Query(None)):
+def get_employee_history(
+    emp_id: str,
+    request: Request,
+    db: Session = Depends(get_db),
+    performance_level: str = Query(None),
+    year: int | None = Query(None, ge=2000, le=2100),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
+):
     try:
         scope = get_current_user_scope(db, request)
-        records = _get_dashboard_records(db, employee_id=emp_id, performance_level=_level_filter(performance_level))
+        records = _get_dashboard_records(
+            db,
+            employee_id=emp_id,
+            performance_level=_level_filter(performance_level),
+            year=year,
+            position=position,
+            region=region,
+        )
         records = filter_records_by_scope(records, scope)
         emp_records = records
         from services.planning_service import MONTH_ORDER
-        emp_records.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
+        emp_records.sort(key=lambda x: (x.year or 0, MONTH_ORDER.get(x.month, 0)))
 
         return StandardResponse(
             success=True,
@@ -314,12 +360,27 @@ def get_employee_history(emp_id: str, request: Request, db: Session = Depends(ge
 
 
 @router.get("/team/{team_name}", response_model=StandardResponse)
-def get_team_yearly_records(team_name: str, request: Request, db: Session = Depends(get_db), performance_level: str = Query(None)):
+def get_team_yearly_records(
+    team_name: str,
+    request: Request,
+    db: Session = Depends(get_db),
+    performance_level: str = Query(None),
+    year: int | None = Query(None, ge=2000, le=2100),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
+):
     try:
         scope = get_current_user_scope(db, request)
         if not user_can_access_team(scope, team_name):
             raise HTTPException(status_code=403, detail="Access denied for this team")
-        team_records = _get_dashboard_records(db, team=team_name, performance_level=_level_filter(performance_level))
+        team_records = _get_dashboard_records(
+            db,
+            team=team_name,
+            performance_level=_level_filter(performance_level),
+            year=year,
+            position=position,
+            region=region,
+        )
         team_records = filter_records_by_scope(team_records, scope)
 
         return StandardResponse(
@@ -342,6 +403,9 @@ def get_by_grade(
     grade: str = Query(...),
     month: str = Query(...),
     performance_level: str = Query(None),
+    year: int | None = Query(None, ge=2000, le=2100),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
 ):
     try:
         if not month:
@@ -350,7 +414,16 @@ def get_by_grade(
         scope = get_current_user_scope(db, request)
         if not user_can_access_team(scope, team_name):
             raise HTTPException(status_code=403, detail="Access denied for this team")
-        filtered = _get_dashboard_records(db, team=team_name, month=month, grade=grade, performance_level=_level_filter(performance_level))
+        filtered = _get_dashboard_records(
+            db,
+            team=team_name,
+            month=month,
+            grade=grade,
+            performance_level=_level_filter(performance_level),
+            year=year,
+            position=position,
+            region=region,
+        )
         filtered = filter_records_by_scope(filtered, scope)
 
         return StandardResponse(
@@ -375,6 +448,9 @@ def get_by_status(
     status: str = Query(...),
     month: str = Query(...),
     performance_level: str = Query(None),
+    year: int | None = Query(None, ge=2000, le=2100),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
 ):
     try:
         if not month:
@@ -383,7 +459,16 @@ def get_by_status(
         scope = get_current_user_scope(db, request)
         if not user_can_access_team(scope, team_name):
             raise HTTPException(status_code=403, detail="Access denied for this team")
-        filtered = _get_dashboard_records(db, team=team_name, month=month, status=status, performance_level=_level_filter(performance_level))
+        filtered = _get_dashboard_records(
+            db,
+            team=team_name,
+            month=month,
+            status=status,
+            performance_level=_level_filter(performance_level),
+            year=year,
+            position=position,
+            region=region,
+        )
         filtered = filter_records_by_scope(filtered, scope)
 
         return StandardResponse(

@@ -115,13 +115,19 @@ def _validate_required_fields(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
         errors.append("Missing required field: 'kpis' or 'performance_levels'")
 
     required_kpi_fields = ['key', 'label', 'weight', 'direction', 'unit', 'color', 'actual_col', 'target_col']
-    groups = [("Employee", config.get('kpis', []))]
-    groups.extend((level, value.get('kpis', [])) for level, value in config.get('performance_levels', {}).items())
-    for level, kpis in groups:
+    groups = [("Employee", config.get('kpis', []), False)]
+    for level, value in config.get('performance_levels', {}).items():
+        groups.append((level, value.get('kpis', []), False))
+        for position_name, position_config in value.get("positions", {}).items():
+            groups.append((f"{level}/{position_name}", position_config.get("kpis", []), True))
+
+    for level, kpis, position_scoped in groups:
         for idx, kpi in enumerate(kpis):
             for field in required_kpi_fields:
                 if field not in kpi:
                     errors.append(f"{level} KPI {idx} ({kpi.get('key', 'unknown')}): missing field '{field}'")
+            if position_scoped and "perspective" not in kpi:
+                errors.append(f"{level} KPI {idx} ({kpi.get('key', 'unknown')}): missing field 'perspective'")
     
     return len(errors) == 0, errors
 
@@ -189,8 +195,34 @@ def validate_team_config(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
         except ValueError as exc:
             all_errors.append(str(exc))
             continue
-        _, errors = _validate_weights(level_config.get('kpis', []), level)
-        all_errors.extend(errors)
+        kpis = level_config.get('kpis', [])
+        positions = level_config.get("positions", {})
+        if kpis:
+            _, errors = _validate_weights(kpis, level)
+            all_errors.extend(errors)
+        elif not positions:
+            all_errors.append(f"No KPIs defined for {level}")
+
+        seen_position_keys: set[str] = set()
+        for position_name, position_config in positions.items():
+            position_kpis = position_config.get("kpis", [])
+            _, errors = _validate_weights(position_kpis, f"{level}/{position_name}")
+            all_errors.extend(errors)
+            keys = [str(kpi.get("key", "")).strip() for kpi in position_kpis]
+            if len(keys) != len(set(keys)):
+                all_errors.append(f"{level}/{position_name} KPI keys must be unique")
+            duplicates = sorted(set(keys) & seen_position_keys)
+            if duplicates:
+                all_errors.append(
+                    f"{level} KPI keys are repeated across positions: {', '.join(duplicates)}"
+                )
+            seen_position_keys.update(keys)
+            for kpi in position_kpis:
+                if kpi.get("perspective") not in PERSPECTIVES:
+                    all_errors.append(
+                        f"{level}/{position_name} KPI {kpi.get('key', 'unknown')}: "
+                        "missing or invalid perspective"
+                    )
         all_errors.extend(_validate_balanced_scorecard(level, level_config))
     
     # Validate grade thresholds
@@ -200,8 +232,12 @@ def validate_team_config(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
     return len(all_errors) == 0, all_errors
 
 
-def resolve_team_config(config: Dict[str, Any], performance_level: str = "Employee") -> Dict[str, Any]:
-    """Return one level's KPI config while treating legacy flat KPIs as Employee."""
+def resolve_team_config(
+    config: Dict[str, Any],
+    performance_level: str = "Employee",
+    position_name: str | None = None,
+) -> Dict[str, Any]:
+    """Return one level/position KPI config while preserving legacy flat Employee KPIs."""
     level = normalize_performance_level(performance_level)
     resolved = deepcopy(config)
     level_config = config.get("performance_levels", {}).get(level)
@@ -209,14 +245,48 @@ def resolve_team_config(config: Dict[str, Any], performance_level: str = "Employ
         resolved.update(level_config)
     elif level != "Employee":
         raise ConfigurationError(f"No {level} KPI configuration for team {config.get('team', 'unknown')}")
+    positions = resolved.get("positions", {})
+    if positions:
+        resolved["available_positions"] = list(positions)
+        if position_name is None:
+            resolved["kpis"] = []
+        else:
+            normalized_position = str(position_name).strip().casefold()
+            matched_name = next(
+                (name for name in positions if str(name).strip().casefold() == normalized_position),
+                None,
+            )
+            if matched_name is None:
+                raise ConfigurationError(
+                    f"No {level} KPI configuration for position {position_name!r} "
+                    f"in team {config.get('team', 'unknown')}"
+                )
+            resolved.update(deepcopy(positions[matched_name]))
+            resolved["position_name"] = matched_name
+    elif position_name is not None:
+        resolved["position_name"] = str(position_name).strip()
     resolved["performance_level"] = level
+    return resolved
+
+
+def resolve_position_config(
+    config: Dict[str, Any],
+    performance_level: str,
+    position_name: str,
+) -> Dict[str, Any]:
+    """Resolve a position-scoped KPI definition and require that it contains KPIs."""
+    resolved = resolve_team_config(config, performance_level, position_name)
+    if not resolved.get("kpis"):
+        raise ConfigurationError(
+            f"No {resolved['performance_level']} KPIs configured for position {position_name!r}"
+        )
     return resolved
 
 
 def get_configured_performance_levels(config: Dict[str, Any]) -> List[str]:
     levels = {"Employee"} if config.get("kpis") else set()
     for raw_level, level_config in config.get("performance_levels", {}).items():
-        if level_config.get("kpis"):
+        if level_config.get("kpis") or level_config.get("positions"):
             levels.add(normalize_performance_level(raw_level))
     return [level for level in PERFORMANCE_LEVELS if level in levels]
 

@@ -17,12 +17,16 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
         grade: str | None = None,
         status: str | None = None,
         performance_level: str | None = None,
-    ) -> list[tuple[str, str, str]]:
+        year: int | None = None,
+        position: str | None = None,
+        region: str | None = None,
+    ) -> list[tuple[str, str, str, int]]:
         """Return lightweight dashboard record identifiers filtered in SQL."""
         query = self.db.query(
             Employee.employee_id,
             Team.name,
             PerformanceRecord.month,
+            PerformanceRecord.year,
         ).join(
             Employee, PerformanceRecord.employee_id == Employee.id
         ).join(
@@ -41,10 +45,16 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
             query = query.filter(PerformanceRecord.status == status)
         if performance_level:
             query = query.filter(PerformanceRecord.performance_level == performance_level)
+        if year is not None:
+            query = query.filter(PerformanceRecord.year == year)
+        if position:
+            query = query.filter(PerformanceRecord.position_name == position)
+        if region:
+            query = query.filter(PerformanceRecord.region == region)
 
         return [
-            (str(emp_id), str(team_name), str(record_month))
-            for emp_id, team_name, record_month in query.distinct().all()
+            (str(emp_id), str(team_name), str(record_month), int(record_year))
+            for emp_id, team_name, record_month, record_year in query.distinct().all()
         ]
 
     def get_by_employee_month(self, employee_id, month: str, year: int):

@@ -18,10 +18,16 @@ def safe_float(val, default=0.0) -> float:
         return default
 
 class KPIService:
-    def __init__(self, weights_repo: KPIWeightsRepository, targets_repo: TargetsRepository):
+    def __init__(
+        self,
+        weights_repo: KPIWeightsRepository,
+        targets_repo: TargetsRepository,
+        initialize_defaults: bool = True,
+    ):
         self.weights_repo = weights_repo
         self.targets_repo = targets_repo
-        self._initialize_defaults()
+        if initialize_defaults:
+            self._initialize_defaults()
 
     def _initialize_defaults(self):
         # Default weights

@@ -14,6 +14,7 @@ class Employee(BaseModel):
     hiring_date: Optional[str] = None
     region: Optional[str] = "EGY"
     performance_level: str = "Employee"
+    position: Optional[str] = None
 
 class GeoBreakdown(BaseModel):
     dubai: int = 0
@@ -76,7 +77,7 @@ class EvaluationData(BaseModel):
     trend_status: Optional[Dict[str, Any]] = Field(default_factory=dict)
 
 class PerformanceRecord(BaseModel):
-    id: str  # Unique composite key: employee_id + "_" + month
+    id: str  # Canonical key: employee_id + "_" + year + "_" + month
     employee_id: str
     employee_name: str
     team: str
@@ -84,6 +85,8 @@ class PerformanceRecord(BaseModel):
     year: Optional[int] = None
     region: Optional[str] = "EGY"
     performance_level: str = "Employee"
+    position: Optional[str] = None
+    status: Optional[str] = None
     calls: CallsData = Field(default_factory=CallsData)
     geo: GeoData = Field(default_factory=GeoData)
     actual: ActualMetrics = Field(default_factory=ActualMetrics)

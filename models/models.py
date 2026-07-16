@@ -35,6 +35,8 @@ class TeamKPIConfig(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
     performance_level = Column(String(20), nullable=False, default=PerformanceLevel.EMPLOYEE.value, server_default=PerformanceLevel.EMPLOYEE.value)
+    position_name = Column(String(255), nullable=False, default="", server_default="")
+    perspective = Column(String(50), nullable=True)
     kpi_key = Column(String(50), nullable=False)
     kpi_label = Column(String(100), nullable=False)
     weight = Column(Numeric(5, 4), nullable=False)
@@ -51,9 +53,9 @@ class TeamKPIConfig(Base):
     updated_by = Column(String(100), nullable=True)
 
     __table_args__ = (
-        UniqueConstraint('team_id', 'performance_level', 'kpi_key', name='uq_kpi_team_level_key'),
+        UniqueConstraint('team_id', 'performance_level', 'position_name', 'kpi_key', name='uq_kpi_team_level_position_key'),
         CheckConstraint(f"performance_level IN ('{PerformanceLevel.EMPLOYEE.value}', '{PerformanceLevel.MANAGERIAL.value}', '{PerformanceLevel.CORPORATE.value}')", name='ck_team_kpi_performance_level'),
-        Index('idx_kpi_config_team_level', 'team_id', 'performance_level'),
+        Index('idx_kpi_config_team_level', 'team_id', 'performance_level', 'position_name'),
     )
 
 
@@ -193,6 +195,7 @@ class Employee(Base):
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False)
     region = Column(String(10), nullable=False, default="UAE")
     performance_level = Column(String(20), nullable=False, default=PerformanceLevel.EMPLOYEE.value, server_default=PerformanceLevel.EMPLOYEE.value)
+    position_name = Column(String(255), nullable=True)
     is_active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -236,6 +239,8 @@ class PerformanceRecord(Base):
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False)
     month = Column(String(20), nullable=False)
     performance_level = Column(String(20), nullable=False, default=PerformanceLevel.EMPLOYEE.value, server_default=PerformanceLevel.EMPLOYEE.value)
+    position_name = Column(String(255), nullable=True)
+    region = Column(String(10), nullable=True)
     score = Column(Numeric(6, 2), nullable=False)
     grade = Column(String(5), nullable=False)  # A, B, C, D, E
     status = Column(String(20), nullable=False)  # Exceeds, Meets, Below
@@ -263,7 +268,7 @@ class KPIValue(Base):
     target_value = Column(Numeric(18, 4), nullable=False)
     achievement_ratio = Column(Numeric(10, 4), nullable=False)
     weight_applied = Column(Numeric(5, 4), nullable=False)
-    contribution = Column(Numeric(6, 2), nullable=False)
+    contribution = Column(Numeric(7, 4), nullable=False)
 
     # Composite Foreign Key constraints
     __table_args__ = (

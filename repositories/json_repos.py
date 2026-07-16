@@ -109,8 +109,12 @@ def _load_json(filename: str, default_val: list | dict) -> list | dict:
 def _save_json(filename: str, data: list | dict):
     path = os.path.join(DATA_DIR, filename)
     data = _prepare_json_for_save(filename, data)
-    with open(path, 'w', encoding='utf-8') as f:
+    temp_path = f"{path}.{os.getpid()}.{threading.get_ident()}.tmp"
+    with open(temp_path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(temp_path, path)
     # Invalidate cache so next read picks up the new data
     with _cache_lock:
         _cache.pop(f"json:{filename}", None)
@@ -148,6 +152,9 @@ class JSONEmployeeRepository(EmployeeRepository):
         _save_json(self.filename, data)
         return employees
 
+    def replace_all(self, employees: List[Employee]) -> None:
+        _save_json(self.filename, [employee.model_dump() for employee in employees])
+
 
 class JSONPerformanceRepository(PerformanceRepository):
     def __init__(self):
@@ -160,12 +167,18 @@ class JSONPerformanceRepository(PerformanceRepository):
     def get_by_id(self, record_id: str) -> Optional[PerformanceRecord]:
         return next((record for record in self._all_records() if record.id == record_id), None)
 
-    def get_by_employee_and_month(self, employee_id: str, month: str) -> Optional[PerformanceRecord]:
+    def get_by_employee_and_month(
+        self,
+        employee_id: str,
+        month: str,
+        year: int | None = None,
+    ) -> Optional[PerformanceRecord]:
         return next(
             (
                 record
                 for record in self._all_records()
                 if str(record.employee_id) == str(employee_id) and record.month == month
+                and (year is None or record.year == year)
             ),
             None,
         )
@@ -181,6 +194,9 @@ class JSONPerformanceRepository(PerformanceRepository):
         grade: str | None = None,
         status: str | None = None,
         performance_level: str | None = None,
+        year: int | None = None,
+        position: str | None = None,
+        region: str | None = None,
     ) -> List[PerformanceRecord]:
         records = self.get_all()
         if team:
@@ -193,24 +209,33 @@ class JSONPerformanceRepository(PerformanceRepository):
             records = [r for r in records if getattr(r.evaluation, "grade", None) == grade]
         if status:
             status_val = status.lower()
-            if status_val == "exceeds":
-                records = [r for r in records if float(getattr(r.evaluation, "score", 0.0)) >= 90]
-            elif status_val == "meets":
-                records = [r for r in records if 70 <= float(getattr(r.evaluation, "score", 0.0)) < 90]
-            elif status_val == "below":
-                records = [r for r in records if float(getattr(r.evaluation, "score", 0.0)) < 70]
+            def resolved_status(record: PerformanceRecord) -> str:
+                if isinstance(record.status, str) and record.status:
+                    return record.status.lower()
+                if record.evaluation.grade == "A":
+                    return "exceeds"
+                if record.evaluation.grade in {"B", "C"}:
+                    return "meets"
+                return "below"
+            records = [record for record in records if resolved_status(record) == status_val]
         if performance_level:
             records = [r for r in records if r.performance_level == performance_level]
+        if year is not None:
+            records = [r for r in records if r.year == year]
+        if position:
+            records = [r for r in records if (r.position or "").casefold() == position.casefold()]
+        if region:
+            records = [r for r in records if (r.region or "").casefold() == region.casefold()]
         return records
 
-    def get_filtered_by_keys(self, keys: set[tuple[str, str, str]]) -> List[PerformanceRecord]:
+    def get_filtered_by_keys(self, keys: set[tuple[str, str, str, int | None]]) -> List[PerformanceRecord]:
         if not keys:
             return []
         records = self.get_all()
         return [
             record
             for record in records
-            if (str(record.employee_id), str(record.team), str(record.month)) in keys
+            if (str(record.employee_id), str(record.team), str(record.month), record.year) in keys
         ]
 
     def save(self, record: PerformanceRecord) -> PerformanceRecord:
@@ -223,11 +248,22 @@ class JSONPerformanceRepository(PerformanceRepository):
     def save_all(self, records: List[PerformanceRecord]) -> List[PerformanceRecord]:
         data = _load_json(self.filename, [])
         ids_to_save = {r.id for r in records}
-        data = [item for item in data if item.get("id") not in ids_to_save]
+        period_keys = {
+            (str(r.employee_id), r.month, r.year)
+            for r in records
+        }
+        data = [
+            item for item in data
+            if item.get("id") not in ids_to_save
+            and (str(item.get("employee_id")), item.get("month"), item.get("year")) not in period_keys
+        ]
         for r in records:
             data.append(r.model_dump())
         _save_json(self.filename, data)
         return records
+
+    def replace_all(self, records: List[PerformanceRecord]) -> None:
+        _save_json(self.filename, [record.model_dump() for record in records])
 
     def delete_by_upload_id(self, upload_id: str) -> List[str]:
         data = _load_json(self.filename, [])
@@ -313,6 +349,9 @@ class JSONUploadsRepository(UploadsRepository):
         data = [item for item in data if item.get("id") != upload_id]
         _save_json(self.filename, data)
         return len(data) < initial_len
+
+    def replace_all(self, uploads: List[UploadRecord]) -> None:
+        _save_json(self.filename, [upload.model_dump() for upload in uploads])
 
 
 class JSONManagerNotesRepository(ManagerNotesRepository):

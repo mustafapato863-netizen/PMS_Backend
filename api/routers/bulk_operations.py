@@ -69,6 +69,7 @@ async def bulk_update_kpi_weights(
     db: Session = Depends(get_db),
     user_payload: dict = Depends(require_permission("edit_team_config")),
     performance_level: str = Query("Employee"),
+    position: str = Query(""),
 ):
     """
     Bulk update KPI weights for a team, validating that the new weights sum to 1.0.
@@ -81,6 +82,7 @@ async def bulk_update_kpi_weights(
             updates=payload,
             performed_by_user_id=performed_by_user_id,
             performance_level=performance_level,
+            position_name=position,
         )
         
         if not result["success"]:

@@ -31,7 +31,12 @@ def _level_filter(value: str | None) -> str | None:
     return None if normalized == "All" else normalized
 
 @router.get("", response_model=StandardResponse)
-def get_all_employees(include_deleted: bool = Query(False), performance_level: str = Query(None)):
+def get_all_employees(
+    include_deleted: bool = Query(False),
+    performance_level: str = Query(None),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
+):
     """
     Get all employees from database.
     
@@ -43,6 +48,10 @@ def get_all_employees(include_deleted: bool = Query(False), performance_level: s
         level = _level_filter(performance_level)
         if level:
             employees = [e for e in employees if e.performance_level == level]
+        if position:
+            employees = [e for e in employees if (e.position or "").casefold() == position.casefold()]
+        if region:
+            employees = [e for e in employees if (e.region or "").casefold() == region.casefold()]
         data = [e.model_dump() for e in employees]
         if not include_deleted:
             data = [e for e in data if e.get("status", "Active") != "Inactive"]
@@ -59,7 +68,13 @@ def get_all_employees(include_deleted: bool = Query(False), performance_level: s
 
 
 @router.get("/search", response_model=StandardResponse)
-def  search_employees(name: str = Query(...), include_deleted: bool = Query(False), performance_level: str = Query(None)):
+def  search_employees(
+    name: str = Query(...),
+    include_deleted: bool = Query(False),
+    performance_level: str = Query(None),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
+):
     """
     Search employees by name.
     
@@ -76,6 +91,10 @@ def  search_employees(name: str = Query(...), include_deleted: bool = Query(Fals
         level = _level_filter(performance_level)
         if level:
             matched = [e for e in matched if e.performance_level == level]
+        if position:
+            matched = [e for e in matched if (e.position or "").casefold() == position.casefold()]
+        if region:
+            matched = [e for e in matched if (e.region or "").casefold() == region.casefold()]
         data = [e.model_dump() for e in matched]
         if not include_deleted:
             data = [e for e in data if e.get("status", "Active") != "Inactive"]
@@ -92,7 +111,13 @@ def  search_employees(name: str = Query(...), include_deleted: bool = Query(Fals
 
 
 @router.get("/team/{team_name}", response_model=StandardResponse)
-def get_employees_by_team(team_name: str, include_deleted: bool = Query(False), performance_level: str = Query(None)):
+def get_employees_by_team(
+    team_name: str,
+    include_deleted: bool = Query(False),
+    performance_level: str = Query(None),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
+):
     """
     Get all employees in a team.
     
@@ -108,6 +133,10 @@ def get_employees_by_team(team_name: str, include_deleted: bool = Query(False), 
         level = _level_filter(performance_level)
         if level:
             matched = [e for e in matched if e.performance_level == level]
+        if position:
+            matched = [e for e in matched if (e.position or "").casefold() == position.casefold()]
+        if region:
+            matched = [e for e in matched if (e.region or "").casefold() == region.casefold()]
         data = [e.model_dump() for e in matched]
         if not include_deleted:
             data = [e for e in data if e.get("status", "Active") != "Inactive"]
@@ -124,7 +153,12 @@ def get_employees_by_team(team_name: str, include_deleted: bool = Query(False), 
 
 
 @router.get("/team/{team_name}/active", response_model=StandardResponse)
-def get_active_employees_by_team(team_name: str, performance_level: str = Query(None)):
+def get_active_employees_by_team(
+    team_name: str,
+    performance_level: str = Query(None),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
+):
     """
     Get all active employees in a team.
     
@@ -140,6 +174,10 @@ def get_active_employees_by_team(team_name: str, performance_level: str = Query(
         level = _level_filter(performance_level)
         if level:
             matched = [e for e in matched if e.performance_level == level]
+        if position:
+            matched = [e for e in matched if (e.position or "").casefold() == position.casefold()]
+        if region:
+            matched = [e for e in matched if (e.region or "").casefold() == region.casefold()]
         data = [e.model_dump() for e in matched]
         return StandardResponse(
             success=True,

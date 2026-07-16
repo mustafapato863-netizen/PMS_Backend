@@ -209,6 +209,7 @@ class BatchProcessor:
         updates: List[Dict[str, Any]],
         performed_by_user_id: str = None,
         performance_level: str = "Employee",
+        position_name: str = "",
     ) -> Dict[str, Any]:
         """
         Validate weights up-front (sum must equal 1.0 within 0.01 tolerance)
@@ -233,6 +234,7 @@ class BatchProcessor:
             configs = db.query(TeamKPIConfig).filter(
                 TeamKPIConfig.team_id == team_uuid,
                 TeamKPIConfig.performance_level == performance_level,
+                TeamKPIConfig.position_name == position_name,
             ).all()
             if not configs:
                 errors.append(f"No KPI configurations found for team {team_id}.")
@@ -250,10 +252,19 @@ class BatchProcessor:
                     return {"success": False, "errors": errors}
                 weights_map[k_key] = float(k_weight)
                 
-            # Weight totals are independent for each team + performance level.
+            # Weight totals are independent for each team + performance level + position.
             total_weight = sum(weights_map.values())
-            if total_weight > 1.01:
-                errors.append(f"{performance_level} KPI weights exceed 1.0 (got {total_weight:.3f}).")
+            if abs(total_weight - 1.0) > 0.01:
+                if total_weight > 1.0:
+                    errors.append(
+                        f"{performance_level}/{position_name or 'default'} KPI weights exceed 1.0 "
+                        f"(got {total_weight:.3f})."
+                    )
+                else:
+                    errors.append(
+                        f"{performance_level}/{position_name or 'default'} KPI weights "
+                        f"must equal 1.0 (got {total_weight:.3f})."
+                    )
                 return {"success": False, "errors": errors}
 
             # Apply updates inside a transaction block

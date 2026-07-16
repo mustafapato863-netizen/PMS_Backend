@@ -160,7 +160,35 @@ class QueryOptimizer:
             "total_records": result.total_records or 0,
             "average_score": float(result.avg_score) if result.avg_score else 0.0,
             "max_score": float(result.max_score) if result.max_score else 0.0,
-            "min_score": float(result.min_score) if result.min_score else 0.0
+            "min_score": float(result.min_score) if result.min_score else 0.0,
+        }
+
+        position_rows = (
+            db.query(
+                PerformanceRecord.position_name,
+                func.count(PerformanceRecord.id).label("total_records"),
+                func.avg(PerformanceRecord.score).label("avg_score"),
+                func.max(PerformanceRecord.score).label("max_score"),
+                func.min(PerformanceRecord.score).label("min_score"),
+            )
+            .filter(
+                PerformanceRecord.team_id == team_uuid,
+                PerformanceRecord.month == month,
+                PerformanceRecord.year == year,
+                PerformanceRecord.position_name.isnot(None),
+                PerformanceRecord.position_name != "",
+            )
+            .group_by(PerformanceRecord.position_name)
+            .all()
+        )
+        aggregated["by_position"] = {
+            row.position_name: {
+                "total_records": row.total_records or 0,
+                "average_score": float(row.avg_score) if row.avg_score else 0.0,
+                "max_score": float(row.max_score) if row.max_score else 0.0,
+                "min_score": float(row.min_score) if row.min_score else 0.0,
+            }
+            for row in position_rows
         }
 
         # Save to cache

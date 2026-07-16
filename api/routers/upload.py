@@ -3,7 +3,13 @@ import datetime
 import logging
 import time
 
-from api.dependencies import uploads_repo, performance_repo, trend_service, planning_service
+from api.dependencies import (
+    uploads_repo,
+    performance_repo,
+    trend_service,
+    planning_service,
+    clear_serialization_cache,
+)
 from api.middleware.rbac_middleware import require_permission
 from services.seeding_service import DatabaseSeeder
 from services.cache_invalidation_service import CacheInvalidationService
@@ -22,22 +28,45 @@ def _warm_team_caches() -> None:
         for r in all_records:
             month = getattr(r, "month", None)
             team = getattr(r, "team", None)
+            year = getattr(r, "year", None) or 2026
             if month and team:
-                teams_months.add((team, month))
+                teams_months.add((team, month, year))
 
         if not teams_months:
             return
 
-        for team_name, month in teams_months:
-            team_records = [r for r in all_records if r.team == team_name and r.month == month]
+        for team_name, month, year in teams_months:
+            team_records = [
+                r for r in all_records
+                if r.team == team_name and r.month == month and (r.year or 2026) == year
+            ]
             scores = [r.evaluation.score for r in team_records if r.evaluation and r.evaluation.score]
+            by_position = {}
+            positions = sorted({
+                r.position
+                for r in team_records
+                if isinstance(getattr(r, "position", None), str) and r.position
+            })
+            for position in positions:
+                position_scores = [
+                    r.evaluation.score
+                    for r in team_records
+                    if r.position == position and r.evaluation and r.evaluation.score is not None
+                ]
+                by_position[position] = {
+                    "total_records": len(position_scores),
+                    "average_score": sum(position_scores) / len(position_scores) if position_scores else 0.0,
+                    "max_score": max(position_scores) if position_scores else 0.0,
+                    "min_score": min(position_scores) if position_scores else 0.0,
+                }
             aggregated = {
                 "total_records": len(scores),
                 "average_score": sum(scores) / len(scores) if scores else 0.0,
                 "max_score": max(scores) if scores else 0.0,
-                "min_score": min(scores) if scores else 0.0
+                "min_score": min(scores) if scores else 0.0,
+                "by_position": by_position,
             }
-            CacheService.set_team_performance_cache(team_name, month, 2026, aggregated)
+            CacheService.set_team_performance_cache(team_name, month, year, aggregated)
     except Exception as e:
         logging.getLogger(__name__).warning(f"Cache warming failed (non-critical): {e}")
 
@@ -63,6 +92,7 @@ async def get_upload_history(
 @router.post("/pms", response_model=StandardResponse)
 async def upload_pms_file(
     file: UploadFile = File(...),
+    dry_run: bool = False,
     _user=Depends(require_permission("upload_data"))
 ):
     try:
@@ -70,22 +100,27 @@ async def upload_pms_file(
         upload_filename = file.filename
         contents = await read_validated_excel(file)
         seeder = DatabaseSeeder()
-        result = seeder.process_uploaded_file(file.filename, contents)
-
-        # Invalidate all caches and warm team aggregates
-        CacheInvalidationService.flush_all()
-        _warm_team_caches()
-
-        # Emit file upload success notification
-        from services.socket_service import SocketNotificationService
-        teams_list = result.get("teams", []) if isinstance(result, dict) else []
-        teams_str = ", ".join(teams_list) if teams_list else "All Teams"
-        await SocketNotificationService.notify_file_upload(
-            filename=file.filename,
-            team_name=teams_str,
-            teams=teams_list,
-            status="success"
+        result = (
+            seeder.process_uploaded_file(file.filename, contents, dry_run=True)
+            if dry_run
+            else seeder.process_uploaded_file(file.filename, contents)
         )
+
+        if not dry_run:
+            CacheInvalidationService.flush_all()
+            clear_serialization_cache()
+            _warm_team_caches()
+
+        teams_list = result.get("teams", []) if isinstance(result, dict) else []
+        if not dry_run:
+            from services.socket_service import SocketNotificationService
+            teams_str = ", ".join(teams_list) if teams_list else "All Teams"
+            await SocketNotificationService.notify_file_upload(
+                filename=file.filename,
+                team_name=teams_str,
+                teams=teams_list,
+                status="success"
+            )
         logger.info(
             "upload processed",
             extra={"upload_filename": upload_filename, "duration_ms": round((time.perf_counter() - started_at) * 1000.0, 2)},
@@ -93,7 +128,11 @@ async def upload_pms_file(
 
         return StandardResponse(
             success=True,
-            message="PMS Excel uploaded and processed successfully",
+            message=(
+                "PMS Excel preflight completed successfully"
+                if dry_run
+                else "PMS Excel uploaded and processed successfully"
+            ),
             data=result
         )
     except HTTPException:
@@ -110,24 +149,31 @@ async def upload_pms_file(
             "persisted_teams": report.get("persisted_teams", []),
             "failed_teams": report.get("failed_teams", []),
         }
-        # Emit file upload failure notification
-        from services.socket_service import SocketNotificationService
-        await SocketNotificationService.notify_file_upload(
-            filename=file.filename,
-            team_name="All Teams",
-            teams=teams_list,
-            status="failed",
-            details=payload,
-        )
+        if not dry_run:
+            from services.socket_service import SocketNotificationService
+            await SocketNotificationService.notify_file_upload(
+                filename=file.filename,
+                team_name="All Teams",
+                teams=teams_list,
+                status="failed",
+                details=payload,
+            )
         logger.warning(
             "upload failed",
             extra={"upload_filename": file.filename, "duration_ms": round((time.perf_counter() - started_at) * 1000.0, 2)},
         )
         logger.exception("Unexpected upload processing failure")
-        raise HTTPException(
-            status_code=500,
-            detail="Failed to upload and process the Excel file.",
-        ) from e
+        status_code = getattr(e, "status_code", 500)
+        if status_code == 422:
+            raise HTTPException(
+                status_code=422,
+                detail={
+                    "message": str(e),
+                    "errors": getattr(e, "errors", report.get("validation_errors", [])),
+                    "report": report,
+                },
+            ) from e
+        raise HTTPException(status_code=500, detail="Failed to upload and process the Excel file.") from e
 
 @router.delete("/{upload_id}", response_model=StandardResponse)
 async def delete_upload(

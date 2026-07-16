@@ -27,6 +27,8 @@ class PerformanceService:
             'team_id': str(record.team_id),
             'month': record.month,
             'performance_level': record.performance_level,
+            'position': record.position_name,
+            'region': record.region,
             'year': record.year,
             'score': float(record.score),
             'grade': record.grade,

@@ -24,9 +24,16 @@ from services.planning_service import PlanningService
 from services.trend_service import TrendService
 from config.loader import load_team_config, resolve_team_config, ConfigurationError
 from config.database import SessionLocal
-from models.models import Team, Employee as DBEmployee, PerformanceRecord as DBPerformanceRecord, KPIValue
+from models.models import (
+    Team,
+    TeamKPIConfig,
+    Employee as DBEmployee,
+    PerformanceRecord as DBPerformanceRecord,
+    KPIValue,
+)
 from data_cleaning.standard_mappings import calculate_achievement
 from utils.performance_levels import normalize_performance_level
+from services.marketing_import_service import MarketingImportResult, MarketingImportService
 
 logger = logging.getLogger(__name__)
 
@@ -96,10 +103,11 @@ class DatabaseSeeder:
         self.uploads_repo = JSONUploadsRepository()
         self.excel_processor = ExcelProcessor()
         
-        self.kpi_service = KPIService(self.weights_repo, self.targets_repo)
+        self.kpi_service = KPIService(self.weights_repo, self.targets_repo, initialize_defaults=False)
         self.analysis_service = AnalysisService(self.targets_repo)
         self.planning_service = PlanningService(self.performance_repo)
         self.trend_service = TrendService()
+        self.marketing_import_service = MarketingImportService()
 
     @staticmethod
     def _should_exclude_raw_row(row: pd.Series) -> bool:
@@ -169,20 +177,52 @@ class DatabaseSeeder:
                 frame.to_excel(writer, sheet_name=sheet_name, index=False)
         return self.process_uploaded_file("PMS_DEMO_PERFORMANCE_LEVELS.xlsx", workbook.getvalue())
 
-    def process_uploaded_file(self, filename: str, contents: bytes):
+    def process_uploaded_file(self, filename: str, contents: bytes, dry_run: bool = False):
         """Processes an uploaded PMS excel file and returns the import counts."""
         excel_file = self.excel_processor.load_excel(contents)
-        
-        # Save upload audit record
+        marketing_result = self.marketing_import_service.parse_excel(excel_file)
+
+        if dry_run:
+            result = self._process_and_save_excel(
+                excel_file,
+                marketing_result=marketing_result,
+                dry_run=True,
+            )
+            result["dry_run"] = True
+            return result
+
+        employee_snapshot = self.employee_repo.get_all()
+        performance_snapshot = self.performance_repo.get_all()
+        upload_snapshot = self.uploads_repo.get_all()
         upload_rec = UploadRecord(
             id=str(uuid.uuid4()),
             filename=filename,
             uploaded_at=datetime.datetime.now().isoformat(),
             uploaded_by="Admin"
         )
-        self.uploads_repo.save(upload_rec)
-        
-        return self._process_and_save_excel(excel_file, upload_id=upload_rec.id)
+        db = SessionLocal()
+        try:
+            self.uploads_repo.save(upload_rec)
+            if marketing_result:
+                for record in marketing_result.records:
+                    record.upload_id = upload_rec.id
+            result = self._process_and_save_excel(
+                excel_file,
+                upload_id=upload_rec.id,
+                marketing_result=marketing_result,
+                db_session=db,
+            )
+            db.commit()
+            result["dry_run"] = False
+            return result
+        except Exception:
+            db.rollback()
+            self.employee_repo.replace_all(employee_snapshot)
+            self.performance_repo.replace_all(performance_snapshot)
+            self.uploads_repo.replace_all(upload_snapshot)
+            raise
+        finally:
+            db.close()
 
     @staticmethod
     def _normalize_sheet_levels(df: pd.DataFrame, id_col: str, team_name: str) -> list[str]:
@@ -206,17 +246,106 @@ class DatabaseSeeder:
         df["performance_level"] = levels
         return levels
 
-    def _sync_to_database(self, records: list[PerformanceRecord], employees: list[Employee]) -> None:
+    @staticmethod
+    def _status_for_record(record: PerformanceRecord) -> str:
+        if record.status:
+            return record.status
+        if record.evaluation.grade == "A":
+            return "Exceeds"
+        if record.evaluation.grade in {"B", "C"}:
+            return "Meets"
+        return "Below"
+
+    @staticmethod
+    def _sync_marketing_config(db, team: Team) -> None:
+        config = load_team_config("Marketing")
+        positions = config["performance_levels"]["Employee"]["positions"]
+        expected_keys: set[tuple[str, str]] = set()
+        for position_name, position_config in positions.items():
+            for kpi in position_config["kpis"]:
+                expected_keys.add((position_name, kpi["key"]))
+                existing = (
+                    db.query(TeamKPIConfig)
+                    .filter(
+                        TeamKPIConfig.team_id == team.id,
+                        TeamKPIConfig.performance_level == "Employee",
+                        TeamKPIConfig.position_name == position_name,
+                        TeamKPIConfig.kpi_key == kpi["key"],
+                    )
+                    .first()
+                )
+                values = {
+                    "kpi_label": kpi["label"],
+                    "perspective": kpi["perspective"],
+                    "weight": safe_decimal(kpi["weight"]),
+                    "direction": kpi["direction"],
+                    "unit": kpi["unit"],
+                    "color": kpi["color"],
+                    "actual_col": kpi["actual_col"],
+                    "target_col": kpi["target_col"],
+                    "display_order": kpi["display_order"],
+                }
+                if existing:
+                    for key, value in values.items():
+                        setattr(existing, key, value)
+                else:
+                    db.add(
+                        TeamKPIConfig(
+                            id=uuid.uuid4(),
+                            team_id=team.id,
+                            performance_level="Employee",
+                            position_name=position_name,
+                            kpi_key=kpi["key"],
+                            **values,
+                        )
+                    )
+
+        stale_rows = (
+            db.query(TeamKPIConfig)
+            .filter(
+                TeamKPIConfig.team_id == team.id,
+                TeamKPIConfig.performance_level == "Employee",
+                TeamKPIConfig.position_name.isnot(None),
+            )
+            .all()
+        )
+        for row in stale_rows:
+            if (row.position_name, row.kpi_key) not in expected_keys:
+                db.delete(row)
+
+    def _sync_to_database(
+        self,
+        records: list[PerformanceRecord],
+        employees: list[Employee],
+        db_session=None,
+    ) -> None:
         """Mirror processed JSON records into the relational DB so upload persistence is verifiable."""
         if not records:
             return
 
-        db = SessionLocal()
+        db = db_session or SessionLocal()
+        owns_session = db_session is None
         try:
             teams_by_name = {}
             for team in db.query(Team).all():
                 teams_by_name[team.name.lower()] = team
                 teams_by_name[team.db_name.lower()] = team
+
+            if any(record.team == "Marketing" for record in records):
+                marketing_team = teams_by_name.get("marketing")
+                if not marketing_team:
+                    marketing_config = load_team_config("Marketing")
+                    marketing_team = Team(
+                        id=uuid.uuid4(),
+                        name=marketing_config["team"],
+                        db_name=marketing_config["db_name"],
+                        region=marketing_config["region"],
+                        is_active=True,
+                    )
+                    db.add(marketing_team)
+                    db.flush()
+                    teams_by_name["marketing"] = marketing_team
+                self._sync_marketing_config(db, marketing_team)
 
             employee_lookup = {}
             seen_employee_ids: set[str] = set()
@@ -247,6 +376,7 @@ class DatabaseSeeder:
                         team_id=team.id,
                         region=(employee.region or team.region or "UAE"),
                         performance_level=employee.performance_level,
+                        position_name=employee.position,
                         is_active=True,
                     )
                     db.add(db_employee)
@@ -255,6 +385,7 @@ class DatabaseSeeder:
                     db_employee.team_id = team.id
                     db_employee.region = (employee.region or team.region or "UAE")
                     db_employee.performance_level = employee.performance_level
+                    db_employee.position_name = employee.position
                     db_employee.is_active = True
                 employee_lookup[employee_key] = db_employee
 
@@ -281,7 +412,7 @@ class DatabaseSeeder:
                     logger.warning("DB sync skipped performance record because employee was not found: %s", record.employee_id)
                     continue
 
-                year = datetime.datetime.now().year
+                year = record.year or datetime.datetime.now().year
                 existing = (
                     db.query(DBPerformanceRecord)
                     .filter(
@@ -294,9 +425,11 @@ class DatabaseSeeder:
                 if existing:
                     existing.score = safe_decimal(record.evaluation.score)
                     existing.grade = record.evaluation.grade
-                    existing.status = "Exceeds" if float(record.evaluation.score or 0.0) >= 95 else "Meets" if float(record.evaluation.score or 0.0) >= 90 else "Below"
+                    existing.status = self._status_for_record(record)
                     existing.team_id = team.id
                     existing.performance_level = record.performance_level
+                    existing.position_name = record.position
+                    existing.region = record.region
                     # ponytail: keep DB sync independent from JSON upload logs until upload_log is mirrored too
                     existing.upload_id = None
                     db_record = existing
@@ -308,9 +441,11 @@ class DatabaseSeeder:
                         team_id=team.id,
                         month=record.month,
                         performance_level=record.performance_level,
+                        position_name=record.position,
+                        region=record.region,
                         score=safe_decimal(record.evaluation.score),
                         grade=record.evaluation.grade,
-                        status="Exceeds" if float(record.evaluation.score or 0.0) >= 95 else "Meets" if float(record.evaluation.score or 0.0) >= 90 else "Below",
+                        status=self._status_for_record(record),
                         upload_id=None,
                     )
                     db.add(db_record)
@@ -324,7 +459,11 @@ class DatabaseSeeder:
                 raw_data = record.raw_data or {}
                 team_config = None
                 try:
-                    team_config = resolve_team_config(load_team_config(record.team), record.performance_level)
+                    team_config = resolve_team_config(
+                        load_team_config(record.team),
+                        record.performance_level,
+                        record.position,
+                    )
                 except Exception:
                     team_config = None
 
@@ -374,15 +513,25 @@ class DatabaseSeeder:
                         )
                         db.add(kpi_value)
 
-            db.commit()
+            if owns_session:
+                db.commit()
         except Exception as exc:
-            db.rollback()
+            if owns_session:
+                db.rollback()
             logger.exception("Database sync failed after upload: %s", exc)
             raise
         finally:
-            db.close()
+            if owns_session:
+                db.close()
 
-    def _process_and_save_excel(self, excel_file, upload_id: Optional[str] = None):
+    def _process_and_save_excel(
+        self,
+        excel_file,
+        upload_id: Optional[str] = None,
+        marketing_result: MarketingImportResult | None = None,
+        dry_run: bool = False,
+        db_session=None,
+    ):
         sheet_names = set(excel_file.sheet_names)
         inbound_df = self.excel_processor.process_sheet_inbound(excel_file) if "Inbound" in sheet_names else pd.DataFrame()
         outbound_df = self.excel_processor.process_sheet_outbound(excel_file) if "Outbound" in sheet_names else pd.DataFrame()
@@ -401,6 +550,15 @@ class DatabaseSeeder:
         attempted_teams = []
         persisted_teams = set()
         failed_teams = []
+        marketing_report = marketing_result.report if marketing_result else None
+
+        if marketing_result is not None:
+            detected_teams.append("Marketing")
+            attempted_teams.append("Marketing")
+            all_new_employees.extend(marketing_result.employees)
+            all_new_records.extend(marketing_result.records)
+            if marketing_result.records:
+                persisted_teams.add("Marketing")
 
         sheet_mappings = []
         if not inbound_df.empty:
@@ -671,15 +829,31 @@ class DatabaseSeeder:
                     ) from exc
 
         all_new_employees = list({employee.id: employee for employee in all_new_employees}.values())
+        imported_teams = list(dict.fromkeys([team_name for team_name, _, _, _ in sheet_mappings]))
+        if marketing_result is not None:
+            imported_teams.append("Marketing")
+
+        if dry_run:
+            return {
+                "records_imported": len(all_new_records),
+                "employees_imported": len(all_new_employees),
+                "teams": imported_teams,
+                "detected_teams": detected_teams,
+                "attempted_teams": attempted_teams,
+                "persisted_teams": sorted(persisted_teams),
+                "failed_teams": failed_teams,
+                "marketing": marketing_report,
+            }
+
         self.employee_repo.save_all(all_new_employees)
         self.performance_repo.save_all(all_new_records)
         try:
-            self._sync_to_database(all_new_records, all_new_employees)
+            self._sync_to_database(all_new_records, all_new_employees, db_session=db_session)
         except Exception as exc:
             report = {
                 "records_imported": len(all_new_records),
                 "employees_imported": len(all_new_employees),
-                "teams": list(dict.fromkeys([team_name for team_name, _, _, _ in sheet_mappings])),
+                "teams": imported_teams,
                 "detected_teams": detected_teams,
                 "attempted_teams": attempted_teams,
                 "persisted_teams": sorted(persisted_teams),
@@ -697,11 +871,11 @@ class DatabaseSeeder:
         from services.planning_service import MONTH_ORDER
         for r in all_new_records:
             emp_history = [h for h in all_history if h.employee_id == r.employee_id]
-            emp_history.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
+            emp_history.sort(key=lambda x: (x.year or 0, MONTH_ORDER.get(x.month, 0)))
             
             curr_idx = -1
             for i, h in enumerate(emp_history):
-                if h.month == r.month:
+                if h.id == r.id:
                     curr_idx = i
                     break
 
@@ -718,7 +892,6 @@ class DatabaseSeeder:
             updated_records.append(r)
 
         self.performance_repo.save_all(updated_records)
-        imported_teams = list(dict.fromkeys([team_name for team_name, _, _, _ in sheet_mappings]))
         return {
             "records_imported": len(all_new_records),
             "employees_imported": len(all_new_employees),
@@ -727,4 +900,5 @@ class DatabaseSeeder:
             "attempted_teams": attempted_teams,
             "persisted_teams": sorted(persisted_teams),
             "failed_teams": failed_teams,
+            "marketing": marketing_report,
         }

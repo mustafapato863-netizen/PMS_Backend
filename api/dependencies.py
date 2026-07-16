@@ -24,6 +24,10 @@ from utils.performance_levels import PERFORMANCE_LEVELS
 _serialize_cache: dict[str, tuple[dict, float]] = {}
 _SERIALIZE_CACHE_TTL = 300
 
+
+def clear_serialization_cache() -> None:
+    _serialize_cache.clear()
+
 # Instantiate JSON-based repositories (single source of truth)
 performance_repo = JSONPerformanceRepository()
 employee_repo = JSONEmployeeRepository()
@@ -102,19 +106,34 @@ def serialize_performance_record(r) -> Dict[str, Any]:
             from utils.helpers import format_minutes_to_hhmmss
             aht_raw = format_minutes_to_hhmmss(aht_mins)
 
+    record_year = getattr(r, "year", None)
+    if not isinstance(record_year, int):
+        record_year = None
+    record_position = getattr(r, "position", None)
+    if not isinstance(record_position, str):
+        record_position = None
+    record_status = getattr(r, "status", None)
+    if not isinstance(record_status, str):
+        record_status = None
+
     result = {
         "id": r.id,
         "employee_id": r.employee_id,
         "employee_name": r.employee_name,
         "team": r.team,
         "month": r.month,
+        "year": record_year,
         "region": getattr(r, "region", "EGY") or "EGY",
         "performance_level": getattr(r, "performance_level", "Employee") or "Employee",
+        "position": record_position,
+        "status": record_status,
         "identity": {
             "name": r.employee_name,
             "month": r.month,
             "team": r.team,
-            "employee_id": r.employee_id
+            "employee_id": r.employee_id,
+            "position": record_position,
+            "region": getattr(r, "region", "EGY") or "EGY",
         },
         "calls": {
             "inbound": r.calls.inbound,
