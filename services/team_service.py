@@ -54,7 +54,11 @@ class TeamService:
         return {
             "id": str(team.id),
             "name": team.name,
-            "display_name": config.get("team", team.name) if config else team.name,
+            "display_name": (
+                config.get("team", team.display_name or team.name)
+                if config
+                else (team.display_name or team.name)
+            ),
             "db_name": team.db_name,
             "region": config.get("region", team.region) if config else team.region,
             "description": None,
@@ -172,7 +176,9 @@ class TeamService:
                 'id': uuid.uuid4(),
                 'name': team_name_value,
                 'db_name': db_name_value,
+                'display_name': config.get('team', request.display_name) if config else request.display_name,
                 'region': region_value,
+                'team_level': 'employee',
                 'is_active': True,
             }
             

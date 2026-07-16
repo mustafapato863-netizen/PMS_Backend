@@ -325,6 +325,7 @@ def test_database_sync_upserts_marketing_period_and_position_config():
         session.flush()
 
         assert session.query(Team).filter(Team.name == "Marketing").count() == 1
+        assert session.query(Team).filter(Team.name == "Marketing").one().team_level == "employee"
         assert session.query(DBEmployee).count() == 1
         assert session.query(DBEmployee).one().position_name == "Media Buyer"
         assert session.query(DBPerformanceRecord).count() == 1

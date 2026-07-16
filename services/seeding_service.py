@@ -339,7 +339,9 @@ class DatabaseSeeder:
                         id=uuid.uuid4(),
                         name=marketing_config["team"],
                         db_name=marketing_config["db_name"],
+                        display_name=marketing_config["team"],
                         region=marketing_config["region"],
+                        team_level="employee",
                         is_active=True,
                     )
                     db.add(marketing_team)

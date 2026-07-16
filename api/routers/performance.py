@@ -113,7 +113,16 @@ def _get_dashboard_records(
         keys = []
 
     if keys:
-        matched = performance_repo.get_filtered_by_keys(set(keys))
+        key_set = set(keys)
+        if year is None:
+            # Legacy JSON records predate the year field. SQL remains the
+            # visibility/filter source, but an unscoped dashboard request must
+            # still resolve those records by employee/team/month.
+            key_set.update(
+                (employee_id_key, team_key, month_key, None)
+                for employee_id_key, team_key, month_key, _record_year in keys
+            )
+        matched = performance_repo.get_filtered_by_keys(key_set)
         if performance_level:
             matched = [record for record in matched if record.performance_level == performance_level]
         if matched:
@@ -531,6 +540,9 @@ def export_report(
     team: str = Query("All"),
     format: str = Query("excel"),
     performance_level: str = Query(None),
+    year: int | None = Query(None, ge=2000, le=2100),
+    position: str | None = Query(None),
+    region: str | None = Query(None),
     role: str = Depends(require_role(["Admin", "Manager"]))
 ):
     try:
@@ -543,22 +555,41 @@ def export_report(
             team=None if team == "All" else team,
             month=None if month == "All" else month,
             performance_level=_level_filter(performance_level),
+            year=year,
+            position=position,
+            region=region,
         )
         records = filter_records_by_scope(records, scope)
+
+        if team.casefold() == "marketing":
+            safe_position = position.replace(" ", "_") if position else None
+            period = "_".join(
+                part for part in (str(year) if year else None, month if month != "All" else None) if part
+            )
+            filename_parts = ["Marketing"]
+            if safe_position:
+                filename_parts.append(safe_position)
+            if period:
+                filename_parts.append(period)
+            report_stem = "_".join(filename_parts)
+        else:
+            report_stem = f"PMS_Report_{month}_{team}"
 
         if format.lower() == "csv":
             file_data = ReportExporter.export_to_csv(records)
             media_type = "text/csv"
-            filename = f"PMS_Report_{month}_{team}.csv"
+            filename = f"{report_stem}.csv"
         else:
             file_data = ReportExporter.export_to_excel(records)
             media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            filename = f"PMS_Report_{month}_{team}.xlsx"
+            filename = f"{report_stem}.xlsx"
 
         return StreamingResponse(
             io.BytesIO(file_data),
             media_type=media_type,
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Export failed.")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail="Export failed.") from exc

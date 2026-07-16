@@ -400,7 +400,14 @@ class ManagementBSCService:
         team = self.db.query(Team).filter(Team.name == team_name).first()
         if team:
             return team
-        team = Team(name=team_name, db_name=team_name, region="UAE", is_active=True)
+        team = Team(
+            name=team_name,
+            db_name=team_name,
+            display_name=team_name,
+            region="UAE",
+            team_level="management",
+            is_active=True,
+        )
         self.db.add(team)
         self.db.flush()
         return team
