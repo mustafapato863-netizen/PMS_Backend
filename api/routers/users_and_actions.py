@@ -15,16 +15,23 @@ from services.auth_service import AuthenticationService
 from services.password_service import hash_password
 from services.corrective_action_service import CorrectiveActionService
 from utils.performance_levels import PERFORMANCE_LEVELS
+from utils.team_identity import (
+    create_management_team_identity,
+    logical_team_name,
+    team_level_for_performance,
+)
 
 users_router = APIRouter()
 
 
 def _user_to_public_dict(user: User) -> dict:
     accessible_teams = list(dict.fromkeys(
-        assignment.team.name for assignment in user.team_assignments if assignment.team
+        logical_team_name(assignment.team)
+        for assignment in user.team_assignments
+        if assignment.team
     ))
     accessible_team_levels = [
-        [assignment.team.name, level]
+        [logical_team_name(assignment.team), level]
         for assignment in user.team_assignments
         if assignment.team
         for level in ([assignment.performance_level] if assignment.performance_level else PERFORMANCE_LEVELS)
@@ -74,10 +81,27 @@ def _replace_team_assignments(
     db.query(UserTeamAssignment).filter(UserTeamAssignment.user_id == user_id).delete(synchronize_session=False)
     if not team_names and not team_levels:
         return
-    teams_by_name = {team.name: team for team in _active_teams(db)}
+    teams = _active_teams(db)
+    scoped_teams = {
+        (logical_team_name(team).casefold(), team.team_level): team
+        for team in teams
+    }
     if team_levels:
         for team_name, level in dict.fromkeys(team_levels):
-            team = teams_by_name.get(team_name)
+            logical_key = str(team_name).strip().casefold()
+            desired_level = team_level_for_performance(level)
+            team = scoped_teams.get((logical_key, desired_level))
+            if not team and desired_level == "management":
+                employee_team = scoped_teams.get((logical_key, "employee"))
+                if employee_team:
+                    team = create_management_team_identity(
+                        db,
+                        logical_team_name(employee_team),
+                        region=employee_team.region,
+                    )
+                    scoped_teams[(logical_key, "management")] = team
+            if not team:
+                team = scoped_teams.get((logical_key, "employee"))
             if team:
                 db.add(UserTeamAssignment(
                     id=uuid.uuid4(), user_id=user_id, team_id=team.id,
@@ -85,17 +109,19 @@ def _replace_team_assignments(
                 ))
         return
     for team_name in team_names:
-        team = teams_by_name.get(team_name)
-        if not team:
-            continue
-        db.add(UserTeamAssignment(
-            id=uuid.uuid4(),
-            user_id=user_id,
-            team_id=team.id,
-            performance_level=None,
-            access_level="admin",
-            assigned_by="Admin",
-        ))
+        logical_key = str(team_name).strip().casefold()
+        matching_scopes = [
+            team for (name, _level), team in scoped_teams.items() if name == logical_key
+        ]
+        for team in matching_scopes:
+            db.add(UserTeamAssignment(
+                id=uuid.uuid4(),
+                user_id=user_id,
+                team_id=team.id,
+                performance_level=None,
+                access_level="admin",
+                assigned_by="Admin",
+            ))
 
 
 def _current_user_id(request: Request) -> str | None:
@@ -204,7 +230,11 @@ async def create_user(
         db.commit()
         if new_user.role == "Manager":
             if payload.is_general_manager:
-                _replace_team_assignments(db, new_user.id, [team.name for team in _active_teams(db)])
+                _replace_team_assignments(
+                    db,
+                    new_user.id,
+                    list(dict.fromkeys(logical_team_name(team) for team in _active_teams(db))),
+                )
             else:
                 _replace_team_assignments(db, new_user.id, payload.accessible_teams, payload.accessible_team_levels)
             db.commit()
@@ -281,7 +311,11 @@ async def update_user_route(
 
         if "accessible_teams" in updates or "accessible_team_levels" in updates or "is_general_manager" in updates:
             if updates.get("is_general_manager") and existing.role == "Manager":
-                _replace_team_assignments(db, existing.id, [team.name for team in _active_teams(db)])
+                _replace_team_assignments(
+                    db,
+                    existing.id,
+                    list(dict.fromkeys(logical_team_name(team) for team in _active_teams(db))),
+                )
             elif existing.role == "Manager":
                 _replace_team_assignments(
                     db,

@@ -98,7 +98,10 @@ class BatchProcessor:
                         pass
                 team = db.query(Team).filter(Team.id == team_uuid).first()
                 if not team:
-                    team = db.query(Team).filter(Team.name == team_key).first()
+                    team = db.query(Team).filter(
+                        Team.name == team_key,
+                        Team.team_level == "employee",
+                    ).first()
                 teams_cache[team_key] = team
                 
             if not teams_cache[team_key]:

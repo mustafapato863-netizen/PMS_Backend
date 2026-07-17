@@ -17,16 +17,16 @@ PERMISSION_MATRIX = {
         "view_reports", "export_data", "manage_users",
         "manage_permissions", "view_audit_logs", "restore_data",
         "manage_batch_operations", "configure_kpi",
-        "manage_alerts", "view_system_metrics"
+        "manage_alerts", "view_system_metrics", "view_plans", "manage_plans"
     ],
     "Manager": [
         "upload_data", "edit_performance", "view_reports",
         "export_data", "manage_team_members", "view_actions",
-        "create_actions", "manage_team_kpi"
+        "create_actions", "manage_team_kpi", "view_plans", "manage_plans"
     ],
     "Executive": [
         "view_reports", "export_data", "view_aggregated_analytics",
-        "view_audit_logs"
+        "view_audit_logs", "view_plans"
     ],
     "Viewer": [
         "view_reports"
@@ -36,20 +36,21 @@ PERMISSION_MATRIX = {
 
 def seed_role_permissions(db: Session) -> None:
     """
-    Seeds the role_permissions table if it is currently empty.
-    Useful for application initialization.
+    Adds missing mappings without replacing existing rows.
+
+    This is safe to run at every application start, including after new
+    permissions are introduced.
     """
     try:
-        # Check if already seeded
-        count = db.query(RolePermission).count()
-        if count > 0:
-            logger.info("Role permissions table is already populated. Skipping seeding.")
-            return
-
-        logger.info("🌱 Seeding role permissions matrix...")
+        existing = {
+            (row.role, row.permission)
+            for row in db.query(RolePermission.role, RolePermission.permission).all()
+        }
         seeded_count = 0
         for role, permissions in PERMISSION_MATRIX.items():
             for perm in permissions:
+                if (role, perm) in existing:
+                    continue
                 role_perm = RolePermission(
                     id=uuid.uuid4(),
                     role=role,
@@ -59,7 +60,7 @@ def seed_role_permissions(db: Session) -> None:
                 seeded_count += 1
         
         db.commit()
-        logger.info(f"🌱 Seeded {seeded_count} role permission mapping(s).")
+        logger.info("Seeded %s missing role permission mapping(s).", seeded_count)
     except Exception as e:
         db.rollback()
         logger.error(f"Failed to seed role permissions: {e}")

@@ -15,6 +15,7 @@ from api.middleware.rbac_middleware import AuthorizationMiddleware, require_perm
 from api.middleware.auth_middleware import AuthMiddleware
 from services.auth_service import AuthenticationService
 from config.database import get_db
+from api.routers.users_and_actions import _replace_team_assignments
 
 
 @pytest.fixture(scope="function")
@@ -180,6 +181,50 @@ class TestRBACPermissionChecks:
         
         # Denied on unassigned team2
         assert not await AuthorizationMiddleware.check_permission(db_session, str(user.id), "upload_data", str(team2.id))
+
+    def test_managerial_assignment_uses_distinct_management_team_identity(self, db_session):
+        user = AuthenticationService.create_user(
+            db_session,
+            "marketing_manager",
+            "marketing_manager@test.com",
+            "SecurePassword123!",
+            "Manager",
+        )
+        employee_team = Team(
+            id=uuid.uuid4(),
+            name="Marketing",
+            db_name="Marketing",
+            display_name="Marketing",
+            region="EGY",
+            team_level="employee",
+        )
+        db_session.add(employee_team)
+        db_session.commit()
+
+        _replace_team_assignments(
+            db_session,
+            user.id,
+            ["Marketing"],
+            [("Marketing", "Managerial")],
+        )
+        db_session.commit()
+
+        management_team = (
+            db_session.query(Team)
+            .filter(
+                Team.display_name == "Marketing",
+                Team.team_level == "management",
+            )
+            .one()
+        )
+        assignment = (
+            db_session.query(UserTeamAssignment)
+            .filter(UserTeamAssignment.user_id == user.id)
+            .one()
+        )
+        assert management_team.id != employee_team.id
+        assert assignment.team_id == management_team.id
+        assert assignment.performance_level == "Managerial"
 
 
 class TestRBACEndpoints:

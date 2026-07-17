@@ -322,12 +322,15 @@ async def get_management_kpi_config_teams(
     _user=Depends(require_permission("view_reports")),
 ):
     try:
-        rows = ManagementBSCService(db).list_management_teams()
+        service = ManagementBSCService(db)
+        rows = service.list_management_teams()
+        scopes = service.list_management_team_scopes()
     except ManagementBSCSchemaError as exc:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to retrieve teams.") from exc
     return {
         "success": True,
         "data": rows,
+        "scopes": scopes,
         "count": len(rows),
     }
 

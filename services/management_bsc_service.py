@@ -11,6 +11,11 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from models.models import ManagementKPIConfig, ManagementKPIConfigHistory, ManagementKPISnapshot, Team
 from services.balanced_scorecard_service import BalancedScorecardService, MONTHS
+from utils.team_identity import (
+    create_management_team_identity,
+    get_scoped_team,
+    logical_team_name,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -125,9 +130,10 @@ class ManagementBSCService:
                 "levels": sorted(touched_levels),
                 "data_source": "database_config",
             }
-        except SQLAlchemyError as exc:
+        except Exception as exc:
             self.db.rollback()
-            self._raise_if_schema_mismatch(exc, operation="import management BSC template")
+            if isinstance(exc, SQLAlchemyError):
+                self._raise_if_schema_mismatch(exc, operation="import management BSC template")
             raise
 
     def build_scorecard_dataset(
@@ -143,7 +149,15 @@ class ManagementBSCService:
         base_config: dict[str, Any],
     ) -> dict[str, Any]:
         try:
-            team = self._get_team(team_name)
+            team = get_scoped_team(self.db, team_name, "management")
+            if not team:
+                return self._empty_response(
+                    team_name,
+                    performance_level,
+                    month,
+                    year,
+                    history_months,
+                )
             snapshots = (
                 self.db.query(ManagementKPISnapshot)
                 .filter(
@@ -161,11 +175,17 @@ class ManagementBSCService:
             snapshots = [row for row in snapshots if row.employee_identifier in selected_ids]
 
         if not snapshots:
-            return self._empty_response(team_name, performance_level, month, year, history_months, top_position=top_position)
+            return self._empty_response(
+                team_name, performance_level, month, year, history_months,
+                top_position=top_position, team_id=str(team.id),
+            )
 
         periods = sorted({_period_value(row.month, row.year) for row in snapshots if MONTHS.get(row.month)})
         if not periods:
-            return self._empty_response(team_name, performance_level, month, year, history_months, top_position=top_position)
+            return self._empty_response(
+                team_name, performance_level, month, year, history_months,
+                top_position=top_position, team_id=str(team.id),
+            )
 
         candidates = [period for period in periods if year is None or period[0] == year]
         if month and month != "All":
@@ -173,7 +193,7 @@ class ManagementBSCService:
         if not candidates:
             return self._empty_response(
                 team_name, performance_level, month, year, history_months,
-                top_position=top_position, available_periods=periods,
+                top_position=top_position, available_periods=periods, team_id=str(team.id),
             )
         selected_period = candidates[-1]
 
@@ -199,7 +219,7 @@ class ManagementBSCService:
         if not configs:
             return self._empty_response(
                 team_name, performance_level, month, year, history_months,
-                top_position=top_position, available_periods=periods,
+                top_position=top_position, available_periods=periods, team_id=str(team.id),
             )
 
         config_lookup = self._group_configs(configs)
@@ -207,7 +227,7 @@ class ManagementBSCService:
         if not records:
             return self._empty_response(
                 team_name, performance_level, month, year, history_months,
-                top_position=top_position, available_periods=periods,
+                top_position=top_position, available_periods=periods, team_id=str(team.id),
             )
 
         period_configs = {
@@ -228,7 +248,12 @@ class ManagementBSCService:
             period_configs=period_configs,
         )
         data.setdefault("selection", {})
-        data.setdefault("team", {})["top_position"] = top_position
+        data.setdefault("team", {}).update({
+            "id": str(team.id),
+            "name": logical_team_name(team),
+            "team_level": "management",
+            "top_position": top_position,
+        })
         data["available_periods"] = [
             {
                 "month": next(name for name, number in MONTHS.items() if number == period[1]),
@@ -247,7 +272,9 @@ class ManagementBSCService:
 
     def list_configs(self, *, team_name: str, performance_level: str | None = None) -> list[dict[str, Any]]:
         try:
-            team = self._get_team(team_name)
+            team = get_scoped_team(self.db, team_name, "management")
+            if not team:
+                return []
             query = self.db.query(ManagementKPIConfig).filter(ManagementKPIConfig.team_id == team.id)
             if performance_level:
                 query = query.filter(ManagementKPIConfig.performance_level == performance_level)
@@ -282,7 +309,9 @@ class ManagementBSCService:
 
     def list_history(self, *, team_name: str) -> list[dict[str, Any]]:
         try:
-            team = self._get_team(team_name)
+            team = get_scoped_team(self.db, team_name, "management")
+            if not team:
+                return []
             rows = (
                 self.db.query(ManagementKPIConfigHistory)
                 .filter(ManagementKPIConfigHistory.team_id == team.id)
@@ -308,22 +337,101 @@ class ManagementBSCService:
     def list_management_teams(self) -> list[str]:
         try:
             rows = (
-                self.db.query(Team.name)
+                self.db.query(Team.display_name, Team.name)
                 .join(ManagementKPIConfig, ManagementKPIConfig.team_id == Team.id)
-                .filter(ManagementKPIConfig.is_active.is_(True))
+                .filter(
+                    ManagementKPIConfig.is_active.is_(True),
+                    Team.team_level == "management",
+                )
                 .distinct()
-                .order_by(Team.name.asc())
+                .order_by(Team.display_name.asc(), Team.name.asc())
                 .all()
             )
         except SQLAlchemyError as exc:
             self._raise_if_schema_mismatch(exc, operation="list management KPI teams")
             raise
-        return [name for (name,) in rows if name]
+        return sorted({display_name or name for display_name, name in rows if display_name or name})
+
+    def list_management_team_scopes(self) -> list[dict[str, str]]:
+        try:
+            rows = (
+                self.db.query(Team)
+                .join(ManagementKPIConfig, ManagementKPIConfig.team_id == Team.id)
+                .filter(
+                    ManagementKPIConfig.is_active.is_(True),
+                    Team.team_level == "management",
+                    Team.is_active.is_(True),
+                )
+                .distinct()
+                .order_by(Team.display_name.asc(), Team.name.asc())
+                .all()
+            )
+        except SQLAlchemyError as exc:
+            self._raise_if_schema_mismatch(exc, operation="list management team scopes")
+            raise
+        return [
+            {
+                "id": str(team.id),
+                "name": logical_team_name(team),
+                "team_level": "management",
+            }
+            for team in rows
+        ]
+
+    def list_analysis_records(self) -> list[dict[str, Any]]:
+        """Return management snapshots in the canonical scorecard record shape.
+
+        This is intentionally read-only and reuses the same snapshot/config resolution
+        used by ``build_scorecard_dataset`` so reporting and insights do not invent a
+        second management scoring path.
+        """
+        try:
+            teams = (
+                self.db.query(Team)
+                .filter(Team.team_level == "management", Team.is_active.is_(True))
+                .all()
+            )
+            snapshots = self.db.query(ManagementKPISnapshot).all()
+            configs = self.db.query(ManagementKPIConfig).filter(ManagementKPIConfig.is_active.is_(True)).all()
+        except SQLAlchemyError as exc:
+            self._raise_if_schema_mismatch(exc, operation="read management analysis records")
+            raise
+
+        team_by_id = {team.id: team for team in teams}
+        snapshots_by_scope: dict[tuple[Any, str], list[ManagementKPISnapshot]] = defaultdict(list)
+        configs_by_scope: dict[tuple[Any, str], list[ManagementKPIConfig]] = defaultdict(list)
+        for row in snapshots:
+            if row.team_id in team_by_id:
+                snapshots_by_scope[(row.team_id, row.performance_level)].append(row)
+        for row in configs:
+            if row.team_id in team_by_id:
+                configs_by_scope[(row.team_id, row.performance_level)].append(row)
+
+        result: list[dict[str, Any]] = []
+        for scope_key, scope_snapshots in snapshots_by_scope.items():
+            scope_configs = configs_by_scope.get(scope_key, [])
+            if not scope_configs:
+                continue
+            team = team_by_id[scope_key[0]]
+            records = self._build_records_from_snapshots(scope_snapshots, self._group_configs(scope_configs))
+            for record in records:
+                record["team"] = logical_team_name(team)
+                record["region"] = team.region
+                record["position"] = record.get("raw_data", {}).get("Position")
+                measured = [
+                    value for value in record["kpi_values"]
+                    if value.get("contribution") is not None and value.get("weight_applied")
+                ]
+                measured_weight = sum(float(value["weight_applied"]) for value in measured)
+                contribution = sum(float(value["contribution"]) for value in measured)
+                record["evaluation"]["score"] = contribution / measured_weight * 100 if measured_weight else None
+                result.append(record)
+        return result
 
     def list_upload_batches(self) -> list[dict[str, Any]]:
         try:
             rows = (
-                self.db.query(ManagementKPIConfigHistory, Team.name)
+                self.db.query(ManagementKPIConfigHistory, Team.display_name, Team.name)
                 .join(Team, Team.id == ManagementKPIConfigHistory.team_id)
                 .filter(ManagementKPIConfigHistory.upload_batch_id.isnot(None))
                 .order_by(ManagementKPIConfigHistory.changed_at.desc())
@@ -333,7 +441,8 @@ class ManagementBSCService:
             self._raise_if_schema_mismatch(exc, operation="list management upload batches")
             raise
         grouped: dict[str, dict[str, Any]] = {}
-        for history, team_name in rows:
+        for history, display_name, stored_name in rows:
+            team_name = display_name or stored_name
             batch_id = str(history.upload_batch_id)
             item = grouped.setdefault(batch_id, {
                 "id": batch_id,
@@ -391,26 +500,22 @@ class ManagementBSCService:
             raise
 
     def _get_team(self, team_name: str) -> Team:
-        team = self.db.query(Team).filter(Team.name == team_name).first()
+        team = get_scoped_team(self.db, team_name, "management")
         if not team:
             raise ValueError(f"Team '{team_name}' was not found in database")
         return team
 
     def _get_or_create_team(self, team_name: str) -> Team:
-        team = self.db.query(Team).filter(Team.name == team_name).first()
+        team = get_scoped_team(self.db, team_name, "management", include_inactive=True)
         if team:
+            team.is_active = True
             return team
-        team = Team(
-            name=team_name,
-            db_name=team_name,
-            display_name=team_name,
-            region="UAE",
-            team_level="management",
-            is_active=True,
+        employee_team = get_scoped_team(self.db, team_name, "employee", include_inactive=True)
+        return create_management_team_identity(
+            self.db,
+            team_name,
+            region=employee_team.region if employee_team else "UAE",
         )
-        self.db.add(team)
-        self.db.flush()
-        return team
 
     def _build_database_payload(self, rows: list[dict[str, Any]]) -> dict[str, Any]:
         from services.bsc_template_service import bsc_template_service
@@ -555,6 +660,10 @@ class ManagementBSCService:
                 record["kpi_values"].append(
                     {
                         "kpi_key": config_row.kpi_key,
+                        "label": config_row.kpi_label,
+                        "perspective": config_row.perspective_key,
+                        "direction": config_row.direction,
+                        "unit": config_row.target_unit or "%",
                         "actual_value": actual_value,
                         "target_value": target_value,
                         "achievement_ratio": ratio,
@@ -655,10 +764,13 @@ class ManagementBSCService:
         *,
         top_position: str | None = None,
         available_periods: list[tuple[int, int]] | None = None,
+        team_id: str | None = None,
     ) -> dict[str, Any]:
         return {
             "team": {
+                "id": team_id,
                 "name": team_name,
+                "team_level": "management",
                 "performance_level": performance_level,
                 "balanced_scorecard": True,
                 "top_position": top_position,

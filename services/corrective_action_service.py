@@ -69,6 +69,8 @@ class CorrectiveActionService:
         return parsed or uuid.uuid5(ACTION_ID_NAMESPACE, value.strip())
 
     def _score_snapshot(self, action: Action) -> tuple[float, str]:
+        if not action.employee_id:
+            return 0.0, ""
         record = (
             self.db.query(PerformanceRecord)
             .filter(
@@ -90,9 +92,9 @@ class CorrectiveActionService:
         timestamp = action.created_at or dt.datetime.now(dt.timezone.utc)
         return {
             "id": str(action.id),
-            "employee_id": action.employee.employee_id,
-            "employee_name": action.employee.name,
-            "team": action.team.name,
+            "employee_id": action.employee.employee_id if action.employee else None,
+            "employee_name": action.employee.name if action.employee else None,
+            "team": action.team.display_name or action.team.name,
             "month": action.month,
             "year": action.year,
             "score": score,
@@ -108,7 +110,13 @@ class CorrectiveActionService:
         }
 
     def list_all(self) -> list[dict[str, Any]]:
-        return [self.serialize(action) for action in self.actions.list_active()]
+        # Planning reuses Action, while this legacy workspace remains
+        # employee-specific and keeps its existing response contract.
+        return [
+            self.serialize(action)
+            for action in self.actions.list_active()
+            if action.employee_id is not None
+        ]
 
     def get_history(self, employee_identifier: str) -> list[dict[str, Any]]:
         employee = self._employee(employee_identifier)

@@ -327,7 +327,7 @@ class DatabaseSeeder:
         owns_session = db_session is None
         try:
             teams_by_name = {}
-            for team in db.query(Team).all():
+            for team in db.query(Team).filter(Team.team_level == "employee").all():
                 teams_by_name[team.name.lower()] = team
                 teams_by_name[team.db_name.lower()] = team
 

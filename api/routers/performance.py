@@ -21,12 +21,12 @@ from sqlalchemy.orm import Session
 from models.schemas import StandardResponse
 from exports.report_exporter import ReportExporter
 from repositories.performance_repository import PerformanceRepository as SQLPerformanceRepository
-from models.models import PerformanceRecord
 from utils.performance_levels import normalize_performance_level
 from config.loader import ConfigurationError, load_team_config, resolve_team_config
 from services.balanced_scorecard_service import BalancedScorecardService
 from services.bsc_template_service import bsc_template_service
 from services.management_bsc_service import ManagementBSCService, ManagementBSCSchemaError
+from services.dashboard_record_service import DashboardRecordService
 from api.middleware.rbac_middleware import require_permission
 from services.upload_security import read_validated_excel
 
@@ -96,39 +96,11 @@ def _get_dashboard_records(
     position: str | None = None,
     region: str | None = None,
 ):
-    sql_repo = SQLPerformanceRepository(db, PerformanceRecord)
-    try:
-        keys = sql_repo.get_dashboard_record_keys(
-            team=team,
-            month=month,
-            employee_id=employee_id,
-            grade=grade,
-            status=status,
-            performance_level=performance_level,
-            year=year,
-            position=position,
-            region=region,
-        )
-    except Exception:
-        keys = []
-
-    if keys:
-        key_set = set(keys)
-        if year is None:
-            # Legacy JSON records predate the year field. SQL remains the
-            # visibility/filter source, but an unscoped dashboard request must
-            # still resolve those records by employee/team/month.
-            key_set.update(
-                (employee_id_key, team_key, month_key, None)
-                for employee_id_key, team_key, month_key, _record_year in keys
-            )
-        matched = performance_repo.get_filtered_by_keys(key_set)
-        if performance_level:
-            matched = [record for record in matched if record.performance_level == performance_level]
-        if matched:
-            return matched
-
-    return performance_repo.get_filtered(
+    return DashboardRecordService(
+        db,
+        json_repository=performance_repo,
+        sql_repository_cls=SQLPerformanceRepository,
+    ).list_records(
         team=team,
         month=month,
         employee_id=employee_id,

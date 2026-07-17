@@ -60,6 +60,7 @@ class TeamService:
                 else (team.display_name or team.name)
             ),
             "db_name": team.db_name,
+            "team_level": team.team_level,
             "region": config.get("region", team.region) if config else team.region,
             "description": None,
             "kpi_keys": kpi_keys,
@@ -83,7 +84,7 @@ class TeamService:
         db = SessionLocal()
         try:
             repo = TeamRepository(db, Team)
-            teams = repo.get_all()
+            teams = repo.get_active_teams(team_level="employee")
             
             result = []
             for team in teams:
@@ -441,8 +442,8 @@ class TeamService:
         db = SessionLocal()
         try:
             repo = TeamRepository(db, Team)
-            all_teams = repo.get_all()
-            active_teams = repo.get_active_teams()
+            all_teams = [team for team in repo.get_all() if team.team_level == "employee"]
+            active_teams = repo.get_active_teams(team_level="employee")
             
             # Get all regions
             regions = set()
@@ -450,7 +451,14 @@ class TeamService:
                 regions.add(team.region)
             
             # Get all KPI keys
-            kpi_configs = db.query(TeamKPIConfig).all()
+            employee_team_ids = [team.id for team in all_teams]
+            kpi_configs = (
+                db.query(TeamKPIConfig)
+                .filter(TeamKPIConfig.team_id.in_(employee_team_ids))
+                .all()
+                if employee_team_ids
+                else []
+            )
             kpi_keys = set(kpi.kpi_key for kpi in kpi_configs)
             
             return {

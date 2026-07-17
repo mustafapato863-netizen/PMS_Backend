@@ -10,23 +10,36 @@ logger = logging.getLogger(__name__)
 class TeamRepository(BaseRepository[Team]):
     """Repository for Team model"""
     
-    def get_by_name(self, name: str, include_deleted: bool = False) -> Team:
+    def get_by_name(
+        self,
+        name: str,
+        include_deleted: bool = False,
+        team_level: str = "employee",
+    ) -> Team:
         """Get team by name"""
-        query = self.db.query(Team).filter(Team.name == name)
+        query = self.db.query(Team).filter(Team.name == name, Team.team_level == team_level)
         if not include_deleted:
             query = query.filter(Team.is_active == True)
         return query.first()
     
-    def get_by_db_name(self, db_name: str, include_deleted: bool = False) -> Team:
+    def get_by_db_name(
+        self,
+        db_name: str,
+        include_deleted: bool = False,
+        team_level: str = "employee",
+    ) -> Team:
         """Get team by database name"""
-        query = self.db.query(Team).filter(Team.db_name == db_name)
+        query = self.db.query(Team).filter(Team.db_name == db_name, Team.team_level == team_level)
         if not include_deleted:
             query = query.filter(Team.is_active == True)
         return query.first()
     
-    def get_active_teams(self) -> list:
+    def get_active_teams(self, team_level: str | None = None) -> list:
         """Get all active teams"""
-        return self.db.query(Team).filter(Team.is_active == True).all()
+        query = self.db.query(Team).filter(Team.is_active == True)
+        if team_level:
+            query = query.filter(Team.team_level == team_level)
+        return query.all()
     
     def get_by_region(self, region: str, include_deleted: bool = False) -> list:
         """Get teams by region"""

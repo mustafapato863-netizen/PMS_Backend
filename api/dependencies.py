@@ -19,6 +19,12 @@ from services.trend_service import TrendService
 from services.insights_service import InsightsService
 from models.models import User, Team, UserTeamAssignment
 from utils.performance_levels import PERFORMANCE_LEVELS
+from utils.team_identity import logical_team_name
+from utils.report_scope import (
+    filter_records_by_scope as filter_records_for_scope,
+    user_can_access_team as scope_can_access_team,
+    user_can_access_team_level as scope_can_access_team_level,
+)
 
 # ── cache for serialized performance records ──
 _serialize_cache: dict[str, tuple[dict, float]] = {}
@@ -252,21 +258,23 @@ def get_current_user_scope(db, request: Request) -> dict:
         }
 
     active_teams = db.query(Team).filter(Team.is_active.is_(True)).all()
-    active_team_names = [team.name for team in active_teams]
+    active_team_names = list(dict.fromkeys(logical_team_name(team) for team in active_teams))
     assignments = (
         db.query(UserTeamAssignment, Team)
         .join(Team, Team.id == UserTeamAssignment.team_id)
         .filter(UserTeamAssignment.user_id == user.id, Team.is_active.is_(True))
         .all()
     )
-    assigned_teams = list(dict.fromkeys(team.name for _, team in assignments))
+    assigned_teams = list(dict.fromkeys(logical_team_name(team) for _, team in assignments))
     accessible_team_levels = list(dict.fromkeys(
-        (team.name, level)
+        (logical_team_name(team), level)
         for assignment, team in assignments
         for level in ([assignment.performance_level] if assignment.performance_level else PERFORMANCE_LEVELS)
     ))
     unrestricted_teams = {
-        team.name for assignment, team in assignments if assignment.performance_level is None
+        logical_team_name(team)
+        for assignment, team in assignments
+        if assignment.performance_level is None
     }
     is_general_manager = user.role == "Admin" or (
         user.role == "Manager" and bool(active_team_names) and unrestricted_teams >= set(active_team_names)
@@ -294,28 +302,12 @@ def get_current_user_scope(db, request: Request) -> dict:
 
 
 def user_can_access_team(scope: dict, team_name: str) -> bool:
-    if scope.get("legacy_unscoped"):
-        return True
-    if scope.get("role") == "Admin" or scope.get("is_general_manager"):
-        return True
-    accessible = {team.lower() for team in scope.get("accessible_teams", [])}
-    return team_name.lower() in accessible
+    return scope_can_access_team(scope, team_name)
 
 
 def user_can_access_team_level(scope: dict, team_name: str, performance_level: str) -> bool:
     """Level-specific assignments restrict BSC access; legacy NULL assignments retain all-level access."""
-    if scope.get("legacy_unscoped"):
-        return False
-    if scope.get("role") == "Admin" or scope.get("is_general_manager"):
-        return True
-    if not user_can_access_team(scope, team_name):
-        return False
-    configured = {
-        (str(team).lower(), str(level))
-        for team, level in scope.get("accessible_team_levels", [])
-    }
-    team_levels = {level for team, level in configured if team == team_name.lower()}
-    return not team_levels or performance_level in team_levels
+    return scope_can_access_team_level(scope, team_name, performance_level)
 
 
 def require_authenticated_scope(db, request: Request) -> dict:
@@ -326,13 +318,4 @@ def require_authenticated_scope(db, request: Request) -> dict:
 
 
 def filter_records_by_scope(records, scope: dict):
-    if scope.get("legacy_unscoped"):
-        return records
-    role = scope.get("role")
-    if role == "Agent" or role == "Executive":
-        self_id = str(scope.get("employee_id") or scope.get("user_id") or "")
-        return [r for r in records if str(getattr(r, "employee_id", "")) == self_id]
-    if role == "Manager" and not scope.get("is_general_manager"):
-        accessible = {team.lower() for team in scope.get("accessible_teams", [])}
-        return [r for r in records if str(getattr(r, "team", "")).lower() in accessible]
-    return records
+    return filter_records_for_scope(records, scope)

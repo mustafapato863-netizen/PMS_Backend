@@ -10,6 +10,7 @@ from models.schemas import LoginPayload, JWTToken, StandardResponse
 from models.models import Team, User, UserTeamAssignment
 from services.auth_service import AuthenticationService, redis_client
 from utils.performance_levels import PERFORMANCE_LEVELS
+from utils.team_identity import logical_team_name
 
 logger = logging.getLogger(__name__)
 
@@ -108,15 +109,21 @@ async def me(request: Request, db: Session = Depends(get_db)):
             .filter(UserTeamAssignment.user_id == user.id)
             .all()
         )
-        accessible_teams = list(dict.fromkeys(team.name for _, team in assignments))
+        accessible_teams = list(dict.fromkeys(logical_team_name(team) for _, team in assignments))
         accessible_team_levels = [
-            [team.name, level]
+            [logical_team_name(team), level]
             for assignment, team in assignments
             for level in ([assignment.performance_level] if assignment.performance_level else PERFORMANCE_LEVELS)
         ]
-        active_team_count = db.query(Team).filter(Team.is_active.is_(True)).count()
+        active_team_names = {
+            logical_team_name(team)
+            for team in db.query(Team).filter(Team.is_active.is_(True)).all()
+        }
+        active_team_count = len(active_team_names)
         unrestricted_teams = {
-            team.name for assignment, team in assignments if assignment.performance_level is None
+            logical_team_name(team)
+            for assignment, team in assignments
+            if assignment.performance_level is None
         }
         is_general_manager = user.role == "Admin" or (
             user.role == "Manager" and active_team_count > 0 and len(unrestricted_teams) >= active_team_count

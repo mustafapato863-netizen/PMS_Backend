@@ -1,11 +1,11 @@
 import pandas as pd
 import io
-from typing import List
+from typing import Any, List
 from models.schemas import PerformanceRecord
 
 class ReportExporter:
     @staticmethod
-    def _flatten_record(r: PerformanceRecord) -> dict:
+    def flatten_record(r: PerformanceRecord) -> dict:
         row = {
             "Employee ID": r.employee_id,
             "Employee Name": r.employee_name,
@@ -43,7 +43,7 @@ class ReportExporter:
     @staticmethod
     def export_to_excel(records: List[PerformanceRecord]) -> bytes:
         """Converts performance records to a formatted Excel file binary."""
-        flat_records = [ReportExporter._flatten_record(record) for record in records]
+        flat_records = [ReportExporter.flatten_record(record) for record in records]
 
         df = pd.DataFrame(flat_records)
         output = io.BytesIO()
@@ -52,9 +52,27 @@ class ReportExporter:
         return output.getvalue()
 
     @staticmethod
+    def export_workbook(
+        *,
+        metadata: dict[str, Any],
+        sheets: dict[str, list[dict[str, Any]]],
+    ) -> bytes:
+        """Create an Excel workbook from explicitly selected report sections."""
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+            pd.DataFrame([{"Field": key, "Value": value} for key, value in metadata.items()]).to_excel(
+                writer,
+                sheet_name="Report Metadata",
+                index=False,
+            )
+            for sheet_name, rows in sheets.items():
+                pd.DataFrame(rows).to_excel(writer, sheet_name=sheet_name[:31], index=False)
+        return output.getvalue()
+
+    @staticmethod
     def export_to_csv(records: List[PerformanceRecord]) -> bytes:
         """Converts performance records to CSV binary."""
-        flat_records = [ReportExporter._flatten_record(record) for record in records]
+        flat_records = [ReportExporter.flatten_record(record) for record in records]
 
         df = pd.DataFrame(flat_records)
         output = io.BytesIO()

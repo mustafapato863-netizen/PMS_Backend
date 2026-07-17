@@ -137,6 +137,20 @@ def test_selected_person_history_does_not_invent_other_people_periods():
     assert [row["month"] for row in data["selected_kpi"]["history"]] == ["May"]
 
 
+def test_available_people_only_contains_people_from_selected_period():
+    data = BalancedScorecardService.build(
+        [
+            record("1", "Historical Manager", 2025, 0.4, 0.2, month="April"),
+            record("2", "Current Manager", 2025, 0.5, 0.3, month="May"),
+        ],
+        config(), "Test Team", "Managerial", "All", 2025,
+    )
+
+    assert [row["employee_id"] for row in data["available_people"]] == ["2"]
+    assert [row["employee_id"] for row in data["contributors"]] == ["2"]
+    assert [row["month"] for row in data["history"]] == ["April", "May"]
+
+
 def test_bsc_config_validation_rejects_unknown_perspective():
     raw = config()
     raw["performance_levels"] = {"Managerial": {"balanced_scorecard": raw.pop("balanced_scorecard"), "kpis": raw.pop("kpis")}}

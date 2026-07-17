@@ -3,6 +3,8 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
+from sqlalchemy import func
+
 from config.database import SessionLocal
 from models.models import Notification, NotificationRecipient, Team, User, UserTeamAssignment
 
@@ -72,7 +74,9 @@ class NotificationService:
                         .filter(
                             User.role == "Manager",
                             User.is_active.is_(True),
-                            Team.name.in_(affected_team_names),
+                            func.lower(func.coalesce(Team.display_name, Team.name)).in_(
+                                {name.casefold() for name in affected_team_names}
+                            ),
                             Team.is_active.is_(True),
                         )
                         .distinct()
@@ -88,7 +92,8 @@ class NotificationService:
                     .filter(
                         User.role == "Manager",
                         User.is_active.is_(True),
-                        Team.name == team_name,
+                        func.lower(func.coalesce(Team.display_name, Team.name))
+                        == str(team_name).casefold(),
                         Team.is_active.is_(True),
                     )
                     .all()

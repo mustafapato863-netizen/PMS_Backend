@@ -103,9 +103,11 @@ class TeamUpdateRequest(BaseModel):
 class TeamResponse(BaseModel):
     """Response containing team information."""
     
+    id: str
     name: str
     display_name: str
     region: str
+    team_level: Literal['employee', 'management']
     description: Optional[str]
     kpi_keys: List[str]
     kpi_weights: Dict[str, float]

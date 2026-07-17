@@ -90,6 +90,7 @@ class TestTeamManagementRouter:
                     "display_name": "Inbound Team",
                     "db_name": "inbound_db",
                     "region": "UAE",
+                    "team_level": "employee",
                     "description": "Inbound team",
                     "kpi_keys": ["attendance", "quality"],
                     "kpi_weights": {"attendance": 0.5, "quality": 0.5},
@@ -107,6 +108,7 @@ class TestTeamManagementRouter:
             data = response.json()
             assert data["total"] == 1
             assert data["active_count"] == 1
+            assert data["teams"][0]["team_level"] == "employee"
 
 
 class TestEmployeeRouter:

@@ -209,8 +209,12 @@ class BalancedScorecardService:
         else:
             selected_period = periods[-1] if periods else None
 
+        roster_records = [
+            record for record in records
+            if selected_period and _period_key(record) == selected_period
+        ]
         people_by_id = {}
-        for record in records:
+        for record in roster_records:
             raw_data = _value(record, "raw_data", {}) or {}
             people_by_id[str(_value(record, "employee_id", ""))] = {
                 "employee_id": str(_value(record, "employee_id", "")),

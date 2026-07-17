@@ -31,7 +31,7 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
             Employee, PerformanceRecord.employee_id == Employee.id
         ).join(
             Team, PerformanceRecord.team_id == Team.id
-        )
+        ).filter(Team.team_level == "employee")
 
         if team:
             query = query.filter(Team.name == team)

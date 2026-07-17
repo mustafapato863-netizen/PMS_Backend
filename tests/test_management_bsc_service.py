@@ -443,7 +443,131 @@ def test_import_template_rows_creates_missing_team_from_template():
     result = service.import_template_rows(rows=rows, updated_by="tester")
 
     assert result["teams"] == ["Call Center"]
-    assert session.query(Team).filter(Team.name == "Call Center").first() is not None
+    team = (
+        session.query(Team)
+        .filter(
+            Team.display_name == "Call Center",
+            Team.team_level == "management",
+        )
+        .one()
+    )
+    assert team.name == "call_center_management"
+    assert team.db_name == "call_center_management"
+    session.close()
+
+
+def test_analysis_records_reuse_management_snapshot_configuration():
+    session = _db()
+    _seed_team(session, "Sales")
+    service = ManagementBSCService(session)
+    service.import_template_rows(rows=[{
+        "employee_id": "MGR-1",
+        "team": "Sales",
+        "employee_name": "Manager One",
+        "position": "Sales Manager",
+        "performance_level": "Managerial",
+        "month": "June",
+        "year": 2026,
+        "perspective": "Financial",
+        "kpi_label": "Revenue Achievement",
+        "direction": "higher_better",
+        "weight": 1.0,
+        "target_value": 100.0,
+        "target_unit": "%",
+        "actual_value": 90.0,
+    }], updated_by="tester")
+
+    records = service.list_analysis_records()
+
+    record = next(item for item in records if item["employee_id"] == "MGR-1")
+    assert record["team"] == "Sales"
+    assert record["performance_level"] == "Managerial"
+    assert record["evaluation"]["score"] == 90.0
+    assert record["kpi_values"][0] | {
+        "label": "Revenue Achievement",
+        "direction": "higher_better",
+        "unit": "%",
+    } == record["kpi_values"][0]
+    session.close()
+
+
+def test_management_import_creates_distinct_identity_for_existing_employee_team():
+    session = _db()
+    employee_team = _seed_team(session, "Marketing")
+    service = ManagementBSCService(session)
+    rows = [
+        {
+            "employee_id": "EMP-1",
+            "team": "Marketing",
+            "employee_name": "One",
+            "position": "Marketing Manager",
+            "performance_level": "Managerial",
+            "month": "May",
+            "year": 2025,
+            "perspective": "Customer",
+            "kpi_label": "Campaign Quality",
+            "direction": "higher_better",
+            "weight": 1.0,
+            "target_value": 90.0,
+            "target_unit": "%",
+            "actual_value": 91.0,
+        },
+    ]
+
+    service.import_template_rows(rows=rows, updated_by="tester")
+
+    management_team = (
+        session.query(Team)
+        .filter(
+            Team.display_name == "Marketing",
+            Team.team_level == "management",
+        )
+        .one()
+    )
+    assert management_team.id != employee_team.id
+    assert management_team.name == "marketing_management"
+    assert management_team.db_name == "marketing_management"
+    assert management_team.display_name == employee_team.name
+
+    data = service.build_scorecard_dataset(
+        team_name="Marketing",
+        performance_level="Managerial",
+        month="May",
+        year=2025,
+        employee_ids=["EMP-1"],
+        history_months=6,
+        selected_kpi=None,
+        base_config=_base_config(),
+    )
+    assert data["team"]["id"] == str(management_team.id)
+    assert data["team"]["team_level"] == "management"
+    session.close()
+
+
+def test_management_import_rolls_back_new_scoped_identity_on_failure(monkeypatch):
+    session = _db()
+    service = ManagementBSCService(session)
+
+    def fail_payload(_rows):
+        raise ValueError("invalid management payload")
+
+    monkeypatch.setattr(service, "_build_database_payload", fail_payload)
+
+    with pytest.raises(ValueError, match="invalid management payload"):
+        service.import_template_rows(
+            rows=[{"team": "New Management Team"}],
+            updated_by="tester",
+        )
+
+    assert (
+        session.query(Team)
+        .filter(
+            Team.display_name == "New Management Team",
+            Team.team_level == "management",
+        )
+        .count()
+        == 0
+    )
     session.close()
 
 

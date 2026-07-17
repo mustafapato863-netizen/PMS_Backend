@@ -39,12 +39,13 @@ class TestTeamService:
         mock_team.id = uuid.uuid4()
         mock_team.name = 'test_team'
         mock_team.db_name = 'test_team_db'
+        mock_team.team_level = 'employee'
         mock_team.region = 'UAE'
         mock_team.is_active = True
         mock_team.created_at = datetime.now()
         mock_team.updated_at = datetime.now()
         
-        mock_repo_instance.get_all.return_value = [mock_team]
+        mock_repo_instance.get_active_teams.return_value = [mock_team]
         mock_session.query.return_value.filter.return_value.all.return_value = []
         
         # Execute
@@ -76,12 +77,13 @@ class TestTeamService:
         mock_team.id = uuid.uuid4()
         mock_team.name = 'new_team'
         mock_team.db_name = 'new_team_db'
+        mock_team.team_level = 'employee'
         mock_team.region = 'UAE'
         mock_team.is_active = True
         mock_team.created_at = datetime.now()
         mock_team.updated_at = datetime.now()
 
-        mock_repo_instance.get_all.return_value = [mock_team]
+        mock_repo_instance.get_active_teams.return_value = [mock_team]
         mock_session.query.return_value.filter.return_value.all.return_value = []
         mock_load_team_config.return_value = {
             'team': 'New Team',

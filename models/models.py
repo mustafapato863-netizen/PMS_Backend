@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String, Integer, SmallInteger, Numeric, Boolean, DateTime, ForeignKey, Text, ForeignKeyConstraint, UniqueConstraint, CheckConstraint, Enum as SQLEnum, JSON, Index
+from sqlalchemy import Column, String, Integer, SmallInteger, Numeric, Boolean, Date, DateTime, ForeignKey, Text, LargeBinary, ForeignKeyConstraint, UniqueConstraint, CheckConstraint, Enum as SQLEnum, JSON, Index
 from sqlalchemy.dialects.postgresql import UUID, JSONB, INET
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -29,6 +29,20 @@ class Team(Base):
 
     # Relationships
     employees = relationship("Employee", back_populates="team")
+
+    __table_args__ = (
+        CheckConstraint(
+            "team_level IN ('employee', 'management')",
+            name="ck_team_level",
+        ),
+        Index(
+            "uq_team_logical_level_ci",
+            func.lower(func.coalesce(display_name, name)),
+            team_level,
+            unique=True,
+        ),
+        Index("idx_team_scope_lookup", "display_name", "team_level", "is_active"),
+    )
 
 
 class TeamKPIConfig(Base):
@@ -229,6 +243,8 @@ class UploadLog(Base):
     error_message = Column(Text, nullable=True)
     uploaded_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    team = relationship("Team")
+
 
 class PerformanceRecord(Base):
     __tablename__ = "performance_records"
@@ -389,11 +405,161 @@ class KPIWeightHistory(Base):
 # 6. ACTIONS - MANAGER INTERVENTIONS
 # ============================================================
 
+class PerformancePlan(Base):
+    __tablename__ = "performance_plans"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(180), nullable=False)
+    scope_type = Column(String(20), nullable=False)
+    team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False)
+    performance_level = Column(String(20), nullable=False)
+    region = Column(String(10), nullable=True)
+    position_name = Column(String(255), nullable=True)
+    employee_id = Column(UUID(as_uuid=True), ForeignKey("employees.id", ondelete="RESTRICT"), nullable=True)
+    period_start = Column(Date, nullable=False)
+    period_end = Column(Date, nullable=False)
+    due_date = Column(Date, nullable=False)
+    owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
+    baseline_value = Column(Numeric(18, 4), nullable=False)
+    target_value = Column(Numeric(18, 4), nullable=False)
+    current_value = Column(Numeric(18, 4), nullable=True)
+    outcome_unit = Column(String(30), nullable=False, default="%")
+    outcome_direction = Column(String(20), nullable=False, default="higher_better")
+    expected_impact = Column(Numeric(18, 4), nullable=True)
+    actual_impact = Column(Numeric(18, 4), nullable=True)
+    status = Column(String(20), nullable=False, default="Draft")
+    status_reason = Column(Text, nullable=True)
+    no_insight_reason = Column(Text, nullable=True)
+    completion_date = Column(Date, nullable=True)
+    completion_note = Column(Text, nullable=True)
+    completed_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True, server_default="1")
+    created_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    team = relationship("Team")
+    employee = relationship("Employee")
+    owner = relationship("User", foreign_keys=[owner_user_id])
+    completed_by = relationship("User", foreign_keys=[completed_by_user_id])
+    created_by = relationship("User", foreign_keys=[created_by_user_id])
+    objectives = relationship("PlanObjective", back_populates="plan", cascade="all, delete-orphan")
+    kpis = relationship("PlanKPI", back_populates="plan", cascade="all, delete-orphan")
+    milestones = relationship("PlanMilestone", back_populates="plan", cascade="all, delete-orphan")
+    notes = relationship("PlanNote", back_populates="plan", cascade="all, delete-orphan")
+    insight_links = relationship("PlanInsightLink", back_populates="plan", cascade="all, delete-orphan")
+    actions = relationship("Action", back_populates="plan")
+
+    __table_args__ = (
+        CheckConstraint("scope_type IN ('Team', 'Position', 'Employee', 'Management')", name="ck_performance_plan_scope_type"),
+        CheckConstraint("performance_level IN ('Employee', 'Managerial', 'Corporate')", name="ck_performance_plan_level"),
+        CheckConstraint("status IN ('Draft', 'In Progress', 'At Risk', 'Completed', 'Archived')", name="ck_performance_plan_status"),
+        CheckConstraint("outcome_direction IN ('higher_better', 'lower_better')", name="ck_performance_plan_direction"),
+        CheckConstraint("period_end >= period_start", name="ck_performance_plan_period"),
+        Index("idx_performance_plan_scope_status", "team_id", "performance_level", "status"),
+    )
+
+
+class PlanInsightLink(Base):
+    __tablename__ = "plan_insight_links"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    plan_id = Column(UUID(as_uuid=True), ForeignKey("performance_plans.id", ondelete="CASCADE"), nullable=False)
+    insight_id = Column(String(64), nullable=False)
+    evidence_month = Column(String(20), nullable=False)
+    evidence_year = Column(SmallInteger, nullable=False)
+    linked_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    plan = relationship("PerformancePlan", back_populates="insight_links")
+    __table_args__ = (UniqueConstraint("plan_id", "insight_id", name="uq_plan_insight_link"),)
+
+
+class PlanObjective(Base):
+    __tablename__ = "plan_objectives"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    plan_id = Column(UUID(as_uuid=True), ForeignKey("performance_plans.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String(255), nullable=False)
+    measurement_type = Column(String(30), nullable=False)
+    baseline_value = Column(Numeric(18, 4), nullable=False)
+    target_value = Column(Numeric(18, 4), nullable=False)
+    current_value = Column(Numeric(18, 4), nullable=True)
+    unit = Column(String(30), nullable=False)
+    direction = Column(String(20), nullable=False)
+    due_date = Column(Date, nullable=False)
+    owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
+    status = Column(String(20), nullable=False, default="Not Started")
+    is_required = Column(Boolean, nullable=False, default=True)
+    plan = relationship("PerformancePlan", back_populates="objectives")
+    owner = relationship("User")
+    kpi_links = relationship("PlanObjectiveKPI", back_populates="objective", cascade="all, delete-orphan")
+    actions = relationship("Action", back_populates="objective")
+    __table_args__ = (
+        CheckConstraint("direction IN ('higher_better', 'lower_better')", name="ck_plan_objective_direction"),
+        CheckConstraint("status IN ('Not Started', 'In Progress', 'Completed', 'At Risk')", name="ck_plan_objective_status"),
+    )
+
+
+class PlanKPI(Base):
+    __tablename__ = "plan_kpis"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    plan_id = Column(UUID(as_uuid=True), ForeignKey("performance_plans.id", ondelete="CASCADE"), nullable=False)
+    kpi_key = Column(String(100), nullable=False)
+    kpi_label = Column(String(255), nullable=False)
+    unit = Column(String(30), nullable=False)
+    direction = Column(String(20), nullable=False)
+    baseline_value = Column(Numeric(18, 4), nullable=False)
+    target_value = Column(Numeric(18, 4), nullable=False)
+    current_value = Column(Numeric(18, 4), nullable=True)
+    contribution = Column(Numeric(18, 4), nullable=True)
+    data_month = Column(String(20), nullable=True)
+    data_year = Column(SmallInteger, nullable=True)
+    plan = relationship("PerformancePlan", back_populates="kpis")
+    objective_links = relationship("PlanObjectiveKPI", back_populates="kpi", cascade="all, delete-orphan")
+    __table_args__ = (
+        UniqueConstraint("plan_id", "kpi_key", name="uq_plan_kpi_key"),
+        CheckConstraint("direction IN ('higher_better', 'lower_better')", name="ck_plan_kpi_direction"),
+    )
+
+
+class PlanObjectiveKPI(Base):
+    __tablename__ = "plan_objective_kpis"
+    objective_id = Column(UUID(as_uuid=True), ForeignKey("plan_objectives.id", ondelete="CASCADE"), primary_key=True)
+    kpi_id = Column(UUID(as_uuid=True), ForeignKey("plan_kpis.id", ondelete="CASCADE"), primary_key=True)
+    objective = relationship("PlanObjective", back_populates="kpi_links")
+    kpi = relationship("PlanKPI", back_populates="objective_links")
+
+
+class PlanMilestone(Base):
+    __tablename__ = "plan_milestones"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    plan_id = Column(UUID(as_uuid=True), ForeignKey("performance_plans.id", ondelete="CASCADE"), nullable=False)
+    name = Column(String(255), nullable=False)
+    due_date = Column(Date, nullable=False)
+    status = Column(String(20), nullable=False, default="Pending")
+    completion_date = Column(Date, nullable=True)
+    owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
+    note = Column(Text, nullable=True)
+    plan = relationship("PerformancePlan", back_populates="milestones")
+    owner = relationship("User")
+    __table_args__ = (CheckConstraint("status IN ('Pending', 'In Progress', 'Completed', 'Overdue')", name="ck_plan_milestone_status"),)
+
+
+class PlanNote(Base):
+    __tablename__ = "plan_notes"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    plan_id = Column(UUID(as_uuid=True), ForeignKey("performance_plans.id", ondelete="CASCADE"), nullable=False)
+    author_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
+    text = Column(Text, nullable=False)
+    review_month = Column(String(20), nullable=True)
+    review_year = Column(SmallInteger, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    plan = relationship("PerformancePlan", back_populates="notes")
+    author = relationship("User")
+
 class Action(Base):
     __tablename__ = "actions"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    employee_id = Column(UUID(as_uuid=True), ForeignKey("employees.id", ondelete="RESTRICT"), nullable=False)
+    employee_id = Column(UUID(as_uuid=True), ForeignKey("employees.id", ondelete="RESTRICT"), nullable=True)
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False)
     month = Column(String(20), nullable=False)
     year = Column(SmallInteger, nullable=False)
@@ -401,6 +567,14 @@ class Action(Base):
     action_text = Column(Text, nullable=False)
     root_cause_note = Column(Text, nullable=True)
     status = Column(String(50), nullable=False, default="Open")  # Open, In Progress, Completed, Cancelled
+    plan_id = Column(UUID(as_uuid=True), ForeignKey("performance_plans.id", ondelete="CASCADE"), nullable=True)
+    objective_id = Column(UUID(as_uuid=True), ForeignKey("plan_objectives.id", ondelete="SET NULL"), nullable=True)
+    owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    due_date = Column(Date, nullable=True)
+    priority = Column(String(20), nullable=True)
+    linked_kpi_key = Column(String(100), nullable=True)
+    completion_note = Column(Text, nullable=True)
+    evidence_reference = Column(String(500), nullable=True)
     is_active = Column(Boolean, nullable=False, default=True)
     created_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -412,6 +586,58 @@ class Action(Base):
     team = relationship("Team")
     created_by_user = relationship("User", foreign_keys=[created_by_user_id], back_populates="actions_created")
     updated_by_user = relationship("User", foreign_keys=[updated_by_user_id], back_populates="actions_updated")
+    owner = relationship("User", foreign_keys=[owner_user_id])
+    plan = relationship("PerformancePlan", back_populates="actions")
+    objective = relationship("PlanObjective", back_populates="actions")
+
+
+class GeneratedReport(Base):
+    __tablename__ = "generated_reports"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(180), nullable=False)
+    report_type = Column(String(50), nullable=False)
+    scope_summary = Column(String(255), nullable=False)
+    period_label = Column(String(100), nullable=False)
+    created_by_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_by_name = Column(String(100), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    output_format = Column(String(20), nullable=False)
+    status = Column(String(20), nullable=False, default="ready")
+    file_name = Column(String(255), nullable=False)
+    content_type = Column(String(100), nullable=False)
+    file_data = Column(LargeBinary, nullable=False)
+    configuration = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    record_count = Column(Integer, nullable=False, default=0)
+    warning = Column(Text, nullable=True)
+
+    __table_args__ = (
+        CheckConstraint("output_format IN ('excel')", name="ck_generated_report_format"),
+        CheckConstraint("status IN ('ready', 'failed')", name="ck_generated_report_status"),
+        Index("idx_generated_report_owner_created", "created_by_user_id", "created_at"),
+    )
+
+
+class SavedReportTemplate(Base):
+    __tablename__ = "saved_report_templates"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(180), nullable=False)
+    report_type = Column(String(50), nullable=False)
+    configuration = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    included_sections = Column(JSON_COMPAT_TYPE, nullable=False, default=list)
+    preferred_format = Column(String(20), nullable=False, default="excel")
+    owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    visibility = Column(String(20), nullable=False, default="private")
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("preferred_format IN ('excel')", name="ck_saved_report_template_format"),
+        CheckConstraint("visibility IN ('private')", name="ck_saved_report_template_visibility"),
+        UniqueConstraint("owner_user_id", "name", name="uq_saved_report_template_owner_name"),
+        Index("idx_saved_report_template_owner_updated", "owner_user_id", "updated_at"),
+    )
 
 
 # ============================================================
