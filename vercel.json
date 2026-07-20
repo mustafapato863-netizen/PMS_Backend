@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "app.py": {
+      "maxDuration": 60,
+      "includeFiles": [
+        "config/teams/**",
+        "config/*.json",
+        "data/*.json"
+      ],
+      "excludeFiles": "{tests/**,logs/**,.pytest_cache/**,.hypothesis/**,exports/**,**/*.pyc,**/__pycache__/**}"
+    }
+  }
+}
