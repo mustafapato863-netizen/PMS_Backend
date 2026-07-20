@@ -5,13 +5,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.environ.get("PMS_DATA_DIR", os.path.join(BASE_DIR, "data"))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
 ENV_PATH = os.path.join(PROJECT_ROOT, "DevOps", ".env")
+LOCAL_ENV_PATH = os.path.join(PROJECT_ROOT, "DevOps", ".env.local")
 
+load_dotenv(dotenv_path=LOCAL_ENV_PATH)
 load_dotenv(dotenv_path=ENV_PATH)
 
 os.makedirs(DATA_DIR, exist_ok=True)
 
 DEFAULT_FILE_PATH = os.environ.get("PMS_DEFAULT_FILE_PATH", r"D:\Trend\PMS_Trend_All.xlsx")
 APP_ENV = os.environ.get("APP_ENV", "development").strip().lower()
+PORT = int(os.environ.get("PORT", "8000"))
+PMS_AUTO_SEED = os.environ.get(
+    "PMS_AUTO_SEED",
+    "true" if APP_ENV == "development" else "false",
+).strip().lower() == "true"
 
 _cors_origins = os.environ.get(
     "CORS_ORIGINS",

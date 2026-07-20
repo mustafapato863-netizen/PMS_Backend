@@ -40,10 +40,13 @@ async def lifespan(app: FastAPI):
     from services.seeding_service import DatabaseSeeder
     from services.permission_seed import seed_role_permissions
 
-    # Run database seeder on startup
-    seeder = DatabaseSeeder()
-    seeder.seed_database()
-    if os.environ.get("PMS_SEED_DEMO_LEVELS", "").lower() == "true":
+    # Seed only in explicitly enabled environments. Hosted production should
+    # run migrations and controlled imports as separate release operations.
+    seed_demo_levels = os.environ.get("PMS_SEED_DEMO_LEVELS", "").lower() == "true"
+    seeder = DatabaseSeeder() if settings.PMS_AUTO_SEED or seed_demo_levels else None
+    if settings.PMS_AUTO_SEED and seeder is not None:
+        seeder.seed_database()
+    if seed_demo_levels and seeder is not None:
         seeder.seed_demo_performance_levels()
     
     # Run role permissions seeder
@@ -111,7 +114,7 @@ app = ASGIApp(sio, app)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app:app", host="127.0.0.1", port=settings.PORT, reload=True)
 
 # ========== Cloudflare Workers Compatibility Layer ==========
 # Export FastAPI app for Workers compatibility

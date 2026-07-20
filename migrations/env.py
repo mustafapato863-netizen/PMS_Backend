@@ -6,17 +6,24 @@ from sqlalchemy import pool
 from alembic import context
 from dotenv import load_dotenv
 
-# Load the shared DevOps environment file from the repository root.
+# Load local overrides first so migrations use the same connection contract as
+# the application, while preserving the checked-in shared defaults.
 backend_dir = Path(__file__).resolve().parent.parent
 env_path = backend_dir.parent / "DevOps" / ".env"
+local_env_path = backend_dir.parent / "DevOps" / ".env.local"
+load_dotenv(dotenv_path=local_env_path)
 load_dotenv(dotenv_path=env_path)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
-# Set sqlalchemy.url from environment variable
-config.set_main_option('sqlalchemy.url', os.getenv('DATABASE_URL'))
+# Set sqlalchemy.url from environment variable. Alembic's ConfigParser uses
+# percent interpolation, so URL-encoded credentials must escape percent signs.
+database_url = os.getenv('DATABASE_URL')
+if not database_url:
+    raise RuntimeError('DATABASE_URL is required for Alembic migrations')
+config.set_main_option('sqlalchemy.url', database_url.replace('%', '%%'))
 
 # Interpret the config file for Python logging.
 if config.config_file_name is not None:
