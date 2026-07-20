@@ -44,12 +44,12 @@ class JSONFormatter(logging.Formatter):
 
 def setup_logging():
     """Initialize structured logging across the application"""
-    # Create logs directory if it doesn't exist
-    # Put it inside the Backend folder to keep the workspace clean
-    backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    logs_dir = os.path.join(backend_dir, "logs")
-    os.makedirs(logs_dir, exist_ok=True)
-    log_filepath = os.path.join(logs_dir, "pms_app.log")
+    # Serverless function bundles are read-only. Vercel captures stdout, so a
+    # rotating file handler is unnecessary there and would crash imports.
+    file_logging_enabled = os.getenv(
+        "ENABLE_FILE_LOGGING",
+        "false" if os.getenv("VERCEL") else "true",
+    ).strip().lower() == "true"
 
     # Get root logger
     root_logger = logging.getLogger()
@@ -72,18 +72,23 @@ def setup_logging():
     console_handler.addFilter(RequestIDFilter())
     root_logger.addHandler(console_handler)
 
-    # 2. Daily Rotating JSON File Handler
-    file_handler = TimedRotatingFileHandler(
-        log_filepath,
-        when="D",
-        interval=1,
-        backupCount=30,
-        encoding="utf-8"
-    )
-    file_handler.setLevel(log_level)
-    file_formatter = JSONFormatter()
-    file_handler.setFormatter(file_formatter)
-    file_handler.addFilter(RequestIDFilter())
-    root_logger.addHandler(file_handler)
-
-    logging.info("Structured logging initialized. File: %s", log_filepath)
+    if file_logging_enabled:
+        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        logs_dir = os.path.join(backend_dir, "logs")
+        os.makedirs(logs_dir, exist_ok=True)
+        log_filepath = os.path.join(logs_dir, "pms_app.log")
+        file_handler = TimedRotatingFileHandler(
+            log_filepath,
+            when="D",
+            interval=1,
+            backupCount=30,
+            encoding="utf-8"
+        )
+        file_handler.setLevel(log_level)
+        file_formatter = JSONFormatter()
+        file_handler.setFormatter(file_formatter)
+        file_handler.addFilter(RequestIDFilter())
+        root_logger.addHandler(file_handler)
+        logging.info("Structured logging initialized. File: %s", log_filepath)
+    else:
+        logging.info("Structured console logging initialized.")

@@ -53,12 +53,12 @@ async def lifespan(app: FastAPI):
     if seed_demo_levels and seeder is not None:
         seeder.seed_demo_performance_levels()
     
-    # Run role permissions seeder
-    db = SessionLocal()
-    try:
-        seed_role_permissions(db)
-    finally:
-        db.close()
+    if settings.PMS_SEED_PERMISSIONS_ON_STARTUP:
+        db = SessionLocal()
+        try:
+            seed_role_permissions(db)
+        finally:
+            db.close()
         
     yield
 

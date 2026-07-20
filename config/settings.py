@@ -19,6 +19,10 @@ PMS_AUTO_SEED = os.environ.get(
     "PMS_AUTO_SEED",
     "true" if APP_ENV == "development" else "false",
 ).strip().lower() == "true"
+PMS_SEED_PERMISSIONS_ON_STARTUP = os.environ.get(
+    "PMS_SEED_PERMISSIONS_ON_STARTUP",
+    "true" if APP_ENV == "development" else "false",
+).strip().lower() == "true"
 
 _cors_origins = os.environ.get(
     "CORS_ORIGINS",
