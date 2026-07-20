@@ -14,6 +14,9 @@ REPORT_TYPES = Literal[
     "corrective_actions",
     "kpi",
     "data_quality",
+    "monthly_uae",
+    "monthly_egypt",
+    "team_marketing",
 ]
 
 MONTHS = {

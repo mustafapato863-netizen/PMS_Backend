@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from exports.report_exporter import ReportExporter
 from exports.pptx_builder import build_pptx_from_slides
+from exports.marketing_pptx_builder import build_marketing_pptx
 from services.narrative_engine import generate_narrative
 from models.models import GeneratedReport, SavedReportTemplate
 from models.report_schemas import MONTHS, ReportConfiguration
@@ -42,69 +43,29 @@ class ReportAccessError(PermissionError):
 
 REPORT_TEMPLATES = [
     {
-        "type": "executive",
+        "type": "monthly_uae",
         "category": "executive",
-        "name": "Executive Performance Report",
-        "description": "Formal performance summary across the authorized organization scope.",
+        "name": "Monthly Report - UAE",
+        "description": "Comprehensive monthly performance overview for the UAE region.",
         "formats": ["pdf", "pptx"],
         "sections": ["summary", "grade_distribution", "team_breakdown", "details"],
     },
     {
-        "type": "team",
+        "type": "monthly_egypt",
+        "category": "executive",
+        "name": "Monthly Report - Egypt",
+        "description": "Comprehensive monthly performance overview for the Egypt region.",
+        "formats": ["pdf", "pptx"],
+        "sections": ["summary", "grade_distribution", "team_breakdown", "details"],
+    },
+    {
+        "type": "team_marketing",
         "category": "team",
-        "name": "Team Performance Report",
-        "description": "Detailed performance results for a selected authorized team.",
-        "formats": ["pdf", "pptx"],
-        "sections": ["summary", "grade_distribution", "kpi_breakdown", "details"],
-    },
-    {
-        "type": "position",
-        "category": "position",
-        "name": "Position Performance Report",
-        "description": "KPI performance and employee results for a selected position.",
-        "formats": ["pdf", "pptx"],
-        "sections": ["summary", "kpi_breakdown", "details"],
-    },
-    {
-        "type": "employee",
-        "category": "employee",
-        "name": "Employee Performance Report",
-        "description": "Individual performance, grade, status and KPI breakdown.",
-        "formats": ["pdf", "pptx"],
-        "sections": ["summary", "kpi_breakdown", "details"],
-    },
-    {
-        "type": "grade_distribution",
-        "category": "team",
-        "name": "Grade Distribution Report",
-        "description": "Auditable grade distribution across the selected scope.",
-        "formats": ["pdf", "pptx"],
-        "sections": ["summary", "grade_distribution", "details"],
-    },
-    {
-        "type": "corrective_actions",
-        "category": "employee",
-        "name": "Corrective Actions Report",
-        "description": "Corrective actions, ownership and current completion status.",
-        "formats": ["pdf", "pptx"],
-        "sections": ["summary", "status_breakdown", "details"],
-    },
-    {
-        "type": "kpi",
-        "category": "kpi",
-        "name": "KPI Performance Report",
-        "description": "Actual, target, achievement and weighted KPI contribution data.",
-        "formats": ["pdf", "pptx"],
-        "sections": ["summary", "kpi_breakdown", "details"],
-    },
-    {
-        "type": "data_quality",
-        "category": "data_quality",
-        "name": "Data Quality / Upload Report",
-        "description": "Upload volumes, processing status and available error details.",
-        "formats": ["pdf", "pptx"],
-        "sections": ["summary", "status_breakdown", "details"],
-    },
+        "name": "Team Report - Marketing",
+        "description": "Storytelling PPTX report for Marketing department performance.",
+        "formats": ["pptx"],
+        "sections": ["summary", "details"],
+    }
 ]
 
 
@@ -452,6 +413,11 @@ class ReportService:
             file_data = build_pptx_from_slides(configuration.report_name, slides_data, period_label)
             content_type = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
             extension = ".pptx"
+        elif configuration.report_type == "team_marketing":
+            file_data = build_marketing_pptx(period_label)
+            content_type = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            extension = ".pptx"
+            configuration.output_format = "pptx"
         else:
             file_data, content_type, extension = ReportExporter.export_report(
                 title=configuration.report_name,
