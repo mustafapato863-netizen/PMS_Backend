@@ -17,13 +17,17 @@ if sys.stdout and hasattr(sys.stdout, 'buffer'):
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from socketio import ASGIApp
+
+try:
+    from socketio import ASGIApp
+except ImportError:
+    ASGIApp = None
 
 # Ensure Backend directory is on the import path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from api.routers import router as api_router
-from config.socket_config import sio
+from config.socket_config import SOCKETIO_AVAILABLE, sio
 from api.middleware.auth_middleware import AuthMiddleware
 from api.middleware.error_handling_middleware import ErrorHandlingMiddleware
 from config.database import SessionLocal
@@ -109,8 +113,10 @@ async def root():
         "version": "2.0.0",
     }
 
-# Wrap FastAPI app with Socket.io ASGI app for production/dev
-app = ASGIApp(sio, app)
+# Wrap FastAPI with Socket.IO when the optional real-time runtime is available.
+# Vercel can serve the REST ASGI app without this dependency.
+if ASGIApp is not None and SOCKETIO_AVAILABLE:
+    app = ASGIApp(sio, app)
 
 if __name__ == "__main__":
     import uvicorn

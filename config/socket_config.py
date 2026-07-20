@@ -5,11 +5,43 @@ Handles real-time communication for notifications and live data updates.
 
 import logging
 
-from socketio import AsyncServer, AsyncNamespace
+try:
+    from socketio import AsyncServer, AsyncNamespace
+    SOCKETIO_AVAILABLE = True
+except ImportError:
+    SOCKETIO_AVAILABLE = False
+
+    class AsyncNamespace:  # type: ignore[no-redef]
+        """No-op namespace used when the optional Socket.IO package is absent."""
+
+        def __init__(self, namespace=None):
+            self.namespace = namespace
+
+        async def enter_room(self, sid, room):
+            return None
+
+        async def leave_room(self, sid, room):
+            return None
+
+    class AsyncServer:  # type: ignore[no-redef]
+        """No-op server that preserves REST imports on serverless runtimes."""
+
+        def __init__(self, **kwargs):
+            self.namespaces = []
+
+        def register_namespace(self, namespace):
+            self.namespaces.append(namespace)
+
+        async def emit(self, *args, **kwargs):
+            return None
+
 from config import settings
 from services.notification_service import NotificationService
 
 logger = logging.getLogger(__name__)
+
+if not SOCKETIO_AVAILABLE:
+    logger.warning("python-socketio is unavailable; real-time events are disabled.")
 
 # Create global Socket.io instance
 sio = AsyncServer(
