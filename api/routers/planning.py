@@ -6,7 +6,14 @@ from sqlalchemy.orm import Session
 from api.dependencies import performance_repo, require_authenticated_scope
 from api.middleware.rbac_middleware import require_permission
 from config.database import get_db
-from models.planning_schemas import PlanCreate, PlanItemUpdate, PlanNoteCreate, PlanUpdate
+from models.planning_schemas import (
+    PlanCreate,
+    PlanItemUpdate,
+    PlanMilestoneCreate,
+    PlanMilestoneUpdate,
+    PlanNoteCreate,
+    PlanUpdate,
+)
 from models.schemas import StandardResponse
 from services.planning_service import PlanningAccessError, PlanningNotFoundError, PlanningService, PlanningValidationError
 
@@ -59,10 +66,36 @@ def update_plan(plan_id: str, payload: PlanUpdate, request: Request, db: Session
     except (PlanningAccessError, PlanningNotFoundError, PlanningValidationError) as exc: _raise(exc)
 
 
+@router.delete("/{plan_id}", response_model=StandardResponse)
+def delete_plan(plan_id: str, request: Request, db: Session = Depends(get_db), _user=Depends(require_permission("manage_plans"))):
+    try:
+        return StandardResponse(success=True, message="Plan deleted", data=_service(db).delete(plan_id, _scope(db, request)))
+    except (PlanningAccessError, PlanningNotFoundError, PlanningValidationError) as exc:
+        _raise(exc)
+
+
 @router.patch("/{plan_id}/{kind}/{item_id}", response_model=StandardResponse)
 def update_plan_item(plan_id: str, kind: str, item_id: str, payload: PlanItemUpdate, request: Request, db: Session = Depends(get_db), _user=Depends(require_permission("manage_plans"))):
     if kind not in {"objective", "kpi", "action", "milestone"}: raise HTTPException(status_code=404, detail="Plan item not found")
     try: return StandardResponse(success=True, message="Plan item updated", data=_service(db).update_item(plan_id, kind, item_id, payload, _scope(db, request)))
+    except (PlanningAccessError, PlanningNotFoundError, PlanningValidationError) as exc: _raise(exc)
+
+
+@router.post("/{plan_id}/milestones", response_model=StandardResponse, status_code=status.HTTP_201_CREATED)
+def add_milestone(plan_id: str, payload: PlanMilestoneCreate, request: Request, db: Session = Depends(get_db), _user=Depends(require_permission("manage_plans"))):
+    try: return StandardResponse(success=True, message="Milestone added", data=_service(db).add_milestone(plan_id, payload, _scope(db, request)))
+    except (PlanningAccessError, PlanningNotFoundError, PlanningValidationError) as exc: _raise(exc)
+
+
+@router.put("/{plan_id}/milestones/{milestone_id}", response_model=StandardResponse)
+def update_milestone(plan_id: str, milestone_id: str, payload: PlanMilestoneUpdate, request: Request, db: Session = Depends(get_db), _user=Depends(require_permission("manage_plans"))):
+    try: return StandardResponse(success=True, message="Milestone updated", data=_service(db).update_milestone(plan_id, milestone_id, payload, _scope(db, request)))
+    except (PlanningAccessError, PlanningNotFoundError, PlanningValidationError) as exc: _raise(exc)
+
+
+@router.delete("/{plan_id}/milestones/{milestone_id}", response_model=StandardResponse)
+def delete_milestone(plan_id: str, milestone_id: str, request: Request, db: Session = Depends(get_db), _user=Depends(require_permission("manage_plans"))):
+    try: return StandardResponse(success=True, message="Milestone deleted", data=_service(db).delete_milestone(plan_id, milestone_id, _scope(db, request)))
     except (PlanningAccessError, PlanningNotFoundError, PlanningValidationError) as exc: _raise(exc)
 
 

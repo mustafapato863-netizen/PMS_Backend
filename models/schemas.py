@@ -138,9 +138,10 @@ class PlanningCategoryRecord(BaseModel):
     category: str
 
 class TeamAction(BaseModel):
-    id: Optional[str] = None  # composite key: team_id + "_" + month
+    id: Optional[str] = None  # composite key: team_id + "_" + year + "_" + month
     team_id: str
     month: str
+    year: Optional[int] = None
     overall_action: str
     updated_at: str
     updated_by: str = "Admin"

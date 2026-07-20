@@ -14,6 +14,9 @@ class PlanningRepository:
     def add(self, plan: PerformancePlan) -> None:
         self.db.add(plan)
 
+    def deactivate(self, plan: PerformancePlan) -> None:
+        plan.is_active = False
+
     def list_active(self) -> list[PerformancePlan]:
         return self.db.query(PerformancePlan).options(joinedload(PerformancePlan.team), joinedload(PerformancePlan.employee), joinedload(PerformancePlan.owner), selectinload(PerformancePlan.objectives), selectinload(PerformancePlan.kpis), selectinload(PerformancePlan.milestones), selectinload(PerformancePlan.actions), selectinload(PerformancePlan.notes)).filter(PerformancePlan.is_active.is_(True)).order_by(PerformancePlan.updated_at.desc()).all()
 
@@ -23,3 +26,9 @@ class PlanningRepository:
     def get_item(self, kind: str, item_id: UUID):
         model = {"objective": PlanObjective, "kpi": PlanKPI, "action": Action, "milestone": PlanMilestone}.get(kind)
         return self.db.query(model).filter(model.id == item_id).first() if model else None
+
+    def add_milestone(self, milestone: PlanMilestone) -> None:
+        self.db.add(milestone)
+
+    def delete_milestone(self, milestone: PlanMilestone) -> None:
+        self.db.delete(milestone)

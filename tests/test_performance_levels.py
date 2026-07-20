@@ -29,8 +29,8 @@ def test_resolve_team_config_uses_selected_level_and_validation_is_scoped():
         "employee_name_col": "EnglishName",
         "grade_thresholds": {"A": 90, "B": 80, "C": 70, "D": 60},
         "kpis": [
-            {"key": "booking", "label": "Booking", "weight": 0.6, "direction": "up", "unit": "%", "color": "#000", "actual_col": "booking_actual", "target_col": "booking_target"},
-            {"key": "quality", "label": "Quality", "weight": 0.4, "direction": "up", "unit": "%", "color": "#111", "actual_col": "quality_actual", "target_col": "quality_target"},
+            {"key": "booking", "label": "Booking", "weight": 0.6, "direction": "up", "unit": "%", "color": "#000", "actual_col": "booking_actual", "target_col": "booking_target", "aggregation": {"method": "average"}},
+            {"key": "quality", "label": "Quality", "weight": 0.4, "direction": "up", "unit": "%", "color": "#111", "actual_col": "quality_actual", "target_col": "quality_target", "aggregation": {"method": "average"}},
         ],
         "performance_levels": {
             "Managerial": {
@@ -50,6 +50,32 @@ def test_resolve_team_config_uses_selected_level_and_validation_is_scoped():
     is_valid, errors = validate_team_config(config)
     assert is_valid is True
     assert errors == []
+
+
+def test_employee_kpis_require_an_explicit_team_aggregation_method():
+    config = {
+        "team": "Future Team",
+        "db_name": "Future Team",
+        "region": "UAE",
+        "employee_id_col": "EmployeeID",
+        "employee_name_col": "EmployeeName",
+        "grade_thresholds": {"A": 90, "B": 80, "C": 70, "D": 60},
+        "kpis": [{
+            "key": "rate",
+            "label": "Rate",
+            "weight": 1,
+            "direction": "higher_better",
+            "unit": "%",
+            "color": "#000000",
+            "actual_col": "Actual",
+            "target_col": "Target",
+        }],
+    }
+
+    is_valid, errors = validate_team_config(config)
+
+    assert is_valid is False
+    assert errors == ["Employee KPI 0 (rate): missing field 'aggregation'"]
 
 
 def test_resolve_team_config_requires_non_employee_override():

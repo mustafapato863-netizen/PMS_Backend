@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field, model_validator
 
 
 PlanStatus = Literal["Draft", "In Progress", "At Risk", "Completed", "Archived"]
+MilestoneStatus = Literal["Pending", "In Progress", "Completed"]
 
 
 class PlanObjectiveInput(BaseModel):
@@ -46,6 +47,7 @@ class PlanKPIInput(BaseModel):
 class PlanActionInput(BaseModel):
     title: str = Field(min_length=3, max_length=255)
     description: str = Field(min_length=3)
+    action_type: Literal["Training", "Reward", "PIP", "Monitor", "Coaching", "Warning", "Promotion"] = "Monitor"
     owner_user_id: UUID
     due_date: date
     priority: Literal["Low", "Medium", "High", "Critical"] = "Medium"
@@ -58,6 +60,18 @@ class PlanMilestoneInput(BaseModel):
     name: str = Field(min_length=3, max_length=255)
     due_date: date
     owner_user_id: UUID
+    note: str | None = None
+
+
+class PlanMilestoneCreate(PlanMilestoneInput):
+    status: MilestoneStatus = "Pending"
+
+
+class PlanMilestoneUpdate(BaseModel):
+    name: str | None = Field(default=None, min_length=3, max_length=255)
+    due_date: date | None = None
+    owner_user_id: UUID | None = None
+    status: MilestoneStatus | None = None
     note: str | None = None
 
 

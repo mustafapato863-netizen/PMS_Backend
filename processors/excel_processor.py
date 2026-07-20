@@ -8,6 +8,8 @@ from Data_Cleaning_Teams.inbound import process_inbound
 from Data_Cleaning_Teams.outbound import process_outbound
 from Data_Cleaning_Teams.inbound_UAE import process_inbound_uae
 from Data_Cleaning_Teams.preapprovals_offshore import process_preapprovals_offshore
+from Data_Cleaning_Teams.preapprovals_op_dubai import process_preapprovals_op_dubai
+from Data_Cleaning_Teams.preapprovals_ip_final_dubai import process_preapprovals_ip_final_dubai
 from Data_Cleaning_Teams.sales import process_sales
 from config.loader import load_team_config, ConfigurationError
 
@@ -79,6 +81,12 @@ class ExcelProcessor:
 
     def process_sheet_preapprovals(self, excel_file) -> pd.DataFrame:
         return self._process_team_sheet(excel_file, "Pre-Approvals IP Offshore", process_preapprovals_offshore)
+
+    def process_sheet_preapprovals_op_dubai(self, excel_file) -> pd.DataFrame:
+        return process_preapprovals_op_dubai(excel_file)
+
+    def process_sheet_preapprovals_ip_final_dubai(self, excel_file) -> pd.DataFrame:
+        return process_preapprovals_ip_final_dubai(excel_file)
 
     def process_sheet_sales(self, excel_file) -> pd.DataFrame:
         return self._process_team_sheet(excel_file, "Sales", process_sales)

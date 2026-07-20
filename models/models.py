@@ -564,6 +564,7 @@ class Action(Base):
     month = Column(String(20), nullable=False)
     year = Column(SmallInteger, nullable=False)
     action_type = Column(String(50), nullable=False)  # Training, Reward, PIP, Monitor, Coaching, Warning, Promotion
+    plan_title = Column(String(255), nullable=True)
     action_text = Column(Text, nullable=False)
     root_cause_note = Column(Text, nullable=True)
     status = Column(String(50), nullable=False, default="Open")  # Open, In Progress, Completed, Cancelled
@@ -591,6 +592,67 @@ class Action(Base):
     objective = relationship("PlanObjective", back_populates="actions")
 
 
+class ReportTemplate(Base):
+    __tablename__ = "report_templates"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(180), nullable=False)
+    template_key = Column(String(100), nullable=False)
+    report_type = Column(String(50), nullable=False)
+    description = Column(Text, nullable=False, default="")
+    owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True)
+    visibility = Column(String(20), nullable=False, default="private")
+    version = Column(Integer, nullable=False, default=1)
+    definition_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    theme_key = Column(String(50), nullable=False, default="sgh_default")
+    language = Column(String(10), nullable=False, default="en")
+    preferred_format = Column(String(20), nullable=False, default="pdf")
+    is_system_template = Column(Boolean, nullable=False, default=False)
+    is_archived = Column(Boolean, nullable=False, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("visibility IN ('private', 'organization')", name="ck_report_template_visibility"),
+        CheckConstraint("preferred_format IN ('pdf', 'pptx')", name="ck_report_template_format"),
+        CheckConstraint("version >= 1", name="ck_report_template_version"),
+        UniqueConstraint("template_key", "version", name="uq_report_template_key_version"),
+        Index("idx_report_template_owner_updated", "owner_user_id", "updated_at"),
+        Index("idx_report_template_type_active", "report_type", "is_archived"),
+    )
+
+
+class ReportDraft(Base):
+    __tablename__ = "report_drafts"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(180), nullable=False)
+    report_type = Column(String(50), nullable=False)
+    template_id = Column(UUID(as_uuid=True), ForeignKey("report_templates.id", ondelete="SET NULL"), nullable=True)
+    template_version = Column(Integer, nullable=True)
+    owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    status = Column(String(20), nullable=False, default="editing")
+    primary_period_month = Column(String(20), nullable=False)
+    primary_period_year = Column(SmallInteger, nullable=False)
+    comparison_period_month = Column(String(20), nullable=True)
+    comparison_period_year = Column(SmallInteger, nullable=True)
+    scope_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    definition_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    management_commentary_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    validation_json = Column(JSON_COMPAT_TYPE, nullable=True)
+    version = Column(Integer, nullable=False, default=1)
+    last_saved_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("status IN ('editing', 'ready', 'generated', 'archived')", name="ck_report_draft_status"),
+        CheckConstraint("version >= 1", name="ck_report_draft_version"),
+        Index("idx_report_draft_owner_updated", "owner_user_id", "updated_at"),
+        Index("idx_report_draft_period_type", "primary_period_year", "primary_period_month", "report_type"),
+    )
+
+
 class GeneratedReport(Base):
     __tablename__ = "generated_reports"
 
@@ -610,11 +672,28 @@ class GeneratedReport(Base):
     configuration = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
     record_count = Column(Integer, nullable=False, default=0)
     warning = Column(Text, nullable=True)
+    draft_id = Column(UUID(as_uuid=True), ForeignKey("report_drafts.id", ondelete="SET NULL"), nullable=True)
+    template_id = Column(UUID(as_uuid=True), ForeignKey("report_templates.id", ondelete="SET NULL"), nullable=True)
+    template_version = Column(Integer, nullable=True)
+    primary_period_month = Column(String(20), nullable=True)
+    primary_period_year = Column(SmallInteger, nullable=True)
+    comparison_period_month = Column(String(20), nullable=True)
+    comparison_period_year = Column(SmallInteger, nullable=True)
+    scope_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    final_definition_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    narrative_snapshot_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    data_snapshot_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    validation_json = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
+    safe_error_message = Column(Text, nullable=True)
+    integrity_identifier = Column(String(64), nullable=True, unique=True)
+    generated_at = Column(DateTime(timezone=True), nullable=True)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     __table_args__ = (
-        CheckConstraint("output_format IN ('excel')", name="ck_generated_report_format"),
+        CheckConstraint("output_format IN ('excel', 'pdf', 'pptx')", name="ck_generated_report_format"),
         CheckConstraint("status IN ('ready', 'failed')", name="ck_generated_report_status"),
         Index("idx_generated_report_owner_created", "created_by_user_id", "created_at"),
+        Index("idx_generated_report_period_type", "primary_period_year", "primary_period_month", "report_type"),
     )
 
 
@@ -626,14 +705,14 @@ class SavedReportTemplate(Base):
     report_type = Column(String(50), nullable=False)
     configuration = Column(JSON_COMPAT_TYPE, nullable=False, default=dict)
     included_sections = Column(JSON_COMPAT_TYPE, nullable=False, default=list)
-    preferred_format = Column(String(20), nullable=False, default="excel")
+    preferred_format = Column(String(20), nullable=False, default="pptx")
     owner_user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     visibility = Column(String(20), nullable=False, default="private")
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False)
 
     __table_args__ = (
-        CheckConstraint("preferred_format IN ('excel')", name="ck_saved_report_template_format"),
+        CheckConstraint("preferred_format IN ('excel', 'pdf', 'pptx')", name="ck_saved_report_template_format"),
         CheckConstraint("visibility IN ('private')", name="ck_saved_report_template_visibility"),
         UniqueConstraint("owner_user_id", "name", name="uq_saved_report_template_owner_name"),
         Index("idx_saved_report_template_owner_updated", "owner_user_id", "updated_at"),

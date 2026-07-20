@@ -488,6 +488,8 @@ async def  save_corrective_action(
             raise HTTPException(status_code=400, detail="Month and Corrective Action are required")
 
         current_user = getattr(request.state, "user", None) or {}
+        scope = get_current_user_scope(db, request)
+        CorrectiveActionService(db).ensure_employee_scope(employee_id, scope)
         created_by_name = current_user.get("name") or current_user.get("username") or current_user.get("role") or "Unknown"
         created_by_role = current_user.get("role") or role
         action, is_update = CorrectiveActionService(db).save(
@@ -518,6 +520,8 @@ async def  save_corrective_action(
         raise HTTPException(status_code=404, detail=str(exc)) from exc
     except (CorrectiveActionValidationError, ValueError) as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except HTTPException as he:
         raise he
     except Exception as e:
@@ -533,6 +537,8 @@ async def delete_corrective_action(
 ):
     try:
         current_user = getattr(request.state, "user", None) or {}
+        scope = get_current_user_scope(db, request)
+        CorrectiveActionService(db).ensure_employee_scope(employee_id, scope)
         target_action = CorrectiveActionService(db).deactivate(
             employee_identifier=employee_id,
             action_id=action_id,
@@ -550,6 +556,8 @@ async def delete_corrective_action(
         )
     except CorrectiveActionNotFoundError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     except HTTPException as he:
         raise he
     except Exception as e:

@@ -20,6 +20,7 @@
       "color": "#EF4444",
       "actual_col": "A.QualityErrorsRate",
       "target_col": "T.QualityErrorsRate",
+      "aggregation": {"method": "average"},
       "capping": "capped_at_100"
     },
     {
@@ -31,6 +32,7 @@
       "color": "#F97316",
       "actual_col": "A.RejectionRate",
       "target_col": "T.RejectionRate",
+      "aggregation": {"method": "average"},
       "capping": "capped_at_100"
     },
     {
@@ -42,6 +44,7 @@
       "color": "#3B82F6",
       "actual_col": "A.TAT",
       "target_col": "T.TAT",
+      "aggregation": {"method": "average"},
       "capping": "capped_at_100"
     }
   ]

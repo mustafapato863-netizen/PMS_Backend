@@ -8,13 +8,14 @@ import json
 import logging
 from copy import deepcopy
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 from utils.performance_levels import PERFORMANCE_LEVELS, normalize_performance_level
 
 logger = logging.getLogger(__name__)
 
 PERSPECTIVES = ("Financial", "Customer", "Internal Process", "Learning & Growth")
 ROLLUPS = {"average", "sum", "latest"}
+TEAM_AGGREGATIONS = {"average", "sum", "ratio", "weighted_average"}
 
 
 class ConfigurationError(Exception):
@@ -128,6 +129,15 @@ def _validate_required_fields(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
                     errors.append(f"{level} KPI {idx} ({kpi.get('key', 'unknown')}): missing field '{field}'")
             if position_scoped and "perspective" not in kpi:
                 errors.append(f"{level} KPI {idx} ({kpi.get('key', 'unknown')}): missing field 'perspective'")
+            aggregation = kpi.get("aggregation")
+            if aggregation is not None:
+                method = aggregation.get("method")
+                if method not in TEAM_AGGREGATIONS:
+                    errors.append(f"{level} KPI {idx} ({kpi.get('key', 'unknown')}): invalid aggregation method")
+                if method == "ratio" and not all(aggregation.get(field) for field in ("numerator_col", "denominator_col")):
+                    errors.append(f"{level} KPI {idx} ({kpi.get('key', 'unknown')}): ratio aggregation requires numerator_col and denominator_col")
+                if method == "weighted_average" and not aggregation.get("weight_col"):
+                    errors.append(f"{level} KPI {idx} ({kpi.get('key', 'unknown')}): weighted_average aggregation requires weight_col")
     
     return len(errors) == 0, errors
 
@@ -228,6 +238,14 @@ def validate_team_config(config: Dict[str, Any]) -> Tuple[bool, List[str]]:
     # Validate grade thresholds
     is_valid, errors = _validate_thresholds(config.get('grade_thresholds', {}))
     all_errors.extend(errors)
+
+    for position_name, display_order, kpi in iter_employee_kpi_configs(config):
+        if kpi.get("aggregation") is None:
+            scope = f"Employee/{position_name}" if position_name else "Employee"
+            all_errors.append(
+                f"{scope} KPI {display_order} ({kpi.get('key', 'unknown')}): "
+                "missing field 'aggregation'"
+            )
     
     return len(all_errors) == 0, all_errors
 
@@ -289,6 +307,23 @@ def get_configured_performance_levels(config: Dict[str, Any]) -> List[str]:
         if level_config.get("kpis") or level_config.get("positions"):
             levels.add(normalize_performance_level(raw_level))
     return [level for level in PERFORMANCE_LEVELS if level in levels]
+
+
+def iter_employee_kpi_configs(
+    config: Dict[str, Any],
+) -> Iterator[Tuple[str, int, Dict[str, Any]]]:
+    """Yield ``(position_name, display_order, kpi)`` for employee-domain KPI rows."""
+    level_config = config.get("performance_levels", {}).get("Employee")
+    if level_config:
+        for display_order, kpi in enumerate(level_config.get("kpis", [])):
+            yield "", display_order, kpi
+        for position_name, position_config in level_config.get("positions", {}).items():
+            for display_order, kpi in enumerate(position_config.get("kpis", [])):
+                yield str(position_name), display_order, kpi
+        return
+
+    for display_order, kpi in enumerate(config.get("kpis", [])):
+        yield "", display_order, kpi
 
 
 def load_team_config(team_name: str) -> Dict[str, Any]:

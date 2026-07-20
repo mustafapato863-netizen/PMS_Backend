@@ -20,6 +20,7 @@
       "color": "#EF4444",
       "actual_col": "A.QualityErrorsRate",
       "target_col": "T.QualityErrorsRate",
+      "aggregation": {"method": "ratio", "numerator_col": "FinalErrorsClaims(RaisedbyQualitySameMonth)", "denominator_col": "QltySamples"},
       "achievement_col": "QualityErrorsRateAch%",
       "capping": "uncapped"
     },
@@ -32,6 +33,7 @@
       "color": "#F97316",
       "actual_col": "A.RejectionRateAfterRe-Submission",
       "target_col": "T.RejectionRateAfterRe-Submission",
+      "aggregation": {"method": "ratio", "numerator_col": "RejectedClaims3MonthsPrevious(byInsurance)", "denominator_col": "RemittanceAmount"},
       "achievement_col": "RejectionRateAfterRe-SubmissionAch%",
       "capping": "uncapped"
     },
@@ -44,6 +46,7 @@
       "color": "#2563EB",
       "actual_col": "A.TAT",
       "target_col": "T.TAT",
+      "aggregation": {"method": "ratio", "numerator_col": "TotalSubmittedWithin(TAT)", "denominator_col": "Allocatedclaims"},
       "achievement_col": "TATAch%",
       "capping": "uncapped"
     }

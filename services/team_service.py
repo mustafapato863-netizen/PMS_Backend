@@ -9,7 +9,12 @@ from typing import List, Dict, Any, Optional, Tuple
 from datetime import datetime
 from sqlalchemy.orm import Session
 from config.database import SessionLocal
-from config.loader import ConfigurationError, find_team_config_by_db_name, load_team_config
+from config.loader import (
+    ConfigurationError,
+    find_team_config_by_db_name,
+    iter_employee_kpi_configs,
+    load_team_config,
+)
 from repositories.team_repository import TeamRepository
 from models.models import Team, TeamKPIConfig
 from models.team_models import TeamCreateRequest, TeamUpdateRequest
@@ -187,10 +192,13 @@ class TeamService:
             logger.info(f"Created team: {team_name}")
             
             # Add KPI configs
-            if config and config.get('kpis'):
-                for idx, kpi in enumerate(config['kpis']):
+            configured_kpis = list(iter_employee_kpi_configs(config)) if config else []
+            if configured_kpis:
+                for position_name, display_order, kpi in configured_kpis:
                     db.add(TeamKPIConfig(
                         team_id=team.id,
+                        performance_level="Employee",
+                        position_name=position_name,
                         kpi_key=kpi['key'],
                         kpi_label=kpi['label'],
                         weight=float(kpi['weight']),
@@ -201,7 +209,8 @@ class TeamService:
                         target_col=kpi['target_col'],
                         achievement_col=kpi.get('achievement_col'),
                         volume_unit=kpi.get('volume_unit'),
-                        display_order=idx,
+                        perspective=kpi.get('perspective'),
+                        display_order=display_order,
                     ))
             else:
                 kpi_weights = request.kpi_weights or {'attendance': 0.3, 'productivity': 0.4, 'quality': 0.3}

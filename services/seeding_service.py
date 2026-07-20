@@ -22,7 +22,12 @@ from services.analysis_service import AnalysisService
 from services.learning_service import LearningService
 from services.planning_service import PlanningService
 from services.trend_service import TrendService
-from config.loader import load_team_config, resolve_team_config, ConfigurationError
+from config.loader import (
+    load_team_config,
+    resolve_team_config,
+    iter_employee_kpi_configs,
+    ConfigurationError,
+)
 from config.database import SessionLocal
 from models.models import (
     Team,
@@ -313,6 +318,60 @@ class DatabaseSeeder:
             if (row.position_name, row.kpi_key) not in expected_keys:
                 db.delete(row)
 
+    @staticmethod
+    def _sync_employee_position_config(db, team: Team, config: dict) -> None:
+        """Synchronize position-scoped employee configuration for an uploaded team."""
+        expected_keys: set[tuple[str, str]] = set()
+        for position_name, display_order, kpi in iter_employee_kpi_configs(config):
+            expected_keys.add((position_name, kpi["key"]))
+            existing = (
+                db.query(TeamKPIConfig)
+                .filter(
+                    TeamKPIConfig.team_id == team.id,
+                    TeamKPIConfig.performance_level == "Employee",
+                    TeamKPIConfig.position_name == position_name,
+                    TeamKPIConfig.kpi_key == kpi["key"],
+                )
+                .first()
+            )
+            values = {
+                "kpi_label": kpi["label"],
+                "perspective": kpi.get("perspective"),
+                "weight": safe_decimal(kpi["weight"]),
+                "direction": kpi["direction"],
+                "unit": kpi["unit"],
+                "color": kpi["color"],
+                "actual_col": kpi["actual_col"],
+                "target_col": kpi["target_col"],
+                "achievement_col": kpi.get("achievement_col"),
+                "volume_unit": kpi.get("volume_unit"),
+                "display_order": display_order,
+            }
+            if existing:
+                for key, value in values.items():
+                    setattr(existing, key, value)
+            else:
+                db.add(TeamKPIConfig(
+                    id=uuid.uuid4(),
+                    team_id=team.id,
+                    performance_level="Employee",
+                    position_name=position_name,
+                    kpi_key=kpi["key"],
+                    **values,
+                ))
+
+        stale_rows = (
+            db.query(TeamKPIConfig)
+            .filter(
+                TeamKPIConfig.team_id == team.id,
+                TeamKPIConfig.performance_level == "Employee",
+            )
+            .all()
+        )
+        for row in stale_rows:
+            if (row.position_name or "", row.kpi_key) not in expected_keys:
+                db.delete(row)
+
     def _sync_to_database(
         self,
         records: list[PerformanceRecord],
@@ -330,6 +389,37 @@ class DatabaseSeeder:
             for team in db.query(Team).filter(Team.team_level == "employee").all():
                 teams_by_name[team.name.lower()] = team
                 teams_by_name[team.db_name.lower()] = team
+
+            position_scoped_teams = {record.team for record in records if record.team != "Marketing"}
+            for team_name in position_scoped_teams:
+                try:
+                    team_config = load_team_config(team_name)
+                except ConfigurationError:
+                    continue
+                positions = team_config.get("performance_levels", {}).get("Employee", {}).get("positions", {})
+                if not positions:
+                    continue
+
+                position_team = teams_by_name.get(str(team_name).lower())
+                if not position_team:
+                    position_team = Team(
+                        id=uuid.uuid4(),
+                        name=team_config["team"],
+                        db_name=team_config["db_name"],
+                        display_name=team_config["team"],
+                        region=team_config["region"],
+                        team_level="employee",
+                        is_active=True,
+                    )
+                    db.add(position_team)
+                    db.flush()
+                else:
+                    position_team.display_name = team_config["team"]
+                    position_team.region = team_config["region"]
+                    position_team.is_active = True
+                teams_by_name[position_team.name.lower()] = position_team
+                teams_by_name[position_team.db_name.lower()] = position_team
+                self._sync_employee_position_config(db, position_team, team_config)
 
             if any(record.team == "Marketing" for record in records):
                 marketing_team = teams_by_name.get("marketing")
@@ -539,6 +629,8 @@ class DatabaseSeeder:
         outbound_df = self.excel_processor.process_sheet_outbound(excel_file) if "Outbound" in sheet_names else pd.DataFrame()
         inbound_uae_df = self.excel_processor.process_sheet_inbound_uae(excel_file) if "Inbound UAE" in sheet_names else pd.DataFrame()
         preapprovals_df = self.excel_processor.process_sheet_preapprovals(excel_file) if "Pre-Approvals IP Offshore" in sheet_names else pd.DataFrame()
+        preapprovals_op_dubai_df = self.excel_processor.process_sheet_preapprovals_op_dubai(excel_file) if "Pre-Approvals OP Dubai" in sheet_names else pd.DataFrame()
+        preapprovals_ip_final_dubai_df = self.excel_processor.process_sheet_preapprovals_ip_final_dubai(excel_file) if "Pre-Approvals IP Final Dubai" in sheet_names else pd.DataFrame()
         sales_df = self.excel_processor.process_sheet_sales(excel_file) if "Sales" in sheet_names else pd.DataFrame()
         coding_df = self.excel_processor.process_sheet_coding(excel_file) if "Coding" in sheet_names else pd.DataFrame()
         csr_df = self.excel_processor.process_sheet_csr(excel_file) if "CSR" in sheet_names else pd.DataFrame()
@@ -571,6 +663,10 @@ class DatabaseSeeder:
             sheet_mappings.append(("Inbound UAE", inbound_uae_df, "HRID", "AgentName"))
         if not preapprovals_df.empty:
             sheet_mappings.append(("Pre-Approvals IP Offshore", preapprovals_df, "HRID", "AgentName"))
+        if not preapprovals_op_dubai_df.empty:
+            sheet_mappings.append(("Pre-Approvals OP Dubai", preapprovals_op_dubai_df, "HRID", "AgentName"))
+        if not preapprovals_ip_final_dubai_df.empty:
+            sheet_mappings.append(("Pre-Approvals IP Final Dubai", preapprovals_ip_final_dubai_df, "HRID", "AgentName"))
         if not sales_df.empty:
             sheet_mappings.append(("Sales", sales_df, "HRID", "AgentName"))
         if not coding_df.empty:
@@ -651,6 +747,10 @@ class DatabaseSeeder:
                         continue
 
                     performance_level = row["performance_level"]
+                    position_value = row.get("Position")
+                    if pd.isna(position_value) or not str(position_value).strip():
+                        position_value = row.get("Workstream")
+                    position = None if pd.isna(position_value) else str(position_value).strip() or None
 
                     date_val = row.get("Date")
                     month = "Unknown"
@@ -661,7 +761,7 @@ class DatabaseSeeder:
                     is_new = row.get("Is_New", False)
                     region_val = str(row.get("Region", "EGY")).strip().upper()
                     if not region_val or region_val == "NAN":
-                        region_val = "UAE" if team_name in ["Inbound UAE", "Sales", "Coding", "CSR", "Pharmacy", "Submission", "Re-Submission"] else "EGY"
+                        region_val = "UAE" if team_name in ["Inbound UAE", "Sales", "Coding", "CSR", "Pharmacy", "Submission", "Re-Submission", "Pre-Approvals OP Dubai", "Pre-Approvals IP Final Dubai"] else "EGY"
 
                     employee = Employee(
                         id=emp_id,
@@ -670,6 +770,7 @@ class DatabaseSeeder:
                         status=status,
                         region=region_val,
                         performance_level=performance_level,
+                        position=position,
                     )
                     all_new_employees.append(employee)
                     team_trace["employees_saved"] += 1
@@ -728,7 +829,16 @@ class DatabaseSeeder:
 
                     row_dict = row.to_dict()
                     team_trace["kpi_attempted"] = True
-                    if performance_level == "Employee":
+                    if performance_level == "Employee" and position:
+                        score, grade, kpi_values = self.kpi_service.calculate_performance_multi_team(
+                            team_name,
+                            row_dict,
+                            performance_level,
+                            position,
+                        )
+                        achievements = {value["kpi_key"]: value["achievement_ratio"] for value in kpi_values}
+                        weights_used = {value["kpi_key"]: value["weight_applied"] for value in kpi_values}
+                    elif performance_level == "Employee":
                         score, grade, achievements, weights_used = self.kpi_service.calculate_performance(team_name, row_dict)
                         kpi_values = []
                     else:
@@ -783,6 +893,7 @@ class DatabaseSeeder:
                         month=month,
                         region=region_val,
                         performance_level=performance_level,
+                        position=position,
                         calls=calls,
                         geo=geo,
                         actual=actual,

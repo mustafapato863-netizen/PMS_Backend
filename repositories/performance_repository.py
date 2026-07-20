@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session, selectinload
 from repositories.base_repository import BaseRepository
+from sqlalchemy import func, or_
+
 from models.models import PerformanceRecord, Employee, Team
 import logging
 
@@ -22,9 +24,10 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
         region: str | None = None,
     ) -> list[tuple[str, str, str, int]]:
         """Return lightweight dashboard record identifiers filtered in SQL."""
+        logical_team_name = func.coalesce(Team.display_name, Team.name)
         query = self.db.query(
             Employee.employee_id,
-            Team.name,
+            logical_team_name.label("logical_team_name"),
             PerformanceRecord.month,
             PerformanceRecord.year,
         ).join(
@@ -34,7 +37,12 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
         ).filter(Team.team_level == "employee")
 
         if team:
-            query = query.filter(Team.name == team)
+            normalized_team = str(team).strip().casefold()
+            query = query.filter(or_(
+                func.lower(logical_team_name) == normalized_team,
+                func.lower(Team.name) == normalized_team,
+                func.lower(Team.db_name) == normalized_team,
+            ))
         if month:
             query = query.filter(PerformanceRecord.month == month)
         if employee_id:
@@ -56,6 +64,19 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
             (str(emp_id), str(team_name), str(record_month), int(record_year))
             for emp_id, team_name, record_month, record_year in query.distinct().all()
         ]
+
+    def get_dashboard_records(self) -> list[PerformanceRecord]:
+        """Return canonical employee performance rows for analysis workspaces."""
+        return (
+            self.db.query(PerformanceRecord)
+            .options(
+                selectinload(PerformanceRecord.kpi_values),
+                selectinload(PerformanceRecord.employee).selectinload(Employee.team),
+            )
+            .join(Team, PerformanceRecord.team_id == Team.id)
+            .filter(Team.team_level == "employee")
+            .all()
+        )
 
     def get_by_employee_month(self, employee_id, month: str, year: int):
         """Get performance record for specific month"""

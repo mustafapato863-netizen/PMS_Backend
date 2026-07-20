@@ -6,6 +6,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 
 from api.dependencies import require_role
+from api.dependencies import get_current_user_scope
 from config.database import get_db
 from config import settings
 from api.middleware.rbac_middleware import require_permission
@@ -458,11 +459,12 @@ actions_router = APIRouter()
 
 @actions_router.get("/", response_model=StandardResponse)
 async def get_all_corrective_actions(
+    request: Request,
     db: Session = Depends(get_db),
     role: str = Depends(require_role(["Admin", "Manager", "Executive"]))
 ):
     try:
-        actions = CorrectiveActionService(db).list_all()
+        actions = CorrectiveActionService(db).list_scoped(get_current_user_scope(db, request))
         return StandardResponse(
             success=True,
             message="Retrieved all corrective actions successfully",

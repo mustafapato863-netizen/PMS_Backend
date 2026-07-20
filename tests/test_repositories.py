@@ -461,6 +461,49 @@ class TestEmployeeRepository:
 
 class TestPerformanceRepository:
     """Test PerformanceRepository custom queries"""
+
+    def test_dashboard_keys_use_logical_team_name(self, db: Session):
+        """Storage slugs must not hide records from the config-facing dashboard identity."""
+        team = Team(
+            id=uuid.uuid4(),
+            name="pre_approvals_op_dubai",
+            db_name="Pre-Approvals OP Dubai",
+            display_name="Pre-Approvals OP Dubai",
+            region="UAE",
+            is_active=True,
+        )
+        employee = Employee(
+            id=uuid.uuid4(),
+            employee_id="EMP-DXB-1",
+            name="Dubai Agent",
+            team=team,
+            region="UAE",
+            is_active=True,
+        )
+        record = PerformanceRecord(
+            id=uuid.uuid4(),
+            employee=employee,
+            team_id=team.id,
+            month="May",
+            year=2026,
+            score=90,
+            grade="A",
+            status="Exceeds",
+        )
+        db.add_all([team, employee, record])
+        db.commit()
+
+        repo = PerformanceRepository(db, PerformanceRecord)
+
+        assert repo.get_dashboard_record_keys() == [
+            ("EMP-DXB-1", "Pre-Approvals OP Dubai", "May", 2026)
+        ]
+        assert repo.get_dashboard_record_keys(team="Pre-Approvals OP Dubai") == [
+            ("EMP-DXB-1", "Pre-Approvals OP Dubai", "May", 2026)
+        ]
+        assert repo.get_dashboard_record_keys(team="pre_approvals_op_dubai") == [
+            ("EMP-DXB-1", "Pre-Approvals OP Dubai", "May", 2026)
+        ]
     
     def test_get_by_employee_month(self, db: Session, sample_employee):
         """Test get performance record by employee and month"""

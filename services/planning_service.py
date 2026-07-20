@@ -10,7 +10,14 @@ from models.models import (
     PlanMilestone, PlanNote, PlanObjective, PlanObjectiveKPI, Team, User,
     UserTeamAssignment,
 )
-from models.planning_schemas import PlanCreate, PlanItemUpdate, PlanNoteCreate, PlanUpdate
+from models.planning_schemas import (
+    PlanCreate,
+    PlanItemUpdate,
+    PlanMilestoneCreate,
+    PlanMilestoneUpdate,
+    PlanNoteCreate,
+    PlanUpdate,
+)
 from models.schemas import PerformanceRecord
 from repositories.base import PerformanceRepository
 from repositories.planning_repository import PlanningRepository
@@ -288,14 +295,18 @@ class PlanningService:
                 raise PlanningValidationError("One or more linked insights are unavailable in the authorized evidence period")
         actor_id = str(scope["user_id"])
         try:
-            plan = PerformancePlan(name=payload.name, scope_type=payload.scope_type, team_id=team.id, performance_level=payload.performance_level, region=team.region, position_name=payload.position_name, employee_id=employee.id if employee else None, period_start=payload.period_start, period_end=payload.period_end, due_date=payload.due_date, owner_user_id=payload.owner_user_id, baseline_value=payload.baseline_value, target_value=payload.target_value, current_value=payload.current_value, outcome_unit=payload.outcome_unit, outcome_direction=payload.outcome_direction, expected_impact=payload.expected_impact, status="In Progress" if payload.activate else "Draft", no_insight_reason=(payload.no_insight_reason or "").strip() or None, created_by_user_id=uuid.UUID(actor_id), updated_by_user_id=uuid.UUID(actor_id))
+            plan = PerformancePlan(name=payload.name, scope_type=payload.scope_type, team_id=team.id, performance_level=payload.performance_level, region=team.region, position_name=payload.position_name, employee_id=employee.id if employee else None, period_start=payload.period_start, period_end=payload.period_end, due_date=payload.due_date, owner_user_id=payload.owner_user_id, baseline_value=payload.baseline_value, target_value=payload.target_value, current_value=payload.current_value if payload.current_value is not None else payload.baseline_value, outcome_unit=payload.outcome_unit, outcome_direction=payload.outcome_direction, expected_impact=payload.expected_impact, status="In Progress" if payload.activate else "Draft", no_insight_reason=(payload.no_insight_reason or "").strip() or None, created_by_user_id=uuid.UUID(actor_id), updated_by_user_id=uuid.UUID(actor_id))
             self.plans.add(plan); self.db.flush()
             kpis = {}
             for item in payload.kpis:
-                row = PlanKPI(plan_id=plan.id, **item.model_dump()); self.db.add(row); self.db.flush(); kpis[item.kpi_key] = row
+                values = item.model_dump()
+                if values["current_value"] is None: values["current_value"] = item.baseline_value
+                row = PlanKPI(plan_id=plan.id, **values); self.db.add(row); self.db.flush(); kpis[item.kpi_key] = row
             objectives = []
             for item in payload.objectives:
-                values = item.model_dump(exclude={"linked_kpi_keys"}); objective = PlanObjective(plan_id=plan.id, status="Not Started", **values); self.db.add(objective); self.db.flush(); objectives.append(objective)
+                values = item.model_dump(exclude={"linked_kpi_keys"})
+                if values["current_value"] is None: values["current_value"] = item.baseline_value
+                objective = PlanObjective(plan_id=plan.id, status="Not Started", **values); self.db.add(objective); self.db.flush(); objectives.append(objective)
                 for key in item.linked_kpi_keys:
                     if key not in kpis: raise PlanningValidationError(f"Objective references unknown KPI: {key}")
                     self.db.add(PlanObjectiveKPI(objective_id=objective.id, kpi_id=kpis[key].id))
@@ -308,7 +319,7 @@ class PlanningService:
                     if not action_employee: raise PlanningValidationError("Action employee is outside the plan scope")
                     employee_id = action_employee.id
                 objective_id = objectives[item.objective_index].id if item.objective_index is not None else None
-                self.db.add(Action(employee_id=employee_id, team_id=team.id, month=payload.period_start.strftime("%B"), year=payload.period_start.year, action_type=item.title[:50], action_text=item.description, status="Open", plan_id=plan.id, objective_id=objective_id, owner_user_id=item.owner_user_id, due_date=item.due_date, priority=item.priority, linked_kpi_key=item.linked_kpi_key, created_by_user_id=uuid.UUID(actor_id)))
+                self.db.add(Action(employee_id=employee_id, team_id=team.id, month=payload.period_start.strftime("%B"), year=payload.period_start.year, action_type=item.action_type, plan_title=item.title, action_text=item.description, status="Open", plan_id=plan.id, objective_id=objective_id, owner_user_id=item.owner_user_id, due_date=item.due_date, priority=item.priority, linked_kpi_key=item.linked_kpi_key, created_by_user_id=uuid.UUID(actor_id)))
             for item in payload.milestones: self.db.add(PlanMilestone(plan_id=plan.id, status="Pending", **item.model_dump()))
             for insight_id in payload.insight_ids: self.db.add(PlanInsightLink(plan_id=plan.id, insight_id=insight_id, evidence_month=payload.evidence_month, evidence_year=payload.evidence_year))
             self._audit(plan.id, "INSERT", actor_id, new={"name": plan.name, "status": plan.status}); self.db.commit()
@@ -334,7 +345,7 @@ class PlanningService:
         if not plan: raise PlanningNotFoundError("Plan not found")
         if not self._can_access(plan, scope): raise PlanningAccessError("This plan is outside your authorized scope")
         data = self._serialize_card(plan)
-        data.update({"summary": {"scope_type": plan.scope_type, "scope_name": data["scope"], "period": data["period"], "owner": data["owner"], "baseline": self._number(plan.baseline_value), "target": self._number(plan.target_value), "current": self._number(plan.current_value), "expected_impact": self._number(plan.expected_impact), "actual_impact": self._number(plan.actual_impact), "unit": plan.outcome_unit, "direction": plan.outcome_direction, "status_reason": plan.status_reason}, "objectives": [{"id": str(x.id), "name": x.name, "measurement_type": x.measurement_type, "baseline": self._number(x.baseline_value), "target": self._number(x.target_value), "current": self._number(x.current_value), "unit": x.unit, "direction": x.direction, "due_date": x.due_date.isoformat(), "owner": x.owner.username, "status": x.status, "required": x.is_required, "progress": self._objective_progress(x), "linked_kpis": [next((k.kpi_key for k in plan.kpis if k.id == link.kpi_id), "") for link in x.kpi_links]} for x in plan.objectives], "actions": [{"id": str(x.id), "title": x.action_type, "description": x.action_text, "owner": x.owner.username if x.owner else None, "due_date": x.due_date.isoformat() if x.due_date else None, "priority": x.priority, "status": x.status, "objective_id": str(x.objective_id) if x.objective_id else None, "linked_kpi": x.linked_kpi_key, "completion_note": x.completion_note, "evidence_reference": x.evidence_reference} for x in plan.actions], "kpis": [{"id": str(x.id), "key": x.kpi_key, "label": x.kpi_label, "unit": x.unit, "direction": x.direction, "baseline": self._number(x.baseline_value), "target": self._number(x.target_value), "current": self._number(x.current_value), "achievement": self._kpi_achievement(x), "gap": self._kpi_gap(x), "contribution": self._number(x.contribution), "data_period": f"{x.data_month} {x.data_year}" if x.data_month and x.data_year else None} for x in plan.kpis], "milestones": [{"id": str(x.id), "name": x.name, "due_date": x.due_date.isoformat(), "status": "Overdue" if x.due_date < date.today() and x.status != "Completed" else x.status, "completion_date": x.completion_date.isoformat() if x.completion_date else None, "owner": x.owner.username, "note": x.note} for x in plan.milestones], "notes": [{"id": str(x.id), "author": x.author.username, "timestamp": x.created_at.isoformat(), "text": x.text, "review_period": f"{x.review_month} {x.review_year}" if x.review_month and x.review_year else None} for x in plan.notes], "linked_insights": self._resolve_insights(plan, scope)})
+        data.update({"summary": {"scope_type": plan.scope_type, "scope_name": data["scope"], "period": data["period"], "owner": data["owner"], "baseline": self._number(plan.baseline_value), "target": self._number(plan.target_value), "current": self._number(plan.current_value), "expected_impact": self._number(plan.expected_impact), "actual_impact": self._number(plan.actual_impact), "unit": plan.outcome_unit, "direction": plan.outcome_direction, "status_reason": plan.status_reason}, "objectives": [{"id": str(x.id), "name": x.name, "measurement_type": x.measurement_type, "baseline": self._number(x.baseline_value), "target": self._number(x.target_value), "current": self._number(x.current_value), "unit": x.unit, "direction": x.direction, "due_date": x.due_date.isoformat(), "owner": x.owner.username, "status": x.status, "required": x.is_required, "progress": self._objective_progress(x), "linked_kpis": [next((k.kpi_key for k in plan.kpis if k.id == link.kpi_id), "") for link in x.kpi_links]} for x in plan.objectives], "actions": [{"id": str(x.id), "title": x.plan_title or x.action_type, "action_type": x.action_type, "description": x.action_text, "owner": x.owner.username if x.owner else None, "due_date": x.due_date.isoformat() if x.due_date else None, "priority": x.priority, "status": x.status, "objective_id": str(x.objective_id) if x.objective_id else None, "linked_kpi": x.linked_kpi_key, "completion_note": x.completion_note, "evidence_reference": x.evidence_reference} for x in plan.actions], "kpis": [{"id": str(x.id), "key": x.kpi_key, "label": x.kpi_label, "unit": x.unit, "direction": x.direction, "baseline": self._number(x.baseline_value), "target": self._number(x.target_value), "current": self._number(x.current_value), "achievement": self._kpi_achievement(x), "gap": self._kpi_gap(x), "contribution": self._number(x.contribution), "data_period": f"{x.data_month} {x.data_year}" if x.data_month and x.data_year else None} for x in plan.kpis], "milestones": [{"id": str(x.id), "name": x.name, "due_date": x.due_date.isoformat(), "status": "Overdue" if x.due_date < date.today() and x.status != "Completed" else x.status, "completion_date": x.completion_date.isoformat() if x.completion_date else None, "owner_id": str(x.owner.id), "owner": x.owner.username, "note": x.note} for x in plan.milestones], "notes": [{"id": str(x.id), "author": x.author.username, "timestamp": x.created_at.isoformat(), "text": x.text, "review_period": f"{x.review_month} {x.review_year}" if x.review_month and x.review_year else None} for x in plan.notes], "linked_insights": self._resolve_insights(plan, scope)})
         return data
 
     @classmethod
@@ -359,19 +370,154 @@ class PlanningService:
     def update(self, plan_id: str, payload: PlanUpdate, scope: dict) -> dict[str, Any]:
         data = self.get(plan_id, scope); plan = self.plans.get(uuid.UUID(plan_id))
         if scope.get("role") not in {"Admin", "Manager"}: raise PlanningAccessError("Plan editing is not permitted")
-        values = payload.model_dump(exclude_none=True)
-        if values.get("status") == "At Risk" and not (values.get("status_reason") or "").strip(): raise PlanningValidationError("Manual At Risk status requires a reason")
-        if values.get("status") == "Completed":
-            required = [x for x in plan.objectives if x.is_required]
-            if any(x.status != "Completed" for x in required) or any(x.status not in {"Completed", "Cancelled"} for x in plan.actions) or not plan.notes or not (values.get("completion_note") or "").strip(): raise PlanningValidationError("Completion requires required objectives, closed actions, a review note and completion note")
-            plan.completion_date = date.today(); plan.completed_by_user_id = uuid.UUID(scope["user_id"]); plan.actual_impact = (self._number(plan.current_value) or 0) - self._number(plan.baseline_value)
-        old = {"status": plan.status, "name": plan.name}
-        for key, value in values.items(): setattr(plan, key, value)
-        plan.updated_by_user_id = uuid.UUID(scope["user_id"]); plan.updated_at = datetime.now(timezone.utc)
-        self._audit(plan.id, "UPDATE", scope["user_id"], old=old, new=values); self.db.commit()
-        return self.get(plan_id, scope)
+        try:
+            values = payload.model_dump(exclude_none=True)
+            if "owner_user_id" in values:
+                owner = self.db.query(User).filter(User.id == values["owner_user_id"], User.is_active.is_(True)).first()
+                if not owner or owner.role not in {"Admin", "Manager"}:
+                    raise PlanningValidationError("Plan owner is not an active planning owner")
+                if not self._owner_allowed(owner, scope, logical_team_name(plan.team)):
+                    raise PlanningAccessError("The selected plan owner is outside your authorized team scope")
+            if values.get("due_date") and values["due_date"] < plan.period_start:
+                raise PlanningValidationError("Plan due date cannot be before the plan start date")
+            if values.get("status") == "At Risk" and not (values.get("status_reason") or "").strip(): raise PlanningValidationError("Manual At Risk status requires a reason")
+            if values.get("status") == "Completed":
+                required = [x for x in plan.objectives if x.is_required]
+                if any(x.status != "Completed" for x in required) or any(x.status not in {"Completed", "Cancelled"} for x in plan.actions) or not plan.notes or not (values.get("completion_note") or "").strip(): raise PlanningValidationError("Completion requires required objectives, closed actions, a review note and completion note")
+                plan.completion_date = date.today(); plan.completed_by_user_id = uuid.UUID(scope["user_id"]); plan.actual_impact = (self._number(plan.current_value) or 0) - self._number(plan.baseline_value)
+            old = {"status": plan.status, "name": plan.name}
+            for key, value in values.items(): setattr(plan, key, value)
+            plan.updated_by_user_id = uuid.UUID(scope["user_id"]); plan.updated_at = datetime.now(timezone.utc)
+            self._audit(plan.id, "UPDATE", scope["user_id"], old=old, new=values); self.db.commit()
+            return self.get(plan_id, scope)
+        except Exception:
+            self.db.rollback()
+            raise
+
+    def delete(self, plan_id: str, scope: dict) -> dict[str, str]:
+        self.get(plan_id, scope)
+        if scope.get("role") not in {"Admin", "Manager"}:
+            raise PlanningAccessError("Plan deletion is not permitted")
+        plan = self.plans.get(uuid.UUID(plan_id))
+        result = {"id": str(plan.id), "name": plan.name}
+        try:
+            self.plans.deactivate(plan)
+            plan.updated_by_user_id = uuid.UUID(scope["user_id"])
+            plan.updated_at = datetime.now(timezone.utc)
+            self._audit(plan.id, "DELETE", scope["user_id"], old={"name": plan.name, "status": plan.status, "is_active": True}, new={"is_active": False})
+            self.db.commit()
+            return result
+        except Exception:
+            self.db.rollback()
+            raise
+
+    def _editable_plan(self, plan_id: str, scope: dict) -> PerformancePlan:
+        self.get(plan_id, scope)
+        if scope.get("role") not in {"Admin", "Manager"}:
+            raise PlanningAccessError("Plan editing is not permitted")
+        return self.plans.get(uuid.UUID(plan_id))
+
+    def _validate_milestone_owner(self, owner_user_id, plan: PerformancePlan, scope: dict) -> User:
+        owner = self.db.query(User).filter(User.id == owner_user_id, User.is_active.is_(True)).first()
+        if not owner or owner.role not in {"Admin", "Manager"}:
+            raise PlanningValidationError("Milestone owner is not an active planning owner")
+        if not self._owner_allowed(owner, scope, logical_team_name(plan.team)):
+            raise PlanningAccessError("The milestone owner is outside your authorized team scope")
+        return owner
+
+    @staticmethod
+    def _validate_milestone_due_date(plan: PerformancePlan, due_date: date) -> None:
+        if due_date < plan.period_start or due_date > plan.due_date:
+            raise PlanningValidationError("Milestone due date must be within the plan start and due dates")
+
+    def add_milestone(self, plan_id: str, payload: PlanMilestoneCreate, scope: dict) -> dict[str, Any]:
+        plan = self._editable_plan(plan_id, scope)
+        self._validate_milestone_owner(payload.owner_user_id, plan, scope)
+        self._validate_milestone_due_date(plan, payload.due_date)
+        values = payload.model_dump()
+        status = values.pop("status")
+        milestone = PlanMilestone(
+            plan_id=plan.id,
+            status=status,
+            completion_date=date.today() if status == "Completed" else None,
+            **values,
+        )
+        try:
+            self.plans.add_milestone(milestone)
+            plan.updated_by_user_id = uuid.UUID(scope["user_id"])
+            plan.updated_at = datetime.now(timezone.utc)
+            self._audit(plan.id, "UPDATE", scope["user_id"], old={"milestones": len(plan.milestones)}, new={"milestone_added": payload.name})
+            self.db.commit()
+            return self.get(plan_id, scope)
+        except Exception:
+            self.db.rollback()
+            raise
+
+    def update_milestone(self, plan_id: str, milestone_id: str, payload: PlanMilestoneUpdate, scope: dict) -> dict[str, Any]:
+        plan = self._editable_plan(plan_id, scope)
+        try:
+            parsed_id = uuid.UUID(milestone_id)
+        except ValueError as exc:
+            raise PlanningNotFoundError("Milestone not found") from exc
+        milestone = self.plans.get_item("milestone", parsed_id)
+        if not milestone or milestone.plan_id != plan.id:
+            raise PlanningNotFoundError("Milestone not found")
+        values = payload.model_dump(exclude_unset=True)
+        if values.get("owner_user_id") is not None:
+            self._validate_milestone_owner(values["owner_user_id"], plan, scope)
+        if values.get("due_date") is not None:
+            self._validate_milestone_due_date(plan, values["due_date"])
+        old = {"name": milestone.name, "status": milestone.status, "due_date": milestone.due_date.isoformat()}
+        audit_values = {
+            key: str(value) if isinstance(value, uuid.UUID) else value.isoformat() if isinstance(value, date) else value
+            for key, value in values.items()
+        }
+        try:
+            for key, value in values.items():
+                setattr(milestone, key, value)
+            if "status" in values:
+                milestone.completion_date = date.today() if milestone.status == "Completed" else None
+            plan.updated_by_user_id = uuid.UUID(scope["user_id"])
+            plan.updated_at = datetime.now(timezone.utc)
+            self._audit(plan.id, "UPDATE", scope["user_id"], old={"milestone": old}, new={"milestone": audit_values})
+            self.db.commit()
+            return self.get(plan_id, scope)
+        except Exception:
+            self.db.rollback()
+            raise
+
+    def delete_milestone(self, plan_id: str, milestone_id: str, scope: dict) -> dict[str, Any]:
+        plan = self._editable_plan(plan_id, scope)
+        try:
+            parsed_id = uuid.UUID(milestone_id)
+        except ValueError as exc:
+            raise PlanningNotFoundError("Milestone not found") from exc
+        milestone = self.plans.get_item("milestone", parsed_id)
+        if not milestone or milestone.plan_id != plan.id:
+            raise PlanningNotFoundError("Milestone not found")
+        old = {"name": milestone.name, "status": milestone.status, "due_date": milestone.due_date.isoformat()}
+        try:
+            self.plans.delete_milestone(milestone)
+            plan.updated_by_user_id = uuid.UUID(scope["user_id"])
+            plan.updated_at = datetime.now(timezone.utc)
+            self._audit(plan.id, "UPDATE", scope["user_id"], old={"milestone": old}, new={"milestone_deleted": str(milestone.id)})
+            self.db.commit()
+            return self.get(plan_id, scope)
+        except Exception:
+            self.db.rollback()
+            raise
 
     def update_item(self, plan_id: str, kind: str, item_id: str, payload: PlanItemUpdate, scope: dict) -> dict[str, Any]:
+        if kind == "milestone":
+            if payload.status is not None and payload.status not in {"Pending", "In Progress", "Completed"}:
+                raise PlanningValidationError("Milestone status is invalid")
+            values = payload.model_dump(include={"status", "note"}, exclude_none=True)
+            return self.update_milestone(
+                plan_id,
+                item_id,
+                PlanMilestoneUpdate(**values),
+                scope,
+            )
         self.get(plan_id, scope)
         if scope.get("role") not in {"Admin", "Manager"}: raise PlanningAccessError("Plan editing is not permitted")
         item = self.plans.get_item(kind, uuid.UUID(item_id))

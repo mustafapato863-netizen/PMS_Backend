@@ -448,8 +448,17 @@ class JSONTeamActionsRepository:
     def __init__(self):
         self.filename = "team_actions.json"
 
-    def get_action(self, team_id: str, month: str) -> Optional[TeamAction]:
+    def get_action(self, team_id: str, month: str, year: int | None = None) -> Optional[TeamAction]:
         data = _load_json(self.filename, [])
+        if year is not None:
+            for item in data:
+                if item.get("team_id") == team_id and item.get("month") == month and item.get("year") == year:
+                    return TeamAction(**item)
+            # Compatibility-only fallback for records written before year-aware keys.
+            for item in data:
+                if item.get("team_id") == team_id and item.get("month") == month and item.get("year") is None:
+                    return TeamAction(**item)
+            return None
         for item in data:
             if item.get("team_id") == team_id and item.get("month") == month:
                 return TeamAction(**item)
@@ -457,7 +466,7 @@ class JSONTeamActionsRepository:
 
     def save(self, action: TeamAction) -> TeamAction:
         data = _load_json(self.filename, [])
-        action.id = f"{action.team_id}_{action.month}"
+        action.id = f"{action.team_id}_{action.year}_{action.month}" if action.year is not None else f"{action.team_id}_{action.month}"
         data = [item for item in data if item.get("id") != action.id]
         data.append(action.model_dump())
         _save_json(self.filename, data)

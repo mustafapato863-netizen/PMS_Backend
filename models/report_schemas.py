@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -32,6 +32,24 @@ MONTHS = {
 }
 
 
+class BlockConfigSchema(BaseModel):
+    # Flexible container for any block settings
+    settings: dict[str, Any] = Field(default_factory=dict)
+
+
+class ReportBlockSchema(BaseModel):
+    id: str = Field(min_length=1, max_length=100)
+    type: str = Field(min_length=1, max_length=100)
+    config: BlockConfigSchema = Field(default_factory=BlockConfigSchema)
+
+
+class ReportSlideSchema(BaseModel):
+    id: str = Field(min_length=1, max_length=100)
+    title: str = Field(min_length=1, max_length=180)
+    layout: str = Field(min_length=1, max_length=100)
+    blocks: list[ReportBlockSchema] = Field(default_factory=list)
+
+
 class ReportConfiguration(BaseModel):
     report_type: REPORT_TYPES
     report_name: str = Field(min_length=1, max_length=180)
@@ -47,7 +65,8 @@ class ReportConfiguration(BaseModel):
     grade: str | None = None
     status: str | None = None
     included_sections: list[str] = Field(default_factory=lambda: ["summary", "details"])
-    output_format: Literal["excel"] = "excel"
+    output_format: str = "pptx"
+    slides: list[ReportSlideSchema] = Field(default_factory=list)
 
     @field_validator("report_name")
     @classmethod
@@ -56,6 +75,16 @@ class ReportConfiguration(BaseModel):
         if not value:
             raise ValueError("Report name cannot be empty")
         return value
+
+    @field_validator("output_format", mode="before")
+    @classmethod
+    def validate_output_format(cls, value: str | None) -> str:
+        normalized = str(value or "pptx").strip().lower()
+        if normalized == "excel":
+            return "pptx"
+        if normalized not in {"pdf", "pptx"}:
+            raise ValueError("Output format must be either pdf or pptx")
+        return normalized
 
     @model_validator(mode="after")
     def validate_period(self):

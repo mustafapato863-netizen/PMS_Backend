@@ -629,6 +629,7 @@ class KPIService:
         team_id: str,
         row: Dict[str, Any],
         performance_level: str = "Employee",
+        position_name: str | None = None,
     ) -> Tuple[float, str, List[Dict[str, Any]]]:
         """
         Calculate performance score and grade for multi-team support (Pharmacy, Coding, CSR).
@@ -636,6 +637,8 @@ class KPIService:
         Args:
             team_id: Team identifier (e.g., "Pharmacy", "Coding", "CSR")
             row: Data row from Excel with actual/target values
+            performance_level: Employee, Managerial, or Corporate configuration scope
+            position_name: Optional position/workstream within the performance level
             
         Returns:
             Tuple of (score, grade, kpi_values_list)
@@ -649,7 +652,11 @@ class KPIService:
                 - contribution: achievement × weight
         """
         try:
-            config = resolve_team_config(load_team_config(team_id), performance_level)
+            config = resolve_team_config(
+                load_team_config(team_id),
+                performance_level,
+                position_name,
+            )
         except ConfigurationError as e:
             logger.error(f"Failed to load config for team {team_id}: {e}")
             raise
@@ -728,7 +735,8 @@ class KPIService:
             
             # Convert to decimal (0-1 scale) for storage
             achievement_ratio = achievement / 100.0
-            effective_ratio = min(achievement_ratio, 1.0)
+            cap_achievement = bool(kpi_def.get('cap_achievement', True))
+            effective_ratio = min(achievement_ratio, 1.0) if cap_achievement else achievement_ratio
 
             # Store the uncapped achievement, but cap the weighted contribution.
             contribution = effective_ratio * weight

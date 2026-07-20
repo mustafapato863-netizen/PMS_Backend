@@ -1,7 +1,7 @@
 import io
 import uuid
+import zipfile
 
-import pandas as pd
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -137,17 +137,35 @@ def test_preview_uses_strict_period_without_falling_back(db):
         service.preview(_configuration(), _admin_scope(user))
 
 
-def test_generate_persists_real_excel_and_selected_sections(db):
+def test_generate_persists_real_pptx_and_selected_sections(db):
     session, user = db
     service = ReportService(session, StubRecordService([_record("EMP1", "Marketing", "Employee")]))
 
     report = service.generate(_configuration(), _admin_scope(user))
 
     assert report.record_count == 1
-    assert report.file_name == "June_Team_Report.xlsx"
+    assert report.output_format == "pptx"
+    assert report.file_name == "June_Team_Report.pptx"
     assert session.query(GeneratedReport).count() == 1
-    workbook = pd.ExcelFile(io.BytesIO(report.file_data))
-    assert workbook.sheet_names == ["Report Metadata", "Summary", "KPI Breakdown", "Report Details"]
+    with zipfile.ZipFile(io.BytesIO(report.file_data)) as archive:
+        assert "ppt/presentation.xml" in archive.namelist()
+        assert "ppt/slides/slide1.xml" in archive.namelist()
+        assert archive.read("ppt/slides/slide1.xml").startswith(b"<?xml")
+
+
+def test_generate_pdf_export_uses_pdf_content_type(db):
+    session, user = db
+    service = ReportService(
+        session,
+        StubRecordService([_record("EMP1", "Marketing", "Employee")]),
+    )
+
+    report = service.generate(_configuration(output_format="pdf"), _admin_scope(user))
+
+    assert report.output_format == "pdf"
+    assert report.file_name == "June_Team_Report.pdf"
+    assert report.content_type == "application/pdf"
+    assert report.file_data.startswith(b"%PDF-1.4")
 
 
 def test_generate_rejects_team_outside_scope(db):

@@ -20,6 +20,7 @@
       "color": "#3B82F6",
       "actual_col": "A.InitialRejectionRate",
       "target_col": "T.InitialRejectionRate",
+      "aggregation": {"method": "ratio", "numerator_col": "RejectedClaimsAmount3MonthPrevious", "denominator_col": "RAClaimsAmount(3MonthPrevious)"},
       "capping": "uncapped"
     },
     {
@@ -31,6 +32,7 @@
       "color": "#10B981",
       "actual_col": "A.TAT48Hours",
       "target_col": "T.%ofSubmissionWithinDuedate",
+      "aggregation": {"method": "average"},
       "capping": "uncapped"
     }
   ]

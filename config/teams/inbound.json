@@ -66,6 +66,7 @@
       "color": "#3B82F6",
       "actual_col": "A.Attend%",
       "target_col": "T.Attend%",
+      "aggregation": {"method": "ratio", "numerator_col": "$geo.attended", "denominator_col": "$geo.bookings"},
       "achievement_col": "Attend%Ach%"
     },
     {
@@ -77,6 +78,7 @@
       "color": "#10B981",
       "actual_col": "A.Booking%",
       "target_col": "T.Booking%",
+      "aggregation": {"method": "ratio", "numerator_col": "$geo.bookings", "denominator_col": "$calls.total_handled"},
       "achievement_col": "Booking%Ach%"
     },
     {
@@ -88,6 +90,7 @@
       "color": "#8B5CF6",
       "actual_col": "A.QualityScore",
       "target_col": "T.Quality%",
+      "aggregation": {"method": "average"},
       "achievement_col": "QualityTargetAch%"
     },
     {
@@ -99,6 +102,7 @@
       "color": "#6366F1",
       "actual_col": "AHT_Minutes",
       "target_col": "T.AHT",
+      "aggregation": {"method": "weighted_average", "weight_col": "$calls.total_handled"},
       "achievement_col": "AHTAch%"
     },
     {
@@ -110,6 +114,7 @@
       "color": "#EF4444",
       "actual_col": "A.AbandonRate%",
       "target_col": "T.Abandon%",
+      "aggregation": {"method": "ratio", "numerator_col": "$calls.abandoned", "denominator_col": "$calls.total_handled"},
       "achievement_col": "AbandonRate%Ach%"
     }
   ]

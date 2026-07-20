@@ -35,7 +35,8 @@ class CleanerFactory:
 
     @staticmethod
     def _normalize_team_name(team_name: str) -> str:
-        return team_name.lower().replace(' ', '_').replace('-', '_')
+        normalized = team_name.lower().replace(' ', '_').replace('-', '_')
+        return normalized.replace('preapprovals', 'pre_approvals')
 
     @classmethod
     def get_cleaner(cls, team_name: str) -> BaseDataCleaner:
@@ -123,6 +124,8 @@ class CleanerFactory:
             'outbound': {'class': 'OutboundCleaner', 'function': 'process_outbound'},
             'inbound_uae': {'class': 'InboundUAECleaner', 'function': 'process_inbound_uae'},
             'pre_approvals_offshore': {'class': 'PreApprovalsOffshoreCleaner', 'function': 'process_preapprovals_offshore'},
+            'preapprovals_op_dubai': {'class': None, 'function': 'process_preapprovals_op_dubai'},
+            'preapprovals_ip_final_dubai': {'class': None, 'function': 'process_preapprovals_ip_final_dubai'},
             'sales': {'class': 'SalesCleaner', 'function': 'process_sales'},
             'pharmacy': {'class': None, 'function': 'process_pharmacy'},
             'coding': {'class': None, 'function': 'process_coding'},

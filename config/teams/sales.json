@@ -1,7 +1,7 @@
 {
   "team": "Sales",
   "db_name": "Sales",
-  "region": "EGY",
+  "region": "UAE",
   "employee_id_col": "EmployeeID",
   "employee_name_col": "EmployeeName",
   "grade_thresholds": {
@@ -66,6 +66,7 @@
       "color": "#3B82F6",
       "actual_col": "A.OPCensus",
       "target_col": "T.OPCensus",
+      "aggregation": {"method": "ratio", "numerator_col": "A.OPCensus", "denominator_col": "T.OPCensus"},
       "achievement_col": "OPCensusAch%",
       "volume_unit": "Census"
     },
@@ -78,6 +79,7 @@
       "color": "#10B981",
       "actual_col": "A.OPRevenue",
       "target_col": "T.OPRevenue",
+      "aggregation": {"method": "ratio", "numerator_col": "A.OPRevenue", "denominator_col": "T.OPRevenue"},
       "achievement_col": "OPRevenueAch%",
       "volume_unit": "Rev"
     },
@@ -90,6 +92,7 @@
       "color": "#8B5CF6",
       "actual_col": "A.IPCensus",
       "target_col": "T.IPCensus",
+      "aggregation": {"method": "ratio", "numerator_col": "A.IPCensus", "denominator_col": "T.IPCensus"},
       "achievement_col": "IPCensusAch%",
       "volume_unit": "Census"
     },
@@ -102,6 +105,7 @@
       "color": "#F59E0B",
       "actual_col": "A.IPRevenue",
       "target_col": "T.IPRevenue",
+      "aggregation": {"method": "ratio", "numerator_col": "A.IPRevenue", "denominator_col": "T.IPRevenue"},
       "achievement_col": "IPRevenueAch%",
       "volume_unit": "Rev"
     },
@@ -114,6 +118,7 @@
       "color": "#6366F1",
       "actual_col": "A.Activity",
       "target_col": "T.Activity",
+      "aggregation": {"method": "ratio", "numerator_col": "A.Activity", "denominator_col": "T.Activity"},
       "achievement_col": "ActivityAch%",
       "volume_unit": "Activities"
     }

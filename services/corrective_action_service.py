@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session
 
 from models.models import Action, Employee, PerformanceRecord, User
 from repositories.action_repository import ActionRepository
+from utils.report_scope import user_can_access_team_level
+from utils.team_identity import logical_team_name
 
 
 ACTION_TYPES = {"Training", "Reward", "PIP", "Monitor", "Coaching", "Warning", "Promotion"}
@@ -68,9 +70,9 @@ class CorrectiveActionService:
         parsed = cls._uuid(value)
         return parsed or uuid.uuid5(ACTION_ID_NAMESPACE, value.strip())
 
-    def _score_snapshot(self, action: Action) -> tuple[float, str]:
+    def _score_snapshot(self, action: Action) -> tuple[float | None, str | None]:
         if not action.employee_id:
-            return 0.0, ""
+            return None, None
         record = (
             self.db.query(PerformanceRecord)
             .filter(
@@ -82,9 +84,9 @@ class CorrectiveActionService:
             .first()
         )
         if not record:
-            return 0.0, ""
-        score = float(record.score) if isinstance(record.score, (Decimal, int, float)) else 0.0
-        return score, record.grade
+            return None, None
+        score = float(record.score) if isinstance(record.score, (Decimal, int, float)) else None
+        return score, record.grade or None
 
     def serialize(self, action: Action) -> dict[str, Any]:
         score, grade = self._score_snapshot(action)
@@ -117,6 +119,21 @@ class CorrectiveActionService:
             for action in self.actions.list_active()
             if action.employee_id is not None
         ]
+
+    def list_scoped(self, scope: dict) -> list[dict[str, Any]]:
+        return [
+            self.serialize(action)
+            for action in self.actions.list_active()
+            if action.employee_id is not None
+            and action.employee is not None
+            and user_can_access_team_level(scope, logical_team_name(action.team), action.employee.performance_level)
+        ]
+
+    def ensure_employee_scope(self, employee_identifier: str, scope: dict) -> Employee:
+        employee = self._employee(employee_identifier)
+        if not user_can_access_team_level(scope, logical_team_name(employee.team), employee.performance_level):
+            raise PermissionError("The employee is outside your authorized action scope")
+        return employee
 
     def get_history(self, employee_identifier: str) -> list[dict[str, Any]]:
         employee = self._employee(employee_identifier)

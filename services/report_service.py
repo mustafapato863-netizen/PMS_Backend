@@ -11,6 +11,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from exports.report_exporter import ReportExporter
+from exports.pptx_builder import build_pptx_from_slides
+from services.narrative_engine import generate_narrative
 from models.models import GeneratedReport, SavedReportTemplate
 from models.report_schemas import MONTHS, ReportConfiguration
 from repositories.action_repository import ActionRepository
@@ -44,7 +46,7 @@ REPORT_TEMPLATES = [
         "category": "executive",
         "name": "Executive Performance Report",
         "description": "Formal performance summary across the authorized organization scope.",
-        "formats": ["excel"],
+        "formats": ["pdf", "pptx"],
         "sections": ["summary", "grade_distribution", "team_breakdown", "details"],
     },
     {
@@ -52,7 +54,7 @@ REPORT_TEMPLATES = [
         "category": "team",
         "name": "Team Performance Report",
         "description": "Detailed performance results for a selected authorized team.",
-        "formats": ["excel"],
+        "formats": ["pdf", "pptx"],
         "sections": ["summary", "grade_distribution", "kpi_breakdown", "details"],
     },
     {
@@ -60,7 +62,7 @@ REPORT_TEMPLATES = [
         "category": "position",
         "name": "Position Performance Report",
         "description": "KPI performance and employee results for a selected position.",
-        "formats": ["excel"],
+        "formats": ["pdf", "pptx"],
         "sections": ["summary", "kpi_breakdown", "details"],
     },
     {
@@ -68,7 +70,7 @@ REPORT_TEMPLATES = [
         "category": "employee",
         "name": "Employee Performance Report",
         "description": "Individual performance, grade, status and KPI breakdown.",
-        "formats": ["excel"],
+        "formats": ["pdf", "pptx"],
         "sections": ["summary", "kpi_breakdown", "details"],
     },
     {
@@ -76,7 +78,7 @@ REPORT_TEMPLATES = [
         "category": "team",
         "name": "Grade Distribution Report",
         "description": "Auditable grade distribution across the selected scope.",
-        "formats": ["excel"],
+        "formats": ["pdf", "pptx"],
         "sections": ["summary", "grade_distribution", "details"],
     },
     {
@@ -84,7 +86,7 @@ REPORT_TEMPLATES = [
         "category": "employee",
         "name": "Corrective Actions Report",
         "description": "Corrective actions, ownership and current completion status.",
-        "formats": ["excel"],
+        "formats": ["pdf", "pptx"],
         "sections": ["summary", "status_breakdown", "details"],
     },
     {
@@ -92,7 +94,7 @@ REPORT_TEMPLATES = [
         "category": "kpi",
         "name": "KPI Performance Report",
         "description": "Actual, target, achievement and weighted KPI contribution data.",
-        "formats": ["excel"],
+        "formats": ["pdf", "pptx"],
         "sections": ["summary", "kpi_breakdown", "details"],
     },
     {
@@ -100,7 +102,7 @@ REPORT_TEMPLATES = [
         "category": "data_quality",
         "name": "Data Quality / Upload Report",
         "description": "Upload volumes, processing status and available error details.",
-        "formats": ["excel"],
+        "formats": ["pdf", "pptx"],
         "sections": ["summary", "status_breakdown", "details"],
     },
 ]
@@ -436,7 +438,28 @@ class ReportService:
             ]
         if "details" in sections:
             sheets["Report Details"] = data.rows
-        file_data = ReportExporter.export_workbook(metadata=metadata, sheets=sheets)
+
+        # If slides are provided in the configuration, we use the advanced python-pptx builder
+        if getattr(configuration, "slides", None) and configuration.output_format == "pptx":
+            # Generate narratives for any narrative blocks
+            for slide in configuration.slides:
+                for block in slide.blocks:
+                    if block.type == "narrative":
+                        block.config.settings["title"] = generate_narrative(data.summary, "Performance")
+
+            # Serialize the Pydantic models to dicts for the builder
+            slides_data = [slide.model_dump() for slide in configuration.slides]
+            file_data = build_pptx_from_slides(configuration.report_name, slides_data, period_label)
+            content_type = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+            extension = ".pptx"
+        else:
+            file_data, content_type, extension = ReportExporter.export_report(
+                title=configuration.report_name,
+                metadata=metadata,
+                sheets=sheets,
+                output_format=configuration.output_format,
+            )
+
         safe_name = re.sub(r"[^A-Za-z0-9_-]+", "_", configuration.report_name).strip("_") or "PMS_Report"
         user = scope.get("user")
         user_id = getattr(user, "id", None) or uuid.UUID(str(scope["user_id"]))
@@ -447,10 +470,10 @@ class ReportService:
             period_label=period_label,
             created_by_user_id=user_id,
             created_by_name=getattr(user, "username", None) or str(scope.get("username") or "User"),
-            output_format="excel",
+            output_format=configuration.output_format,
             status="ready",
-            file_name=f"{safe_name}.xlsx",
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            file_name=f"{safe_name}{extension}",
+            content_type=content_type,
             file_data=file_data,
             configuration=configuration.model_dump(mode="json"),
             record_count=data.summary["record_count"],

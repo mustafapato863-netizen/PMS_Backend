@@ -51,6 +51,9 @@ class InsightItem(BaseModel):
     position: str | None = None
     employee_id: str | None = None
     kpi_key: str | None = None
+    included_in_score: bool = True
+    weight: float | None = None
+    evidence_classification: str | None = None
     detail: InsightDetail
     planning_context: dict[str, str | float | None] = Field(default_factory=dict)
 
@@ -77,6 +80,29 @@ class InsightSummary(BaseModel):
     at_risk: int = 0
     opportunities: int = 0
     data_issues: int = 0
+    critical_issues: int = 0
+    negative_weighted_drivers: int = 0
+    positive_weighted_drivers: int = 0
+    weighted_negative_impact: float = 0
+    weighted_positive_impact: float = 0
+    weighted_net_impact: float = 0
+    analyzed_kpis: int = 0
+    expected_kpis: int = 0
+    coverage_percent: float | None = None
+
+
+class InsightTeamSummary(BaseModel):
+    team: str
+    current_score: float | None = None
+    previous_score: float | None = None
+    score_change: float | None = None
+    impacted_employees: int = 0
+    total_employees: int = 0
+    critical: int = 0
+    at_risk: int = 0
+    opportunities: int = 0
+    main_insight_id: str | None = None
+    main_cause: str | None = None
 
 
 class InsightFilterOptions(BaseModel):
@@ -102,10 +128,12 @@ class InsightComparison(BaseModel):
 class InsightsWorkspace(BaseModel):
     summary: InsightSummary
     priority_insights: list[InsightItem]
+    team_analyses: list[InsightItem] = Field(default_factory=list)
     performance_drivers: list[InsightDriver]
     risks: list[InsightRisk]
     opportunities: list[InsightItem]
     data_issues: list[InsightItem]
+    team_summaries: list[InsightTeamSummary] = Field(default_factory=list)
     options: InsightFilterOptions
     comparison: InsightComparison
     deferred_capabilities: list[str] = Field(default_factory=list)

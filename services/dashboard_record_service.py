@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from models.models import PerformanceRecord
 from repositories.json_repos import JSONPerformanceRepository
 from repositories.performance_repository import PerformanceRepository as SQLPerformanceRepository
+from utils.team_identity import logical_team_name
 
 
 class DashboardRecordService:
@@ -73,3 +74,78 @@ class DashboardRecordService:
             position=position,
             region=region,
         )
+
+    def list_analysis_records(self):
+        """Merge rich JSON evidence with every persisted SQL performance row.
+
+        A legacy JSON row without a year is reused only when its identity maps to
+        exactly one SQL year. SQL-only rows remain available using their persisted
+        score and KPI values, so an incomplete JSON mirror cannot hide a team.
+        """
+        sql_repository = self.sql_repository_cls(self.db, PerformanceRecord)
+        sql_records = sql_repository.get_dashboard_records()
+        if not sql_records:
+            return self.list_records()
+
+        json_records = self.json_repository.get_all()
+
+        def identity(employee_id, team, month):
+            return (
+                str(employee_id or "").strip().casefold(),
+                str(team or "").strip().casefold(),
+                str(month or "").strip().casefold(),
+            )
+
+        exact_json = {}
+        legacy_json = {}
+        for item in json_records:
+            key = identity(item.employee_id, item.team, item.month)
+            if item.year is None:
+                legacy_json[key] = item
+            else:
+                exact_json[(*key, int(item.year))] = item
+
+        sql_years = {}
+        for item in sql_records:
+            team_name = logical_team_name(item.employee.team)
+            key = identity(item.employee.employee_id, team_name, item.month)
+            sql_years.setdefault(key, set()).add(int(item.year))
+
+        result = []
+        for item in sql_records:
+            employee = item.employee
+            team_name = logical_team_name(employee.team)
+            key = identity(employee.employee_id, team_name, item.month)
+            rich_record = exact_json.get((*key, int(item.year)))
+            if rich_record is None and len(sql_years[key]) == 1:
+                rich_record = legacy_json.get(key)
+            if rich_record is not None:
+                result.append(rich_record.model_copy(update={"year": int(item.year)}))
+                continue
+
+            result.append({
+                "id": str(item.id),
+                "employee_id": str(employee.employee_id),
+                "employee_name": str(employee.name),
+                "team": team_name,
+                "month": str(item.month),
+                "year": int(item.year),
+                "region": item.region or employee.region,
+                "performance_level": str(item.performance_level),
+                "position": item.position_name or employee.position_name,
+                "status": item.status,
+                "evaluation": {"score": float(item.score), "grade": item.grade},
+                "raw_data": {},
+                "kpi_values": [
+                    {
+                        "kpi_key": value.kpi_key,
+                        "actual_value": float(value.actual_value),
+                        "target_value": float(value.target_value),
+                        "achievement_ratio": float(value.achievement_ratio),
+                        "weight_applied": float(value.weight_applied),
+                        "contribution": float(value.contribution),
+                    }
+                    for value in item.kpi_values
+                ],
+            })
+        return result
