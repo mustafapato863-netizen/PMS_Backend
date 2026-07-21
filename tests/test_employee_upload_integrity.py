@@ -15,6 +15,7 @@ from models.models import (
 )
 from repositories.employee_upload_repository import EmployeeUploadRepository
 from services.kpi_service import KPIService
+from services.legacy_kpi_evidence import build_legacy_employee_kpi_values
 
 
 class _EmptyConfigRepository:
@@ -47,6 +48,39 @@ def test_inbound_june_missing_quality_does_not_poison_reweighted_score():
     assert achievements["Quality"] == 0
     assert weights["Quality"] == 0
     assert weights["Other"] == 0.15
+
+
+def test_inbound_kpi_evidence_uses_the_calculated_targets_and_dynamic_utz_label():
+    row = {
+        "Date": datetime.datetime(2026, 5, 1),
+        "TotalHandledCalls": 100,
+        "Dubai_Booking": 45,
+        "Dubai_Attend": 30,
+        "InboundCalls": 100,
+        "AbandonedCalls": 0,
+        "A.QualityScore": 0.977,
+        "A.UTZ%": 0.821,
+        "AHT_Minutes": 2.7333333333,
+    }
+
+    _score, _grade, achievements, weights = _kpi_service().calculate_performance("Inbound", row)
+    evidence = build_legacy_employee_kpi_values(
+        "Inbound",
+        row,
+        achievements=achievements,
+        weights=weights,
+        config={"kpis": []},
+    )
+    by_key = {item["kpi_key"]: item for item in evidence}
+
+    assert by_key["Attendance"]["target_value"] == 0.75
+    assert by_key["Booking"]["target_value"] == 0.45
+    assert by_key["Quality"]["target_value"] == 0.95
+    assert by_key["AHT"]["target_value"] == 2.5
+    assert by_key["Other"]["label"] == "Utilization"
+    assert by_key["Other"]["target_value"] == 0.85
+    assert by_key["Attendance"]["weight_applied"] == 0.70
+    assert by_key["Quality"]["weight_applied"] == 0.05
 
 
 def test_outbound_june_missing_quality_uses_reachability_weight():

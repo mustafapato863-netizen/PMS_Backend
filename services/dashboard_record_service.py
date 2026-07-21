@@ -8,6 +8,7 @@ from utils.team_identity import logical_team_name
 from config.loader import ConfigurationError, load_team_config, resolve_team_config
 from models.schemas import PerformanceRecord as SchemaPerformanceRecord
 from pydantic import ValidationError
+from services.legacy_kpi_evidence import build_legacy_employee_kpi_values
 
 
 class DashboardRecordService:
@@ -50,7 +51,8 @@ class DashboardRecordService:
         result = []
         for item in records:
             employee = item.employee
-            team_name = logical_team_name(employee.team)
+            record_team = getattr(item, "team", None) or employee.team
+            team_name = logical_team_name(record_team)
 
             config_by_key = {}
             try:
@@ -95,6 +97,16 @@ class DashboardRecordService:
             if isinstance(payload, dict):
                 try:
                     rich_record = SchemaPerformanceRecord.model_validate(payload)
+                    persisted_weights = {
+                        str(value.kpi_key): float(value.weight_applied)
+                        for value in item.kpi_values
+                    }
+                    repaired_kpis = build_legacy_employee_kpi_values(
+                        team_name,
+                        rich_record.raw_data,
+                        weights=persisted_weights,
+                        config=config if config_by_key else None,
+                    )
                     rich_evaluation = rich_record.evaluation.model_copy(
                         update={"score": float(item.score), "grade": item.grade}
                     )
@@ -111,7 +123,7 @@ class DashboardRecordService:
                         "status": item.status,
                         "upload_id": str(item.upload_id) if getattr(item, "upload_id", None) else None,
                         "evaluation": rich_evaluation,
-                        "kpi_values": kpi_values or rich_record.kpi_values,
+                        "kpi_values": repaired_kpis or kpi_values or rich_record.kpi_values,
                     }))
                     continue
                 except ValidationError:

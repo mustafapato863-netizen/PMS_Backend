@@ -82,6 +82,7 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
             self.db.query(PerformanceRecord)
             .options(
                 selectinload(PerformanceRecord.kpi_values),
+                selectinload(PerformanceRecord.team),
                 selectinload(PerformanceRecord.employee).selectinload(Employee.team),
             )
             .join(Team, PerformanceRecord.team_id == Team.id)

@@ -308,6 +308,7 @@ class PerformanceRecord(Base):
 
     # Relationships
     employee = relationship("Employee", back_populates="performance_records")
+    team = relationship("Team")
     kpi_values = relationship("KPIValue", back_populates="performance_record")
 
     __table_args__ = (

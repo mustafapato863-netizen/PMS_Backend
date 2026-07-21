@@ -20,6 +20,7 @@ from repositories.json_repos import (
 )
 from processors.excel_processor import ExcelProcessor
 from services.kpi_service import KPIService
+from services.legacy_kpi_evidence import build_legacy_employee_kpi_values
 from services.analysis_service import AnalysisService
 from services.learning_service import LearningService
 from services.planning_service import PlanningService
@@ -930,7 +931,13 @@ class DatabaseSeeder:
                         weights_used = {value["kpi_key"]: value["weight_applied"] for value in kpi_values}
                     elif performance_level == "Employee":
                         score, grade, achievements, weights_used = self.kpi_service.calculate_performance(team_name, row_dict)
-                        kpi_values = []
+                        kpi_values = build_legacy_employee_kpi_values(
+                            team_name,
+                            row_dict,
+                            achievements=achievements,
+                            weights=weights_used,
+                            config=load_team_config(team_name),
+                        )
                     else:
                         score, grade, kpi_values = self.kpi_service.calculate_performance_multi_team(
                             team_name, row_dict, performance_level

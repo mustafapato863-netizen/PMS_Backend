@@ -16,6 +16,7 @@ def _sql_record(*, employee_id="IN-1", month="June", score=82, grade="C", payloa
     return SimpleNamespace(
         id=f"sql-{employee_id}",
         employee=employee,
+        team=team,
         month=month,
         year=2026,
         region="EGY",
@@ -108,6 +109,58 @@ def test_dashboard_merges_relational_kpi_breakdown_into_rich_payload():
     assert record.kpi_values[0]["contribution"] == 0.6328
 
 
+def test_dashboard_repairs_legacy_call_center_kpi_evidence_from_the_original_row():
+    rich_record = PerformanceRecord(
+        id="legacy-id",
+        employee_id="IN-1",
+        employee_name="Inbound Agent",
+        team="Inbound",
+        month="May",
+        year=2026,
+        raw_data={
+            "A.Attend%": 0.671,
+            "Attend%Ach%": 0.8946666667,
+            "A.Booking%": 0.548,
+            "Booking%Ach%": 1.2177777778,
+            "A.QualityScore": 0.977,
+            "QualityTargetAch%": 1.0284210526,
+            "AHT_Minutes": 2.7333333333,
+            "AHTAch%": 0.9146341463,
+            "A.UTZ%": 0.821,
+            "UTZ%Ach%": 0.9658823529,
+        },
+        evaluation=EvaluationData(score=82.6, grade="C"),
+    )
+    row = _sql_record(month="May", payload=rich_record.model_dump(mode="json"))
+    row.kpi_values = [
+        SimpleNamespace(
+            kpi_key=key,
+            actual_value=0,
+            target_value=0,
+            achievement_ratio=0,
+            weight_applied=weight,
+            contribution=0,
+        )
+        for key, weight in [
+            ("Attendance", 0.70),
+            ("Booking", 0.10),
+            ("Quality", 0.05),
+            ("AHT", 0.05),
+            ("Other", 0.10),
+        ]
+    ]
+
+    [record] = _service([row]).list_records()
+    by_key = {item["kpi_key"]: item for item in record.kpi_values}
+
+    assert by_key["Attendance"]["target_value"] == 0.75
+    assert by_key["Quality"]["target_value"] == 0.95
+    assert by_key["AHT"]["target_value"] == 2.5
+    assert by_key["Other"]["label"] == "Utilization"
+    assert by_key["Other"]["target_value"] == 0.85
+    assert by_key["Attendance"]["weight_applied"] == 0.70
+
+
 def test_dashboard_falls_back_to_relational_record_when_payload_is_missing():
     records = _service([_sql_record(score=88.4, grade="C", payload=None)]).list_records()
 
@@ -116,6 +169,15 @@ def test_dashboard_falls_back_to_relational_record_when_payload_is_missing():
     assert records[0].year == 2026
     assert records[0].evaluation.score == 88.4
     assert records[0].raw_data == {}
+
+
+def test_dashboard_uses_the_historical_record_team_not_the_employees_current_team():
+    row = _sql_record(payload=None)
+    row.employee.team = SimpleNamespace(name="Outbound", db_name="Outbound", display_name=None)
+
+    [record] = _service([row]).list_records()
+
+    assert record.team == "Inbound"
 
 
 def test_analysis_records_share_the_dashboard_source():
