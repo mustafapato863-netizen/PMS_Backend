@@ -21,11 +21,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-try:
-    from socketio import ASGIApp
-except (ImportError, ModuleNotFoundError, Exception):
-    ASGIApp = None
-
 # Ensure Backend directory is on the import path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -118,8 +113,12 @@ async def root():
 
 # Wrap FastAPI with Socket.IO when the optional real-time runtime is available.
 # Vercel serves the pure REST ASGI FastAPI app without SocketIO wrapper.
-if ASGIApp is not None and SOCKETIO_AVAILABLE and not os.environ.get("VERCEL"):
-    app = ASGIApp(sio, app)
+if SOCKETIO_AVAILABLE and not os.environ.get("VERCEL"):
+    try:
+        from socketio import ASGIApp
+        app = ASGIApp(sio, app)
+    except Exception:
+        pass
 
 if __name__ == "__main__":
     import uvicorn
