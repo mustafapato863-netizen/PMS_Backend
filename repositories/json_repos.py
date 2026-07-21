@@ -104,11 +104,15 @@ def _save_json(filename: str, data: list | dict):
     path = os.path.join(DATA_DIR, filename)
     data = _prepare_json_for_save(filename, data)
     temp_path = f"{path}.{os.getpid()}.{threading.get_ident()}.tmp"
-    with open(temp_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-        f.flush()
-        os.fsync(f.fileno())
-    os.replace(temp_path, path)
+    try:
+        with open(temp_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp_path, path)
+    except OSError as e:
+        import logging
+        logging.getLogger(__name__).warning(f"Skipping JSON save for {filename} due to filesystem restriction: {e}")
     # Invalidate cache so next read picks up the new data
     with _cache_lock:
         _cache.pop(f"json:{filename}", None)
