@@ -121,7 +121,6 @@ async def upload_pms_file(
         if not dry_run:
             CacheInvalidationService.flush_all()
             clear_serialization_cache()
-            _warm_team_caches()
 
         teams_list = result.get("teams", []) if isinstance(result, dict) else []
         if not dry_run:

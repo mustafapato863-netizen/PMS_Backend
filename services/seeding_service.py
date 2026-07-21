@@ -436,6 +436,10 @@ class DatabaseSeeder:
                 elif team_config:
                     self._sync_employee_position_config(db, position_team, team_config)
 
+            # Batch optimization for Vercel 10s limit: Pre-fetch existing records to avoid N+1 DB roundtrips
+            existing_employees_list = db.query(DBEmployee).all()
+            existing_emp_map = {e.employee_id: e for e in existing_employees_list}
+
             employee_lookup = {}
             seen_employee_ids: set[str] = set()
             for employee in employees:
@@ -451,12 +455,7 @@ class DatabaseSeeder:
                     logger.warning("DB sync skipped employee because team was not found: %s", employee.team)
                     continue
 
-                existing_employee = (
-                    db.query(DBEmployee)
-                    .filter(DBEmployee.employee_id == str(employee.id))
-                    .first()
-                )
-                db_employee = existing_employee
+                db_employee = existing_emp_map.get(str(employee.id))
                 if not db_employee:
                     db_employee = DBEmployee(
                         id=uuid.uuid4(),
@@ -469,6 +468,7 @@ class DatabaseSeeder:
                         is_active=True,
                     )
                     db.add(db_employee)
+                    existing_emp_map[str(employee.id)] = db_employee
                 else:
                     db_employee.name = employee.name
                     db_employee.team_id = team.id
@@ -480,6 +480,24 @@ class DatabaseSeeder:
 
             db.flush()
 
+            # Pre-fetch existing performance records to avoid querying inside loop
+            existing_perf_list = db.query(DBPerformanceRecord).all()
+            existing_perf_map = {
+                (p.employee_id, p.month, p.year): p
+                for p in existing_perf_list
+            }
+
+            # Pre-fetch upload logs
+            upload_log_map = {}
+            try:
+                upload_logs_list = db.query(UploadLog).all()
+                upload_log_map = {(ul.team_id, ul.month, ul.year): ul for ul in upload_logs_list}
+            except Exception:
+                pass
+
+            records_to_clean_kpis = []
+            kpis_to_insert = []
+
             for record in records:
                 record_employee_key = str(record.employee_id).strip()
                 if not record_employee_key or record_employee_key.lower() == "nan":
@@ -490,53 +508,32 @@ class DatabaseSeeder:
                     logger.warning("DB sync skipped performance record because team was not found: %s", record.team)
                     continue
 
-                db_employee = employee_lookup.get(record_employee_key)
-                if not db_employee:
-                    db_employee = (
-                        db.query(DBEmployee)
-                        .filter(DBEmployee.employee_id == record_employee_key)
-                        .first()
-                    )
+                db_employee = employee_lookup.get(record_employee_key) or existing_emp_map.get(record_employee_key)
                 if not db_employee:
                     logger.warning("DB sync skipped performance record because employee was not found: %s", record.employee_id)
                     continue
 
                 year = record.year or datetime.datetime.now().year
-                
-                # Vercel Production: Store upload metadata in the DB natively.
-                # Wrapped in try/except because UploadLog table may not exist in older schemas.
+
                 upload_log_id = None
-                try:
-                    upload_log = db.query(UploadLog).filter_by(team_id=team.id, month=record.month, year=year).first()
-                    if not upload_log:
-                        upload_log = UploadLog(
-                            team_id=team.id,
-                            month=record.month,
-                            year=year,
-                            record_count=0,
-                            status="success"
-                        )
-                        db.add(upload_log)
-                        db.flush()
-                    upload_log.record_count += 1
-                    upload_log_id = upload_log.id
-                except Exception as upload_log_exc:
-                    logger.warning("UploadLog creation skipped: %s", upload_log_exc)
+                log_key = (team.id, record.month, year)
+                if log_key in upload_log_map:
+                    ul = upload_log_map[log_key]
+                    ul.record_count += 1
+                    upload_log_id = ul.id
+                else:
                     try:
-                        db.rollback()
-                        db.begin()
+                        ul = UploadLog(team_id=team.id, month=record.month, year=year, record_count=1, status="success")
+                        db.add(ul)
+                        db.flush()
+                        upload_log_map[log_key] = ul
+                        upload_log_id = ul.id
                     except Exception:
                         pass
 
-                existing = (
-                    db.query(DBPerformanceRecord)
-                    .filter(
-                        DBPerformanceRecord.employee_id == db_employee.id,
-                        DBPerformanceRecord.month == record.month,
-                        DBPerformanceRecord.year == year,
-                    )
-                    .first()
-                )
+                perf_key = (db_employee.id, record.month, year)
+                existing = existing_perf_map.get(perf_key)
+
                 if existing:
                     existing.score = safe_decimal(record.evaluation.score)
                     existing.grade = record.evaluation.grade
@@ -563,12 +560,9 @@ class DatabaseSeeder:
                         upload_id=upload_log_id,
                     )
                     db.add(db_record)
-                    db.flush()
+                    existing_perf_map[perf_key] = db_record
 
-                db.query(KPIValue).filter(
-                    KPIValue.record_id == db_record.id,
-                    KPIValue.record_year == db_record.year,
-                ).delete(synchronize_session=False)
+                records_to_clean_kpis.append(db_record.id)
 
                 raw_data = record.raw_data or {}
                 team_config = None
@@ -583,7 +577,7 @@ class DatabaseSeeder:
 
                 if record.kpi_values:
                     for value in record.kpi_values:
-                        db.add(KPIValue(
+                        kpis_to_insert.append(KPIValue(
                             id=uuid.uuid4(),
                             record_id=db_record.id,
                             record_year=db_record.year,
@@ -614,7 +608,7 @@ class DatabaseSeeder:
                             is_inverse=str(kpi.get("direction", "higher_better")).lower() == "lower_better",
                             cap_at_100=str(kpi.get("capping", "")).lower() == "capped_at_100",
                         )
-                        kpi_value = KPIValue(
+                        kpis_to_insert.append(KPIValue(
                             id=uuid.uuid4(),
                             record_id=db_record.id,
                             record_year=db_record.year,
@@ -624,8 +618,15 @@ class DatabaseSeeder:
                             achievement_ratio=safe_decimal(achievement_ratio),
                             weight_applied=safe_decimal(kpi.get("weight", 0.0)),
                             contribution=safe_decimal(min(float(achievement_ratio), 100.0) * float(kpi.get("weight", 0.0))),
-                        )
-                        db.add(kpi_value)
+                        ))
+
+            # Batch delete old KPIValues in 1 SQL query
+            if records_to_clean_kpis:
+                db.query(KPIValue).filter(KPIValue.record_id.in_(records_to_clean_kpis)).delete(synchronize_session=False)
+
+            # Batch insert new KPIValues
+            if kpis_to_insert:
+                db.add_all(kpis_to_insert)
 
             if owns_session:
                 db.commit()
