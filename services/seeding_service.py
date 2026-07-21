@@ -35,6 +35,7 @@ from models.models import (
     Employee as DBEmployee,
     PerformanceRecord as DBPerformanceRecord,
     KPIValue,
+    UploadLog,
 )
 from data_cleaning.standard_mappings import calculate_achievement
 from utils.performance_levels import normalize_performance_level
@@ -196,24 +197,18 @@ class DatabaseSeeder:
             result["dry_run"] = True
             return result
 
-        employee_snapshot = self.employee_repo.get_all()
-        performance_snapshot = self.performance_repo.get_all()
-        upload_snapshot = self.uploads_repo.get_all()
-        upload_rec = UploadRecord(
-            id=str(uuid.uuid4()),
-            filename=filename,
-            uploaded_at=datetime.datetime.now().isoformat(),
-            uploaded_by="Admin"
-        )
+        # Vercel Production Safety: Do not write to JSON repositories for runtime persistence.
+        # Generate upload ID for the batch. Metadata persistence is delegated to the DB.
+        upload_id = str(uuid.uuid4())
+        
         db = SessionLocal()
         try:
-            self.uploads_repo.save(upload_rec)
             if marketing_result:
                 for record in marketing_result.records:
-                    record.upload_id = upload_rec.id
+                    record.upload_id = upload_id
             result = self._process_and_save_excel(
                 excel_file,
-                upload_id=upload_rec.id,
+                upload_id=upload_id,
                 marketing_result=marketing_result,
                 db_session=db,
             )
@@ -222,9 +217,6 @@ class DatabaseSeeder:
             return result
         except Exception:
             db.rollback()
-            self.employee_repo.replace_all(employee_snapshot)
-            self.performance_repo.replace_all(performance_snapshot)
-            self.uploads_repo.replace_all(upload_snapshot)
             raise
         finally:
             db.close()
@@ -377,6 +369,7 @@ class DatabaseSeeder:
         records: list[PerformanceRecord],
         employees: list[Employee],
         db_session=None,
+        upload_id: str | None = None,
     ) -> None:
         """Mirror processed JSON records into the relational DB so upload persistence is verifiable."""
         if not records:
@@ -509,6 +502,21 @@ class DatabaseSeeder:
                     continue
 
                 year = record.year or datetime.datetime.now().year
+                
+                # Vercel Production: Store upload metadata in the DB natively.
+                upload_log = db.query(UploadLog).filter_by(team_id=team.id, month=record.month, year=year).first()
+                if not upload_log:
+                    upload_log = UploadLog(
+                        team_id=team.id,
+                        month=record.month,
+                        year=year,
+                        record_count=0,
+                        status="success"
+                    )
+                    db.add(upload_log)
+                    db.flush()
+                upload_log.record_count += 1
+
                 existing = (
                     db.query(DBPerformanceRecord)
                     .filter(
@@ -526,8 +534,7 @@ class DatabaseSeeder:
                     existing.performance_level = record.performance_level
                     existing.position_name = record.position
                     existing.region = record.region
-                    # ponytail: keep DB sync independent from JSON upload logs until upload_log is mirrored too
-                    existing.upload_id = None
+                    existing.upload_id = upload_log.id
                     db_record = existing
                 else:
                     db_record = DBPerformanceRecord(
@@ -542,7 +549,7 @@ class DatabaseSeeder:
                         score=safe_decimal(record.evaluation.score),
                         grade=record.evaluation.grade,
                         status=self._status_for_record(record),
-                        upload_id=None,
+                        upload_id=upload_log.id,
                     )
                     db.add(db_record)
                     db.flush()
@@ -962,10 +969,9 @@ class DatabaseSeeder:
                 "marketing": marketing_report,
             }
 
-        self.employee_repo.save_all(all_new_employees)
-        self.performance_repo.save_all(all_new_records)
+        # Vercel Production Safety: Do not write to JSON repositories. DB is the sole runtime persistence.
         try:
-            self._sync_to_database(all_new_records, all_new_employees, db_session=db_session)
+            self._sync_to_database(all_new_records, all_new_employees, db_session=db_session, upload_id=upload_id)
         except Exception as exc:
             report = {
                 "records_imported": len(all_new_records),

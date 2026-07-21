@@ -21,10 +21,12 @@ async def read_validated_excel(
         raise HTTPException(status_code=400, detail=f"Only {accepted} files are accepted.")
     file.filename = filename
 
+    # Documented Vercel Production Limit: Vercel serverless functions have a strict 4.5 MB request body limit.
+    # We validate this upfront to avoid opaque 500 crashes and return a clean 413 Payload Too Large.
     contents = await file.read(settings.MAX_UPLOAD_BYTES + 1)
     if len(contents) > settings.MAX_UPLOAD_BYTES:
         limit_mb = settings.MAX_UPLOAD_BYTES / (1024 * 1024)
-        raise HTTPException(status_code=413, detail=f"Upload exceeds the {limit_mb:g} MB limit.")
+        raise HTTPException(status_code=413, detail=f"Upload exceeds the {limit_mb:g} MB limit. Vercel production limits request bodies to 4.5 MB.")
     if not contents:
         raise HTTPException(status_code=400, detail="The uploaded file is empty.")
 

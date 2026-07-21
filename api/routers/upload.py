@@ -75,15 +75,25 @@ router = APIRouter()
 
 @router.get("/", response_model=StandardResponse)
 async def get_upload_history(
+    db: Session = Depends(get_db),
     _user=Depends(require_permission("view_reports"))
 ):
     try:
-        records = uploads_repo.get_all()
-        records.sort(key=lambda x: x.uploaded_at or "", reverse=True)
+        from models.models import UploadLog
+        records = db.query(UploadLog).order_by(UploadLog.uploaded_at.desc()).all()
         return StandardResponse(
             success=True,
             message="Retrieved upload history successfully",
-            data=[r.model_dump() for r in records]
+            data=[
+                {
+                    "id": str(r.id),
+                    "filename": "Unknown",  # filename not stored in upload_log
+                    "uploaded_at": r.uploaded_at.isoformat() if r.uploaded_at else None,
+                    "uploaded_by": str(r.uploaded_by_user_id) if r.uploaded_by_user_id else "Admin",
+                    "status": r.status,
+                }
+                for r in records
+            ]
         )
     except Exception as e:
         logger.exception("Failed to fetch upload history")
@@ -164,7 +174,8 @@ async def upload_pms_file(
         )
         logger.exception("Unexpected upload processing failure")
         status_code = getattr(e, "status_code", 500)
-        if status_code == 422:
+        error_type = type(e).__name__
+        if error_type in ("UploadProcessingError", "ConfigurationError") or status_code == 422:
             raise HTTPException(
                 status_code=422,
                 detail={

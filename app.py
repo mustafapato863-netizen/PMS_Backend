@@ -113,13 +113,13 @@ async def root():
     }
 
 # Wrap FastAPI with Socket.IO when the optional real-time runtime is available.
-# Vercel serves the pure REST ASGI FastAPI app without SocketIO wrapper.
-if SOCKETIO_AVAILABLE and not os.environ.get("VERCEL"):
+# This enables polling fallback on serverless environments like Vercel.
+if SOCKETIO_AVAILABLE:
     try:
         from socketio import ASGIApp
         app = ASGIApp(sio, app)
-    except Exception:
-        pass
+    except Exception as e:
+        logger.warning(f"Failed to mount Socket.IO: {e}")
 
 if __name__ == "__main__":
     import uvicorn
