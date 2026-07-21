@@ -126,7 +126,7 @@ DEFAULT_TARGETS = {
         "Leakage": 0.10,
         "TenderCompliance": 0.75,
         "ATV": 600.0,
-        "Prescription": 0.07
+        "Prescription": 100.0
     },
     "Submission": {
         "initial_rejection_rate": 0.04,
@@ -585,7 +585,9 @@ class KPIService:
         raw_score = 0.0
         for kpi, ach in achievements.items():
             wt = final_weights.get(kpi, 0.0)
-            raw_score += ach * wt
+            # Sales uses capped KPI contributions: an over-target source
+            # volume must not compensate for a different KPI below target.
+            raw_score += (min(ach, 1.0) if team == "Sales" else ach) * wt
 
         score = float(round(min(raw_score, 1.0) * 100.0, 2))
         grade = self.assign_grade(score)

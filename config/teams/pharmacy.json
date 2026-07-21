@@ -68,7 +68,12 @@
       "color": "#8B5CF6",
       "actual_col": "A.NoofPrescriptionsContribution",
       "target_col": "T.NoofPrescriptionsContribution",
-      "aggregation": {"method": "average"},
+      "aggregation": {
+        "method": "ratio",
+        "numerator_col": "A.DispensedItems",
+        "denominator_col": "A.TotalPrescribedItems"
+      },
+      "score_target": 100,
       "capping": "uncapped"
     }
   ]

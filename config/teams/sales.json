@@ -67,6 +67,7 @@
       "actual_col": "A.OPCensus",
       "target_col": "T.OPCensus",
       "aggregation": {"method": "ratio", "numerator_col": "A.OPCensus", "denominator_col": "T.OPCensus"},
+      "score_target": 1.0,
       "achievement_col": "OPCensusAch%",
       "volume_unit": "Census"
     },
@@ -80,6 +81,7 @@
       "actual_col": "A.OPRevenue",
       "target_col": "T.OPRevenue",
       "aggregation": {"method": "ratio", "numerator_col": "A.OPRevenue", "denominator_col": "T.OPRevenue"},
+      "score_target": 1.0,
       "achievement_col": "OPRevenueAch%",
       "volume_unit": "Rev"
     },
@@ -93,6 +95,7 @@
       "actual_col": "A.IPCensus",
       "target_col": "T.IPCensus",
       "aggregation": {"method": "ratio", "numerator_col": "A.IPCensus", "denominator_col": "T.IPCensus"},
+      "score_target": 1.0,
       "achievement_col": "IPCensusAch%",
       "volume_unit": "Census"
     },
@@ -106,6 +109,7 @@
       "actual_col": "A.IPRevenue",
       "target_col": "T.IPRevenue",
       "aggregation": {"method": "ratio", "numerator_col": "A.IPRevenue", "denominator_col": "T.IPRevenue"},
+      "score_target": 1.0,
       "achievement_col": "IPRevenueAch%",
       "volume_unit": "Rev"
     },
@@ -119,6 +123,7 @@
       "actual_col": "A.Activity",
       "target_col": "T.Activity",
       "aggregation": {"method": "ratio", "numerator_col": "A.Activity", "denominator_col": "T.Activity"},
+      "score_target": 1.0,
       "achievement_col": "ActivityAch%",
       "volume_unit": "Activities"
     }

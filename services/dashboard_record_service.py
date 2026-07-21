@@ -107,8 +107,25 @@ class DashboardRecordService:
                         weights=persisted_weights,
                         config=config if config_by_key else None,
                     )
+                    reconciled_score = float(item.score)
+                    reconciled_grade = item.grade
+                    if team_name == "Sales" and repaired_kpis:
+                        reconciled_score = round(
+                            min(sum(float(value["contribution"]) for value in repaired_kpis), 1.0) * 100.0,
+                            2,
+                        )
+                        if reconciled_score >= 95.0:
+                            reconciled_grade = "A"
+                        elif reconciled_score >= 90.0:
+                            reconciled_grade = "B"
+                        elif reconciled_score >= 80.0:
+                            reconciled_grade = "C"
+                        elif reconciled_score >= 70.0:
+                            reconciled_grade = "D"
+                        else:
+                            reconciled_grade = "E"
                     rich_evaluation = rich_record.evaluation.model_copy(
-                        update={"score": float(item.score), "grade": item.grade}
+                        update={"score": reconciled_score, "grade": reconciled_grade}
                     )
                     result.append(rich_record.model_copy(update={
                         "id": str(item.id),

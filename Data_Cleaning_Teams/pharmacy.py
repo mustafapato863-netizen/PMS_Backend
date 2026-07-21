@@ -150,12 +150,31 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
             if col.lower() == target_col.lower():
                 target_found = col
         
-        if actual_found and target_found:
+        if kpi_key == 'Prescription':
+            dispensed_col = None
+            prescribed_col = None
+            for col in df.columns:
+                c_clean = col.lower().replace(" ", "").replace("_", "").replace(".", "")
+                if "dispenseditems" in c_clean or "totaldispensed" in c_clean or "dispensed" in c_clean:
+                    dispensed_col = col
+                if "prescribeditems" in c_clean or "totalprescribed" in c_clean or "prescriped" in c_clean or "prescribed" in c_clean:
+                    prescribed_col = col
+            
+            if dispensed_col and prescribed_col:
+                dispensed = df[dispensed_col].apply(lambda x: float(x) if not pd.isna(x) else 0.0)
+                prescribed = df[prescribed_col].apply(lambda x: float(x) if not pd.isna(x) else 0.0)
+                achievements = np.where(prescribed > 0, (dispensed / prescribed) * 100.0, 0.0)
+            elif actual_found and target_found:
+                actuals = df[actual_found].apply(lambda x: parse_percentage(x) if not pd.isna(x) else 0.0)
+                targets = df[target_found].apply(lambda x: parse_percentage(x) if not pd.isna(x) else 100.0)
+                targets = targets.apply(lambda x: 100.0 if x == 0 or pd.isna(x) else x)
+                achievements = np.where(targets > 0, (actuals / targets) * 100.0, actuals.to_numpy())
+            else:
+                achievements = np.zeros(len(df))
+        elif actual_found and target_found:
             # Parse actual and target values
             actuals = df[actual_found].apply(lambda x: parse_percentage(x) if 'Leakage' in actual_col or 'Compliance' in actual_col else float(x) if not pd.isna(x) else 0.0)
             targets = df[target_found].apply(lambda x: parse_percentage(x) if 'Leakage' in target_col or 'Compliance' in target_col else float(x) if not pd.isna(x) else 0.0)
-            
-            # Calculate achievements
             achievements = np.array([
                 calculate_achievement(
                     actuals.iloc[i],
@@ -165,7 +184,6 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
                 )
                 for i in range(len(df))
             ])
-        else:
             # Try to find a pre-calculated achievement column in the Excel sheet
             ach_col_found = None
             possible_keys = [f"{kpi_key}Ach%", f"{kpi_key}Ach", f"Noof{kpi_key}Ach%", f"{kpi_key}_Achievement", f"{kpi_key}RateAch%"]

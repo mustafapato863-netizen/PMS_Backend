@@ -9,6 +9,7 @@ LEGACY_EMPLOYEE_TEAMS = {
     "Outbound",
     "Inbound UAE",
     "Pre-Approvals IP Offshore",
+    "Sales",
 }
 
 
@@ -41,6 +42,11 @@ def _weight(weights: Mapping[str, float], key: str) -> float:
         "Rejection": ("Rejection",),
         "InitialError": ("InitialError",),
         "Submission": ("Submission",),
+        "OPCensus": ("OPCensus",),
+        "OPRevenue": ("OPRevenue",),
+        "IPCensus": ("IPCensus",),
+        "IPRevenue": ("IPRevenue",),
+        "Activity": ("Activity",),
     }
     for alias in aliases.get(key, (key,)):
         value = _number(normalized_weights.get(alias.casefold()))
@@ -57,6 +63,34 @@ def _target(actual: float, achievement: float, direction: str, fallback: float) 
         else:
             return round(actual / achievement, 6)
     return fallback
+
+
+def _sales_activity_totals(row: Mapping[str, Any]) -> tuple[float, float]:
+    """Match the Sales cleaner's dynamic activity numerator/denominator."""
+    activity_keys = ("ClinicActivity", "CorporateActivity", "CBDTour", "Visits")
+    source_keys = [
+        str(key).replace(" ", "")
+        for key in row
+        if any(keyword in str(key).replace(" ", "") for keyword in activity_keys)
+        and "Ach%" not in str(key)
+    ]
+    actual_keys = [key for key in source_keys if key.startswith("A.")]
+    target_keys = [key for key in source_keys if key.startswith("T.")]
+    if actual_keys or target_keys:
+        return (
+            sum(_first(row, key) or 0.0 for key in actual_keys),
+            sum(_first(row, key) or 0.0 for key in target_keys),
+        )
+
+    target_keys = [key for key in source_keys if not key.endswith((".1", ".2"))]
+    actual_keys = [key for key in source_keys if key.endswith((".1", ".2"))]
+    if len(actual_keys) != len(target_keys):
+        halfway = len(source_keys) // 2
+        target_keys, actual_keys = source_keys[:halfway], source_keys[halfway:]
+    return (
+        sum(_first(row, key) or 0.0 for key in actual_keys),
+        sum(_first(row, key) or 0.0 for key in target_keys),
+    )
 
 
 def build_legacy_employee_kpi_values(
@@ -84,6 +118,7 @@ def build_legacy_employee_kpi_values(
         "Outbound": ("A.Attend%", "A.Booking%", "A.QualityScore", "A.Reachability%"),
         "Inbound UAE": ("A.Attend%", "A.Booking%", "A.AbandonRate%"),
         "Pre-Approvals IP Offshore": ("IPInitialRejection%", "Error%", "NumberApprovalwithin48hrs"),
+        "Sales": ("A.OPCensus", "A.OPRevenue", "A.IPCensus", "A.IPRevenue", "OPCensusAch%"),
     }
     if not any(_first(row, key) is not None for key in evidence_keys[team]):
         return []
@@ -125,6 +160,15 @@ def build_legacy_employee_kpi_values(
             ("Booking", "Booking Rate", "higher_better", _first(row, "A.Booking%"), _first(row, "BookingC.RAch%", "Booking%Ach%"), 0.60),
             ("Other", "Abandon Rate", "lower_better", _first(row, "A.AbandonRate%"), _first(row, "AbandonRateAch%", "AbandonRate%Ach%"), 0.01),
         ]
+    elif team == "Sales":
+        activity_actual, activity_target = _sales_activity_totals(row)
+        specs = [
+            ("OPCensus", "OP Census Ach", "higher_better", _first(row, "A.OPCensus"), _first(row, "OPCensusAch%"), _first(row, "T.OPCensus") or 1.0),
+            ("OPRevenue", "OP Revenue Ach", "higher_better", _first(row, "A.OPRevenue"), _first(row, "OPRevenueAch%"), _first(row, "T.OPRevenue") or 1.0),
+            ("IPCensus", "IP Census Ach", "higher_better", _first(row, "A.IPCensus"), _first(row, "IPCensusAch%"), _first(row, "T.IPCensus") or 1.0),
+            ("IPRevenue", "IP Revenue Ach", "higher_better", _first(row, "A.IPRevenue"), _first(row, "IPRevenueAch%"), _first(row, "T.IPRevenue") or 1.0),
+            ("Activity", "Activity Score", "higher_better", activity_actual, _first(row, "ActivityAch%", "SalesActivtiesAch%", "SalesActivitiesAch%"), activity_target or 1.0),
+        ]
     else:
         specs = [
             ("Rejection", "Rejection Rate", "lower_better", _first(row, "IPInitialRejection%"), _first(row, "RejectionRate"), 0.03),
@@ -142,6 +186,11 @@ def build_legacy_employee_kpi_values(
         "Rejection": "Rejection",
         "InitialError": "InitialError",
         "Submission": "Submission",
+        "OPCensus": "OPCensus",
+        "OPRevenue": "OPRevenue",
+        "IPCensus": "IPCensus",
+        "IPRevenue": "IPRevenue",
+        "Activity": "Activity",
     }
     for key, label, direction, actual_value, row_achievement, fallback_target in specs:
         actual = max(actual_value or 0.0, 0.0)

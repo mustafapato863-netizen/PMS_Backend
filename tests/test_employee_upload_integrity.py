@@ -2,6 +2,7 @@ import datetime
 import uuid
 
 import numpy as np
+import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -81,6 +82,35 @@ def test_inbound_kpi_evidence_uses_the_calculated_targets_and_dynamic_utz_label(
     assert by_key["Other"]["target_value"] == 0.85
     assert by_key["Attendance"]["weight_applied"] == 0.70
     assert by_key["Quality"]["weight_applied"] == 0.05
+
+
+def test_sales_kpi_evidence_preserves_volume_targets_and_contributions():
+    row = {
+        "A.OPCensus": 1085,
+        "T.OPCensus": 1000,
+        "A.OPRevenue": 1032,
+        "T.OPRevenue": 1000,
+        "A.IPCensus": 1096,
+        "T.IPCensus": 1000,
+        "A.IPRevenue": 835,
+        "T.IPRevenue": 1000,
+        "A.ClinicActivity": 4,
+        "T.ClinicActivity": 3,
+    }
+
+    score, _, achievements, weights = _kpi_service().calculate_performance("Sales", row)
+    evidence = {
+        item["kpi_key"]: item
+        for item in build_legacy_employee_kpi_values(
+            "Sales", row, achievements=achievements, weights=weights, config={"kpis": []}
+        )
+    }
+
+    assert score == pytest.approx(92.58)
+    assert evidence["OPCensus"]["actual_value"] == 1085
+    assert evidence["OPCensus"]["target_value"] == 1000
+    assert evidence["IPRevenue"]["contribution"] == pytest.approx(0.37575)
+    assert evidence["Activity"]["contribution"] == pytest.approx(0.1)
 
 
 def test_outbound_june_missing_quality_uses_reachability_weight():
