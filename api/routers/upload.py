@@ -2,7 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 import datetime
 import logging
 import time
+from sqlalchemy.orm import Session
 
+from config.database import get_db
 from api.dependencies import (
     uploads_repo,
     performance_repo,
