@@ -8,7 +8,7 @@ from services import socket_service
 
 
 class _DummySeeder:
-    def process_uploaded_file(self, filename: str, contents: bytes):
+    def process_uploaded_file(self, filename: str, contents: bytes, **_metadata):
         return {"records_imported": 1, "employees_imported": 1, "teams": ["Inbound", "Outbound"]}
 
 

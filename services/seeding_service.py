@@ -1,9 +1,11 @@
 import os
 import io
 import pandas as pd
+import numpy as np
 import datetime
 import uuid
 import logging
+import math
 from typing import Optional
 from decimal import Decimal
 
@@ -36,6 +38,7 @@ from models.models import (
     PerformanceRecord as DBPerformanceRecord,
     KPIValue,
     UploadLog,
+    EmployeeUploadBatch,
 )
 from data_cleaning.standard_mappings import calculate_achievement
 from utils.performance_levels import normalize_performance_level
@@ -76,6 +79,21 @@ def safe_value(val):
             return None
         return float(val)
     return str(val)
+
+
+def json_safe(value):
+    """Return a PostgreSQL JSON-compatible value without NaN/Infinity tokens."""
+    if isinstance(value, dict):
+        return {str(key): json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [json_safe(item) for item in value]
+    if isinstance(value, (float, np.floating)):
+        return None if not math.isfinite(float(value)) else float(value)
+    if isinstance(value, (int, np.integer)):
+        return int(value)
+    if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
+        return value.isoformat()
+    return value
 
 def safe_decimal(val, default: str = "0"):
     if val is None:
@@ -183,7 +201,14 @@ class DatabaseSeeder:
                 frame.to_excel(writer, sheet_name=sheet_name, index=False)
         return self.process_uploaded_file("PMS_DEMO_PERFORMANCE_LEVELS.xlsx", workbook.getvalue())
 
-    def process_uploaded_file(self, filename: str, contents: bytes, dry_run: bool = False):
+    def process_uploaded_file(
+        self,
+        filename: str,
+        contents: bytes,
+        dry_run: bool = False,
+        uploaded_by_user_id: str | None = None,
+        uploaded_by_name: str | None = None,
+    ):
         """Processes an uploaded PMS excel file and returns the import counts."""
         excel_file = self.excel_processor.load_excel(contents)
         marketing_result = self.marketing_import_service.parse_excel(excel_file)
@@ -199,10 +224,20 @@ class DatabaseSeeder:
 
         # Vercel Production Safety: Do not write to JSON repositories for runtime persistence.
         # Generate upload ID for the batch. Metadata persistence is delegated to the DB.
-        upload_id = str(uuid.uuid4())
+        upload_uuid = uuid.uuid4()
+        upload_id = str(upload_uuid)
         
         db = SessionLocal()
         try:
+            batch = EmployeeUploadBatch(
+                id=upload_uuid,
+                filename=filename or "PMS upload.xlsx",
+                status="processing",
+                uploaded_by_user_id=uuid.UUID(uploaded_by_user_id) if uploaded_by_user_id else None,
+                uploaded_by_name=uploaded_by_name or "Admin",
+            )
+            db.add(batch)
+            db.flush()
             if marketing_result:
                 for record in marketing_result.records:
                     record.upload_id = upload_id
@@ -212,7 +247,12 @@ class DatabaseSeeder:
                 marketing_result=marketing_result,
                 db_session=db,
             )
+            batch.record_count = int(result.get("records_imported", 0))
+            batch.team_count = len(result.get("persisted_teams", []))
+            batch.status = "success"
             db.commit()
+            result["upload_id"] = upload_id
+            result["filename"] = batch.filename
             result["dry_run"] = False
             return result
         except Exception:
@@ -489,17 +529,40 @@ class DatabaseSeeder:
                 for p in existing_perf_list
             }
 
-            # Pre-fetch upload logs
+            # Each uploaded workbook gets its own per-team/per-period logs.
+            # Internal publish/test callers do not have an upload batch and
+            # must remain able to synchronize domain records independently.
+            upload_batch_uuid = uuid.UUID(upload_id) if upload_id else None
             upload_log_map = {}
-            try:
-                team_ids = list({t.id for t in teams_by_name.values()})
-                upload_logs_list = db.query(UploadLog).filter(UploadLog.team_id.in_(team_ids)).all() if team_ids else []
-                upload_log_map = {(ul.team_id, ul.month, ul.year): ul for ul in upload_logs_list}
-            except Exception:
-                pass
 
             records_to_clean_kpis = []
             kpis_to_insert = []
+
+            # Build all workbook scope logs in memory. IDs are explicit, so
+            # performance rows can reference them without one remote flush per
+            # Team/Month (a major latency source on hosted PostgreSQL).
+            if upload_batch_uuid:
+                for record in records:
+                    team = teams_by_name.get(str(record.team).lower())
+                    if not team:
+                        continue
+                    year = record.year or datetime.datetime.now().year
+                    log_key = (upload_batch_uuid, team.id, record.month, year)
+                    if log_key not in upload_log_map:
+                        upload_log_map[log_key] = UploadLog(
+                            id=uuid.uuid4(),
+                            batch_id=upload_batch_uuid,
+                            team_id=team.id,
+                            month=record.month,
+                            year=year,
+                            record_count=0,
+                            status="success",
+                        )
+            if upload_log_map:
+                db.add_all(upload_log_map.values())
+                # One ordered batch flush satisfies PerformanceRecord.upload_id
+                # foreign keys without reintroducing per-period round trips.
+                db.flush()
 
             for record in records:
                 record_employee_key = str(record.employee_id).strip()
@@ -519,20 +582,15 @@ class DatabaseSeeder:
                 year = record.year or datetime.datetime.now().year
 
                 upload_log_id = None
-                log_key = (team.id, record.month, year)
-                if log_key in upload_log_map:
+                log_key = (upload_batch_uuid, team.id, record.month, year)
+                if upload_batch_uuid and log_key in upload_log_map:
                     ul = upload_log_map[log_key]
                     ul.record_count += 1
                     upload_log_id = ul.id
-                else:
-                    try:
-                        ul = UploadLog(team_id=team.id, month=record.month, year=year, record_count=1, status="success")
-                        db.add(ul)
-                        db.flush()
-                        upload_log_map[log_key] = ul
-                        upload_log_id = ul.id
-                    except Exception:
-                        pass
+                elif upload_batch_uuid:
+                    raise RuntimeError(
+                        f"Upload scope log was not prepared for {record.team}/{record.month}/{year}"
+                    )
 
                 perf_key = (db_employee.id, record.month, year)
                 existing = existing_perf_map.get(perf_key)
@@ -546,6 +604,9 @@ class DatabaseSeeder:
                     existing.position_name = record.position
                     existing.region = record.region
                     existing.upload_id = upload_log_id
+                    existing.record_payload = json_safe(
+                        record.model_copy(update={"year": year, "upload_id": upload_id}).model_dump(mode="json")
+                    )
                     db_record = existing
                 else:
                     db_record = DBPerformanceRecord(
@@ -561,6 +622,9 @@ class DatabaseSeeder:
                         grade=record.evaluation.grade,
                         status=self._status_for_record(record),
                         upload_id=upload_log_id,
+                        record_payload=json_safe(
+                            record.model_copy(update={"year": year, "upload_id": upload_id}).model_dump(mode="json")
+                        ),
                     )
                     db.add(db_record)
                     existing_perf_map[perf_key] = db_record

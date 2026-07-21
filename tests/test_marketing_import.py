@@ -347,7 +347,7 @@ def test_database_sync_upserts_marketing_period_and_position_config():
         session.close()
 
 
-def test_failed_publish_restores_json_snapshots_and_rolls_back_database(monkeypatch):
+def test_failed_publish_leaves_json_snapshots_untouched_and_rolls_back_database(monkeypatch):
     seeder = DatabaseSeeder()
     existing_employee = Employee(id="OLD", name="Old", team="Inbound")
     existing_record = PerformanceRecord(
@@ -380,6 +380,12 @@ def test_failed_publish_restores_json_snapshots_and_rolls_back_database(monkeypa
         def __init__(self):
             self.rolled_back = False
 
+        def add(self, _row):
+            pass
+
+        def flush(self):
+            pass
+
         def commit(self):
             pytest.fail("failed upload must not commit")
 
@@ -399,9 +405,9 @@ def test_failed_publish_restores_json_snapshots_and_rolls_back_database(monkeypa
         )
 
     assert session.rolled_back is True
-    assert restored["employees"] == [existing_employee]
-    assert restored["records"] == [existing_record]
-    assert restored["uploads"] == []
+    # Hosted runtime persistence is database-only. A failed transaction must
+    # not write to or rewrite the legacy JSON snapshots.
+    assert restored == {}
 
 
 @pytest.mark.asyncio

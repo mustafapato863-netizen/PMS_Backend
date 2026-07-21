@@ -53,3 +53,12 @@ JWT_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRE_MINUTES", "60"))
 # Redis settings
 REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 
+
+class _SettingsCompatibility:
+    """Attribute-style access retained for existing runtime/tests callers."""
+
+    MAX_UPLOAD_BYTES = MAX_UPLOAD_BYTES
+
+
+settings = _SettingsCompatibility()
+

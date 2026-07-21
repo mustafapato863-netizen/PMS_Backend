@@ -1,126 +1,101 @@
 from types import SimpleNamespace
 
-from api.routers import performance as performance_router
 from models.schemas import EvaluationData, PerformanceRecord
 from services.dashboard_record_service import DashboardRecordService
 
 
+def _sql_record(*, employee_id="IN-1", month="June", score=82, grade="C", payload=None):
+    team = SimpleNamespace(name="Inbound", db_name="Inbound", display_name=None)
+    employee = SimpleNamespace(
+        employee_id=employee_id,
+        name="Inbound Agent",
+        team=team,
+        region="EGY",
+        position_name=None,
+    )
+    return SimpleNamespace(
+        id=f"sql-{employee_id}",
+        employee=employee,
+        month=month,
+        year=2026,
+        region="EGY",
+        performance_level="Employee",
+        position_name=None,
+        status="Meets",
+        score=score,
+        grade=grade,
+        upload_id=None,
+        record_payload=payload,
+        kpi_values=[],
+    )
+
+
 class _SQLRepositoryStub:
+    rows = []
+    last_filters = None
+
     def __init__(self, _db, _model):
         pass
 
-    def get_dashboard_record_keys(self, **_filters):
-        return [
-            ("LEGACY-1", "Inbound", "June", 2026),
-            ("MARKETING-1", "Marketing", "June", 2026),
-        ]
+    def get_dashboard_records(self, **filters):
+        type(self).last_filters = filters
+        return list(type(self).rows)
 
 
 class _JSONRepositoryStub:
-    def __init__(self):
-        self.records = [
-            SimpleNamespace(
-                employee_id="LEGACY-1",
-                team="Inbound",
-                month="June",
-                year=None,
-                performance_level="Employee",
-            ),
-            SimpleNamespace(
-                employee_id="MARKETING-1",
-                team="Marketing",
-                month="June",
-                year=2026,
-                performance_level="Employee",
-            ),
-        ]
-
-    def get_filtered_by_keys(self, keys):
-        return [
-            record
-            for record in self.records
-            if (record.employee_id, record.team, record.month, record.year) in keys
-        ]
-
-    def get_filtered(self, **_filters):
-        return self.records
+    def get_all(self):
+        return []
 
 
-def test_unscoped_dashboard_resolves_legacy_yearless_and_current_records(monkeypatch):
-    json_repo = _JSONRepositoryStub()
-    monkeypatch.setattr(performance_router, "SQLPerformanceRepository", _SQLRepositoryStub)
-    monkeypatch.setattr(performance_router, "performance_repo", json_repo)
-
-    records = performance_router._get_dashboard_records(object())
-
-    assert [(record.team, record.year) for record in records] == [
-        ("Inbound", None),
-        ("Marketing", 2026),
-    ]
+def _service(rows):
+    _SQLRepositoryStub.rows = rows
+    return DashboardRecordService(
+        object(),
+        json_repository=_JSONRepositoryStub(),
+        sql_repository_cls=_SQLRepositoryStub,
+    )
 
 
-def test_explicit_year_does_not_include_ambiguous_legacy_yearless_records(monkeypatch):
-    json_repo = _JSONRepositoryStub()
-    monkeypatch.setattr(performance_router, "SQLPerformanceRepository", _SQLRepositoryStub)
-    monkeypatch.setattr(performance_router, "performance_repo", json_repo)
-
-    records = performance_router._get_dashboard_records(object(), year=2026)
-
-    assert [(record.team, record.year) for record in records] == [
-        ("Marketing", 2026),
-    ]
-
-
-def test_analysis_records_resolve_legacy_year_and_keep_sql_only_teams():
-    inbound_json = PerformanceRecord(
-        id="IN-1_June",
+def test_dashboard_uses_persisted_payload_and_database_score_as_canonical():
+    rich_record = PerformanceRecord(
+        id="legacy-id",
         employee_id="IN-1",
-        employee_name="Inbound Agent",
+        employee_name="Old name",
         team="Inbound",
         month="June",
         year=None,
-        evaluation=EvaluationData(score=82, grade="B"),
+        actual={"attend_rate": 0.72, "booking_rate": 0.51},
+        raw_data={"A.Attend%": 0.72, "T.Attend%": 0.75},
+        evaluation=EvaluationData(score=0, grade="E", suggested_action="Coach"),
     )
 
-    def sql_record(employee_id, team_name, month, score):
-        team = SimpleNamespace(name=team_name, display_name=None)
-        employee = SimpleNamespace(
-            employee_id=employee_id,
-            name=f"{team_name} Employee",
-            team=team,
-            region="EGY",
-            position_name="Agent",
-        )
-        return SimpleNamespace(
-            id=f"sql-{employee_id}", employee=employee, month=month, year=2026,
-            region="EGY", performance_level="Employee", position_name="Agent",
-            status="Meets", score=score, grade="B", kpi_values=[],
-        )
+    records = _service([
+        _sql_record(score=91.3, grade="B", payload=rich_record.model_dump(mode="json"))
+    ]).list_records(team="Inbound", month="June", year=2026)
 
-    sql_rows = [
-        sql_record("IN-1", "Inbound", "June", 82),
-        sql_record("SA-1", "Sales", "July", 91),
-    ]
+    assert len(records) == 1
+    assert records[0].year == 2026
+    assert records[0].actual.attend_rate == 0.72
+    assert records[0].raw_data["T.Attend%"] == 0.75
+    assert records[0].evaluation.score == 91.3
+    assert records[0].evaluation.grade == "B"
+    assert records[0].evaluation.suggested_action == "Coach"
+    assert _SQLRepositoryStub.last_filters["team"] == "Inbound"
+    assert _SQLRepositoryStub.last_filters["month"] == "June"
 
-    class AnalysisSQLRepository:
-        def __init__(self, _db, _model):
-            pass
 
-        def get_dashboard_records(self):
-            return sql_rows
+def test_dashboard_falls_back_to_relational_record_when_payload_is_missing():
+    records = _service([_sql_record(score=88.4, grade="C", payload=None)]).list_records()
 
-    class AnalysisJSONRepository:
-        def get_all(self):
-            return [inbound_json]
+    assert len(records) == 1
+    assert records[0].employee_id == "IN-1"
+    assert records[0].year == 2026
+    assert records[0].evaluation.score == 88.4
+    assert records[0].raw_data == {}
 
-    records = DashboardRecordService(
-        object(),
-        json_repository=AnalysisJSONRepository(),
-        sql_repository_cls=AnalysisSQLRepository,
-    ).list_analysis_records()
 
-    assert [(record.team, record.year) if isinstance(record, PerformanceRecord) else (record["team"], record["year"]) for record in records] == [
-        ("Inbound", 2026),
-        ("Sales", 2026),
-    ]
-    assert records[1]["evaluation"] == {"score": 91.0, "grade": "B"}
+def test_analysis_records_share_the_dashboard_source():
+    records = _service([_sql_record(score=90, grade="B")]).list_analysis_records()
+
+    assert len(records) == 1
+    assert records[0].evaluation.score == 90

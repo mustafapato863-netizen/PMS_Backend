@@ -230,10 +230,42 @@ class Employee(Base):
 # 3. PERFORMANCE & LOG MODELS
 # ============================================================
 
+class EmployeeUploadBatch(Base):
+    """One user-uploaded employee PMS workbook.
+
+    A workbook can contain many teams and months.  UploadLog remains the
+    per-team/per-period audit detail, while this row is the unit shown to and
+    deleted by administrators.
+    """
+
+    __tablename__ = "employee_upload_batches"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    filename = Column(String(255), nullable=False)
+    record_count = Column(Integer, nullable=False, default=0)
+    team_count = Column(Integer, nullable=False, default=0)
+    status = Column(String(20), nullable=False, default="processing")
+    uploaded_by_user_id = Column(UUID(as_uuid=True), nullable=True)
+    uploaded_by_name = Column(String(255), nullable=True)
+    uploaded_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    upload_logs = relationship(
+        "UploadLog",
+        back_populates="batch",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+
+
 class UploadLog(Base):
     __tablename__ = "upload_log"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    batch_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("employee_upload_batches.id", ondelete="CASCADE"),
+        nullable=True,
+    )
     team_id = Column(UUID(as_uuid=True), ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False)
     month = Column(String(20), nullable=False)
     year = Column(SmallInteger, nullable=False)
@@ -244,6 +276,11 @@ class UploadLog(Base):
     uploaded_at = Column(DateTime(timezone=True), server_default=func.now())
 
     team = relationship("Team")
+    batch = relationship("EmployeeUploadBatch", back_populates="upload_logs")
+
+    __table_args__ = (
+        Index("idx_upload_log_batch", "batch_id"),
+    )
 
 
 class PerformanceRecord(Base):
@@ -263,6 +300,10 @@ class PerformanceRecord(Base):
     grade = Column(String(5), nullable=False)  # A, B, C, D, E
     status = Column(String(20), nullable=False)  # Exceeds, Meets, Below
     upload_id = Column(UUID(as_uuid=True), ForeignKey("upload_log.id", ondelete="SET NULL"), nullable=True)
+    # Full normalized record contract used by employee dashboards.  The
+    # relational score/KPI columns stay queryable; this payload preserves the
+    # Excel evidence (calls, geo, actuals and raw columns) without JSON files.
+    record_payload = Column(JSON_COMPAT_TYPE, nullable=True)
     uploaded_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships

@@ -144,9 +144,15 @@ class KPIService:
         self,
         weights_repo: KPIWeightsRepository,
         targets_repo: TargetsRepository,
+        *,
+        initialize_defaults: bool | None = None,
     ):
         self.weights_repo = weights_repo
         self.targets_repo = targets_repo
+        # Retained as a keyword-only compatibility argument for deterministic
+        # calculation callers. Default initialization is owned by repositories,
+        # not by the calculation service itself.
+        self.initialize_defaults = initialize_defaults
 
     def calculate_performance(self, team: str, row: Dict[str, Any], performance_level: str = "Employee") -> Tuple[float, str, Dict[str, float], Dict[str, float]]:
         """
@@ -563,6 +569,17 @@ class KPIService:
             row["IPCensusAch%"] = ip_census_ach
             row["IPRevenueAch%"] = ip_revenue_ach
             row["ActivityAch%"] = activity_ach
+
+        # Excel can expose unavailable formulas as NaN. A zero-weight period
+        # exception must not let NaN * 0 poison the complete score.
+        achievements = {
+            key: max(safe_float(value), 0.0)
+            for key, value in achievements.items()
+        }
+        final_weights = {
+            key: max(safe_float(value), 0.0)
+            for key, value in final_weights.items()
+        }
 
         # Calculate score (normalized to 0-100)
         raw_score = 0.0
