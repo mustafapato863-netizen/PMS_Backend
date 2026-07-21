@@ -3,7 +3,6 @@ from __future__ import annotations
 from sqlalchemy.orm import Session
 
 from models.models import PerformanceRecord
-from repositories.json_repos import JSONPerformanceRepository
 from repositories.performance_repository import PerformanceRepository as SQLPerformanceRepository
 from utils.team_identity import logical_team_name
 from config.loader import ConfigurationError, load_team_config, resolve_team_config
@@ -17,11 +16,9 @@ class DashboardRecordService:
     def __init__(
         self,
         db: Session,
-        json_repository: JSONPerformanceRepository | None = None,
         sql_repository_cls=SQLPerformanceRepository,
     ):
         self.db = db
-        self.json_repository = json_repository or JSONPerformanceRepository()
         self.sql_repository_cls = sql_repository_cls
 
     def list_records(
@@ -55,33 +52,6 @@ class DashboardRecordService:
             employee = item.employee
             team_name = logical_team_name(employee.team)
 
-            payload = getattr(item, "record_payload", None)
-            if isinstance(payload, dict):
-                try:
-                    rich_record = SchemaPerformanceRecord.model_validate(payload)
-                    rich_evaluation = rich_record.evaluation.model_copy(
-                        update={"score": float(item.score), "grade": item.grade}
-                    )
-                    result.append(rich_record.model_copy(update={
-                        "id": str(item.id),
-                        "employee_id": str(employee.employee_id),
-                        "employee_name": str(employee.name),
-                        "team": team_name,
-                        "month": str(item.month),
-                        "year": int(item.year),
-                        "region": item.region or employee.region,
-                        "performance_level": str(item.performance_level),
-                        "position": item.position_name or employee.position_name,
-                        "status": item.status,
-                        "upload_id": str(item.upload_id) if getattr(item, "upload_id", None) else None,
-                        "evaluation": rich_evaluation,
-                    }))
-                    continue
-                except ValidationError:
-                    # Older/partial payloads remain readable from relational
-                    # columns.  A malformed payload must not hide the record.
-                    pass
-
             config_by_key = {}
             try:
                 config = resolve_team_config(
@@ -93,6 +63,9 @@ class DashboardRecordService:
             except (ConfigurationError, KeyError, TypeError):
                 config_by_key = {}
 
+            # KPI rows are the canonical persisted scoring breakdown.  They
+            # must override any stale/missing copy inside record_payload so
+            # every dashboard consumer sees the same weights/contributions.
             kpi_values = [
                 {
                     "kpi_key": value.kpi_key,
@@ -117,7 +90,35 @@ class DashboardRecordService:
                 }
                 for value in item.kpi_values
             ]
-            
+
+            payload = getattr(item, "record_payload", None)
+            if isinstance(payload, dict):
+                try:
+                    rich_record = SchemaPerformanceRecord.model_validate(payload)
+                    rich_evaluation = rich_record.evaluation.model_copy(
+                        update={"score": float(item.score), "grade": item.grade}
+                    )
+                    result.append(rich_record.model_copy(update={
+                        "id": str(item.id),
+                        "employee_id": str(employee.employee_id),
+                        "employee_name": str(employee.name),
+                        "team": team_name,
+                        "month": str(item.month),
+                        "year": int(item.year),
+                        "region": item.region or employee.region,
+                        "performance_level": str(item.performance_level),
+                        "position": item.position_name or employee.position_name,
+                        "status": item.status,
+                        "upload_id": str(item.upload_id) if getattr(item, "upload_id", None) else None,
+                        "evaluation": rich_evaluation,
+                        "kpi_values": kpi_values or rich_record.kpi_values,
+                    }))
+                    continue
+                except ValidationError:
+                    # Older/partial payloads remain readable from relational
+                    # columns.  A malformed payload must not hide the record.
+                    pass
+
             result.append(SchemaPerformanceRecord(
                 id=str(item.id),
                 employee_id=str(employee.employee_id),

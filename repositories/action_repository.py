@@ -72,6 +72,16 @@ class ActionRepository(BaseRepository[Action]):
             (Action.month == month) &
             (Action.year == year)
         ).all()
+
+    def get_active_team_summary(self, team_id, month: str, year: int) -> Action | None:
+        return self.db.query(Action).filter(
+            Action.team_id == team_id,
+            Action.employee_id.is_(None),
+            Action.month == month,
+            Action.year == year,
+            Action.action_type == "Team Action",
+            Action.is_active.is_(True),
+        ).order_by(Action.updated_at.desc(), Action.created_at.desc()).first()
     
     def get_by_status(self, status: str) -> list:
         """Get actions by status"""

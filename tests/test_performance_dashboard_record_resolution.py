@@ -42,16 +42,10 @@ class _SQLRepositoryStub:
         return list(type(self).rows)
 
 
-class _JSONRepositoryStub:
-    def get_all(self):
-        return []
-
-
 def _service(rows):
     _SQLRepositoryStub.rows = rows
     return DashboardRecordService(
         object(),
-        json_repository=_JSONRepositoryStub(),
         sql_repository_cls=_SQLRepositoryStub,
     )
 
@@ -82,6 +76,36 @@ def test_dashboard_uses_persisted_payload_and_database_score_as_canonical():
     assert records[0].evaluation.suggested_action == "Coach"
     assert _SQLRepositoryStub.last_filters["team"] == "Inbound"
     assert _SQLRepositoryStub.last_filters["month"] == "June"
+
+
+def test_dashboard_merges_relational_kpi_breakdown_into_rich_payload():
+    rich_record = PerformanceRecord(
+        id="legacy-id",
+        employee_id="IN-1",
+        employee_name="Inbound Agent",
+        team="Inbound",
+        month="June",
+        year=2026,
+        evaluation=EvaluationData(score=91.3, grade="B"),
+        kpi_values=[],
+    )
+    row = _sql_record(payload=rich_record.model_dump(mode="json"))
+    row.kpi_values = [
+        SimpleNamespace(
+            kpi_key="attendance",
+            actual_value=0.678,
+            target_value=0.75,
+            achievement_ratio=0.904,
+            weight_applied=0.70,
+            contribution=0.6328,
+        )
+    ]
+
+    [record] = _service([row]).list_records()
+
+    assert len(record.kpi_values) == 1
+    assert record.kpi_values[0]["weight_applied"] == 0.70
+    assert record.kpi_values[0]["contribution"] == 0.6328
 
 
 def test_dashboard_falls_back_to_relational_record_when_payload_is_missing():

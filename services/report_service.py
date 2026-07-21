@@ -184,8 +184,18 @@ class ReportService:
             raise ReportValidationError("Position Performance Report requires a position")
         if configuration.report_type == "employee" and not configuration.employee_id:
             raise ReportValidationError("Employee Performance Report requires an employee")
-        template = next(item for item in REPORT_TEMPLATES if item["type"] == configuration.report_type)
-        allowed_sections = set(template["sections"])
+        template = next(
+            (item for item in REPORT_TEMPLATES if item["type"] == configuration.report_type),
+            None,
+        )
+        # Generic report types remain part of the public schema for legacy
+        # clients even though the current UI advertises only the three direct
+        # download templates above.
+        allowed_sections = set(
+            template["sections"]
+            if template is not None
+            else ["summary", "grade_distribution", "team_breakdown", "kpi_breakdown", "details"]
+        )
         selected_sections = set(configuration.included_sections)
         if not selected_sections:
             raise ReportValidationError("At least one report section must be selected")

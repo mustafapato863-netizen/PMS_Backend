@@ -1,21 +1,19 @@
-import os
-import pytest
 from fastapi.testclient import TestClient
-
-# Mock environment variable before importing settings/app
-os.environ["CORS_ALLOWED_ORIGINS"] = "http://localhost:5173, https://pms-frontend-iota-dusky.vercel.app , https://another-origin.com/ "
-os.environ["APP_ENV"] = "production"
 
 from app import app
 from config import settings
+from config.settings import parse_cors_origins
 
 client = TestClient(app)
 
 def test_cors_allowed_origins_parsing():
-    assert "http://localhost:5173" in settings.CORS_ORIGINS
-    assert "https://pms-frontend-iota-dusky.vercel.app" in settings.CORS_ORIGINS
-    assert "https://another-origin.com" in settings.CORS_ORIGINS
-    assert "https://another-origin.com/" not in settings.CORS_ORIGINS  # Should be stripped
+    origins = parse_cors_origins(
+        "http://localhost:5173, https://pms-frontend-iota-dusky.vercel.app , https://another-origin.com/ "
+    )
+    assert "http://localhost:5173" in origins
+    assert "https://pms-frontend-iota-dusky.vercel.app" in origins
+    assert "https://another-origin.com" in origins
+    assert "https://another-origin.com/" not in origins
 
 def test_preflight_allowed_production_origin():
     response = client.options(

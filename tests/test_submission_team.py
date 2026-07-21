@@ -251,9 +251,9 @@ def test_submission_appears_in_config_teams_endpoint():
 
 def test_submission_appears_in_settings_weights_endpoint():
     """Verify Submission team weights can be loaded from settings router."""
-    with patch("api.routers.settings.weights_repo.get_all") as mock_get:
-        mock_get.return_value = [
-            KPIWeight(team="Submission", weights={"initial_rejection_rate": 0.60, "submission_within_due_date": 0.40})
+    with patch("api.routers.settings.KPIConfigurationService") as mock_service:
+        mock_service.return_value.list_weights.return_value = [
+            {"team": "Submission", "weights": {"initial_rejection_rate": 0.60, "submission_within_due_date": 0.40}}
         ]
         
         response = client.get("/api/settings/weights")

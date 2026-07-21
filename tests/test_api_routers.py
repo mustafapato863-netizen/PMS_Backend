@@ -34,7 +34,11 @@ def _performance_record(employee_id: str = "EMP001", team: str = "Sales", month:
     record.employee_name = "John Doe"
     record.team = team
     record.month = month
+    record.year = 2026
     record.region = "UAE"
+    record.performance_level = "Employee"
+    record.position = None
+    record.status = "Meets"
     record.calls = MagicMock(inbound=10, outbound=0, total_handled=10, abandoned=1, aht_raw="00:05:00")
     record.geo = MagicMock(
         bookings=MagicMock(dubai=1, sharjah=2, ajman=3, clinics=4),
@@ -77,6 +81,7 @@ def _performance_record(employee_id: str = "EMP001", team: str = "Sales", month:
     record.evaluation.planning_category = []
     record.evaluation.trend_status = "Stable"
     record.raw_data = {}
+    record.kpi_values = []
     return record
 
 
@@ -113,9 +118,9 @@ class TestTeamManagementRouter:
 
 class TestEmployeeRouter:
     def test_get_all_employees(self):
-        with patch("api.routers.employee.employee_repo.get_all") as mock_get:
-            mock_get.return_value = [
-                EmployeeSchema(id="EMP001", name="John Doe", team="Sales", region="UAE")
+        with patch("api.routers.employee.EmployeeDirectoryService") as mock_service:
+            mock_service.return_value.list.return_value = [
+                {"id": "EMP001", "employee_id": "EMP001", "name": "John Doe", "team": "Sales", "region": "UAE", "performance_level": "Employee", "position": None, "status": "Active"}
             ]
 
             response = client.get("/api/employee")
@@ -126,9 +131,9 @@ class TestEmployeeRouter:
             assert data["data"][0]["team"] == "Sales"
 
     def test_search_employees(self):
-        with patch("api.routers.employee.employee_repo.get_all") as mock_get:
-            mock_get.return_value = [
-                EmployeeSchema(id="EMP001", name="John Doe", team="Sales", region="UAE")
+        with patch("api.routers.employee.EmployeeDirectoryService") as mock_service:
+            mock_service.return_value.list.return_value = [
+                {"id": "EMP001", "employee_id": "EMP001", "name": "John Doe", "team": "Sales", "region": "UAE", "performance_level": "Employee", "position": None, "status": "Active"}
             ]
 
             response = client.get("/api/employee/search", params={"name": "john"})
@@ -136,26 +141,29 @@ class TestEmployeeRouter:
             assert response.json()["data"][0]["name"] == "John Doe"
 
     def test_get_employee_profile(self):
+        january = _performance_record(month="January", score=85.5)
+        june = _performance_record(month="June", score=92.2)
         with (
-            patch("api.routers.employee.employee_repo.get_all") as mock_employees,
-            patch("api.routers.employee.performance_repo.get_all") as mock_records,
+            patch("api.routers.employee.DashboardRecordService") as mock_dashboard_service,
             patch("api.routers.employee.CorrectiveActionService") as mock_action_service,
         ):
-            mock_employees.return_value = [
-                EmployeeSchema(id="EMP001", name="John Doe", team="Sales", region="UAE")
-            ]
-            mock_records.return_value = [_performance_record()]
+            mock_dashboard_service.return_value.list_records.return_value = [june, january]
             mock_action_service.return_value.get_history.return_value = []
 
             response = client.get("/api/employee/EMP001")
             assert response.status_code == 200
             data = response.json()["data"]
             assert data["employee"]["id"] == "EMP001"
-            assert len(data["performance_history"]) == 1
+            assert [row["month"] for row in data["performance_history"]] == ["January", "June"]
+            mock_dashboard_service.return_value.list_records.assert_called_once_with(employee_id="EMP001")
             mock_action_service.return_value.get_history.assert_called_once_with("EMP001")
 
     def test_create_employee(self):
-        with patch("api.routers.employee.employee_repo.save") as mock_save:
+        with patch("api.routers.employee.EmployeeDirectoryService") as mock_service:
+            mock_service.return_value.create.return_value = {
+                "id": "EMP001", "employee_id": "EMP001", "name": "John Doe", "team": "Sales",
+                "region": "UAE", "performance_level": "Employee", "position": None, "status": "Active",
+            }
             response = client.post(
                 "/api/employee",
                 params={
@@ -172,14 +180,19 @@ class TestEmployeeRouter:
             assert data["success"] is True
             assert data["data"]["id"] == "EMP001"
             assert data["data"]["team"] == "Sales"
-            mock_save.assert_called_once()
+            mock_service.return_value.create.assert_called_once()
 
     def test_update_employee(self):
-        with (
-            patch("api.routers.employee.employee_repo.get_by_id") as mock_get,
-            patch("api.routers.employee.employee_repo.save") as mock_save,
-        ):
-            mock_get.return_value = EmployeeSchema(id="EMP001", name="John Doe", team="Sales", region="UAE")
+        with patch("api.routers.employee.EmployeeDirectoryService") as mock_service:
+            employee = MagicMock()
+            employee.employee_id = "EMP001"
+            employee.team.display_name = "Sales"
+            employee.team.name = "Sales"
+            mock_service.return_value.get_model.return_value = employee
+            mock_service.return_value.update.return_value = {
+                "id": "EMP001", "employee_id": "EMP001", "name": "Jane Doe", "team": "Sales",
+                "region": "UAE", "performance_level": "Employee", "position": None, "status": "Active",
+            }
 
             response = client.put(
                 "/api/employee/EMP001",
@@ -191,7 +204,9 @@ class TestEmployeeRouter:
             data = response.json()
             assert data["success"] is True
             assert data["data"]["name"] == "Jane Doe"
-            mock_save.assert_called_once()
+            mock_service.return_value.update.assert_called_once_with(
+                "EMP001", name="Jane Doe", team=None, region=None,
+            )
 
     def test_delete_employee(self):
         with patch("api.routers.employee.EmployeeService.delete_employee") as mock_delete:
@@ -235,8 +250,8 @@ class TestEmployeeRouter:
 
 class TestPerformanceRouter:
     def test_get_monthly_records(self):
-        with patch("api.routers.performance.performance_repo.get_all") as mock_get:
-            mock_get.return_value = [_performance_record(team="Sales", month="January")]
+        with patch("api.routers.performance.DashboardRecordService") as mock_service:
+            mock_service.return_value.list_records.return_value = [_performance_record(team="Sales", month="January")]
 
             response = client.get("/api/performance/records", params={"team": "Sales", "month": "January"})
             assert response.status_code == 200
@@ -246,34 +261,34 @@ class TestPerformanceRouter:
             assert data[0]["month"] == "January"
 
     def test_get_employee_history(self):
-        with patch("api.routers.performance.performance_repo.get_all") as mock_get:
-            mock_get.return_value = [_performance_record(employee_id="EMP001")]
+        with patch("api.routers.performance.DashboardRecordService") as mock_service:
+            mock_service.return_value.list_records.return_value = [_performance_record(employee_id="EMP001")]
 
             response = client.get("/api/performance/employee/EMP001")
             assert response.status_code == 200
             assert response.json()["data"][0]["employee_id"] == "EMP001"
 
     def test_get_team_yearly_records(self):
-        with patch("api.routers.performance.performance_repo.get_all") as mock_get:
-            mock_get.return_value = [_performance_record(team="Sales")]
+        with patch("api.routers.performance.DashboardRecordService") as mock_service:
+            mock_service.return_value.list_records.return_value = [_performance_record(team="Sales")]
 
             response = client.get("/api/performance/team/Sales")
             assert response.status_code == 200
             assert response.json()["data"][0]["team"] == "Sales"
 
     def test_get_by_grade(self):
-        with patch("api.routers.performance.performance_repo.get_all") as mock_get:
+        with patch("api.routers.performance.DashboardRecordService") as mock_service:
             record = _performance_record(team="Sales", month="January", score=95.0)
             record.evaluation.grade = "A"
-            mock_get.return_value = [record]
+            mock_service.return_value.list_records.return_value = [record]
 
             response = client.get("/api/performance/grade/Sales", params={"grade": "A", "month": "January"})
             assert response.status_code == 200
             assert response.json()["data"][0]["evaluation"]["grade"] == "A"
 
     def test_get_by_status(self):
-        with patch("api.routers.performance.performance_repo.get_all") as mock_get:
-            mock_get.return_value = [_performance_record(team="Sales", month="January", score=85.5)]
+        with patch("api.routers.performance.DashboardRecordService") as mock_service:
+            mock_service.return_value.list_records.return_value = [_performance_record(team="Sales", month="January", score=85.5)]
 
             response = client.get("/api/performance/status/Sales", params={"status": "Meets", "month": "January"})
             assert response.status_code == 200
@@ -283,12 +298,12 @@ class TestPerformanceRouter:
 class TestSearchRouter:
     def test_global_search_returns_scoped_teams_and_employee_matches(self):
         employees = [
-            EmployeeSchema(id="EMP001", name="John Doe", team="Sales", region="UAE", performance_level="Employee"),
-            EmployeeSchema(id="EMP002", name="Jane Roe", team="Inbound", region="UAE", performance_level="Employee"),
+            {"id": "EMP001", "employee_id": "EMP001", "name": "John Doe", "team": "Sales", "status": "Active", "performance_level": "Employee"},
+            {"id": "EMP002", "employee_id": "EMP002", "name": "Jane Roe", "team": "Inbound", "status": "Active", "performance_level": "Employee"},
         ]
         with (
             patch("api.routers.search.require_authenticated_scope") as mock_scope,
-            patch("api.routers.search.employee_repo.get_all") as mock_get_all,
+            patch("api.routers.search.EmployeeDirectoryService") as mock_service,
         ):
             mock_scope.return_value = {
                 "role": "Manager",
@@ -298,7 +313,7 @@ class TestSearchRouter:
                 "employee_id": None,
                 "user_id": "manager-1",
             }
-            mock_get_all.return_value = employees
+            mock_service.return_value.list.return_value = employees
 
             response = client.get("/api/search/global", params={"q": "jo"})
 
@@ -336,8 +351,8 @@ class TestSearchRouter:
 
 class TestErrorHandling:
     def test_404_error_handling(self):
-        with patch("api.routers.employee.employee_repo.get_all") as mock_get:
-            mock_get.return_value = []
+        with patch("api.routers.employee.DashboardRecordService") as mock_service:
+            mock_service.return_value.list_records.return_value = []
             response = client.get("/api/employee/nonexistent")
             assert response.status_code == 404
 
@@ -346,8 +361,8 @@ class TestErrorHandling:
         assert response.status_code == 422
 
     def test_500_style_error_returns_standard_response(self):
-        with patch("api.routers.employee.employee_repo.get_all") as mock_get:
-            mock_get.side_effect = Exception("Database connection error")
+        with patch("api.routers.employee.EmployeeDirectoryService") as mock_service:
+            mock_service.return_value.list.side_effect = Exception("Database connection error")
             response = client.get("/api/employee")
             assert response.status_code == 200
             assert response.json()["success"] is False
@@ -355,9 +370,9 @@ class TestErrorHandling:
 
 class TestResponseSchemas:
     def test_employee_response_schema(self):
-        with patch("api.routers.employee.employee_repo.get_all") as mock_get:
-            mock_get.return_value = [
-                EmployeeSchema(id="EMP001", name="John Doe", team="Sales", region="UAE")
+        with patch("api.routers.employee.EmployeeDirectoryService") as mock_service:
+            mock_service.return_value.list.return_value = [
+                {"id": "EMP001", "employee_id": "EMP001", "name": "John Doe", "team": "Sales", "region": "UAE", "performance_level": "Employee", "position": None, "status": "Active"}
             ]
 
             response = client.get("/api/employee")
@@ -371,8 +386,8 @@ class TestResponseSchemas:
             assert "team" in emp
 
     def test_performance_response_schema(self):
-        with patch("api.routers.performance.performance_repo.get_all") as mock_get:
-            mock_get.return_value = [_performance_record()]
+        with patch("api.routers.performance.DashboardRecordService") as mock_service:
+            mock_service.return_value.list_records.return_value = [_performance_record()]
 
             response = client.get("/api/performance/records", params={"month": "January"})
             data = response.json()

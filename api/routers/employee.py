@@ -17,7 +17,10 @@ from services.corrective_action_service import (
     CorrectiveActionValidationError,
 )
 from services.employee_service import EmployeeService
+from services.employee_directory_service import EmployeeDirectoryService
 from services.performance_service import PerformanceService
+from services.dashboard_record_service import DashboardRecordService
+from services.planning_service import MONTH_ORDER
 from utils.performance_levels import normalize_performance_level
 
 router = APIRouter(prefix="", tags=["Employees"])
@@ -32,6 +35,7 @@ def _level_filter(value: str | None) -> str | None:
 
 @router.get("", response_model=StandardResponse)
 def get_all_employees(
+    db: Session = Depends(get_db),
     include_deleted: bool = Query(False),
     performance_level: str = Query(None),
     position: str | None = Query(None),
@@ -44,17 +48,13 @@ def get_all_employees(
         List of all employees
     """
     try:
-        employees = employee_repo.get_all()
         level = _level_filter(performance_level)
-        if level:
-            employees = [e for e in employees if e.performance_level == level]
-        if position:
-            employees = [e for e in employees if (e.position or "").casefold() == position.casefold()]
-        if region:
-            employees = [e for e in employees if (e.region or "").casefold() == region.casefold()]
-        data = [e.model_dump() for e in employees]
-        if not include_deleted:
-            data = [e for e in data if e.get("status", "Active") != "Inactive"]
+        data = EmployeeDirectoryService(db).list(
+            include_deleted=include_deleted,
+            performance_level=level,
+            position=position,
+            region=region,
+        )
         return StandardResponse(
             success=True,
             message=f"Retrieved {len(data)} employees",
@@ -69,6 +69,7 @@ def get_all_employees(
 
 @router.get("/search", response_model=StandardResponse)
 def  search_employees(
+    db: Session = Depends(get_db),
     name: str = Query(...),
     include_deleted: bool = Query(False),
     performance_level: str = Query(None),
@@ -85,19 +86,14 @@ def  search_employees(
         List of matching employees
     """
     try:
-        employees = employee_repo.get_all()
-        name_lower = name.lower()
-        matched = [e for e in employees if name_lower in e.name.lower()]
         level = _level_filter(performance_level)
-        if level:
-            matched = [e for e in matched if e.performance_level == level]
-        if position:
-            matched = [e for e in matched if (e.position or "").casefold() == position.casefold()]
-        if region:
-            matched = [e for e in matched if (e.region or "").casefold() == region.casefold()]
-        data = [e.model_dump() for e in matched]
-        if not include_deleted:
-            data = [e for e in data if e.get("status", "Active") != "Inactive"]
+        data = EmployeeDirectoryService(db).list(
+            include_deleted=include_deleted,
+            name=name,
+            performance_level=level,
+            position=position,
+            region=region,
+        )
         return StandardResponse(
             success=True,
             message=f"Found {len(data)} employees matching '{name}'",
@@ -113,6 +109,7 @@ def  search_employees(
 @router.get("/team/{team_name}", response_model=StandardResponse)
 def get_employees_by_team(
     team_name: str,
+    db: Session = Depends(get_db),
     include_deleted: bool = Query(False),
     performance_level: str = Query(None),
     position: str | None = Query(None),
@@ -128,18 +125,14 @@ def get_employees_by_team(
         List of employees in team
     """
     try:
-        employees = employee_repo.get_all()
-        matched = [e for e in employees if e.team == team_name]
         level = _level_filter(performance_level)
-        if level:
-            matched = [e for e in matched if e.performance_level == level]
-        if position:
-            matched = [e for e in matched if (e.position or "").casefold() == position.casefold()]
-        if region:
-            matched = [e for e in matched if (e.region or "").casefold() == region.casefold()]
-        data = [e.model_dump() for e in matched]
-        if not include_deleted:
-            data = [e for e in data if e.get("status", "Active") != "Inactive"]
+        data = EmployeeDirectoryService(db).list(
+            include_deleted=include_deleted,
+            team=team_name,
+            performance_level=level,
+            position=position,
+            region=region,
+        )
         return StandardResponse(
             success=True,
             message=f"Retrieved {len(data)} employees for team",
@@ -155,6 +148,7 @@ def get_employees_by_team(
 @router.get("/team/{team_name}/active", response_model=StandardResponse)
 def get_active_employees_by_team(
     team_name: str,
+    db: Session = Depends(get_db),
     performance_level: str = Query(None),
     position: str | None = Query(None),
     region: str | None = Query(None),
@@ -169,16 +163,14 @@ def get_active_employees_by_team(
         List of active employees in team
     """
     try:
-        employees = employee_repo.get_all()
-        matched = [e for e in employees if e.team == team_name and e.status == "Active"]
         level = _level_filter(performance_level)
-        if level:
-            matched = [e for e in matched if e.performance_level == level]
-        if position:
-            matched = [e for e in matched if (e.position or "").casefold() == position.casefold()]
-        if region:
-            matched = [e for e in matched if (e.region or "").casefold() == region.casefold()]
-        data = [e.model_dump() for e in matched]
+        data = EmployeeDirectoryService(db).list(
+            include_deleted=False,
+            team=team_name,
+            performance_level=level,
+            position=position,
+            region=region,
+        )
         return StandardResponse(
             success=True,
             message=f"Retrieved {len(data)} active employees for team",
@@ -197,7 +189,8 @@ def  create_employee(
     name: str = Query(...),
     team: str = Query(...),
     region: str = Query("UAE"),
-    role: str = Depends(require_role(["Admin", "Manager"]))
+    role: str = Depends(require_role(["Admin", "Manager"])),
+    db: Session = Depends(get_db),
 ):
     """
     Create a new employee.
@@ -212,14 +205,21 @@ def  create_employee(
         Created employee
     """
     try:
-        from models.schemas import Employee as EmployeeSchema
-        emp = EmployeeSchema(id=employee_id, name=name, team=team, region=region)
-        employee_repo.save(emp)
+        emp = EmployeeDirectoryService(db).create(
+            employee_id=employee_id,
+            name=name,
+            team=team,
+            region=region,
+        )
         return StandardResponse(
             success=True,
             message="Employee created successfully",
-            data=emp.model_dump()
+            data=emp
         )
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
     except HTTPException as he:
         raise he
     except Exception as e:
@@ -241,32 +241,48 @@ def get_employee_profile(employee_id: str, request: Request, db: Session = Depen
         Employee profile with performance history
     """
     try:
-        # Look up employee from JSON repo
-        employees = employee_repo.get_all()
-        emp = next((e for e in employees if str(e.id) == employee_id or e.name == employee_id), None)
-        if not emp:
+        records = DashboardRecordService(db).list_records(employee_id=employee_id)
+        if not records:
             raise HTTPException(status_code=404, detail="Employee not found")
+
+        # Employee identity is derived from the same canonical SQL-backed
+        # records as the dashboard, avoiding a split between Supabase data and
+        # the legacy JSON repository on serverless deployments.
+        latest_record = max(
+            records,
+            key=lambda record: (
+                record.year or 0,
+                MONTH_ORDER.get(record.month, 0),
+            ),
+        )
+        emp = {
+            "id": str(latest_record.employee_id),
+            "name": latest_record.employee_name,
+            "team": latest_record.team,
+            "region": latest_record.region,
+            "performance_level": latest_record.performance_level,
+            "position": latest_record.position,
+            "status": latest_record.status or "Active",
+        }
 
         scope = get_current_user_scope(db, request)
         if not scope.get("legacy_unscoped") and scope.get("role") == "Manager" and not scope.get("is_general_manager"):
-            if not user_can_access_team(scope, emp.team):
+            if not user_can_access_team(scope, emp["team"]):
                 raise HTTPException(status_code=403, detail="Access denied for this employee")
         elif not scope.get("legacy_unscoped") and scope.get("role") in {"Agent", "Executive"}:
             self_id = str(scope.get("employee_id") or scope.get("user_id") or "")
-            if str(emp.id) != self_id:
+            if str(emp["id"]) != self_id:
                 raise HTTPException(status_code=403, detail="Access denied for this employee")
 
-        records = performance_repo.get_all()
         records = filter_records_by_scope(records, scope)
-        emp_records = [r for r in records if str(r.employee_id) == str(emp.id)]
+        emp_records = [r for r in records if str(r.employee_id) == str(emp["id"])]
         
-        from services.planning_service import MONTH_ORDER
-        emp_records.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
+        emp_records.sort(key=lambda x: (x.year or 0, MONTH_ORDER.get(x.month, 0)))
 
-        history = CorrectiveActionService(db).get_history(str(emp.id))
+        history = CorrectiveActionService(db).get_history(str(emp["id"]))
 
         profile_data = {
-            "employee": emp.model_dump(),
+            "employee": emp,
             "performance_history": [serialize_performance_record(r) for r in emp_records],
             "corrective_action_history": history
         }
@@ -305,35 +321,28 @@ def  update_employee(
         Updated employee
     """
     try:
-        emp = employee_repo.get_by_id(employee_id)
+        directory = EmployeeDirectoryService(db)
+        emp = directory.get_model(employee_id)
         if not emp:
             raise HTTPException(status_code=404, detail="Employee not found")
 
         scope = get_current_user_scope(db, request)
         if not scope.get("legacy_unscoped") and scope.get("role") == "Manager" and not scope.get("is_general_manager"):
-            if not user_can_access_team(scope, emp.team):
+            if not user_can_access_team(scope, str(emp.team.display_name or emp.team.name)):
                 raise HTTPException(status_code=403, detail="Access denied for this employee")
         elif not scope.get("legacy_unscoped") and scope.get("role") in {"Agent", "Executive"}:
             self_id = str(scope.get("employee_id") or scope.get("user_id") or "")
-            if str(emp.id) != self_id:
+            if str(emp.employee_id) != self_id:
                 raise HTTPException(status_code=403, detail="Access denied for this employee")
 
-        data = emp.model_dump()
-        if name is not None:
-            data['name'] = name
-        if team is not None:
-            data['team'] = team
-        if region is not None:
-            data['region'] = region
-        
-        from models.schemas import Employee as EmployeeSchema
-        updated = EmployeeSchema(**data)
-        employee_repo.save(updated)
+        updated = directory.update(employee_id, name=name, team=team, region=region)
         return StandardResponse(
             success=True,
             message="Employee updated successfully",
-            data=updated.model_dump()
+            data=updated
         )
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     except HTTPException as he:
         raise he
     except Exception as e:

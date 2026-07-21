@@ -1,15 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-import datetime
 import logging
 import time
 from sqlalchemy.orm import Session
 
 from config.database import get_db
 from api.dependencies import (
-    uploads_repo,
-    performance_repo,
-    trend_service,
-    planning_service,
     clear_serialization_cache,
 )
 from api.middleware.rbac_middleware import require_permission
@@ -20,58 +15,6 @@ from services.upload_security import read_validated_excel
 from services.employee_upload_service import EmployeeUploadService
 
 logger = logging.getLogger(__name__)
-
-def _warm_team_caches() -> None:
-    """Pre-compute and cache team performance aggregates after data changes."""
-    try:
-        from services.cache_service import CacheService
-        all_records = performance_repo.get_all()
-
-        teams_months = set()
-        for r in all_records:
-            month = getattr(r, "month", None)
-            team = getattr(r, "team", None)
-            year = getattr(r, "year", None) or 2026
-            if month and team:
-                teams_months.add((team, month, year))
-
-        if not teams_months:
-            return
-
-        for team_name, month, year in teams_months:
-            team_records = [
-                r for r in all_records
-                if r.team == team_name and r.month == month and (r.year or 2026) == year
-            ]
-            scores = [r.evaluation.score for r in team_records if r.evaluation and r.evaluation.score]
-            by_position = {}
-            positions = sorted({
-                r.position
-                for r in team_records
-                if isinstance(getattr(r, "position", None), str) and r.position
-            })
-            for position in positions:
-                position_scores = [
-                    r.evaluation.score
-                    for r in team_records
-                    if r.position == position and r.evaluation and r.evaluation.score is not None
-                ]
-                by_position[position] = {
-                    "total_records": len(position_scores),
-                    "average_score": sum(position_scores) / len(position_scores) if position_scores else 0.0,
-                    "max_score": max(position_scores) if position_scores else 0.0,
-                    "min_score": min(position_scores) if position_scores else 0.0,
-                }
-            aggregated = {
-                "total_records": len(scores),
-                "average_score": sum(scores) / len(scores) if scores else 0.0,
-                "max_score": max(scores) if scores else 0.0,
-                "min_score": min(scores) if scores else 0.0,
-                "by_position": by_position,
-            }
-            CacheService.set_team_performance_cache(team_name, month, year, aggregated)
-    except Exception as e:
-        logging.getLogger(__name__).warning(f"Cache warming failed (non-critical): {e}")
 
 
 router = APIRouter()

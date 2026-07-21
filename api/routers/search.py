@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy.orm import Session
 
-from api.dependencies import employee_repo, get_current_user_scope, require_authenticated_scope
+from api.dependencies import get_current_user_scope, require_authenticated_scope
 from config.database import get_db
 from models.schemas import StandardResponse
+from services.employee_directory_service import EmployeeDirectoryService
 
 
 router = APIRouter(prefix="/search", tags=["Search"])
@@ -42,31 +43,31 @@ def global_search(
 
     employees = []
     if query:
-        all_employees = employee_repo.get_all()
+        all_employees = EmployeeDirectoryService(db).list(name=query)
         if role in {"Admin", "Manager", "Executive"}:
             visible = [
                 employee for employee in all_employees
-                if employee.status == "Active" and employee.team in allowed_teams
+                if employee["status"] == "Active" and employee["team"] in allowed_teams
             ]
         elif role == "Agent":
             self_id = str(scope.get("employee_id") or scope.get("user_id") or "")
             visible = [
                 employee for employee in all_employees
-                if employee.status == "Active" and str(employee.id) == self_id
+                if employee["status"] == "Active" and str(employee["id"]) == self_id
             ]
         else:
             visible = []
 
         employees = [
             {
-                "id": str(employee.id),
-                "name": employee.name,
-                "employee_id": str(employee.id),
-                "team": employee.team,
-                "performance_level": employee.performance_level,
+                "id": str(employee["id"]),
+                "name": employee["name"],
+                "employee_id": str(employee["employee_id"]),
+                "team": employee["team"],
+                "performance_level": employee["performance_level"],
             }
             for employee in visible
-            if _matches(employee.name, query) or _matches(employee.id, query)
+            if _matches(employee["name"], query) or _matches(employee["id"], query)
         ][:limit]
 
     return StandardResponse(

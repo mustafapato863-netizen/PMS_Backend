@@ -25,11 +25,15 @@ PMS_SEED_PERMISSIONS_ON_STARTUP = os.environ.get(
 ).strip().lower() == "true"
 
 # Comma-separated list of allowed origins. Do not use wildcards in production with credentials.
+def parse_cors_origins(value: str) -> tuple[str, ...]:
+    return tuple(origin.strip().rstrip('/') for origin in value.split(",") if origin.strip())
+
+
 _cors_origins = os.environ.get(
     "CORS_ALLOWED_ORIGINS",
     "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://pms-frontend-iota-dusky.vercel.app",
 )
-CORS_ORIGINS = tuple(origin.strip().rstrip('/') for origin in _cors_origins.split(",") if origin.strip())
+CORS_ORIGINS = parse_cors_origins(_cors_origins)
 if APP_ENV == "production" and "*" in CORS_ORIGINS:
     raise ValueError("CORS_ALLOWED_ORIGINS must contain explicit origins when credentials are enabled in production.")
 

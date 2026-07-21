@@ -16,7 +16,6 @@ class _DummySeeder:
 async def test_upload_success_does_not_crash_on_logging(monkeypatch):
     monkeypatch.setattr(upload_router, "DatabaseSeeder", _DummySeeder)
     monkeypatch.setattr(upload_router.CacheInvalidationService, "flush_all", staticmethod(lambda: None))
-    monkeypatch.setattr(upload_router, "_warm_team_caches", lambda: None)
 
     async def _noop_notify(*args, **kwargs):
         return None

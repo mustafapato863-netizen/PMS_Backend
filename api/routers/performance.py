@@ -98,7 +98,6 @@ def _get_dashboard_records(
 ):
     return DashboardRecordService(
         db,
-        json_repository=performance_repo,
         sql_repository_cls=SQLPerformanceRepository,
     ).list_records(
         team=team,
