@@ -26,7 +26,7 @@ PMS_SEED_PERMISSIONS_ON_STARTUP = os.environ.get(
 
 _cors_origins = os.environ.get(
     "CORS_ORIGINS",
-    "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000",
+    "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://pms-frontend-iota-dusky.vercel.app",
 )
 CORS_ORIGINS = tuple(origin.strip() for origin in _cors_origins.split(",") if origin.strip())
 if "*" in CORS_ORIGINS:
