@@ -16,9 +16,10 @@ load_dotenv(dotenv_path=env_path)
 
 # In production, this dynamically fetches the DATABASE_URL key from your secure .env file
 DATABASE_URL = os.getenv("DATABASE_URL")
-
 if not DATABASE_URL:
-    raise ValueError("CRITICAL ERROR: DATABASE_URL is not set inside the .env file.")
+    import logging
+    logging.getLogger(__name__).warning("DATABASE_URL is not set in environment. Falling back to SQLite temporary database.")
+    DATABASE_URL = "sqlite:///./pms_fallback.db"
 
 # Keep the local development defaults generous while using conservative limits
 # for hosted PostgreSQL providers such as Supabase's pooler.

@@ -10,9 +10,12 @@ import io
 import time
 import logging
 
-# Force UTF-8 encoding for console output (Windows compatibility)
-if sys.stdout and hasattr(sys.stdout, 'buffer'):
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+# Force UTF-8 encoding for console output (Windows compatibility, skip on Vercel)
+if sys.stdout and hasattr(sys.stdout, 'buffer') and not os.environ.get("VERCEL"):
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -114,8 +117,8 @@ async def root():
     }
 
 # Wrap FastAPI with Socket.IO when the optional real-time runtime is available.
-# Vercel can serve the REST ASGI app without this dependency.
-if ASGIApp is not None and SOCKETIO_AVAILABLE:
+# Vercel serves the pure REST ASGI FastAPI app without SocketIO wrapper.
+if ASGIApp is not None and SOCKETIO_AVAILABLE and not os.environ.get("VERCEL"):
     app = ASGIApp(sio, app)
 
 if __name__ == "__main__":
