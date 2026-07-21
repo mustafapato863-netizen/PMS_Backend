@@ -63,17 +63,58 @@ class DashboardRecordService:
             if matched:
                 return matched
 
-        return self.json_repository.get_filtered(
-            team=team,
-            month=month,
-            employee_id=employee_id,
-            grade=grade,
-            status=status,
-            performance_level=performance_level,
-            year=year,
-            position=position,
-            region=region,
-        )
+        # Fallback for production when JSON repositories are empty:
+        # Load merged SQL/JSON records from list_analysis_records and apply filters in memory
+        analysis_records = self.list_analysis_records()
+        if not analysis_records:
+            return []
+
+        def get_val(item, key):
+            if isinstance(item, dict):
+                return item.get(key)
+            return getattr(item, key, None)
+
+        def get_eval_val(item, key):
+            if isinstance(item, dict):
+                ev = item.get("evaluation")
+                return ev.get(key) if isinstance(ev, dict) else None
+            ev = getattr(item, "evaluation", None)
+            return getattr(ev, key, None) if ev else None
+
+        filtered = []
+        for r in analysis_records:
+            r_team = get_val(r, "team")
+            r_month = get_val(r, "month")
+            r_emp_id = get_val(r, "employee_id")
+            r_grade = get_eval_val(r, "grade")
+            r_status = get_val(r, "status")
+            r_level = get_val(r, "performance_level")
+            r_year = get_val(r, "year")
+            r_position = get_val(r, "position")
+            r_region = get_val(r, "region")
+
+            if team and str(r_team).lower() != str(team).lower():
+                continue
+            if month and month != "All" and str(r_month).lower() != str(month).lower():
+                continue
+            if employee_id and str(r_emp_id) != str(employee_id):
+                continue
+            if grade and str(r_grade) != str(grade):
+                continue
+            if status and str(r_status).lower() != str(status).lower():
+                continue
+            if performance_level and performance_level != "All" and str(r_level).lower() != str(performance_level).lower():
+                continue
+            if year and r_year and int(r_year) != int(year):
+                continue
+            if position and str(r_position).lower() != str(position).lower():
+                continue
+            if region and str(r_region).lower() != str(region).lower():
+                continue
+
+            filtered.append(r)
+
+        return filtered
 
     def list_analysis_records(self):
         """Merge rich JSON evidence with every persisted SQL performance row.

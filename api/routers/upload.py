@@ -81,21 +81,44 @@ async def get_upload_history(
     _user=Depends(require_permission("view_reports"))
 ):
     try:
-        from models.models import UploadLog
-        records = db.query(UploadLog).order_by(UploadLog.uploaded_at.desc()).all()
+        from models.models import UploadLog, Team
+        sql_records = db.query(UploadLog, Team).join(Team, UploadLog.team_id == Team.id).order_by(UploadLog.uploaded_at.desc()).all()
+        
+        result_data = []
+        seen_ids = set()
+        for log, team in sql_records:
+            log_id = str(log.id)
+            seen_ids.add(log_id)
+            team_display = team.display_name or team.name or "Team"
+            filename_label = f"Upload - {team_display} ({log.month} {log.year})"
+            result_data.append({
+                "id": log_id,
+                "filename": filename_label,
+                "uploaded_at": log.uploaded_at.isoformat() if log.uploaded_at else None,
+                "uploaded_by": str(log.uploaded_by_user_id) if log.uploaded_by_user_id else "Admin",
+                "status": log.status,
+            })
+            
+        try:
+            json_uploads = uploads_repo.get_all()
+            for ju in json_uploads:
+                ju_id = str(ju.id)
+                if ju_id not in seen_ids:
+                    seen_ids.add(ju_id)
+                    result_data.append({
+                        "id": ju_id,
+                        "filename": getattr(ju, "filename", "PMS File Upload"),
+                        "uploaded_at": ju.uploaded_at if isinstance(ju.uploaded_at, str) else (ju.uploaded_at.isoformat() if ju.uploaded_at else None),
+                        "uploaded_by": getattr(ju, "uploaded_by", "Admin"),
+                        "status": getattr(ju, "status", "success"),
+                    })
+        except Exception:
+            pass
+
         return StandardResponse(
             success=True,
             message="Retrieved upload history successfully",
-            data=[
-                {
-                    "id": str(r.id),
-                    "filename": "Unknown",  # filename not stored in upload_log
-                    "uploaded_at": r.uploaded_at.isoformat() if r.uploaded_at else None,
-                    "uploaded_by": str(r.uploaded_by_user_id) if r.uploaded_by_user_id else "Admin",
-                    "status": r.status,
-                }
-                for r in records
-            ]
+            data=result_data
         )
     except Exception as e:
         logger.exception("Failed to fetch upload history")
@@ -190,44 +213,57 @@ async def upload_pms_file(
 @router.delete("/{upload_id}", response_model=StandardResponse)
 async def delete_upload(
     upload_id: str,
+    db: Session = Depends(get_db),
     _user=Depends(require_permission("delete_performance"))
 ):
     try:
-        uploads = uploads_repo.get_all()
-        target_upload = next((u for u in uploads if u.id == upload_id), None)
+        from models.models import UploadLog, PerformanceRecord as DBPerformanceRecord, KPIValue
+        from uuid import UUID
         
-        if not target_upload:
-            raise HTTPException(status_code=404, detail="Upload record not found")
+        # 1. Try deleting from SQL DB UploadLog
+        try:
+            log_uuid = UUID(upload_id)
+            log_entry = db.query(UploadLog).filter(UploadLog.id == log_uuid).first()
+            if log_entry:
+                perf_recs = db.query(DBPerformanceRecord).filter(DBPerformanceRecord.upload_id == log_entry.id).all()
+                perf_ids = [p.id for p in perf_recs]
+                if perf_ids:
+                    db.query(KPIValue).filter(KPIValue.record_id.in_(perf_ids)).delete(synchronize_session=False)
+                    db.query(DBPerformanceRecord).filter(DBPerformanceRecord.id.in_(perf_ids)).delete(synchronize_session=False)
+                db.delete(log_entry)
+                db.commit()
+                CacheInvalidationService.flush_all()
+                clear_serialization_cache()
+                return StandardResponse(
+                    success=True,
+                    message=f"Successfully deleted upload record and {len(perf_ids)} associated performance records."
+                )
+        except Exception as sql_err:
+            logger.warning("SQL upload delete attempt failed or bypassed: %s", sql_err)
+            db.rollback()
 
-        affected_employee_ids = performance_repo.delete_by_upload_id(upload_id)
+        # 2. Try fallback JSON deletion
+        try:
+            uploads = uploads_repo.get_all()
+            target_upload = next((u for u in uploads if str(u.id) == str(upload_id)), None)
+            if target_upload:
+                affected = performance_repo.delete_by_upload_id(upload_id)
+                uploads_repo.delete_by_id(upload_id)
+                CacheInvalidationService.flush_all()
+                clear_serialization_cache()
+                return StandardResponse(
+                    success=True,
+                    message=f"Successfully deleted upload history and {len(affected)} affected agent records."
+                )
+        except Exception as json_err:
+            logger.warning("JSON upload delete attempt failed: %s", json_err)
 
-        for emp_id in affected_employee_ids:
-            emp_history = [h for h in performance_repo.get_all() if h.employee_id == emp_id]
-            from services.planning_service import MONTH_ORDER
-            emp_history.sort(key=lambda x: MONTH_ORDER.get(x.month, 0))
-            
-            for idx, r in enumerate(emp_history):
-                trend_status = trend_service.calculate_trends(emp_history, idx)
-                r.evaluation.trend_status = trend_status
-                
-                planning_lists = planning_service.classify_all(r.month)
-                r.evaluation.planning_category = []
-                for cat, recs in planning_lists.items():
-                    if any(x.id == r.id for x in recs):
-                        r.evaluation.planning_category.append(cat)
-            
-            performance_repo.save_all(emp_history)
-
-        success = uploads_repo.delete_by_id(upload_id)
-        if not success:
-            raise HTTPException(status_code=500, detail="Failed to delete upload log from repository")
-
-        CacheInvalidationService.flush_all()
-
-        return StandardResponse(
-            success=True,
-            message=f"Successfully deleted upload history and {len(affected_employee_ids)} affected agent records recalculated."
-        )
+        raise HTTPException(status_code=404, detail="Upload record not found")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Failed to delete upload")
+        raise HTTPException(status_code=500, detail=f"Failed to delete upload: {e}") from e
     except HTTPException as he:
         raise he
     except Exception as e:
