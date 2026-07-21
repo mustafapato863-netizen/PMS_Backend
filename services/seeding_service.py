@@ -109,7 +109,7 @@ class DatabaseSeeder:
         self.uploads_repo = JSONUploadsRepository()
         self.excel_processor = ExcelProcessor()
         
-        self.kpi_service = KPIService(self.weights_repo, self.targets_repo, initialize_defaults=False)
+        self.kpi_service = KPIService(self.weights_repo, self.targets_repo)
         self.analysis_service = AnalysisService(self.targets_repo)
         self.planning_service = PlanningService(self.performance_repo)
         self.trend_service = TrendService()
