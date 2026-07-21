@@ -85,12 +85,6 @@ def _load_json(filename: str, default_val: list | dict) -> list | dict:
 
     path = os.path.join(DATA_DIR, filename)
     if not os.path.exists(path):
-        if APP_ENV == "production":
-            raise RuntimeError(
-                f"Required private runtime data file is missing: {filename}"
-            )
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(default_val, f, indent=2)
         with _cache_lock:
             _cache[cache_key] = (default_val, now + _CACHE_TTL)
         return default_val

@@ -17,148 +17,136 @@ def safe_float(val, default=0.0) -> float:
     except (ValueError, TypeError):
         return default
 
+DEFAULT_WEIGHTS = {
+    "Inbound": {
+        "Attend": 0.70,
+        "Booking": 0.10,
+        "Quality": 0.05,
+        "AHT": 0.05,
+        "Other": 0.10  # UTZ or Abandon
+    },
+    "Outbound": {
+        "Attend": 0.70,
+        "Booking": 0.10,
+        "Quality": 0.10,
+        "AHT": 0.00,
+        "Other": 0.10  # Reachability
+    },
+    "Inbound UAE": {
+        "Attend": 0.70,
+        "Booking": 0.20,
+        "Quality": 0.00,
+        "AHT": 0.00,
+        "Other": 0.10  # Abandon
+    },
+    "Pre-Approvals IP Offshore": {
+        "Rejection": 0.50,
+        "InitialError": 0.20,
+        "Submission": 0.30
+    },
+    "Sales": {
+        "OPCensus": 0.10,
+        "OPRevenue": 0.10,
+        "IPCensus": 0.25,
+        "IPRevenue": 0.45,
+        "Activity": 0.10
+    },
+    "Coding": {
+        "QualityErrors": 0.20,
+        "Rejection": 0.50,
+        "TAT": 0.30
+    },
+    "CSR": {
+        "Rejection": 0.40,
+        "Queries": 0.30,
+        "AttendedCR": 0.30
+    },
+    "Pharmacy": {
+        "WaitingTime": 0.20,
+        "Leakage": 0.20,
+        "TenderCompliance": 0.20,
+        "ATV": 0.20,
+        "Prescription": 0.20
+    },
+    "Submission": {
+        "initial_rejection_rate": 0.60,
+        "submission_within_due_date": 0.40
+    },
+    "Re-Submission": {
+        "quality_errors_rate": 0.20,
+        "rejection_rate_after_resubmission": 0.50,
+        "tat": 0.30,
+    }
+}
+
+DEFAULT_TARGETS = {
+    "Inbound": {
+        "Attend": 0.75,
+        "Booking": 0.45,
+        "Quality": 0.95,
+        "AHT": 150.0,  # 2.5 minutes (150 seconds)
+        "Abandon": 0.01, # 1%
+        "UTZ": 0.85
+    },
+    "Outbound": {
+        "Attend": 0.55,
+        "Booking": 0.46,
+        "Quality": 0.95,
+        "Reachability": 0.75
+    },
+    "Inbound UAE": {
+        "Attend": 0.75,
+        "Booking": 0.60,
+        "Abandon": 0.01
+    },
+    "Pre-Approvals IP Offshore": {
+        "Rejection": 0.03,  # 3% target initial rejection rate (lower is better)
+        "InitialError": 0.03, # 3% target error rate (lower is better)
+        "Submission": 0.90 # 90% within due date
+    },
+    "Sales": {
+        "OPCensus": 1.0,
+        "OPRevenue": 1.0,
+        "IPCensus": 1.0,
+        "IPRevenue": 1.0,
+        "Activity": 1.0
+    },
+    "Coding": {
+        "QualityErrors": 0.05,
+        "Rejection": 0.04,
+        "TAT": 2.5
+    },
+    "CSR": {
+        "Rejection": 0.01,
+        "Queries": 0.01,
+        "AttendedCR": 0.90
+    },
+    "Pharmacy": {
+        "WaitingTime": 15.0,
+        "Leakage": 0.10,
+        "TenderCompliance": 0.75,
+        "ATV": 600.0,
+        "Prescription": 0.07
+    },
+    "Submission": {
+        "initial_rejection_rate": 0.04,
+        "submission_within_due_date": 0.90
+    },
+    "Re-Submission": {
+        "quality_errors_rate": 0.05,
+        "rejection_rate_after_resubmission": 0.60,
+        "tat": 1.00,
+    }
+}
+
 class KPIService:
     def __init__(
         self,
         weights_repo: KPIWeightsRepository,
         targets_repo: TargetsRepository,
-        initialize_defaults: bool = True,
     ):
         self.weights_repo = weights_repo
         self.targets_repo = targets_repo
-        if initialize_defaults:
-            self._initialize_defaults()
-
-    def _initialize_defaults(self):
-        # Default weights
-        default_weights = {
-            "Inbound": {
-                "Attend": 0.70,
-                "Booking": 0.10,
-                "Quality": 0.05,
-                "AHT": 0.05,
-                "Other": 0.10  # UTZ or Abandon
-            },
-            "Outbound": {
-                "Attend": 0.70,
-                "Booking": 0.10,
-                "Quality": 0.10,
-                "AHT": 0.00,
-                "Other": 0.10  # Reachability
-            },
-            "Inbound UAE": {
-                "Attend": 0.70,
-                "Booking": 0.20,
-                "Quality": 0.00,
-                "AHT": 0.00,
-                "Other": 0.10  # Abandon
-            },
-            "Pre-Approvals IP Offshore": {
-                "Rejection": 0.50,
-                "InitialError": 0.20,
-                "Submission": 0.30
-            },
-            "Sales": {
-                "OPCensus": 0.10,
-                "OPRevenue": 0.10,
-                "IPCensus": 0.25,
-                "IPRevenue": 0.45,
-                "Activity": 0.10
-            },
-            "Coding": {
-                "QualityErrors": 0.20,
-                "Rejection": 0.50,
-                "TAT": 0.30
-            },
-            "CSR": {
-                "Rejection": 0.40,
-                "Queries": 0.30,
-                "AttendedCR": 0.30
-            },
-            "Pharmacy": {
-                "WaitingTime": 0.20,
-                "Leakage": 0.20,
-                "TenderCompliance": 0.20,
-                "ATV": 0.20,
-                "Prescription": 0.20
-            },
-            "Submission": {
-                "initial_rejection_rate": 0.60,
-                "submission_within_due_date": 0.40
-            },
-            "Re-Submission": {
-                "quality_errors_rate": 0.20,
-                "rejection_rate_after_resubmission": 0.50,
-                "tat": 0.30,
-            }
-        }
-        for team, weights in default_weights.items():
-            if not self.weights_repo.get_by_team(team):
-                self.weights_repo.save(KPIWeight(team=team, weights=weights))
-
-        # Default targets
-        default_targets = {
-            "Inbound": {
-                "Attend": 0.75,
-                "Booking": 0.45,
-                "Quality": 0.95,
-                "AHT": 150.0,  # 2.5 minutes (150 seconds)
-                "Abandon": 0.01, # 1%
-                "UTZ": 0.85
-            },
-            "Outbound": {
-                "Attend": 0.55,
-                "Booking": 0.46,
-                "Quality": 0.95,
-                "Reachability": 0.75
-            },
-            "Inbound UAE": {
-                "Attend": 0.75,
-                "Booking": 0.60,
-                "Abandon": 0.01
-            },
-            "Pre-Approvals IP Offshore": {
-                "Rejection": 0.03,  # 3% target initial rejection rate (lower is better)
-                "InitialError": 0.03, # 3% target error rate (lower is better)
-                "Submission": 0.90 # 90% within due date
-            },
-            "Sales": {
-                "OPCensus": 1.0,
-                "OPRevenue": 1.0,
-                "IPCensus": 1.0,
-                "IPRevenue": 1.0,
-                "Activity": 1.0
-            },
-            "Coding": {
-                "QualityErrors": 0.05,
-                "Rejection": 0.04,
-                "TAT": 2.5
-            },
-            "CSR": {
-                "Rejection": 0.01,
-                "Queries": 0.01,
-                "AttendedCR": 0.90
-            },
-            "Pharmacy": {
-                "WaitingTime": 15.0,
-                "Leakage": 0.10,
-                "TenderCompliance": 0.75,
-                "ATV": 600.0,
-                "Prescription": 0.07
-            },
-            "Submission": {
-                "initial_rejection_rate": 0.04,
-                "submission_within_due_date": 0.90
-            },
-            "Re-Submission": {
-                "quality_errors_rate": 0.05,
-                "rejection_rate_after_resubmission": 0.60,
-                "tat": 1.00,
-            }
-        }
-        for team, targets in default_targets.items():
-            if not self.targets_repo.get_by_team(team):
-                self.targets_repo.save(Target(team=team, targets=targets))
 
     def calculate_performance(self, team: str, row: Dict[str, Any], performance_level: str = "Employee") -> Tuple[float, str, Dict[str, float], Dict[str, float]]:
         """
@@ -181,10 +169,10 @@ class KPIService:
 
         # Load weights and targets (fallback to defaults if repo fails)
         w_record = self.weights_repo.get_by_team(team)
-        weights = w_record.weights if w_record else {}
+        weights = w_record.weights if w_record else DEFAULT_WEIGHTS.get(team, {})
 
         target_rec = self.targets_repo.get_by_team(team)
-        targets = target_rec.targets if target_rec else {}
+        targets = target_rec.targets if target_rec else DEFAULT_TARGETS.get(team, {})
 
         achievements = {}
         final_weights = {}
