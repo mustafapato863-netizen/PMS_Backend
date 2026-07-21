@@ -186,7 +186,7 @@ async def upload_pms_file(
                     "report": report,
                 },
             ) from e
-        raise HTTPException(status_code=500, detail="Failed to upload and process the Excel file.") from e
+        raise HTTPException(status_code=500, detail=f"Upload processing failed: {type(e).__name__}: {str(e)[:500]}") from e
 
 @router.delete("/{upload_id}", response_model=StandardResponse)
 async def delete_upload(

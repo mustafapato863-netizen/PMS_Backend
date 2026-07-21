@@ -504,18 +504,29 @@ class DatabaseSeeder:
                 year = record.year or datetime.datetime.now().year
                 
                 # Vercel Production: Store upload metadata in the DB natively.
-                upload_log = db.query(UploadLog).filter_by(team_id=team.id, month=record.month, year=year).first()
-                if not upload_log:
-                    upload_log = UploadLog(
-                        team_id=team.id,
-                        month=record.month,
-                        year=year,
-                        record_count=0,
-                        status="success"
-                    )
-                    db.add(upload_log)
-                    db.flush()
-                upload_log.record_count += 1
+                # Wrapped in try/except because UploadLog table may not exist in older schemas.
+                upload_log_id = None
+                try:
+                    upload_log = db.query(UploadLog).filter_by(team_id=team.id, month=record.month, year=year).first()
+                    if not upload_log:
+                        upload_log = UploadLog(
+                            team_id=team.id,
+                            month=record.month,
+                            year=year,
+                            record_count=0,
+                            status="success"
+                        )
+                        db.add(upload_log)
+                        db.flush()
+                    upload_log.record_count += 1
+                    upload_log_id = upload_log.id
+                except Exception as upload_log_exc:
+                    logger.warning("UploadLog creation skipped: %s", upload_log_exc)
+                    try:
+                        db.rollback()
+                        db.begin()
+                    except Exception:
+                        pass
 
                 existing = (
                     db.query(DBPerformanceRecord)
@@ -534,7 +545,7 @@ class DatabaseSeeder:
                     existing.performance_level = record.performance_level
                     existing.position_name = record.position
                     existing.region = record.region
-                    existing.upload_id = upload_log.id
+                    existing.upload_id = upload_log_id
                     db_record = existing
                 else:
                     db_record = DBPerformanceRecord(
@@ -549,7 +560,7 @@ class DatabaseSeeder:
                         score=safe_decimal(record.evaluation.score),
                         grade=record.evaluation.grade,
                         status=self._status_for_record(record),
-                        upload_id=upload_log.id,
+                        upload_id=upload_log_id,
                     )
                     db.add(db_record)
                     db.flush()
@@ -988,33 +999,37 @@ class DatabaseSeeder:
             }
             raise UploadProcessingError(str(exc), report) from exc
 
-        # Read all history once (not inside the loop) to avoid O(n²) file reads
-        all_history = self.performance_repo.get_all()
-        updated_records = []
-        from services.planning_service import MONTH_ORDER
-        for r in all_new_records:
-            emp_history = [h for h in all_history if h.employee_id == r.employee_id]
-            emp_history.sort(key=lambda x: (x.year or 0, MONTH_ORDER.get(x.month, 0)))
-            
-            curr_idx = -1
-            for i, h in enumerate(emp_history):
-                if h.id == r.id:
-                    curr_idx = i
-                    break
+        # Post-processing: trend calculation and planning classification.
+        # Wrapped in try/except because on Vercel, JSON repos may be empty (no /var/task/data files),
+        # and save_all will silently fail. This must NOT crash the upload response.
+        try:
+            all_history = self.performance_repo.get_all()
+            if all_history:
+                from services.planning_service import MONTH_ORDER
+                for r in all_new_records:
+                    emp_history = [h for h in all_history if h.employee_id == r.employee_id]
+                    emp_history.sort(key=lambda x: (x.year or 0, MONTH_ORDER.get(x.month, 0)))
+                    
+                    curr_idx = -1
+                    for i, h in enumerate(emp_history):
+                        if h.id == r.id:
+                            curr_idx = i
+                            break
 
-            if curr_idx >= 0:
-                trend_status = self.trend_service.calculate_trends(emp_history, curr_idx)
-                r.evaluation.trend_status = trend_status
+                    if curr_idx >= 0:
+                        trend_status = self.trend_service.calculate_trends(emp_history, curr_idx)
+                        r.evaluation.trend_status = trend_status
 
-            planning_lists = self.planning_service.classify_all(r.month)
-            r.evaluation.planning_category = []
-            for cat, recs in planning_lists.items():
-                if any(x.id == r.id for x in recs):
-                    r.evaluation.planning_category.append(cat)
+                    planning_lists = self.planning_service.classify_all(r.month)
+                    r.evaluation.planning_category = []
+                    for cat, recs in planning_lists.items():
+                        if any(x.id == r.id for x in recs):
+                            r.evaluation.planning_category.append(cat)
 
-            updated_records.append(r)
+                self.performance_repo.save_all(all_new_records)
+        except Exception as trend_exc:
+            logger.warning("Post-upload trend/planning enrichment skipped: %s", trend_exc)
 
-        self.performance_repo.save_all(updated_records)
         return {
             "records_imported": len(all_new_records),
             "employees_imported": len(all_new_employees),
