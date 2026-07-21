@@ -437,7 +437,8 @@ class DatabaseSeeder:
                     self._sync_employee_position_config(db, position_team, team_config)
 
             # Batch optimization for Vercel 10s limit: Pre-fetch existing records to avoid N+1 DB roundtrips
-            existing_employees_list = db.query(DBEmployee).all()
+            emp_ids = [str(e.id).strip() for e in employees if str(e.id).strip() and str(e.id).strip().lower() != "nan"]
+            existing_employees_list = db.query(DBEmployee).filter(DBEmployee.employee_id.in_(emp_ids)).all() if emp_ids else []
             existing_emp_map = {e.employee_id: e for e in existing_employees_list}
 
             employee_lookup = {}
@@ -481,7 +482,8 @@ class DatabaseSeeder:
             db.flush()
 
             # Pre-fetch existing performance records to avoid querying inside loop
-            existing_perf_list = db.query(DBPerformanceRecord).all()
+            db_emp_ids = list({e.id for e in employee_lookup.values()} | {e.id for e in existing_emp_map.values()})
+            existing_perf_list = db.query(DBPerformanceRecord).filter(DBPerformanceRecord.employee_id.in_(db_emp_ids)).all() if db_emp_ids else []
             existing_perf_map = {
                 (p.employee_id, p.month, p.year): p
                 for p in existing_perf_list
@@ -490,7 +492,8 @@ class DatabaseSeeder:
             # Pre-fetch upload logs
             upload_log_map = {}
             try:
-                upload_logs_list = db.query(UploadLog).all()
+                team_ids = list({t.id for t in teams_by_name.values()})
+                upload_logs_list = db.query(UploadLog).filter(UploadLog.team_id.in_(team_ids)).all() if team_ids else []
                 upload_log_map = {(ul.team_id, ul.month, ul.year): ul for ul in upload_logs_list}
             except Exception:
                 pass

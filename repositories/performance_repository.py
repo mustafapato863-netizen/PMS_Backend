@@ -65,18 +65,56 @@ class PerformanceRepository(BaseRepository[PerformanceRecord]):
             for emp_id, team_name, record_month, record_year in query.distinct().all()
         ]
 
-    def get_dashboard_records(self) -> list[PerformanceRecord]:
-        """Return canonical employee performance rows for analysis workspaces."""
-        return (
+    def get_dashboard_records(
+        self,
+        team: str | None = None,
+        month: str | None = None,
+        employee_id: str | None = None,
+        grade: str | None = None,
+        status: str | None = None,
+        performance_level: str | None = None,
+        year: int | None = None,
+        position: str | None = None,
+        region: str | None = None,
+    ) -> list[PerformanceRecord]:
+        """Return canonical employee performance rows for analysis workspaces with SQL-level filtering."""
+        query = (
             self.db.query(PerformanceRecord)
             .options(
                 selectinload(PerformanceRecord.kpi_values),
                 selectinload(PerformanceRecord.employee).selectinload(Employee.team),
             )
             .join(Team, PerformanceRecord.team_id == Team.id)
+            .join(Employee, PerformanceRecord.employee_id == Employee.id)
             .filter(Team.team_level == "employee")
-            .all()
         )
+
+        if team:
+            normalized_team = str(team).strip().casefold()
+            logical_team_name = func.coalesce(Team.display_name, Team.name)
+            query = query.filter(or_(
+                func.lower(logical_team_name) == normalized_team,
+                func.lower(Team.name) == normalized_team,
+                func.lower(Team.db_name) == normalized_team,
+            ))
+        if month and month.lower() != "all":
+            query = query.filter(PerformanceRecord.month == month)
+        if employee_id:
+            query = query.filter(Employee.employee_id == employee_id)
+        if grade:
+            query = query.filter(PerformanceRecord.grade == grade)
+        if status:
+            query = query.filter(func.lower(PerformanceRecord.status) == str(status).lower())
+        if performance_level and performance_level.lower() != "all":
+            query = query.filter(func.lower(PerformanceRecord.performance_level) == str(performance_level).lower())
+        if year:
+            query = query.filter(PerformanceRecord.year == year)
+        if position:
+            query = query.filter(func.lower(PerformanceRecord.position_name) == str(position).lower())
+        if region:
+            query = query.filter(func.lower(PerformanceRecord.region) == str(region).lower())
+
+        return query.all()
 
     def get_by_employee_month(self, employee_id, month: str, year: int):
         """Get performance record for specific month"""
