@@ -38,25 +38,26 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Lazy imports for startup performance
-    from services.seeding_service import DatabaseSeeder
-    from services.permission_seed import seed_role_permissions
-
-    # Seed only in explicitly enabled environments. Hosted production should
-    # run migrations and controlled imports as separate release operations.
-    seed_demo_levels = os.environ.get("PMS_SEED_DEMO_LEVELS", "").lower() == "true"
-    seeder = DatabaseSeeder() if settings.PMS_AUTO_SEED or seed_demo_levels else None
-    if settings.PMS_AUTO_SEED and seeder is not None:
-        seeder.seed_database()
-    if seed_demo_levels and seeder is not None:
-        seeder.seed_demo_performance_levels()
-    
-    if settings.PMS_SEED_PERMISSIONS_ON_STARTUP:
-        db = SessionLocal()
+    if not os.environ.get("VERCEL"):
         try:
-            seed_role_permissions(db)
-        finally:
-            db.close()
+            from services.seeding_service import DatabaseSeeder
+            from services.permission_seed import seed_role_permissions
+
+            seed_demo_levels = os.environ.get("PMS_SEED_DEMO_LEVELS", "").lower() == "true"
+            seeder = DatabaseSeeder() if settings.PMS_AUTO_SEED or seed_demo_levels else None
+            if settings.PMS_AUTO_SEED and seeder is not None:
+                seeder.seed_database()
+            if seed_demo_levels and seeder is not None:
+                seeder.seed_demo_performance_levels()
+            
+            if settings.PMS_SEED_PERMISSIONS_ON_STARTUP:
+                db = SessionLocal()
+                try:
+                    seed_role_permissions(db)
+                finally:
+                    db.close()
+        except Exception as e:
+            logger.warning("Lifespan startup seeding skipped or failed: %s", e)
         
     yield
 

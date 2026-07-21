@@ -5,12 +5,5 @@
       "source": "/(.*)",
       "destination": "/app.py"
     }
-  ],
-  "functions": {
-    "app.py": {
-      "maxDuration": 60,
-      "includeFiles": "{config/**,data/**}",
-      "excludeFiles": "{tests/**,logs/**,.pytest_cache/**,.hypothesis/**,exports/**,**/*.pyc,**/__pycache__/**}"
-    }
-  }
+  ]
 }
