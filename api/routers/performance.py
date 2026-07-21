@@ -256,9 +256,12 @@ def get_all_records(
     except HTTPException as he:
         raise he
     except Exception as e:
+        import traceback
+        import logging
+        logging.getLogger(__name__).error("Failed to fetch performance records: %s\n%s", e, traceback.format_exc())
         return StandardResponse(
             success=False,
-            message="Failed to fetch performance records."
+            message=f"Failed to fetch performance records: {e}"
         )
 
 

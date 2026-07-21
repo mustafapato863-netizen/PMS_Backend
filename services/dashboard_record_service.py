@@ -47,7 +47,10 @@ class DashboardRecordService:
                 position=position,
                 region=region,
             )
-        except Exception:
+        except Exception as e:
+            import traceback
+            import logging
+            logging.getLogger(__name__).error("Failed to get_dashboard_record_keys: %s\n%s", e, traceback.format_exc())
             keys = []
 
         if keys:
