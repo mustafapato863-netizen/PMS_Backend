@@ -264,6 +264,73 @@ async def delete_upload(
     except Exception as e:
         logger.exception("Failed to delete upload")
         raise HTTPException(status_code=500, detail=f"Failed to delete upload: {e}") from e
+
+from pydantic import BaseModel
+
+class BatchDeleteRequest(BaseModel):
+    upload_ids: list[str]
+
+@router.post("/batch-delete", response_model=StandardResponse)
+async def batch_delete_uploads(
+    request: BatchDeleteRequest,
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("delete_performance"))
+):
+    try:
+        from models.models import UploadLog, PerformanceRecord as DBPerformanceRecord, KPIValue
+        from uuid import UUID
+        
+        deleted_count = 0
+        perf_deleted_count = 0
+        
+        log_uuids = []
+        for uid in request.upload_ids:
+            try:
+                log_uuids.append(UUID(uid))
+            except Exception:
+                pass
+                
+        if log_uuids:
+            try:
+                log_entries = db.query(UploadLog).filter(UploadLog.id.in_(log_uuids)).all()
+                if log_entries:
+                    log_ids = [log.id for log in log_entries]
+                    perf_recs = db.query(DBPerformanceRecord).filter(DBPerformanceRecord.upload_id.in_(log_ids)).all()
+                    perf_ids = [p.id for p in perf_recs]
+                    if perf_ids:
+                        db.query(KPIValue).filter(KPIValue.record_id.in_(perf_ids)).delete(synchronize_session=False)
+                        db.query(DBPerformanceRecord).filter(DBPerformanceRecord.id.in_(perf_ids)).delete(synchronize_session=False)
+                        perf_deleted_count += len(perf_ids)
+                    
+                    db.query(UploadLog).filter(UploadLog.id.in_(log_ids)).delete(synchronize_session=False)
+                    db.commit()
+                    deleted_count += len(log_ids)
+            except Exception as sql_err:
+                logger.warning("SQL batch upload delete failed: %s", sql_err)
+                db.rollback()
+
+        try:
+            uploads = uploads_repo.get_all()
+            for uid in request.upload_ids:
+                target_upload = next((u for u in uploads if str(u.id) == str(uid)), None)
+                if target_upload:
+                    affected = performance_repo.delete_by_upload_id(uid)
+                    uploads_repo.delete_by_id(uid)
+                    perf_deleted_count += len(affected)
+                    deleted_count += 1
+        except Exception as json_err:
+            logger.warning("JSON batch upload delete failed: %s", json_err)
+            
+        CacheInvalidationService.flush_all()
+        clear_serialization_cache()
+        
+        return StandardResponse(
+            success=True,
+            message=f"Successfully deleted {deleted_count} upload records and {perf_deleted_count} performance records."
+        )
+    except Exception as e:
+        logger.exception("Failed to batch delete uploads")
+        raise HTTPException(status_code=500, detail=f"Failed to batch delete uploads: {e}") from e
     except HTTPException as he:
         raise he
     except Exception as e:

@@ -5,6 +5,7 @@ API endpoints for managing teams (CRUD operations).
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from typing import List
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from models.team_models import (
     TeamResponse,
@@ -369,6 +370,31 @@ async def delete_management_kpi_upload(
         "message": "Management upload batch deleted successfully",
     }
 
+class BatchDeleteManagementRequest(BaseModel):
+    upload_ids: list[str]
+
+@router.post("/management-kpi-config/uploads/batch-delete")
+async def batch_delete_management_kpi_uploads(
+    request: BatchDeleteManagementRequest,
+    db: Session = Depends(get_db),
+    _user=Depends(require_permission("upload_data")),
+):
+    try:
+        results = []
+        svc = ManagementBSCService(db)
+        for batch_id in request.upload_ids:
+            try:
+                results.append(svc.delete_upload_batch(batch_id))
+            except Exception:
+                pass
+        
+        return {
+            "success": True,
+            "data": results,
+            "message": f"Successfully deleted {len(results)} management upload batches",
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to batch delete.") from exc
 
 @router.get("/management-kpi-config/history")
 async def get_management_kpi_config_history(
