@@ -34,6 +34,7 @@
               "target_col": "A.AcceptanceRate",
               "aggregation": {"method": "ratio", "numerator_col": "ApprovedRequests", "denominator_col": "AssignedRequest"},
               "achievement_col": "T.AcceptanceRate%",
+              "score_formula": "baseline_80",
               "cap_achievement": false,
               "perspective": "Internal Process"
             },
@@ -48,6 +49,7 @@
               "target_col": "A.SubmissionWithinMonth%",
               "aggregation": {"method": "ratio", "numerator_col": "SubmittedWithinMonth(Untill3rdofnextmonth)", "denominator_col": "AssignedRequest"},
               "achievement_col": "T.%ofSubmissionWithinDuedate",
+              "score_formula": "baseline_80",
               "cap_achievement": false,
               "perspective": "Internal Process"
             },
@@ -62,6 +64,7 @@
               "target_col": "A.Discharge%Within1Hour",
               "aggregation": {"method": "ratio", "numerator_col": "DischargeWithinHour", "denominator_col": "DischargeRequests"},
               "achievement_col": "T.Discharge%Within1Hour",
+              "score_formula": "baseline_80",
               "cap_achievement": false,
               "perspective": "Customer"
             }
@@ -81,6 +84,7 @@
               "target_col": "A.AcceptanceRate",
               "aggregation": {"method": "ratio", "numerator_col": "ApprovedRequests", "denominator_col": "AssignedRequest"},
               "achievement_col": "T.AcceptanceRate%",
+              "score_formula": "baseline_80",
               "cap_achievement": false,
               "perspective": "Internal Process"
             },
@@ -95,6 +99,7 @@
               "target_col": "A.SubmissionWithinMonth%",
               "aggregation": {"method": "ratio", "numerator_col": "SubmittedWithinMonth(Untill3rdofnextmonth)", "denominator_col": "AssignedRequest"},
               "achievement_col": "T.%ofSubmissionWithinDuedate",
+              "score_formula": "baseline_80",
               "cap_achievement": false,
               "perspective": "Internal Process"
             }
@@ -114,6 +119,7 @@
               "target_col": "A.Discharge%Within1Hour",
               "aggregation": {"method": "ratio", "numerator_col": "DischargeWithinHour", "denominator_col": "DischargeRequests"},
               "achievement_col": "T.Discharge%Within1Hour",
+              "score_formula": "baseline_80",
               "cap_achievement": false,
               "perspective": "Customer"
             }
