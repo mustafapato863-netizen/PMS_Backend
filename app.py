@@ -23,7 +23,7 @@ from contextlib import asynccontextmanager
 
 try:
     from socketio import ASGIApp
-except ImportError:
+except (ImportError, ModuleNotFoundError, Exception):
     ASGIApp = None
 
 # Ensure Backend directory is on the import path
