@@ -128,9 +128,6 @@ class DashboardRecordService:
         """
         sql_repository = self.sql_repository_cls(self.db, PerformanceRecord)
         sql_records = sql_repository.get_dashboard_records()
-        if not sql_records:
-            return self.list_records()
-
         json_records = self.json_repository.get_all()
 
         def identity(employee_id, team, month):
