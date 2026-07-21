@@ -24,13 +24,14 @@ PMS_SEED_PERMISSIONS_ON_STARTUP = os.environ.get(
     "true" if APP_ENV == "development" else "false",
 ).strip().lower() == "true"
 
+# Comma-separated list of allowed origins. Do not use wildcards in production with credentials.
 _cors_origins = os.environ.get(
-    "CORS_ORIGINS",
+    "CORS_ALLOWED_ORIGINS",
     "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://pms-frontend-iota-dusky.vercel.app",
 )
-CORS_ORIGINS = tuple(origin.strip() for origin in _cors_origins.split(",") if origin.strip())
-if "*" in CORS_ORIGINS:
-    raise ValueError("CORS_ORIGINS must contain explicit origins when credentials are enabled.")
+CORS_ORIGINS = tuple(origin.strip().rstrip('/') for origin in _cors_origins.split(",") if origin.strip())
+if APP_ENV == "production" and "*" in CORS_ORIGINS:
+    raise ValueError("CORS_ALLOWED_ORIGINS must contain explicit origins when credentials are enabled in production.")
 
 MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_BYTES", str(25 * 1024 * 1024)))
 if MAX_UPLOAD_BYTES <= 0:
