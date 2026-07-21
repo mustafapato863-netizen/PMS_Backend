@@ -391,13 +391,11 @@ class DatabaseSeeder:
                 teams_by_name[team.db_name.lower()] = team
 
             position_scoped_teams = {record.team for record in records if record.team != "Marketing"}
+            teams_to_sync = []
             for team_name in position_scoped_teams:
                 try:
                     team_config = load_team_config(team_name)
                 except ConfigurationError:
-                    continue
-                positions = team_config.get("performance_levels", {}).get("Employee", {}).get("positions", {})
-                if not positions:
                     continue
 
                 position_team = teams_by_name.get(str(team_name).lower())
@@ -412,14 +410,13 @@ class DatabaseSeeder:
                         is_active=True,
                     )
                     db.add(position_team)
-                    db.flush()
                 else:
                     position_team.display_name = team_config["team"]
                     position_team.region = team_config["region"]
                     position_team.is_active = True
                 teams_by_name[position_team.name.lower()] = position_team
                 teams_by_name[position_team.db_name.lower()] = position_team
-                self._sync_employee_position_config(db, position_team, team_config)
+                teams_to_sync.append((position_team, team_config))
 
             if any(record.team == "Marketing" for record in records):
                 marketing_team = teams_by_name.get("marketing")
@@ -435,9 +432,16 @@ class DatabaseSeeder:
                         is_active=True,
                     )
                     db.add(marketing_team)
-                    db.flush()
                     teams_by_name["marketing"] = marketing_team
-                self._sync_marketing_config(db, marketing_team)
+                teams_to_sync.append((marketing_team, None))
+
+            db.flush()
+
+            for position_team, team_config in teams_to_sync:
+                if position_team.name == "Marketing":
+                    self._sync_marketing_config(db, position_team)
+                elif team_config:
+                    self._sync_employee_position_config(db, position_team, team_config)
 
             employee_lookup = {}
             seen_employee_ids: set[str] = set()

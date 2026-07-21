@@ -350,6 +350,14 @@ def load_team_config(team_name: str) -> Dict[str, Any]:
     config_path = config_dir / filename
     
     if not config_path.exists():
+        for cfg_file in sorted(config_dir.glob("*.json")):
+            try:
+                with open(cfg_file, 'r') as f:
+                    cfg = json.load(f)
+                if cfg.get("team", "").casefold() == team_name.casefold() or cfg.get("db_name", "").casefold() == team_name.casefold():
+                    return cfg
+            except Exception:
+                continue
         raise ConfigurationError(f"Team configuration not found: {config_path}")
     
     try:
