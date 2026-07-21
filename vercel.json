@@ -9,11 +9,7 @@
   "functions": {
     "app.py": {
       "maxDuration": 60,
-      "includeFiles": [
-        "config/teams/**",
-        "config/*.json",
-        "data/*.json"
-      ],
+      "includeFiles": "{config/**,data/**}",
       "excludeFiles": "{tests/**,logs/**,.pytest_cache/**,.hypothesis/**,exports/**,**/*.pyc,**/__pycache__/**}"
     }
   }
