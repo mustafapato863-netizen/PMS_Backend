@@ -213,9 +213,7 @@ def build_legacy_employee_kpi_values(
                 raw_ach = (target / actual) if actual > 0 else 1.0
             else:
                 raw_ach = (actual / target)
-            achievement = round(raw_ach * (100.0 if raw_ach <= 2.0 else 1.0), 4)
-            if achievement > 2.0:
-                achievement = round(achievement / 100.0, 4)
+            achievement = round(raw_ach, 4)
         result.append({
             "kpi_key": key,
             "label": label,
