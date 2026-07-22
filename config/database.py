@@ -31,13 +31,21 @@ pool_size = int(os.getenv("DATABASE_POOL_SIZE", "20" if is_development else "5")
 max_overflow = int(os.getenv("DATABASE_MAX_OVERFLOW", "10" if is_development else "0"))
 pool_recycle = int(os.getenv("DATABASE_POOL_RECYCLE", "1800"))
 
-engine = create_engine(
-    DATABASE_URL,
-    pool_size=pool_size,
-    max_overflow=max_overflow,
-    pool_pre_ping=True,
-    pool_recycle=pool_recycle
-)
+engine_kwargs = {
+    "pool_pre_ping": True,
+}
+if "sqlite" not in DATABASE_URL.lower():
+    engine_kwargs.update({
+        "pool_size": pool_size,
+        "max_overflow": max_overflow,
+        "pool_recycle": pool_recycle,
+    })
+else:
+    engine_kwargs.update({
+        "connect_args": {"check_same_thread": False}
+    })
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

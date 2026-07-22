@@ -45,6 +45,17 @@ class StoryAccessError(PermissionError): pass
 class StoryConflictError(RuntimeError): pass
 
 
+def _safe_uuid(value: Any) -> uuid.UUID | None:
+    if not value:
+        return None
+    if isinstance(value, uuid.UUID):
+        return value
+    try:
+        return uuid.UUID(str(value))
+    except (ValueError, TypeError):
+        return None
+
+
 def _number(value) -> float | None:
     try: return float(value) if value is not None else None
     except (TypeError, ValueError): return None
@@ -119,7 +130,8 @@ class ReportStoryService:
 
     def list_templates(self, scope: dict) -> list[dict[str, Any]]:
         self.ensure_system_templates()
-        visible = [row for row in self.repo.list_templates(uuid.UUID(str(scope["user_id"]))) if self._template_visible(row, scope)]
+        user_id = _safe_uuid(scope.get("user_id"))
+        visible = [row for row in self.repo.list_templates(user_id) if self._template_visible(row, scope)]
         latest_by_key: dict[str, ReportTemplate] = {}
         for row in visible:
             if row.template_key not in latest_by_key or row.version > latest_by_key[row.template_key].version:
@@ -158,7 +170,7 @@ class ReportStoryService:
             raise StoryAccessError("Only administrators can publish organization templates")
         issues = validate_definition(payload.definition)
         if any(issue["severity"] == "error" for issue in issues): raise StoryValidationError(issues[0]["message"])
-        row = ReportTemplate(name=payload.name, template_key=payload.template_key, report_type=payload.report_type, description=payload.description, owner_user_id=uuid.UUID(str(scope["user_id"])), visibility=payload.visibility, version=1, definition_json=payload.definition.model_dump(mode="json"), theme_key=payload.definition.theme_key, language=payload.definition.language, preferred_format=payload.definition.preferred_format, is_system_template=False)
+        row = ReportTemplate(name=payload.name, template_key=payload.template_key, report_type=payload.report_type, description=payload.description, owner_user_id=_safe_uuid(scope.get("user_id")), visibility=payload.visibility, version=1, definition_json=payload.definition.model_dump(mode="json"), theme_key=payload.definition.theme_key, language=payload.definition.language, preferred_format=payload.definition.preferred_format, is_system_template=False)
         try: self.repo.add_template(row); self.db.commit(); self.db.refresh(row)
         except IntegrityError as exc: self.db.rollback(); raise StoryValidationError("A template with this key already exists") from exc
         return self._serialize_template(row)
@@ -298,7 +310,7 @@ class ReportStoryService:
         else:
             definition = ReportDraftDefinition(slides=[])
         commentary = ManagementCommentary(entries={block.id: "" for slide in definition.slides for block in slide.blocks if block.type == "management_commentary"})
-        draft = ReportDraft(name=payload.name, report_type=payload.report_type, template_id=template.id if template else None, template_version=template.version if template else None, owner_user_id=uuid.UUID(str(scope["user_id"])), status="editing", primary_period_month=payload.primary_period.month, primary_period_year=payload.primary_period.year, comparison_period_month=payload.comparison_period.month if payload.comparison_period else None, comparison_period_year=payload.comparison_period.year if payload.comparison_period else None, scope_json=payload.scope.model_dump(mode="json"), definition_json=definition.model_dump(mode="json"), management_commentary_json=commentary.model_dump(mode="json"), version=1)
+        draft = ReportDraft(name=payload.name, report_type=payload.report_type, template_id=template.id if template else None, template_version=template.version if template else None, owner_user_id=_safe_uuid(scope.get("user_id")), status="editing", primary_period_month=payload.primary_period.month, primary_period_year=payload.primary_period.year, comparison_period_month=payload.comparison_period.month if payload.comparison_period else None, comparison_period_year=payload.comparison_period.year if payload.comparison_period else None, scope_json=payload.scope.model_dump(mode="json"), definition_json=definition.model_dump(mode="json"), management_commentary_json=commentary.model_dump(mode="json"), version=1)
         try: self.repo.add_draft(draft); self.db.flush(); self._regenerate_narratives(draft, scope); self.db.commit(); self.db.refresh(draft)
         except Exception: self.db.rollback(); raise
         return self._serialize_draft(draft)
@@ -320,7 +332,8 @@ class ReportStoryService:
     def get_draft(self, draft_id: str, scope: dict) -> dict[str, Any]: return self._serialize_draft(self._get_draft(draft_id, scope))
 
     def list_drafts(self, scope: dict) -> list[dict[str, Any]]:
-        rows = self.repo.list_drafts(uuid.UUID(str(scope["user_id"])))
+        user_id = _safe_uuid(scope.get("user_id"))
+        rows = self.repo.list_drafts(user_id) if user_id else []
         return [self._serialize_draft(row) for row in rows]
 
     def archive_draft(self, draft_id: str, scope: dict) -> dict[str, str]:
@@ -814,7 +827,7 @@ class ReportStoryService:
         snapshot = {"definition": definition.model_dump(mode="json"), "commentary": draft.management_commentary_json, "slide_data": slide_data, "metadata": metadata}; snapshot_bytes = json.dumps(snapshot, sort_keys=True, separators=(",", ":")).encode()
         file_data = build_presentation_pdf(report_name=draft.name, definition=snapshot["definition"], slide_data=slide_data, commentary=draft.management_commentary_json, metadata=metadata)
         integrity = pdf_integrity_identifier(file_data, snapshot_bytes); safe_name = re.sub(r"[^A-Za-z0-9_-]+", "_", draft.name).strip("_") or "PMS_Report"
-        generated = GeneratedReport(name=draft.name, report_type=draft.report_type, scope_summary=metadata["scope"], period_label=metadata["primary_period"], created_by_user_id=uuid.UUID(str(scope["user_id"])), created_by_name=metadata["generated_by"], output_format="pdf", status="ready", file_name=f"{safe_name}.pdf", content_type="application/pdf", file_data=file_data, configuration={"draft_id": str(draft.id)}, record_count=len(self._context(draft, scope)["current"]), warning=" ".join(issue.message for issue in validation.issues if issue.severity == "warning") or None, draft_id=draft.id, template_id=draft.template_id, template_version=draft.template_version, primary_period_month=draft.primary_period_month, primary_period_year=draft.primary_period_year, comparison_period_month=draft.comparison_period_month, comparison_period_year=draft.comparison_period_year, scope_json=deepcopy(draft.scope_json), final_definition_json=deepcopy(snapshot["definition"]), narrative_snapshot_json={"system_analysis": deepcopy(snapshot["definition"].get("narratives", {})), "management_commentary": deepcopy(draft.management_commentary_json)}, data_snapshot_json=deepcopy(slide_data), validation_json=validation.model_dump(mode="json"), integrity_identifier=integrity, generated_at=datetime.now(timezone.utc))
+        generated = GeneratedReport(name=draft.name, report_type=draft.report_type, scope_summary=metadata["scope"], period_label=metadata["primary_period"], created_by_user_id=_safe_uuid(scope.get("user_id")), created_by_name=metadata["generated_by"], output_format="pdf", status="ready", file_name=f"{safe_name}.pdf", content_type="application/pdf", file_data=file_data, configuration={"draft_id": str(draft.id)}, record_count=len(self._context(draft, scope)["current"]), warning=" ".join(issue.message for issue in validation.issues if issue.severity == "warning") or None, draft_id=draft.id, template_id=draft.template_id, template_version=draft.template_version, primary_period_month=draft.primary_period_month, primary_period_year=draft.primary_period_year, comparison_period_month=draft.comparison_period_month, comparison_period_year=draft.comparison_period_year, scope_json=deepcopy(draft.scope_json), final_definition_json=deepcopy(snapshot["definition"]), narrative_snapshot_json={"system_analysis": deepcopy(snapshot["definition"].get("narratives", {})), "management_commentary": deepcopy(draft.management_commentary_json)}, data_snapshot_json=deepcopy(slide_data), validation_json=validation.model_dump(mode="json"), integrity_identifier=integrity, generated_at=datetime.now(timezone.utc))
         try: self.repo.add_generated(generated); draft.status = "generated"; self.db.commit(); self.db.refresh(generated)
         except Exception: self.db.rollback(); raise
         return {"id": str(generated.id), "name": generated.name, "status": generated.status, "format": "pdf", "file_name": generated.file_name, "integrity_identifier": integrity, "download_url": f"/api/reports/{generated.id}/download"}
@@ -828,7 +841,7 @@ class ReportStoryService:
         definition = ReportDraftDefinition.model_validate(generated.final_definition_json)
         definition.narratives = {}
         commentary = ManagementCommentary(entries={block.id: "" for slide in definition.slides for block in slide.blocks if block.type == "management_commentary"})
-        draft = ReportDraft(name=generated.name, report_type=generated.report_type, template_id=generated.template_id, template_version=generated.template_version, owner_user_id=uuid.UUID(str(scope["user_id"])), status="editing", primary_period_month=primary.month, primary_period_year=primary.year, comparison_period_month=comparison.month if comparison else None, comparison_period_year=comparison.year if comparison else None, scope_json=deepcopy(generated.scope_json), definition_json=definition.model_dump(mode="json"), management_commentary_json=commentary.model_dump(mode="json"), version=1)
+        draft = ReportDraft(name=generated.name, report_type=generated.report_type, template_id=generated.template_id, template_version=generated.template_version, owner_user_id=_safe_uuid(scope.get("user_id")), status="editing", primary_period_month=primary.month, primary_period_year=primary.year, comparison_period_month=comparison.month if comparison else None, comparison_period_year=comparison.year if comparison else None, scope_json=deepcopy(generated.scope_json), definition_json=definition.model_dump(mode="json"), management_commentary_json=commentary.model_dump(mode="json"), version=1)
         try: self.repo.add_draft(draft); self.db.flush(); self._regenerate_narratives(draft, scope); self.db.commit(); self.db.refresh(draft)
         except Exception: self.db.rollback(); raise
         return self._serialize_draft(draft)

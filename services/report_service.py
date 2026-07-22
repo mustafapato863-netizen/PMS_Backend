@@ -29,6 +29,17 @@ from utils.report_scope import (
 from utils.team_identity import logical_team_name
 
 
+def _safe_uuid(value: Any) -> uuid.UUID | None:
+    if not value:
+        return None
+    if isinstance(value, uuid.UUID):
+        return value
+    try:
+        return uuid.UUID(str(value))
+    except (ValueError, TypeError):
+        return None
+
+
 class ReportValidationError(ValueError):
     pass
 
@@ -438,7 +449,7 @@ class ReportService:
 
         safe_name = re.sub(r"[^A-Za-z0-9_-]+", "_", configuration.report_name).strip("_") or "PMS_Report"
         user = scope.get("user")
-        user_id = getattr(user, "id", None) or uuid.UUID(str(scope["user_id"]))
+        user_id = getattr(user, "id", None) or _safe_uuid(scope.get("user_id"))
         report = GeneratedReport(
             name=configuration.report_name,
             report_type=configuration.report_type,
@@ -487,7 +498,7 @@ class ReportService:
         }
 
     def list_generated(self, scope: dict, *, mine: bool, page: int, page_size: int) -> dict[str, Any]:
-        user_id = uuid.UUID(str(scope["user_id"]))
+        user_id = _safe_uuid(scope.get("user_id"))
         owner = user_id if mine or scope.get("role") != "Admin" else None
         rows, total = self.reports.list_generated(
             owner_user_id=owner,
@@ -516,7 +527,7 @@ class ReportService:
             configuration=configuration.model_dump(mode="json"),
             included_sections=configuration.included_sections,
             preferred_format=configuration.output_format,
-            owner_user_id=uuid.UUID(str(scope["user_id"])),
+            owner_user_id=_safe_uuid(scope.get("user_id")),
             visibility="private",
         )
         try:
@@ -532,7 +543,8 @@ class ReportService:
         return template
 
     def list_saved_templates(self, scope: dict) -> list[dict[str, Any]]:
-        rows = self.reports.list_saved_templates(uuid.UUID(str(scope["user_id"])))
+        user_id = _safe_uuid(scope.get("user_id"))
+        rows = self.reports.list_saved_templates(user_id) if user_id else []
         return [
             {
                 "id": str(row.id),
