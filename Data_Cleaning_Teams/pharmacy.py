@@ -145,9 +145,10 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
         target_found = None
         
         for col in df.columns:
-            if col.lower() == actual_col.lower():
+            c_clean = col.lower().replace(" ", "").replace("_", "").replace(".", "")
+            if c_clean == actual_col.lower().replace(" ", "").replace("_", "").replace(".", ""):
                 actual_found = col
-            if col.lower() == target_col.lower():
+            if c_clean == target_col.lower().replace(" ", "").replace("_", "").replace(".", ""):
                 target_found = col
         
         if kpi_key == 'Prescription':
@@ -169,6 +170,37 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
             achievements = actuals.to_numpy()
             df['T.NoofPrescriptionsContribution'] = 1.0
             df['NoofPrescriptionAch%'] = actuals / 100.0
+        elif kpi_key == 'WaitingTime':
+            actuals = df[actual_found].apply(lambda x: float(x) if not pd.isna(x) else 0.0) if actual_found else pd.Series([0.0] * len(df))
+            
+            def clean_waiting_target(val):
+                if pd.isna(val):
+                    return 15.0
+                try:
+                    v = float(val)
+                except (ValueError, TypeError):
+                    return 15.0
+                if 0 < v < 1.0:
+                    v = round(v * 1440.0, 1)
+                elif v > 120.0:
+                    v = 15.0
+                if v <= 0:
+                    return 15.0
+                return v
+
+            targets = df[target_found].apply(clean_waiting_target) if target_found else pd.Series([15.0] * len(df))
+            df['T.TotalAvgWaitingTime'] = targets
+            df['T.TotalWaitingTime'] = targets
+            
+            achievements = np.array([
+                calculate_achievement(
+                    actuals.iloc[i],
+                    targets.iloc[i],
+                    is_inverse=kpi_def['is_inverse'],
+                    cap_at_100=kpi_def['cap']
+                )
+                for i in range(len(df))
+            ])
         elif actual_found and target_found:
             # Parse actual and target values
             actuals = df[actual_found].apply(lambda x: parse_percentage(x) if 'Leakage' in actual_col or 'Compliance' in actual_col else float(x) if not pd.isna(x) else 0.0)

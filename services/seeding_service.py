@@ -272,6 +272,8 @@ class DatabaseSeeder:
         levels = []
         for position, (_, row) in enumerate(df.iterrows(), start=2):
             raw_role = row.get("Role")
+            if pd.isna(raw_role) or str(raw_role).strip().lower() in ("nan", "none", ""):
+                raw_role = "Employee"
             employee_id = str(row.get(id_col, "")).strip() or "unknown"
             try:
                 levels.append(normalize_performance_level(raw_role))
@@ -650,18 +652,44 @@ class DatabaseSeeder:
                             contribution=safe_decimal(value.get("contribution")),
                         ))
                 elif team_config and team_config.get("kpis"):
+                    def _get_raw_val(data_dict: dict, col_name: str | None):
+                        if not data_dict or not col_name:
+                            return None
+                        if col_name in data_dict:
+                            return data_dict[col_name]
+                        clean_target = str(col_name).lower().replace(" ", "").replace("_", "").replace(".", "")
+                        for k, v in data_dict.items():
+                            if str(k).lower().replace(" ", "").replace("_", "").replace(".", "") == clean_target:
+                                return v
+                        return None
+
                     for idx, kpi in enumerate(team_config["kpis"], start=1):
                         actual_col = kpi.get("actual_col")
                         target_col = kpi.get("target_col")
                         achievement_col = kpi.get("achievement_col")
-                        actual_val = raw_data.get(actual_col)
-                        target_val = raw_data.get(target_col)
+                        actual_val = _get_raw_val(raw_data, actual_col)
+                        target_val = _get_raw_val(raw_data, target_col)
                         if actual_val is None and achievement_col:
-                            actual_val = raw_data.get(achievement_col)
+                            actual_val = _get_raw_val(raw_data, achievement_col)
                         if actual_val is None:
                             actual_val = 0.0
-                        if target_val is None or (kpi.get("key") == "Prescription" and float(target_val or 0) == 0.0):
-                            target_val = 1.0 if kpi.get("key") == "Prescription" else 0.0
+
+                        kpi_key = str(kpi.get("key", ""))
+                        if kpi_key == "Prescription" and float(target_val or 0) == 0.0:
+                            target_val = 1.0
+                        elif kpi_key == "WaitingTime":
+                            try:
+                                tv = float(target_val) if target_val is not None else 0.0
+                                if 0 < tv < 1.0:
+                                    target_val = round(tv * 1440.0, 1)
+                                elif tv <= 0 or tv > 120.0:
+                                    target_val = 15.0
+                                else:
+                                    target_val = tv
+                            except (ValueError, TypeError):
+                                target_val = 15.0
+                        elif target_val is None:
+                            target_val = 0.0
 
                         achievement_ratio = calculate_achievement(
                             actual_val,
