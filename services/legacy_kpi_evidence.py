@@ -198,7 +198,11 @@ def build_legacy_employee_kpi_values(
         achievement = max(supplied_achievement if supplied_achievement is not None else (row_achievement or 0.0), 0.0)
         weight = _weight(weights, key)
         definition = definitions.get(key, {})
-        target = _target(actual, achievement, direction, fallback_target)
+        explicit_target = _first(row, f"T.{key}%", f"T.{key} %", f"T.{key}", f"Target_{key}")
+        if explicit_target is not None and explicit_target > 0:
+            target = explicit_target
+        else:
+            target = _target(actual, achievement, direction, fallback_target)
         result.append({
             "kpi_key": key,
             "label": label,
