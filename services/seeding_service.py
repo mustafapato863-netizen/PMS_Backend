@@ -41,7 +41,7 @@ from models.models import (
     UploadLog,
     EmployeeUploadBatch,
 )
-from data_cleaning.standard_mappings import calculate_achievement
+from data_cleaning.standard_mappings import calculate_achievement, calculate_grade
 from utils.performance_levels import normalize_performance_level
 from services.marketing_import_service import MarketingImportResult, MarketingImportService
 
@@ -708,6 +708,28 @@ class DatabaseSeeder:
                             weight_applied=safe_decimal(kpi.get("weight", 0.0)),
                             contribution=safe_decimal(min(float(achievement_ratio), 100.0) * float(kpi.get("weight", 0.0))),
                         ))
+
+            # Recalculate PerformanceRecord scores strictly as the sum of capped KPI contributions
+            if kpis_to_insert:
+                rec_map = {r.id: r for r in existing_perf_map.values()}
+                kpi_by_rec = {}
+                for kv in kpis_to_insert:
+                    kpi_by_rec.setdefault(kv.record_id, []).append(kv)
+                
+                for rec_id, kv_list in kpi_by_rec.items():
+                    rec = rec_map.get(rec_id)
+                    if rec:
+                        capped_sum = sum(float(kv.contribution or 0) for kv in kv_list)
+                        if capped_sum <= 1.0 and sum(float(kv.weight_applied or 0) for kv in kv_list) <= 1.0 and capped_sum > 0:
+                            capped_sum = capped_sum * 100.0
+                        final_score = min(round(capped_sum, 2), 100.0)
+                        thresholds = team_config.get("grade_thresholds") if team_config else None
+                        final_grade = calculate_grade(final_score, thresholds)
+                        rec.score = safe_decimal(final_score)
+                        rec.grade = final_grade
+                        if isinstance(rec.record_payload, dict) and "evaluation" in rec.record_payload:
+                            rec.record_payload["evaluation"]["score"] = float(final_score)
+                            rec.record_payload["evaluation"]["grade"] = final_grade
 
             # Batch delete old KPIValues in 1 SQL query
             if records_to_clean_kpis:
