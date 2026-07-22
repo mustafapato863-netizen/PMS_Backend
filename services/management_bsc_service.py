@@ -549,10 +549,13 @@ class ManagementBSCService:
             for row in existing:
                 self.db.delete(row)
 
+        new_configs = []
         for row in config_rows:
             payload = dict(row)
             payload.pop("scope_type", None)
-            self.db.add(ManagementKPIConfig(team_id=team_id, updated_by=updated_by, upload_batch_id=upload_batch_id, **payload))
+            new_configs.append(ManagementKPIConfig(team_id=team_id, updated_by=updated_by, upload_batch_id=upload_batch_id, **payload))
+        if new_configs:
+            self.db.add_all(new_configs)
 
         self.db.add(
             ManagementKPIConfigHistory(
@@ -587,9 +590,17 @@ class ManagementBSCService:
             )
             .delete(synchronize_session=False)
         )
-        for row in snapshot_rows:
-            row = {key: value for key, value in row.items() if key != "display_order"}
-            self.db.add(ManagementKPISnapshot(team_id=team_id, updated_by=updated_by, upload_batch_id=upload_batch_id, **row))
+        new_snapshots = [
+            ManagementKPISnapshot(
+                team_id=team_id,
+                updated_by=updated_by,
+                upload_batch_id=upload_batch_id,
+                **{key: value for key, value in row.items() if key != "display_order"}
+            )
+            for row in snapshot_rows
+        ]
+        if new_snapshots:
+            self.db.add_all(new_snapshots)
 
     def _group_configs(self, configs: list[ManagementKPIConfig]) -> dict[tuple[int, int], dict[str, dict[str, list[ManagementKPIConfig]]]]:
         lookup: dict[tuple[int, int], dict[str, dict[str, list[ManagementKPIConfig]]]] = {}
