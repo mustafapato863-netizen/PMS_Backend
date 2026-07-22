@@ -200,9 +200,17 @@ def build_legacy_employee_kpi_values(
         definition = definitions.get(key, {})
         explicit_target = _first(row, f"T.{key}%", f"T.{key} %", f"T.{key}", f"Target_{key}")
         if explicit_target is not None and explicit_target > 0:
-            target = explicit_target
+            if key in ("AHT", "WaitingTime") and 0 < explicit_target < 1.0:
+                target = round(explicit_target * 1440.0, 4)
+            else:
+                target = explicit_target
         else:
             target = _target(actual, achievement, direction, fallback_target)
+
+        # Recalculate achievement ratio for time-based metrics when target and actual are in minutes
+        if key in ("AHT", "WaitingTime") and target > 0 and actual > 0:
+            raw_ach = (target / actual) if direction == "lower_better" else (actual / target)
+            achievement = round(raw_ach * (100.0 if raw_ach <= 2.0 else 1.0), 2)
         result.append({
             "kpi_key": key,
             "label": label,

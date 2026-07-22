@@ -677,6 +677,17 @@ class DatabaseSeeder:
                         kpi_key = str(kpi.get("key", ""))
                         if kpi_key == "Prescription" and float(target_val or 0) == 0.0:
                             target_val = 1.0
+                        elif kpi_key == "AHT":
+                            try:
+                                tv = float(target_val) if target_val is not None else 0.0
+                                if 0 < tv < 1.0:
+                                    target_val = round(tv * 1440.0, 4)
+                                elif tv <= 0 or tv > 120.0:
+                                    target_val = 2.5
+                                else:
+                                    target_val = tv
+                            except (ValueError, TypeError):
+                                target_val = 2.5
                         elif kpi_key == "WaitingTime":
                             try:
                                 tv = float(target_val) if target_val is not None else 0.0
