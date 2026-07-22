@@ -522,6 +522,10 @@ class DatabaseSeeder:
             # performance rows can reference them without one remote flush per
             # Team/Month (a major latency source on hosted PostgreSQL).
             if upload_batch_uuid:
+                team_ids = list({t.id for t in teams_by_name.values()})
+                existing_logs_list = db.query(UploadLog).filter(UploadLog.team_id.in_(team_ids)).all() if team_ids else []
+                existing_logs_map = {(ul.team_id, ul.month, ul.year): ul for ul in existing_logs_list}
+
                 for record in records:
                     team = teams_by_name.get(str(record.team).lower())
                     if not team:
@@ -529,17 +533,27 @@ class DatabaseSeeder:
                     year = record.year or datetime.datetime.now().year
                     log_key = (upload_batch_uuid, team.id, record.month, year)
                     if log_key not in upload_log_map:
-                        upload_log_map[log_key] = UploadLog(
-                            id=uuid.uuid4(),
-                            batch_id=upload_batch_uuid,
-                            team_id=team.id,
-                            month=record.month,
-                            year=year,
-                            record_count=0,
-                            status="success",
-                        )
+                        domain_key = (team.id, record.month, year)
+                        existing_log = existing_logs_map.get(domain_key)
+                        if existing_log:
+                            existing_log.batch_id = upload_batch_uuid
+                            existing_log.record_count = 0
+                            existing_log.status = "success"
+                            upload_log_map[log_key] = existing_log
+                        else:
+                            new_log = UploadLog(
+                                id=uuid.uuid4(),
+                                batch_id=upload_batch_uuid,
+                                team_id=team.id,
+                                month=record.month,
+                                year=year,
+                                record_count=0,
+                                status="success",
+                            )
+                            upload_log_map[log_key] = new_log
+                            db.add(new_log)
+
             if upload_log_map:
-                db.add_all(upload_log_map.values())
                 # One ordered batch flush satisfies PerformanceRecord.upload_id
                 # foreign keys without reintroducing per-period round trips.
                 db.flush()
