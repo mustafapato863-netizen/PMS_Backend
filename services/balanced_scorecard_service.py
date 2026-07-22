@@ -86,8 +86,12 @@ class BalancedScorecardService:
             targets = [float(_value(value, "target_value")) for value in values if _value(value, "target_value") is not None]
             applied_weights = [float(_value(value, "weight_applied")) for value in values if _value(value, "weight_applied") is not None]
             weight = mean(applied_weights) if applied_weights else configured_weight
-            contribution = mean(contributions) if contributions else None
-            score = contribution / weight * 100 if contribution is not None and weight else None
+            raw_contribution = mean(contributions) if contributions else None
+
+            # BSC Capping Rule: a KPI contribution cannot exceed its allocated weight (capped at 100% max achievement)
+            contribution = min(raw_contribution, weight) if raw_contribution is not None else None
+
+            score = raw_contribution / weight * 100 if raw_contribution is not None and weight else None
             state = "measured" if contribution is not None else "no_data"
             kpi_rows.append({
                 "kpi_key": definition["key"],
@@ -127,7 +131,7 @@ class BalancedScorecardService:
                 "measured_weight": measured_weight,
                 "coverage": measured_weight / configured_weight if configured_weight else None,
                 "weighted_contribution": contribution if measured else None,
-                "score": score,
+                "score": min(score, 100.0) if score is not None else None,
                 "state": state,
                 "status": _status(score, thresholds, state),
                 "kpi_count": len(rows),
@@ -145,7 +149,7 @@ class BalancedScorecardService:
         state = "measured" if measured and len(measured) == len(kpi_rows) else "partial_data" if measured else "no_data"
         return {
             "scorecard": {
-                "score": score,
+                "score": min(score, 100.0) if score is not None else None,
                 "target_score": 100.0,
                 "status": _status(score, thresholds, state),
                 "state": state,
