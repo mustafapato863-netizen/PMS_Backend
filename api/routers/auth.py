@@ -63,7 +63,7 @@ async def login(payload: LoginPayload, db: Session = Depends(get_db)):
         logger.error(f"Login error: {e}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An error occurred during authentication."
+            detail=f"Login error: {str(e)}"
         )
 
 
