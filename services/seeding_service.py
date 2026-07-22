@@ -660,8 +660,8 @@ class DatabaseSeeder:
                             actual_val = raw_data.get(achievement_col)
                         if actual_val is None:
                             actual_val = 0.0
-                        if target_val is None:
-                            target_val = 0.0
+                        if target_val is None or (kpi.get("key") == "Prescription" and float(target_val or 0) == 0.0):
+                            target_val = 1.0 if kpi.get("key") == "Prescription" else 0.0
 
                         achievement_ratio = calculate_achievement(
                             actual_val,

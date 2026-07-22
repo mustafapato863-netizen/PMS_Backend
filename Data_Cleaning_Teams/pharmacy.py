@@ -117,7 +117,7 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
             'cap': False,
         },
         'Prescription': {
-            'actual_col': 'A.NoofPrescriptionsContribution',
+            'actual_col': 'NoofPrescriptionAch%',
             'target_col': 'T.NoofPrescriptionsContribution',
             'is_inverse': False,
             'weight': 0.20,
@@ -151,26 +151,24 @@ def process_pharmacy(file_path: str, team_config: Dict[str, Any] = None) -> pd.D
                 target_found = col
         
         if kpi_key == 'Prescription':
-            dispensed_col = None
-            prescribed_col = None
+            presc_ach_col = None
             for col in df.columns:
                 c_clean = col.lower().replace(" ", "").replace("_", "").replace(".", "")
-                if "dispenseditems" in c_clean or "totaldispensed" in c_clean or "dispensed" in c_clean:
-                    dispensed_col = col
-                if "prescribeditems" in c_clean or "totalprescribed" in c_clean or "prescriped" in c_clean or "prescribed" in c_clean:
-                    prescribed_col = col
+                if "noofprescriptionach" in c_clean or "prescriptionach" in c_clean:
+                    presc_ach_col = col
+                    break
             
-            if dispensed_col and prescribed_col:
-                dispensed = df[dispensed_col].apply(lambda x: float(x) if not pd.isna(x) else 0.0)
-                prescribed = df[prescribed_col].apply(lambda x: float(x) if not pd.isna(x) else 0.0)
-                achievements = np.where(prescribed > 0, (dispensed / prescribed) * 100.0, 0.0)
-            elif actual_found and target_found:
+            if presc_ach_col:
+                actuals = df[presc_ach_col].apply(lambda x: parse_percentage(x) if not pd.isna(x) else 0.0)
+            elif actual_found:
                 actuals = df[actual_found].apply(lambda x: parse_percentage(x) if not pd.isna(x) else 0.0)
-                targets = df[target_found].apply(lambda x: parse_percentage(x) if not pd.isna(x) else 100.0)
-                targets = targets.apply(lambda x: 100.0 if x == 0 or pd.isna(x) else x)
-                achievements = np.where(targets > 0, (actuals / targets) * 100.0, actuals.to_numpy())
             else:
-                achievements = np.zeros(len(df))
+                actuals = pd.Series([0.0] * len(df))
+
+            targets = pd.Series([100.0] * len(df))
+            achievements = actuals.to_numpy()
+            df['T.NoofPrescriptionsContribution'] = 1.0
+            df['NoofPrescriptionAch%'] = actuals / 100.0
         elif actual_found and target_found:
             # Parse actual and target values
             actuals = df[actual_found].apply(lambda x: parse_percentage(x) if 'Leakage' in actual_col or 'Compliance' in actual_col else float(x) if not pd.isna(x) else 0.0)
