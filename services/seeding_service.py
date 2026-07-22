@@ -354,19 +354,14 @@ class DatabaseSeeder:
     @staticmethod
     def _sync_employee_position_config(db, team: Team, config: dict) -> None:
         """Synchronize position-scoped employee configuration for an uploaded team."""
-        expected_keys: set[tuple[str, str]] = set()
+        # Clear existing configs for this team level first so PostgreSQL trigger check_kpi_weights_sum does not exceed 1.0 during inserts
+        db.query(TeamKPIConfig).filter(
+            TeamKPIConfig.team_id == team.id,
+            TeamKPIConfig.performance_level == "Employee",
+        ).delete(synchronize_session=False)
+        db.flush()
+
         for position_name, display_order, kpi in iter_employee_kpi_configs(config):
-            expected_keys.add((position_name, kpi["key"]))
-            existing = (
-                db.query(TeamKPIConfig)
-                .filter(
-                    TeamKPIConfig.team_id == team.id,
-                    TeamKPIConfig.performance_level == "Employee",
-                    TeamKPIConfig.position_name == position_name,
-                    TeamKPIConfig.kpi_key == kpi["key"],
-                )
-                .first()
-            )
             values = {
                 "kpi_label": kpi["label"],
                 "perspective": kpi.get("perspective"),
@@ -380,30 +375,14 @@ class DatabaseSeeder:
                 "volume_unit": kpi.get("volume_unit"),
                 "display_order": display_order,
             }
-            if existing:
-                for key, value in values.items():
-                    setattr(existing, key, value)
-            else:
-                db.add(TeamKPIConfig(
-                    id=uuid.uuid4(),
-                    team_id=team.id,
-                    performance_level="Employee",
-                    position_name=position_name,
-                    kpi_key=kpi["key"],
-                    **values,
-                ))
-
-        stale_rows = (
-            db.query(TeamKPIConfig)
-            .filter(
-                TeamKPIConfig.team_id == team.id,
-                TeamKPIConfig.performance_level == "Employee",
-            )
-            .all()
-        )
-        for row in stale_rows:
-            if (row.position_name or "", row.kpi_key) not in expected_keys:
-                db.delete(row)
+            db.add(TeamKPIConfig(
+                id=uuid.uuid4(),
+                team_id=team.id,
+                performance_level="Employee",
+                position_name=position_name,
+                kpi_key=kpi["key"],
+                **values,
+            ))
 
     def _sync_to_database(
         self,

@@ -4,14 +4,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 # Load the shared DevOps environment file from the repository root.
+# Local overrides take precedence over default environment settings.
 backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 project_root = os.path.abspath(os.path.join(backend_dir, ".."))
-env_path = os.path.join(project_root, "DevOps", ".env")
 local_env_path = os.path.join(project_root, "DevOps", ".env.local")
+backend_env_local = os.path.join(backend_dir, ".env.local")
+env_path = os.path.join(project_root, "DevOps", ".env")
 
-# Local overrides are useful for a Supabase staging URL. Existing process
-# environment variables still take precedence because dotenv does not override.
-load_dotenv(dotenv_path=local_env_path)
+if os.path.exists(backend_env_local):
+    load_dotenv(dotenv_path=backend_env_local, override=True)
+if os.path.exists(local_env_path):
+    load_dotenv(dotenv_path=local_env_path, override=True)
 load_dotenv(dotenv_path=env_path)
 
 # In production, this dynamically fetches the DATABASE_URL key from your secure .env file

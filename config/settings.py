@@ -6,8 +6,12 @@ DATA_DIR = os.environ.get("PMS_DATA_DIR", os.path.join(BASE_DIR, "data"))
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
 ENV_PATH = os.path.join(PROJECT_ROOT, "DevOps", ".env")
 LOCAL_ENV_PATH = os.path.join(PROJECT_ROOT, "DevOps", ".env.local")
+BACKEND_ENV_LOCAL = os.path.join(BASE_DIR, ".env.local")
 
-load_dotenv(dotenv_path=LOCAL_ENV_PATH)
+if os.path.exists(BACKEND_ENV_LOCAL):
+    load_dotenv(dotenv_path=BACKEND_ENV_LOCAL, override=True)
+if os.path.exists(LOCAL_ENV_PATH):
+    load_dotenv(dotenv_path=LOCAL_ENV_PATH, override=True)
 load_dotenv(dotenv_path=ENV_PATH)
 
 os.makedirs(DATA_DIR, exist_ok=True)
