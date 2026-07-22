@@ -207,10 +207,15 @@ def build_legacy_employee_kpi_values(
         else:
             target = _target(actual, achievement, direction, fallback_target)
 
-        # Recalculate achievement ratio for time-based metrics when target and actual are in minutes
-        if key in ("AHT", "WaitingTime") and target > 0 and actual > 0:
-            raw_ach = (target / actual) if direction == "lower_better" else (actual / target)
-            achievement = round(raw_ach * (100.0 if raw_ach <= 2.0 else 1.0), 2)
+        # Recalculate achievement ratio dynamically from actual and target for 100% precision
+        if target > 0 and actual >= 0:
+            if direction == "lower_better":
+                raw_ach = (target / actual) if actual > 0 else 1.0
+            else:
+                raw_ach = (actual / target)
+            achievement = round(raw_ach * (100.0 if raw_ach <= 2.0 else 1.0), 4)
+            if achievement > 2.0:
+                achievement = round(achievement / 100.0, 4)
         result.append({
             "kpi_key": key,
             "label": label,
