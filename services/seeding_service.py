@@ -731,6 +731,13 @@ class DatabaseSeeder:
                             rec.record_payload["evaluation"]["score"] = float(final_score)
                             rec.record_payload["evaluation"]["grade"] = final_grade
 
+            # Deduplicate kpis_to_insert by (record_id, kpi_key) to prevent uq_kpi_value_record_key constraint violation
+            if kpis_to_insert:
+                deduped_map = {}
+                for kv in kpis_to_insert:
+                    deduped_map[(kv.record_id, kv.kpi_key)] = kv
+                kpis_to_insert = list(deduped_map.values())
+
             # Batch delete old KPIValues in 1 SQL query
             if records_to_clean_kpis:
                 db.query(KPIValue).filter(KPIValue.record_id.in_(records_to_clean_kpis)).delete(synchronize_session=False)
