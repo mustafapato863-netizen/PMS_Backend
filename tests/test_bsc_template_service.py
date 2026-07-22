@@ -92,3 +92,46 @@ def test_parse_upload_accepts_excel_date_period():
     assert rows[0]["month"] == "May"
     assert rows[0]["year"] == 2025
     assert rows[0]["team"] == "Sales"
+
+
+def test_parse_upload_accepts_view_weight():
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "KPI's Data"
+    sheet.append([
+        "Employee ID", "Team", "Employee Name", "Position", "Performance Level", "Period",
+        "Perspective", "KPI", "Direction", "Weight", "Target Value", "Target Unit", "Actual Value",
+    ])
+    sheet.append([
+        "EMP-1", "Management", "Dina", "General Manager", "Corporate", datetime(2025, 5, 1),
+        "Financial", "View Metric", "Higher", "View", 100, "%", 95,
+    ])
+    payload = BytesIO()
+    workbook.save(payload)
+
+    rows = BSCTemplateService().parse_upload(payload.getvalue())
+
+    assert len(rows) == 1
+    assert rows[0]["weight"] == 0.0001
+    assert rows[0]["kpi_label"] == "View Metric"
+
+
+def test_parse_upload_rejects_invalid_or_zero_weight():
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "KPI's Data"
+    sheet.append([
+        "Employee ID", "Team", "Employee Name", "Position", "Performance Level", "Period",
+        "Perspective", "KPI", "Direction", "Weight", "Target Value", "Target Unit", "Actual Value",
+    ])
+    sheet.append([
+        "EMP-1", "Management", "Dina", "General Manager", "Corporate", datetime(2025, 5, 1),
+        "Financial", "Zero Weight Metric", "Higher", 0, 100, "%", 95,
+    ])
+    payload = BytesIO()
+    workbook.save(payload)
+
+    import pytest
+    with pytest.raises(ValueError, match="invalid Weight '0'"):
+        BSCTemplateService().parse_upload(payload.getvalue())
+

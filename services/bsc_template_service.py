@@ -58,11 +58,20 @@ def _coerce_number(value: Any) -> float | None:
         return None
 
 
-def _weight_to_fraction(value: Any) -> float:
+def _parse_weight(value: Any) -> tuple[float, bool]:
+    text = str(value or "").strip()
+    if text.lower() == "view":
+        return 0.0001, True
     raw = _coerce_number(value)
-    if raw is None:
-        return 0.0
-    return raw / 100.0 if raw > 1 else raw
+    if raw is not None and raw > 0:
+        fraction = raw / 100.0 if raw > 1 else raw
+        return fraction, True
+    return 0.0, False
+
+
+def _weight_to_fraction(value: Any) -> float:
+    fraction, _ = _parse_weight(value)
+    return fraction
 
 
 def _slug(value: str) -> str:
@@ -363,8 +372,9 @@ class BSCTemplateService:
             if not parsed["month"] or not parsed["year"]:
                 issues.append(f"Row {index} has invalid Period '{item.get('Period')}'")
                 continue
-            if parsed["weight"] <= 0:
-                issues.append(f"Row {index} has invalid Weight '{item.get('Weight')}'")
+            _, is_valid_weight = _parse_weight(item.get("Weight"))
+            if not is_valid_weight:
+                issues.append(f"Row {index} has invalid Weight '{item.get('Weight')}'. Weight must be 'View' or a positive number > 0.")
                 continue
             parsed_rows.append(parsed)
         if issues:
