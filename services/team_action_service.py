@@ -16,8 +16,29 @@ class TeamActionService:
         self.db = db
         self.actions = ActionRepository(db)
 
+    # Frontend slug → display_name alias map (mirrors types.ts TEAM_NAME_MAP)
+    _SLUG_ALIASES: dict[str, str] = {
+        "inbound": "Inbound",
+        "outbound": "Outbound",
+        "inbound-uae": "Inbound UAE",
+        "pre-approvals": "Pre-Approvals IP Offshore",
+        "sales": "Sales",
+        "coding": "Coding",
+        "csr": "CSR",
+        "pharmacy": "Pharmacy",
+        "submission": "Submission",
+        "re-submission": "Re-Submission",
+        "pre-approvals-op-dubai": "Pre-Approvals OP Dubai",
+        "pre-approvals-ip-final-dubai": "Pre-Approvals IP Final Dubai",
+        "marketing": "Marketing",
+    }
+
     def _team(self, reference: str) -> Team:
         normalized = reference.strip().casefold().replace("_", "-")
+
+        # Resolve frontend slug alias to display_name first
+        resolved_display = self._SLUG_ALIASES.get(normalized, "").casefold()
+
         teams = self.db.query(Team).filter(Team.is_active.is_(True), Team.team_level == "employee").all()
         for team in teams:
             candidates = {
@@ -27,6 +48,10 @@ class TeamActionService:
                 logical_team_name(team).casefold(),
             }
             candidates |= {value.replace(" ", "-").replace("_", "-") for value in candidates}
+            # Also add the resolved display name so slug aliases work
+            if resolved_display:
+                candidates.add(resolved_display)
+                candidates.add(resolved_display.replace(" ", "-").replace("_", "-"))
             if normalized in candidates or reference.strip().casefold() in candidates:
                 return team
         raise ValueError("Team not found")
